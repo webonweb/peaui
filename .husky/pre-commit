@@ -1,0 +1,2 @@
+npm run library:format
+npm run library:lint

@@ -1,0 +1,69 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  @include set-param(row-gap, 2rem);
+}
+
+.peaui-form-container__body {
+  display: contents;
+}
+
+.peaui-form-container--top-left {
+  flex-direction: column-reverse;
+  justify-content: start;
+}
+
+.peaui-form-container--top-right {
+  flex-direction: column-reverse;
+}
+
+.peaui-form-container--top-right .peaui-form-container__actions {
+  justify-content: end;
+}
+
+.peaui-form-container--bottom-right .peaui-form-container__actions {
+  justify-content: end;
+}
+
+.peaui-form-container--bottom-left {
+  justify-content: start;
+}
+
+.peaui-form-container__label {
+  @include sr-only();
+}
+
+.peaui-form-container__actions {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  @include set-param(gap, 0.625rem);
+}
+
+.peaui-form-container__actions .peaui-button-action {
+  max-width: max-content;
+}
+
+.peaui-form-container__actions-button {
+  max-width: 100%;
+}
+
+.peaui-form-container__actions-additional {
+  flex: 1;
+}
+
+@media (width >= 48rem) {
+  .peaui-form-container__actions {
+    @include set-param(gap, 1rem);
+    flex-direction: row;
+  }
+
+  .peaui-form-container__actions-button {
+    @include set-param(max-width, 4.625rem);
+  }
+}

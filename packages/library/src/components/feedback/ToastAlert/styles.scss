@@ -1,0 +1,141 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-toast-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.peaui-toast-alert--size-l {
+  @include set-param(padding, 1.125rem);
+}
+
+.peaui-toast-alert__icon {
+  @include set-param(width, 18px);
+  @include set-param(height, 18px);
+  display: block;
+  flex-shrink: 0;
+}
+
+.peaui-toast-alert__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.peaui-toast-alert__close-button {
+  @include unset-safe;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  @include set-param(width, 2rem);
+  @include set-param(height, 2rem);
+  margin-left: auto;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: transparent;
+  cursor: pointer;
+  color: inherit;
+  @include transition(background-color, border-color, box-shadow, color);
+}
+
+.peaui-toast-alert__close-button:focus-visible {
+  outline: none;
+}
+
+.peaui-toast-alert__close-icon {
+  @include set-param(width, 0.75rem);
+  @include set-param(height, 0.75rem);
+  display: block;
+}
+
+.peaui-toast-alert__title--size-m {
+  @include set-size-text(s);
+  font-weight: 500;
+}
+
+.peaui-toast-alert__title--size-s {
+  @include set-size-text(xs);
+  font-weight: 400;
+}
+
+.peaui-toast-alert__title--size-l {
+  @include set-size-text(m);
+  font-weight: 500;
+}
+
+.peaui-toast-alert__description {
+  @include set-size-text(xs);
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+}
+
+.peaui-toast-alert__description--size-m {
+  @include set-size-text(s);
+}
+
+$color-aliases: (
+  info: 'primary',
+  error: 'danger',
+  success: 'success',
+  danger: 'warning',
+);
+
+@each $alias, $real in $color-aliases {
+  .peaui-toast-alert--variant-#{$alias} {
+    $content-tone: 600;
+
+    @if $real == 'warning' {
+      $content-tone: 700;
+    }
+
+    @if $real == 'success' {
+      $content-tone: 800;
+    }
+
+    background-color: var(--peaui-color-#{$real}-50);
+
+    &.peaui-toast-alert--border {
+      border-color: var(--peaui-color-#{$real}-700);
+    }
+
+    &.peaui-toast-alert--shadow {
+      box-shadow: 0 2px 9px 0 rgb(from var(--peaui-color-#{$real}-200) r g b / 0.2);
+    }
+
+    .peaui-toast-alert__title {
+      color: var(--peaui-color-#{$real}-#{$content-tone});
+      text-box-trim: trim-both;
+    }
+
+    .peaui-toast-alert__description {
+      color: var(--peaui-color-#{$real}-#{$content-tone});
+      text-box-trim: trim-both;
+    }
+
+    .peaui-toast-alert__icon {
+      fill: var(--peaui-color-#{$real}-#{$content-tone});
+    }
+
+    .peaui-toast-alert__close-button {
+      color: var(--peaui-color-#{$real}-#{$content-tone});
+    }
+
+    .peaui-toast-alert__close-button:hover {
+      background-color: var(--peaui-color-#{$real}-100);
+    }
+
+    .peaui-toast-alert__close-button:focus-visible {
+      background-color: var(--peaui-color-#{$real}-100);
+      box-shadow: 0 0 0 1px var(--peaui-color-#{$real}-#{$content-tone});
+    }
+  }
+}

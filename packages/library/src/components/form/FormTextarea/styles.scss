@@ -1,0 +1,7 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-field-textarea {
+  resize: none;
+
+  @include scrollbar(var(--peaui-color-primary-700));
+}

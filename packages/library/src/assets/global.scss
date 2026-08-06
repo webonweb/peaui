@@ -1,0 +1,164 @@
+@use 'sass:map';
+@use 'sass:color';
+
+@use 'font-size';
+
+///light-dark
+
+:root {
+  interpolate-size: allow-keywords;
+  color-scheme: light dark;
+
+  --system-ui:
+    system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+
+  --transition-standard: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  // MAIN COLORS - USER CAN CHANGE
+  /* ---- PRIMARY ------------------------------------------------------ */
+  /* Główna paleta do elementów akcji (CTA), linków i wyróżnień. Kolory powinny spełniać wymagania kontrastu WCAG. */
+  --peaui-color-primary-50: light-dark(#f4fbe8, #1d3f03);
+  --peaui-color-primary-100: light-dark(#e6f7c3, #285504);
+  --peaui-color-primary-200: light-dark(#d0ef8b, #326a04);
+  --peaui-color-primary-300: light-dark(#afe34b, #3f8205);
+  --peaui-color-primary-400: light-dark(#86cb16, #5fa907);
+  --peaui-color-primary-500: light-dark(#5fa907, #86cb16);
+  --peaui-color-primary-600: light-dark(#3f8205, #afe34b);
+  --peaui-color-primary-700: light-dark(#326a04, #d0ef8b);
+  --peaui-color-primary-800: light-dark(#285504, #e6f7c3);
+  --peaui-color-primary-900: light-dark(#1d3f03, #f4fbe8);
+
+  /* ========================================================= */
+  /* SUCCESS                                                   */
+  /* ========================================================= */
+  --peaui-color-success-50: light-dark(#e8fcf0, #052e14);
+  --peaui-color-success-100: light-dark(#d1fae0, #0a5c28);
+  --peaui-color-success-200: light-dark(#a3f5c1, #10893c);
+  --peaui-color-success-300: light-dark(#76efa2, #089e3e);
+  --peaui-color-success-400: light-dark(#4dd880, #16c155);
+  --peaui-color-success-500: light-dark(#16c155, #4dd880);
+  --peaui-color-success-600: light-dark(#089e3e, #76efa2);
+  --peaui-color-success-700: light-dark(#10893c, #a3f5c1);
+  --peaui-color-success-800: light-dark(#0a5c28, #d1fae0);
+  --peaui-color-success-900: light-dark(#052e14, #e8fcf0);
+
+  /* ========================================================= */
+  /* WARNING                                                   */
+  /* ========================================================= */
+  --peaui-color-warning-50: light-dark(#fff2e5, #331900);
+  --peaui-color-warning-100: light-dark(#ffe5cc, #663100);
+  --peaui-color-warning-200: light-dark(#ffca99, #994a00);
+  --peaui-color-warning-300: light-dark(#ffb066, #cc6300);
+  --peaui-color-warning-400: light-dark(#ffa34d, #ff9633);
+  --peaui-color-warning-500: light-dark(#ff9633, #ffa34d);
+  --peaui-color-warning-600: light-dark(#cc6300, #ffb066);
+  --peaui-color-warning-700: light-dark(#994a00, #ffca99);
+  --peaui-color-warning-800: light-dark(#663100, #ffe5cc);
+  --peaui-color-warning-900: light-dark(#331900, #fff2e5);
+
+  /* ========================================================= */
+  /* DANGER                                                    */
+  /* ========================================================= */
+  --peaui-color-danger-50: light-dark(#fee7e7, #310202);
+  --peaui-color-danger-100: light-dark(#fdcece, #610505);
+  --peaui-color-danger-200: light-dark(#fa9e9e, #920707);
+  --peaui-color-danger-300: light-dark(#f86d6d, #c20a0a);
+  --peaui-color-danger-400: light-dark(#f64c4c, #f10707);
+  --peaui-color-danger-500: light-dark(#f10707, #f64c4c);
+  --peaui-color-danger-600: light-dark(#c20a0a, #f86d6d);
+  --peaui-color-danger-700: light-dark(#920707, #fa9e9e);
+  --peaui-color-danger-800: light-dark(#610505, #fdcece);
+  --peaui-color-danger-900: light-dark(#310202, #fee7e7);
+
+  /* ========================================================= */
+  /* VIOLET                                                    */
+  /* (limited scale – symmetric mapping)                       */
+  /* ========================================================= */
+  --peaui-color-violet-50: light-dark(#f0edff, #2200ce);
+  --peaui-color-violet-600: light-dark(#2200ce, #f0edff);
+  --peaui-color-violet-700: light-dark(#2200ce, #f0edff);
+
+  /* ========================================================= */
+  /* GREY                                                      */
+  /* ========================================================= */
+  --peaui-color-grey-0: light-dark(#ffffff, #000000);
+  --peaui-color-grey-50: light-dark(#f5f5f5, #04060a);
+  --peaui-color-grey-100: light-dark(#e4e4e4, #1d232f);
+  --peaui-color-grey-200: light-dark(#cfcfcf, #4f545d);
+  --peaui-color-grey-300: light-dark(#a9abae, #787c83);
+  --peaui-color-grey-400: light-dark(#787c83, #a9abae);
+  --peaui-color-grey-500: light-dark(#4f545d, #cfcfcf);
+  --peaui-color-grey-600: light-dark(#4f545d, #e4e4e4);
+  --peaui-color-grey-700: light-dark(#1d232f, #f5f5f5);
+  --peaui-color-grey-800: light-dark(#04060a, #ffffff);
+  --peaui-color-grey-900: light-dark(#000000, #ffffff);
+}
+
+body.dark-mode {
+  /* ---- PRIMARY -------------------------------------------- */
+  --peaui-color-primary-50: #1d3f03;
+  --peaui-color-primary-100: #285504;
+  --peaui-color-primary-200: #326a04;
+  --peaui-color-primary-300: #3f8205;
+  --peaui-color-primary-400: #5fa907;
+  --peaui-color-primary-500: #86cb16;
+  --peaui-color-primary-600: #afe34b;
+  --peaui-color-primary-700: #d0ef8b;
+  --peaui-color-primary-800: #e6f7c3;
+  --peaui-color-primary-900: #f4fbe8;
+
+  /* ---- SUCCESS -------------------------------------------- */
+  --peaui-color-success-50: #052e14;
+  --peaui-color-success-100: #0a5c28;
+  --peaui-color-success-200: #10893c;
+  --peaui-color-success-300: #089e3e;
+  --peaui-color-success-400: #16c155;
+  --peaui-color-success-500: #4dd880;
+  --peaui-color-success-600: #76efa2;
+  --peaui-color-success-700: #a3f5c1;
+  --peaui-color-success-800: #d1fae0;
+  --peaui-color-success-900: #e8fcf0;
+
+  /* ---- WARNING -------------------------------------------- */
+  --peaui-color-warning-50: #331900;
+  --peaui-color-warning-100: #663100;
+  --peaui-color-warning-200: #994a00;
+  --peaui-color-warning-300: #cc6300;
+  --peaui-color-warning-400: #ff9633;
+  --peaui-color-warning-500: #ffa34d;
+  --peaui-color-warning-600: #ffb066;
+  --peaui-color-warning-700: #ffca99;
+  --peaui-color-warning-800: #ffe5cc;
+  --peaui-color-warning-900: #fff2e5;
+
+  /* ---- DANGER --------------------------------------------- */
+  --peaui-color-danger-50: #310202;
+  --peaui-color-danger-100: #610505;
+  --peaui-color-danger-200: #920707;
+  --peaui-color-danger-300: #c20a0a;
+  --peaui-color-danger-400: #f10707;
+  --peaui-color-danger-500: #f64c4c;
+  --peaui-color-danger-600: #f86d6d;
+  --peaui-color-danger-700: #fa9e9e;
+  --peaui-color-danger-800: #fdcece;
+  --peaui-color-danger-900: #fee7e7;
+
+  /* ---- VIOLET --------------------------------------------- */
+  --peaui-color-violet-50: #2200ce;
+  --peaui-color-violet-600: #f0edff;
+  --peaui-color-violet-700: #f0edff;
+
+  /* ---- GREY ----------------------------------------------- */
+  --peaui-color-grey-0: #000000;
+  --peaui-color-grey-50: #04060a;
+  --peaui-color-grey-100: #1d232f;
+  --peaui-color-grey-200: #4f545d;
+  --peaui-color-grey-300: #787c83;
+  --peaui-color-grey-400: #a9abae;
+  --peaui-color-grey-500: #cfcfcf;
+  --peaui-color-grey-600: #e4e4e4;
+  --peaui-color-grey-700: #f5f5f5;
+  --peaui-color-grey-800: #ffffff;
+  --peaui-color-grey-900: #ffffff;
+}

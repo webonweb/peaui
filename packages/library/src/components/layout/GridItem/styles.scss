@@ -1,0 +1,29 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-grid-item {
+  align-items: center;
+
+  grid-column: span var(--peaui-grid-item-colspan, 1) / span var(--peaui-grid-item-colspan, 1);
+  grid-column-start: 1;
+}
+
+.peaui-grid-item--grid {
+  display: grid;
+  @include set-param(gap, calc(var(--peaui-grid-item-gap, 6) * 0.25rem));
+}
+
+@media (width >= 48rem) {
+  .peaui-grid-item--grid {
+    grid-template-columns: repeat(var(--peaui-grid-item-columns, 1), minmax(0, 1fr));
+  }
+}
+
+@media (width <= 64rem) {
+  .peaui-grid-item {
+    grid-column: span 1 / span 1;
+  }
+
+  .peaui-grid-item--grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}

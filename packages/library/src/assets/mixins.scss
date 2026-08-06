@@ -1,0 +1,330 @@
+@use 'sass:list';
+
+/**
+ * Safely resets basic visual styles of an element without breaking layout
+ * or accessibility.
+ *
+ * This mixin removes default browser styling (background, border, spacing),
+ * while preserving inherited typography and box model behavior.
+ *
+ * Unlike `all: unset`, this reset does NOT:
+ * - change `display` or `position`
+ * - remove focus outlines
+ * - break accessibility defaults
+ *
+ * Recommended for:
+ * - custom components (buttons, inputs, wrappers)
+ * - design system base elements
+ *
+ * @example
+ * .peaui-button {
+ *   @include unset-safe;
+ * }
+ */
+@mixin unset-safe {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+
+  font: inherit;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+/**
+ * Generates BEM size modifiers for text components with font-size
+ * and line-height, including optional responsive variants.
+ *
+ * Creates modifier classes in the following formats:
+ * - `&--size-{type}` (base)
+ * - `&--size-{type}-{breakpoint}` (responsive)
+ *
+ * Example output:
+ * - `.peaui-tag-chip--size-xs`
+ * - `.peaui-tag-chip--size-xs-md`
+ *
+ * If a size listed in `$allowed` does not exist in the `$sizes` map,
+ * Sass compilation will fail with an error.
+ *
+ * @param {Map} $sizes
+ *   Map of size tokens to font-size and line-height values.
+ *   Each value must be a list in the form:
+ *   `(font-size, line-height)`
+ *
+ *   Example:
+ *   (
+ *     xs: (0.75rem, 1.25rem),
+ *     s:  (0.875rem, 1.25rem)
+ *   )
+ *
+ * @param {List} $allowed
+ *   List of allowed size keys to generate modifiers for.
+ *   Only these sizes will be emitted.
+ *
+ *   Example:
+ *   (xxs, xs, s)
+ *
+ * @param {Map} $breakpoints
+ *   Optional map of breakpoint names to min-width values.
+ *   When provided, responsive size modifiers will be generated.
+ *
+ *   Example:
+ *   (
+ *     sm: 640px,
+ *     md: 768px,
+ *     lg: 1024px
+ *   )
+ *
+ * @example
+ * $text-sizes: (
+ *   xxs: (0.625rem, 1.125rem),
+ *   xs:  (0.75rem, 1.25rem),
+ *   s:   (0.875rem, 1.25rem)
+ * );
+ *
+ * $breakpoints: (
+ *   sm: 640px,
+ *   md: 768px
+ * );
+ *
+ * .peaui-tag-chip {
+ *   @include size-text($text-sizes, (xxs, xs, s), $breakpoints);
+ * }
+ */
+@mixin size-text($allowed) {
+  @each $type in $allowed {
+    &--size-#{$type} {
+      font-size: calc(var(--peaui-font-size-#{$type}) * var(--peaui-user-scale));
+      line-height: calc(var(--peaui-line-height-#{$type}) * var(--peaui-user-scale));
+    }
+  }
+}
+
+/**
+ * Generates a size modifier for text based on design tokens and user scale.
+ *
+ * Creates a BEM-style modifier class:
+ * `.block--size-{size}`
+ *
+ * Font size and line height are calculated using CSS variables
+ * multiplied by the user scale factor.
+ *
+ * @mixin set-size-text
+ *
+ * @param {string} $size
+ *  Text size key used to resolve CSS variables:
+ *  - `--peaui-font-size-{$size}`
+ *  - `--peaui-line-height-{$size}`
+ *
+ * @example
+ * .text {
+ *   @include set-size-text(sm);
+ *   @include set-size-text(md);
+ *   @include set-size-text(lg);
+ * }
+ *
+ */
+@mixin set-size-text($size) {
+  font-size: calc(var(--peaui-font-size-#{$size}) * var(--peaui-user-scale));
+  line-height: calc(var(--peaui-line-height-#{$size}) * var(--peaui-user-scale));
+}
+
+/**
+ * Scales a CSS property value using the user-defined UI scale.
+ *
+ * @mixin set-param
+ * @param {String} $key   - CSS property name (e.g. `font-size`, `padding`)
+ * @param {Number} $value - Base numeric value (without unit) multiplied by `--peaui-user-scale`
+ * @param {Boolean} $isImportant - Adds `!important` when set to `true`
+ *
+ * @example scss
+ *   .button {
+ *     @include set-param(font-size, 1);
+ *     @include set-param(padding, 0.75);
+ *     @include set-param(width, 2rem, true);
+ *   }
+ *
+ * @access public
+ */
+@mixin set-param($key, $value, $isImportant: false) {
+  @if $isImportant {
+    #{$key}: calc(#{$value} * var(--peaui-user-scale)) !important;
+  } @else {
+    #{$key}: calc(#{$value} * var(--peaui-user-scale));
+  }
+}
+
+/**
+ * Applies a visible outline style for focus and error states.
+ *
+ * This mixin sets a solid outline with a configurable color and offset,
+ * ensuring the outline remains visible and accessible across browsers.
+ *
+ * Intended for:
+ * - focus-visible states
+ * - error / danger states
+ * - accessibility indicators
+ *
+ * @param {Color|String} $color
+ *   Outline color value (e.g. a CSS variable or color token).
+ *
+ * @param {Number} $width
+ *   Outline width. Defaults to `2px`.
+ *
+ * @param {Number} $offset
+ *   Outline offset from the element. Defaults to `2px`.
+ *
+ * @example
+ * .peaui-input:focus-visible {
+ *   @include outline(var(--peaui-color-danger-600));
+ * }
+ */
+@mixin outline($color, $width: 2px, $offset: 2px) {
+  &:focus-visible {
+    outline: $width solid $color;
+    outline-offset: $offset;
+  }
+}
+
+/**
+ * Applies a CSS transition to one or more properties
+ * with optional custom timing.
+ *
+ * @mixin transition
+ *
+ * @param {String...} $props
+ *   CSS properties to animate.
+ *
+ * @param {String} $timing [var(--transition-standard)]
+ *   Transition duration and easing function.
+ *
+ * @example scss
+ *   .button {
+ *     @include transition(color);
+ *   }
+ *
+ * @example scss
+ *   .modal {
+ *     @include transition(opacity, transform, 300ms ease-out);
+ *   }
+ */
+@mixin transition($props...) {
+  $result: ();
+
+  @each $prop in $props {
+    $result: list.append($result, $prop + ' var(--transition-standard)', comma);
+  }
+
+  transition: $result;
+}
+
+/**
+ * Visually hides an element while keeping it accessible to screen readers.
+ *
+ * Use this mixin for content that should be available for assistive
+ * technologies (e.g. labels, helper text) but not visible in the UI.
+ *
+ * Common use cases:
+ * - Accessible labels for icon-only buttons
+ * - Visually hidden headings for screen reader navigation
+ * - Helper or instructional text for form controls
+ *
+ * @accessibility
+ * - Preserves content in the accessibility tree
+ * - Does NOT use display: none or visibility: hidden
+ *
+ * @example
+ * .sr-only {
+ *   @include sr-only;
+ * }
+ */
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+
+  white-space: nowrap;
+  border: 0;
+}
+
+/**
+ * Scrollbar styling mixin (cross-browser)
+ *
+ * Ujednolica wygląd scrollbara dla:
+ * - Firefox (`scrollbar-width`, `scrollbar-color`)
+ * - Chrome / Edge / Safari (`::-webkit-scrollbar`)
+ *
+ * Mixin NIE ukrywa scrollbara i jest zgodny z WCAG (motoryka, widoczność).
+ *
+ * @mixin scrollbar
+ *
+ * @param {Color} $thumb
+ *  Kolor „kciuka” scrollbara (element przesuwany).
+ *  Powinien mieć wystarczający kontrast względem tła.
+ *
+ * @param {Color} [$track=transparent]
+ *  Kolor tracka (tła scrollbara).
+ *  Domyślnie transparent, aby nie zaburzać layoutu.
+ *
+ * @param {Length} [$size=6px]
+ *  Wysokość (scroll poziomy) lub szerokość (scroll pionowy) scrollbara.
+ *  ⚠️ Nie zaleca się wartości < 4px (WCAG – motoryka).
+ *
+ * @param {Length} [$radius=999px]
+ *  Promień zaokrąglenia kciuka scrollbara.
+ *  Duża wartość daje „pill shape”.
+ *
+ * @example
+ *  // Podstawowe użycie
+ *  .peaui-navigation-tabs {
+ *    overflow-x: auto;
+ *    @include scrollbar(#9ca3af);
+ *  }
+ *
+ * @example
+ *  // Z tokenami design systemu
+ *  .peaui-navigation-tabs {
+ *    @include scrollbar(
+ *      var(--color-scrollbar-thumb),
+ *      transparent,
+ *      6px
+ *    );
+ *  }
+ *
+ * @example
+ *  // Dark mode
+ *  [data-theme='dark'] .peaui-navigation-tabs {
+ *    @include scrollbar(#6b7280);
+ *  }
+ *
+ * @access public
+ */
+@mixin scrollbar($thumb, $track: transparent, $size: 6px, $radius: 999px) {
+  scrollbar-width: thin;
+  scrollbar-color: #{$thumb} #{$track};
+
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $track;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+    border-radius: $radius;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, $thumb 80%, black);
+  }
+}

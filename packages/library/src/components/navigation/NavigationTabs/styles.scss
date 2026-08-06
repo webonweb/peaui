@@ -1,0 +1,120 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-navigation-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+
+  @include scrollbar(var(--peaui-color-primary-700), var(--peaui-color-primary-100));
+}
+
+.peaui-navigation-tabs__button {
+  position: relative;
+  @include unset-safe;
+  display: inline-flex;
+  align-items: center;
+  @include set-param(gap, 0.25rem);
+  flex: 0 0 auto;
+  justify-content: center;
+
+  @include set-param(padding-left, 1rem);
+  @include set-param(padding-right, 1rem);
+
+  @include set-param(padding-top, 0.5rem);
+  @include set-param(padding-bottom, 0.5rem);
+
+  @include set-size-text(s);
+  background-color: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-500);
+
+  border-top: 0pt solid transparent;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+  border-bottom: 2px solid var(--peaui-color-grey-400);
+  font-weight: 500;
+  @include set-param(min-width, 7.5rem);
+
+  cursor: pointer;
+  @include transition(color, border-bottom, background-color);
+}
+
+.peaui-navigation-tabs__button:hover:enabled {
+  color: var(--peaui-color-primary-600);
+  border-bottom-color: var(--peaui-color-primary-600);
+}
+
+.peaui-navigation-tabs__button:focus-visible {
+  outline: none;
+  color: var(--peaui-color-primary-600);
+  border-radius: 4px 4px 0 0;
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-navigation-tabs__button:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--peaui-color-primary-700);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  pointer-events: none;
+}
+
+.peaui-navigation-tabs__button--disabled {
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-400);
+
+  cursor: not-allowed;
+}
+
+.peaui-navigation-tabs__button--active {
+  border-width: 2px;
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-600);
+
+  border-bottom-color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-tabs__button--invalid {
+  color: var(--peaui-color-danger-600);
+  border-bottom-color: var(--peaui-color-danger-600);
+}
+
+.peaui-navigation-tabs__button--invalid:hover:enabled {
+  color: var(--peaui-color-danger-700);
+  border-bottom-color: var(--peaui-color-danger-700);
+}
+
+.peaui-navigation-tabs__button--invalid:focus-visible {
+  color: var(--peaui-color-danger-700);
+  background-color: var(--peaui-color-danger-50);
+}
+
+.peaui-navigation-tabs__button--invalid:focus-visible::after {
+  border-color: var(--peaui-color-danger-700);
+}
+
+.peaui-navigation-tabs__button--invalid.peaui-navigation-tabs__button--active,
+.peaui-navigation-tabs__button--invalid.peaui-navigation-tabs__button--disabled {
+  background-color: var(--peaui-color-danger-50);
+}
+
+.peaui-navigation-tabs__button--invalid.peaui-navigation-tabs__button--active {
+  border-bottom-color: var(--peaui-color-danger-700);
+}
+
+.peaui-navigation-tabs--without-background .peaui-navigation-tabs__button,
+.peaui-navigation-tabs--without-background .peaui-navigation-tabs__button:hover:enabled,
+.peaui-navigation-tabs--without-background .peaui-navigation-tabs__button:focus-visible,
+.peaui-navigation-tabs--without-background .peaui-navigation-tabs__button--disabled,
+.peaui-navigation-tabs--without-background .peaui-navigation-tabs__button--active,
+.peaui-navigation-tabs--without-background
+  .peaui-navigation-tabs__button--invalid.peaui-navigation-tabs__button--active,
+.peaui-navigation-tabs--without-background
+  .peaui-navigation-tabs__button--invalid.peaui-navigation-tabs__button--disabled {
+  background-color: transparent;
+}

@@ -1,0 +1,180 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-card-carousel {
+  --peaui-card-carousel-gap: calc(0.01rem * var(--peaui-user-scale));
+  --peaui-card-carousel-visible-slides: 4;
+
+  @include outline(var(--peaui-color-primary-400));
+
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+
+  @include set-param(gap, 1rem);
+}
+
+.peaui-card-carousel--dragging .peaui-card-carousel__viewport {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.peaui-card-carousel--single-slide .peaui-card-carousel__viewport {
+  justify-content: center;
+}
+
+.peaui-card-carousel__viewport {
+  display: flex;
+  gap: var(--peaui-card-carousel-gap);
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.peaui-card-carousel__viewport::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.peaui-card-carousel__slide {
+  flex: 0 0
+    calc(
+      (100% - (var(--peaui-card-carousel-visible-slides) - 1) * var(--peaui-card-carousel-gap)) /
+        var(--peaui-card-carousel-visible-slides)
+    );
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.peaui-card-carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-card-carousel__controls--navigation-only {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.peaui-card-carousel__navigation {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(color, opacity, transform);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--peaui-color-primary-700);
+  cursor: pointer;
+
+  @include set-param(width, 2rem);
+  @include set-param(height, 2rem);
+}
+
+.peaui-card-carousel__navigation:hover:enabled {
+  color: var(--peaui-color-primary-600);
+}
+
+.peaui-card-carousel__navigation:disabled {
+  color: var(--peaui-color-grey-400);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.peaui-card-carousel__navigation--previous .peaui-card-carousel__navigation-icon {
+  transform: rotate(90deg);
+}
+
+.peaui-card-carousel__navigation-icon {
+  color: inherit;
+  transform: rotate(-90deg);
+
+  @include set-param(width, 1.75rem, true);
+  @include set-param(height, 1.75rem, true);
+}
+
+.peaui-card-carousel__autoplay-icon {
+  color: inherit;
+
+  @include set-param(width, 1.25rem, true);
+  @include set-param(height, 1.25rem, true);
+}
+
+.peaui-card-carousel__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include set-param(gap, 0.2rem);
+}
+
+.peaui-card-carousel__dot {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(background-color);
+
+  border-radius: 999px;
+  background-color: var(--peaui-color-grey-300);
+  cursor: pointer;
+
+  @include set-param(width, 0.625rem);
+  @include set-param(height, 0.625rem);
+}
+
+.peaui-card-carousel__dot:hover,
+.peaui-card-carousel__dot:focus-visible {
+  background-color: var(--peaui-color-primary-300);
+}
+
+.peaui-card-carousel__dot--active {
+  background-color: var(--peaui-color-primary-700);
+}
+
+.peaui-card-carousel__dot--active:hover,
+.peaui-card-carousel__dot--active:focus-visible {
+  background-color: var(--peaui-color-primary-700);
+}
+
+@media (max-width: 800px) {
+  .peaui-card-carousel {
+    --peaui-card-carousel-visible-slides: 2 !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .peaui-card-carousel {
+    --peaui-card-carousel-visible-slides: 1 !important;
+  }
+
+  .peaui-card-carousel__controls {
+    @include set-param(gap, 0.5rem);
+  }
+
+  .peaui-card-carousel__navigation {
+    @include set-param(width, 1.75rem);
+    @include set-param(height, 1.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-card-carousel__viewport,
+  .peaui-card-carousel__navigation,
+  .peaui-card-carousel__dot {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,234 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Design System/Kolorystyka" />
+
+<style>
+  {`
+  .ds-header {
+    margin-bottom: 24px;
+    max-width: 980px;
+  }
+
+  .ds-header h1 {
+    margin: 0 0 8px 0;
+  }
+
+  .ds-header p {
+    margin: 0;
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  .color-section {
+    margin: 28px 0;
+  }
+
+  .color-title {
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    font-weight: 800;
+  }
+
+  .color-description {
+    margin: 0 0 14px 0;
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  @media (max-width: 1100px) {
+    .color-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 850px) {
+    .color-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 520px) {
+    .color-grid { grid-template-columns: 1fr; }
+  }
+
+  .color-card {
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.65);
+  }
+
+  html[data-theme="dark"] .color-card,
+  body[data-theme="dark"] .color-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  .swatch {
+    height: 64px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    margin-bottom: 10px;
+  }
+
+  html[data-theme="dark"] .swatch,
+  body[data-theme="dark"] .swatch {
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .meta {
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin: 6px 0 0 0;
+  }
+
+  .meta b {
+    font-weight: 800;
+  }
+
+  .divider {
+    margin: 26px 0;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,0.10);
+  }
+
+  html[data-theme="dark"] .divider,
+  body[data-theme="dark"] .divider {
+    border-top-color: rgba(255,255,255,0.14);
+  }
+`}
+</style>
+
+export const colors = [
+  {
+    label: "Primary",
+    description:
+      "Główna paleta do elementów akcji (CTA), linków i wyróżnień. Kolory powinny spełniać wymagania kontrastu WCAG.",
+    colors: [
+      { hash: "#f4fbe8", token: "--color-primary-50" },
+      { hash: "#e6f7c3", token: "--color-primary-100" },
+      { hash: "#d0ef8b", token: "--color-primary-200" },
+      { hash: "#afe34b", token: "--color-primary-300" },
+      { hash: "#86cb16", token: "--color-primary-400" },
+      { hash: "#5fa907", token: "--color-primary-500" },
+      { hash: "#3f8205", token: "--color-primary-600" },
+      { hash: "#326a04", token: "--color-primary-700" },
+      { hash: "#285504", token: "--color-primary-800" },
+      { hash: "#1d3f03", token: "--color-primary-900" },
+    ],
+  },
+  {
+    label: "Success",
+    description:
+      "To kolor używany do sygnalizowania pomyślnych akcji, statusów i komunikatów. Stosowany np. w komunikatach o pomyślnym przesłaniu formularza, ukończeniu zadania czy poprawnym działaniu systemu.",
+    colors: [
+      { hash: "#e8fcf0", token: "--color-success-50" },
+      { hash: "#d1fae0", token: "--color-success-100" },
+      { hash: "#a3f5c1", token: "--color-success-200" },
+      { hash: "#76efa2", token: "--color-success-300" },
+      { hash: "#4dd880", token: "--color-success-400" },
+      { hash: "#16c155", token: "--color-success-500" },
+      { hash: "#089e3e", token: "--color-success-600" },
+      { hash: "#10893c", token: "--color-success-700" },
+      { hash: "#0a5c28", token: "--color-success-800" },
+      { hash: "#052e14", token: "--color-success-900" },
+    ],
+  },
+  {
+    label: "Warning",
+    description:
+      "To kolor używany do sygnalizowania potencjalnych problemów, które wymagają uwagi, ale nie są błędami. Stosowany w ikonach, banerach ostrzegawczych, etykietach statusów.",
+    colors: [
+      { hash: "#fff2e5", token: "--color-warning-50" },
+      { hash: "#ffe5cc", token: "--color-warning-100" },
+      { hash: "#ffca99", token: "--color-warning-200" },
+      { hash: "#ffb066", token: "--color-warning-300" },
+      { hash: "#ffa34d", token: "--color-warning-400" },
+      { hash: "#ff9633", token: "--color-warning-500" },
+      { hash: "#cc6300", token: "--color-warning-600" },
+      { hash: "#994a00", token: "--color-warning-700" },
+      { hash: "#663100", token: "--color-warning-800" },
+      { hash: "#331900", token: "--color-warning-900" },
+    ],
+  },
+  {
+    label: "Danger",
+    description:
+      "To kolor sygnalizujący błędy, niepowodzenia i krytyczne ostrzeżenia. Używany w komunikatach o błędach, ikonach ostrzegawczych, negatywnych akcjach (np. „Usuń”, „Anuluj”).",
+    colors: [
+      { hash: "#fee7e7", token: "--color-danger-50" },
+      { hash: "#fdcece", token: "--color-danger-100" },
+      { hash: "#fa9e9e", token: "--color-danger-200" },
+      { hash: "#f86d6d", token: "--color-danger-300" },
+      { hash: "#f64c4c", token: "--color-danger-400" },
+      { hash: "#f10707", token: "--color-danger-500" },
+      { hash: "#c20a0a", token: "--color-danger-600" },
+      { hash: "#920707", token: "--color-danger-700" },
+      { hash: "#610505", token: "--color-danger-800" },
+      { hash: "#310202", token: "--color-danger-900" },
+    ],
+  },
+  {
+    label: "Violet",
+    description: "To kolor dodatkowy. Głównie używany do TagChipsów.",
+    colors: [
+      { hash: "#f0edff", token: "--color-violet-50" },
+      { hash: "#2200ce", token: "--color-violet-600" },
+    ],
+  },
+  {
+    label: "Gray",
+    description:
+      "Kolory podstawowe używane głównie do tekstów oraz głównych elemtentów designu.",
+    colors: [
+      { hash: "#FFFFFF", token: "--color-danger-0" },
+      { hash: "#f5f5f5", token: "--color-danger-50" },
+      { hash: "#e4e4e4", token: "--color-danger-100" },
+      { hash: "#cfcfcf", token: "--color-danger-200" },
+      { hash: "#a9abae", token: "--color-danger-300" },
+      { hash: "#787c83", token: "--color-danger-400" },
+      { hash: "#4f545d", token: "--color-danger-500" },
+      { hash: "#4f545d", token: "--color-danger-600" },
+      { hash: "#1d232f", token: "--color-danger-700" },
+      { hash: "#04060a", token: "--color-danger-800" },
+      { hash: "#000000", token: "--color-danger-900" },
+    ],
+  },
+];
+
+<div className="ds-header">
+  <h1>Kolorystyka</h1>
+  <p>
+    Ta sekcja prezentuje paletę kolorów używaną w <strong>PEAUI UI</strong> w
+    formie tokenów Design Systemu. Każda karta pokazuje próbkę koloru, jego{" "}
+    <strong>hash</strong> oraz powiązany <strong>token</strong>, które powinny
+    być używane w implementacjach komponentów (Vue i React) dla zachowania
+    spójności.
+  </p>
+</div>
+
+{colors.map((color) => (
+
+  <div key={color.label} className="color-section">
+    <h3 className="color-title">{color.label}</h3>
+    <p className="color-description">{color.description}</p>
+
+    <div className="color-grid">
+      {color.colors.map((item) => (
+        <div key={item.hash} className="color-card">
+          <div className="swatch" style={{ background: item.hash }} />
+          <p className="meta">
+            <b>Hash:</b> {item.hash}
+          </p>
+          <p className="meta">
+            <b>Token:</b> {item.token}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <hr className="divider" />
+
+  </div>
+))}

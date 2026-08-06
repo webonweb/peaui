@@ -1,0 +1,103 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-popover-button {
+  anchor-name: var(--unique-anchor);
+  width: max-content !important;
+}
+
+.peaui-popover-button__content[popover] {
+  position: fixed;
+  position-anchor: var(--unique-anchor);
+  max-width: 20rem;
+  width: max-content;
+  background-color: var(--peaui-color-grey-0);
+
+  border: 0;
+  @include set-param(padding, 1rem);
+  // position-try-fallbacks: flip-inline;
+
+  opacity: 1;
+  margin: 0;
+  @include transition(opacity);
+
+  border-radius: 0.75rem;
+
+  corner-shape: squircle;
+  user-select: none;
+
+  box-shadow:
+    0 9px 15px 8px rgb(from var(--peaui-color-grey-900) r g b / 0.12),
+    0 9px 10px -7px rgb(from var(--peaui-color-grey-900) r g b / 0.5);
+}
+
+.peaui-popover-button__content--match-trigger-width[popover] {
+  box-sizing: border-box;
+  width: var(--peaui-popover-button-trigger-width);
+  min-width: var(--peaui-popover-button-trigger-width);
+  max-width: var(--peaui-popover-button-trigger-width);
+}
+
+@starting-style {
+  .peaui-popover-button__content[popover]:popover-open {
+    opacity: 0;
+  }
+}
+
+.peaui-popover-button__content--placement-top[popover] {
+  left: anchor(center);
+  bottom: anchor(top);
+  translate: -50% -5px;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-button__content--placement-top-left[popover] {
+  left: anchor(right);
+  bottom: anchor(top);
+  translate: -100% -5px;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-button__content--placement-top-right[popover] {
+  left: anchor(left);
+  bottom: anchor(top);
+  translate: 0 -5px;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-button__content--placement-bottom[popover] {
+  left: anchor(center);
+  top: anchor(bottom);
+  translate: -50% 5px;
+  right: auto;
+}
+
+.peaui-popover-button__content--placement-bottom-left[popover] {
+  left: anchor(right);
+  top: anchor(bottom);
+  translate: -100% 5px;
+}
+.peaui-popover-button__content--placement-bottom-right[popover] {
+  left: anchor(left);
+  top: anchor(bottom);
+  translate: 0 5px;
+}
+
+.peaui-popover-button__content--placement-left[popover] {
+  right: anchor(left);
+  top: anchor(center);
+  translate: 0 -50%;
+
+  left: auto;
+}
+
+.peaui-popover-button__content--placement-right[popover] {
+  left: anchor(right);
+  top: anchor(center);
+  translate: 0 -50%;
+}

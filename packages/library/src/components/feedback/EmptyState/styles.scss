@@ -1,0 +1,64 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-empty-state {
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-rows: repeat(2, max-content);
+  justify-content: center;
+  padding-top: 2.75rem;
+  padding-bottom: 2.75rem;
+}
+
+.peaui-empty-state__icon {
+  margin-left: auto;
+  margin-right: auto;
+
+  @include set-param(width, 8rem);
+  @include set-param(height, 8rem);
+}
+
+.peaui-empty-state__icon-shadow {
+  fill: var(--peaui-color-grey-50);
+}
+
+.peaui-empty-state__icon-outline {
+  stroke: var(--peaui-color-grey-200);
+}
+
+.peaui-empty-state__icon-line {
+  fill: var(--peaui-color-grey-50);
+}
+
+.peaui-empty-state__content {
+  display: flex;
+  flex-direction: column;
+
+  @include set-param(row-gap, 0.75rem);
+}
+
+.peaui-empty-state__title {
+  color: var(--peaui-color-grey-800);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+
+  @include set-size-text(heading-xs);
+}
+.peaui-empty-state__description {
+  color: var(--peaui-color-grey-800);
+  margin-bottom: 1.75rem;
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: center;
+  font-weight: 400;
+  @include set-size-text(xs);
+}
+
+.peaui-empty-state__additional {
+  margin-inline: auto;
+  width: max-content;
+}

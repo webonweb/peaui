@@ -1,0 +1,126 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-field-password {
+  &::-ms-reveal,
+  &::-ms-clear {
+    display: none;
+  }
+}
+
+.peaui-form-field-password__wrapper {
+  display: block;
+  width: 100%;
+}
+
+.peaui-form-field-password__actions {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  overflow: hidden;
+  border-top-right-radius: calc(0.5rem - 1px);
+  border-bottom-right-radius: calc(0.5rem - 1px);
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-field-password__actions[data-readonly='true'] {
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-field-password__button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700), 2px, -2px);
+  @include transition(background-color, color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-left: 1px solid var(--peaui-color-grey-300);
+  background-color: transparent;
+  color: var(--peaui-color-primary-700);
+
+  @include set-param(width, 2.875rem);
+}
+
+.peaui-form-field-password__button:hover:not(:disabled) {
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-field-password__button--active {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-field-password__button--active:hover:not(:disabled) {
+  background-color: var(--peaui-color-primary-100);
+}
+
+.peaui-form-field-password__button:disabled {
+  cursor: not-allowed;
+  color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-field-password__icon {
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+}
+
+.peaui-form-field-password__status {
+  @include sr-only;
+}
+
+.peaui-form-field-password__strength {
+  --peaui-form-password-strength-color: var(--peaui-color-grey-300);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.625rem;
+}
+
+.peaui-form-field-password__strength[data-has-supporting-message='true'] {
+  margin-top: 1.625rem;
+}
+
+.peaui-form-field-password__strength[data-tone='danger'] {
+  --peaui-form-password-strength-color: var(--peaui-color-danger-500);
+}
+
+.peaui-form-field-password__strength[data-tone='warning'] {
+  --peaui-form-password-strength-color: var(--peaui-color-warning-500);
+}
+
+.peaui-form-field-password__strength[data-tone='success'] {
+  --peaui-form-password-strength-color: var(--peaui-color-success-500);
+}
+
+.peaui-form-field-password__strength-bar {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+.peaui-form-field-password__strength-segment {
+  display: block;
+  height: 0.25rem;
+  border-radius: 999px;
+  background-color: var(--peaui-color-grey-200);
+  transition: background-color var(--transition-standard);
+}
+
+.peaui-form-field-password__strength-segment[data-active='true'] {
+  background-color: var(--peaui-form-password-strength-color);
+}
+
+.peaui-form-field-password__strength-label {
+  flex: 0 0 auto;
+  color: var(--peaui-form-password-strength-color);
+  font-weight: 500;
+  white-space: nowrap;
+
+  @include set-size-text(xs);
+}

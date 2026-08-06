@@ -1,0 +1,102 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-card-panel {
+  --peaui-card-panel-header-gap: 1rem;
+  --peaui-card-panel-padding-block: 1.5rem;
+  --peaui-card-panel-padding-inline: 1.5rem;
+
+  border-radius: 0.5rem;
+
+  border-width: 1px;
+  border-style: solid;
+  background-color: var(--peaui-color-grey-0);
+
+  @include transition(box-shadow);
+
+  --peaui-card-panel-shadow: 0 0 9px 0 rgb(from var(--peaui-color-grey-900) r g b / 0.2);
+}
+
+.peaui-card-panel:not(.peaui-card-panel--with-header) {
+  padding-block: var(--peaui-card-panel-padding-block);
+  padding-inline: var(--peaui-card-panel-padding-inline);
+}
+
+.peaui-card-panel__header {
+  padding-top: var(--peaui-card-panel-padding-block);
+  padding-inline: var(--peaui-card-panel-padding-inline);
+  padding-bottom: var(--peaui-card-panel-header-gap);
+  border-bottom: 1px solid var(--peaui-color-grey-200);
+}
+
+.peaui-card-panel__content {
+  min-width: 0;
+}
+
+.peaui-card-panel__content--with-header {
+  padding-top: var(--peaui-card-panel-header-gap);
+  padding-right: var(--peaui-card-panel-padding-inline);
+  padding-bottom: var(--peaui-card-panel-padding-block);
+  padding-left: var(--peaui-card-panel-padding-inline);
+}
+
+.peaui-card-panel--shadow-enabled {
+  box-shadow: var(--peaui-card-panel-shadow);
+}
+
+.peaui-card-panel--hover-enabled:hover {
+  box-shadow: var(--peaui-card-panel-shadow);
+}
+
+.peaui-card-panel--background-default {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-card-panel--background-primary {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-card-panel--background-grey {
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-card-panel--border-default {
+  border-color: light-dark(transparent, var(--peaui-color-grey-200));
+}
+
+.peaui-card-panel--border-grey {
+  border-color: var(--peaui-color-grey-100);
+}
+
+.peaui-card-panel--border-primary {
+  border-color: var(--peaui-color-primary-100);
+}
+
+.peaui-card-panel--size-xs {
+  @include set-param(--peaui-card-panel-header-gap, 0.75rem);
+  @include set-param(--peaui-card-panel-padding-block, 0.75rem);
+  @include set-param(--peaui-card-panel-padding-inline, 0.75rem);
+}
+
+.peaui-card-panel--size-s {
+  @include set-param(--peaui-card-panel-header-gap, 1rem);
+  @include set-param(--peaui-card-panel-padding-block, 1rem);
+  @include set-param(--peaui-card-panel-padding-inline, 1rem);
+}
+
+.peaui-card-panel--size-m {
+  @include set-param(--peaui-card-panel-header-gap, 1rem);
+  @include set-param(--peaui-card-panel-padding-block, 1.5rem);
+  @include set-param(--peaui-card-panel-padding-inline, 1.5rem);
+}
+
+.peaui-card-panel--size-l {
+  @include set-param(--peaui-card-panel-header-gap, 1.25rem);
+  @include set-param(--peaui-card-panel-padding-block, 2rem);
+  @include set-param(--peaui-card-panel-padding-inline, 2rem);
+}
+
+body.dark-mode {
+  .peaui-card-panel {
+    border-color: var(--peaui-color-grey-200);
+  }
+}

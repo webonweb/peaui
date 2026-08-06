@@ -1,0 +1,51 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-counter-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  border-radius: 6px;
+
+  width: max-content;
+
+  @include set-param(min-width, 1.25rem);
+}
+
+.peaui-counter-badge--variant-info {
+  color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-counter-badge--variant-success {
+  color: var(--peaui-color-grey-0);
+  background-color: var(--peaui-color-success-700);
+}
+
+.peaui-counter-badge--variant-error {
+  color: var(--peaui-color-grey-0);
+  background-color: var(--peaui-color-danger-700);
+}
+
+.peaui-counter-badge--variant-danger {
+  color: var(--peaui-color-grey-0);
+  background-color: var(--peaui-color-warning-700);
+}
+
+.peaui-counter-badge--size-s {
+  @include set-size-text(xs);
+  @include set-param(padding, 0.125rem);
+}
+
+.peaui-counter-badge--size-m {
+  @include set-size-text(s);
+  @include set-param(padding, 0.5rem);
+}
+
+.peaui-counter-badge--size-l {
+  @include set-size-text(s);
+  @include set-param(padding, 1.125rem);
+  @include set-param(width, 3.5rem);
+  @include set-param(height, 3.5rem);
+}

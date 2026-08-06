@@ -1,0 +1,66 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-description-field {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+}
+
+.peaui-description-field__addon {
+  display: flex;
+  align-items: center;
+
+  &--before {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    justify-self: start;
+    align-self: center;
+  }
+
+  &--after {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    justify-self: end;
+    align-self: center;
+  }
+}
+
+.peaui-description-field__label {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+
+  @include set-param(column-gap, 0.5rem);
+
+  @include set-size-text(xs);
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-description-field__value {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+
+  font-weight: 500;
+
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-description-field__addon:empty {
+  display: none;
+}
+
+.peaui-description-field__value a {
+  text-decoration: underline;
+}
+
+.peaui-description-field__hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 0.875rem);
+  @include set-param(height, 0.875rem);
+}

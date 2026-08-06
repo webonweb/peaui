@@ -1,0 +1,7 @@
+npm error Lifecycle script `storybook` failed with error:
+npm error code 1
+npm error path C:\Users\webon\OneDrive\Pulpit\projects\GUNB\ui-components\packages\storybook\wc
+npm error workspace @peaui/storybook-wc@1.0.0
+npm error location C:\Users\webon\OneDrive\Pulpit\projects\GUNB\ui-components\packages\storybook\wc
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c cross-env BROWSER=none STORYBOOK_DISABLE_TELEMETRY=true storybook dev -p 6008

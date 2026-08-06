@@ -1,0 +1,198 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-tree-list {
+  width: 100%;
+}
+
+.peaui-tree-list--level-1,
+.peaui-tree-list--level-2 {
+  @include set-param(margin-bottom, 0.5rem);
+}
+
+.peaui-tree-list__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-tree-list__row--disabled {
+  opacity: 0.6;
+}
+
+.peaui-tree-list__toggle {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.peaui-tree-list__toggle .peaui-tree-list__label {
+  &:hover {
+    color: var(--peaui-color-primary-700);
+  }
+}
+
+.peaui-tree-list__toggle--disabled {
+  cursor: not-allowed;
+}
+
+.peaui-tree-list__leaf-content {
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-tree-list__label {
+  @include set-size-text(s);
+
+  min-width: 0;
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-tree-list__label--emphasized {
+  font-weight: 500;
+}
+
+.peaui-tree-list__leaf-meta {
+  @include set-size-text(xs);
+
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-tree-list__toggle-icon {
+  flex-shrink: 0;
+  color: var(--peaui-color-grey-400);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+}
+
+.peaui-tree-list__toggle-icon--closed {
+  transform: rotate(-90deg);
+}
+
+.peaui-tree-list__toggle-icon--open {
+  transform: rotate(0deg);
+}
+
+.peaui-tree-list__connector {
+  display: block;
+  flex-shrink: 0;
+  color: var(--peaui-color-primary-400);
+
+  path {
+    fill: transparent !important;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+}
+
+.peaui-tree-list__connector--level-two {
+  position: absolute;
+  top: 50%;
+
+  @include set-param(left, -1.3125rem);
+  transform: translateY(-50%);
+
+  @include set-param(width, 1rem);
+  @include set-param(height, 2rem);
+}
+
+.peaui-tree-list__connector--level-three {
+  position: relative;
+
+  @include set-param(top, 0.125rem);
+  @include set-param(width, 1rem);
+  @include set-param(height, 1.75rem);
+}
+
+.peaui-tree-list__connector-spacer {
+  display: inline-block;
+  flex-shrink: 0;
+
+  @include set-param(width, 0.25rem);
+}
+
+.peaui-tree-list__remove {
+  @include unset-safe;
+  @include outline(var(--peaui-color-danger-600));
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  color: var(--peaui-color-danger-600);
+}
+
+.peaui-tree-list__remove-icon {
+  @include set-param(width, 0.75rem);
+  @include set-param(height, 0.75rem);
+}
+
+.peaui-tree-list__content {
+  position: relative;
+
+  @include set-param(padding-top, 0.25rem);
+  @include set-param(padding-left, 1.25rem);
+}
+
+.peaui-tree-list__branch-line {
+  position: absolute;
+  top: 0.25rem;
+  @include set-param(bottom, -0.625rem);
+  @include set-param(left, -0.875rem);
+  width: 2px;
+  background-color: var(--peaui-color-primary-400);
+}
+
+.peaui-tree-list__children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.peaui-tree-list__child {
+  margin: 0;
+  padding: 0;
+}
+
+.tree-list-slide-enter-active,
+.tree-list-slide-leave-active {
+  transition:
+    opacity 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tree-list-slide-enter-from,
+.tree-list-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-tree-list__toggle-icon,
+  .tree-list-slide-enter-active,
+  .tree-list-slide-leave-active {
+    transition: none;
+  }
+
+  .tree-list-slide-enter-from,
+  .tree-list-slide-leave-to {
+    transform: none;
+  }
+}

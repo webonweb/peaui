@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "access": "public",
+  "baseBranch": "develop-chreb",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@peaui/playground-react",
+    "@peaui/playground-vue",
+    "@peaui/storybook-shell",
+    "@peaui/storybook-vue",
+    "@peaui/storybook-react",
+    "@peaui/playground-wc",
+    "@peaui/storybook-wc"
+  ]
+}

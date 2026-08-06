@@ -1,0 +1,114 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-field-radio {
+  display: grid;
+  align-items: center;
+
+  @include set-param(column-gap, 0.75rem);
+}
+
+.peaui-form-field-radio--with-slot {
+  grid-template-columns: max-content 1fr;
+}
+
+.peaui-form-field-radio--without-slot {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.peaui-form-field-radio__element {
+  position: relative;
+  align-self: center;
+  margin: 0;
+
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(all);
+
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--peaui-color-primary-700);
+  border-radius: 999px;
+  background-color: var(--peaui-color-grey-0);
+  cursor: pointer;
+}
+
+.peaui-form-field-radio__element::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+
+  @include set-param(width, 0.5rem);
+  @include set-param(height, 0.5rem);
+  @include transition(all);
+
+  border-radius: 999px;
+  background-color: transparent;
+}
+
+.peaui-form-field-radio__element--checked::after,
+.peaui-form-field-radio__element:checked::after {
+  background-color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-field-radio__element:hover {
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-primary-600) r g b / 0.7);
+}
+
+.peaui-form-field-radio__element--disabled {
+  cursor: not-allowed;
+  border-color: var(--peaui-color-grey-400);
+  background-color: var(--peaui-color-grey-100);
+}
+
+.peaui-form-field-radio__element--disabled::after,
+.peaui-form-field-radio__element--disabled:checked::after {
+  background-color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-field-radio__element--invalid {
+  border-color: var(--peaui-color-danger-600);
+  outline-color: var(--peaui-color-danger-600);
+
+  @include outline(var(--peaui-color-danger-600));
+}
+
+.peaui-form-field-radio__element--invalid::after,
+.peaui-form-field-radio__element--invalid:checked::after {
+  background-color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-field-radio__element--invalid:hover {
+  border-color: var(--peaui-color-danger-500);
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-danger-600) r g b / 0.7);
+}
+
+.peaui-form-field-radio__label {
+  display: flex;
+  align-items: center;
+  width: max-content;
+
+  @include set-size-text(s);
+  @include set-param(column-gap, 0.75rem);
+  @include transition(all);
+
+  color: var(--peaui-color-grey-700);
+  cursor: pointer;
+}
+
+.peaui-form-field-radio__label--disabled {
+  cursor: not-allowed;
+}
+
+.peaui-form-field-radio__label--checked {
+  font-weight: 500;
+}
+
+.peaui-form-field-radio__label--normal {
+  font-weight: 400;
+}
+
+.peaui-form-field-radio__label--invalid {
+  color: var(--peaui-color-danger-600);
+}

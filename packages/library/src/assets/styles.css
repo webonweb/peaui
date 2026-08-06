@@ -1,0 +1,139 @@
+@theme {
+  /* ---- PRIMARY ------------------------------------------------------ */
+  /* Główna paleta do elementów akcji (CTA), linków i wyróżnień. Kolory powinny spełniać wymagania kontrastu WCAG. */
+  --color-primary-50: #f4fbe8;
+  --color-primary-100: #e6f7c3;
+  --color-primary-200: #d0ef8b;
+  --color-primary-300: #afe34b;
+  --color-primary-400: #86cb16;
+  --color-primary-500: #5fa907;
+  --color-primary-600: #3f8205;
+  --color-primary-700: #326a04;
+  --color-primary-800: #285504;
+  --color-primary-900: #1d3f03;
+
+  /* ---- SUCCESS ------------------------------------------------------ */
+  /* To kolor używany do sygnalizowania pomyślnych akcji, statusów i komunikatów. Stosowany np. */
+  /* w komunikatach o pomyślnym przesłaniu formularza, ukończeniu zadania czy poprawnym działaniu systemu. */
+  --color-success-50: #e8fcf0;
+  --color-success-100: #d1fae0;
+  --color-success-200: #a3f5c1;
+  --color-success-300: #76efa2;
+  --color-success-400: #4dd880;
+  --color-success-500: #16c155;
+  --color-success-600: #089e3e;
+  --color-success-700: #10893c;
+  --color-success-800: #0a5c28;
+  --color-success-900: #052e14;
+
+  /* ---- WARNING ------------------------------------------------------ */
+  /* To kolor używany do sygnalizowania potencjalnych problemów, które wymagają uwagi, ale nie są błędami. /*
+  /* Stosowany w ikonach, banerach ostrzegawczych, etykietach statusów. */
+  --color-warning-50: #fff2e5;
+  --color-warning-100: #ffe5cc;
+  --color-warning-200: #ffca99;
+  --color-warning-300: #ffb066;
+  --color-warning-400: #ffa34d;
+  --color-warning-500: #ff9633;
+  --color-warning-600: #cc6300;
+  --color-warning-700: #994a00;
+  --color-warning-800: #663100;
+  --color-warning-900: #331900;
+
+  /* ---- DANGER ------------------------------------------------------ */
+  /* To kolor sygnalizujący błędy, niepowodzenia i krytyczne ostrzeżenia. Używany w komunikatach o błędach, */
+  /*  ikonach ostrzegawczych, negatywnych akcjach (np. „Usuń”, „Anuluj”). */
+  --color-danger-50: #fee7e7;
+  --color-danger-100: #fdcece;
+  --color-danger-200: #fa9e9e;
+  --color-danger-300: #f86d6d;
+  --color-danger-400: #f64c4c;
+  --color-danger-500: #f10707;
+  --color-danger-600: #c20a0a;
+  --color-danger-700: #920707;
+  --color-danger-800: #610505;
+  --color-danger-900: #310202;
+
+  /* ---- VIOLET ------------------------------------------------------ */
+  /* To kolor dodatkowy. Głównie używany do TagChipsów. */
+  --color-violet-50: #f0edff;
+  --color-violet-600: #2200ce;
+
+  /* ---- GRAY ------------------------------------------------------ */
+  /* Kolory podstawowe używane głównie do tekstów oraz głównych elemtentów designu. */
+  --color-gray-0: #ffffff;
+  --color-gray-50: #f5f5f5;
+  --color-gray-100: #e4e4e4;
+  --color-gray-200: #cfcfcf;
+  --color-gray-300: #a9abae;
+  --color-gray-400: #787c83;
+  --color-gray-500: #4f545d;
+  --color-gray-600: #4f545d;
+  --color-gray-700: #1d232f;
+  --color-gray-800: #04060a;
+  --color-gray-900: #000000;
+}
+
+@layer utilities {
+  .peaui\:unset {
+    all: unset;
+  }
+
+  /* ---- TYPOGRAPHY ------------------------------------------------------ */
+  /* Typografia jest kluczowym elementem naszego design systemu, który wpływa na czytelność, hierarchię informacji */
+  /* oraz ogólne wrażenia estetyczne. Poniżej znajdziesz dostępne tokeny font-size wraz z podglądem. */
+
+  .peaui\:text-xxs {
+    font-size: 0.625rem;
+    line-height: 1.125rem;
+  }
+
+  .peaui\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+  }
+
+  .peaui\:text-s {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .peaui\:text-m {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .peaui\:text-l {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+  }
+
+  .peaui\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .peaui\:text-heading-xs {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .peaui\:text-heading-s {
+    font-size: 1.75rem;
+    line-height: 2.375rem;
+  }
+
+  .peaui\:text-heading-m {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+
+  .peaui\:text-heading-l {
+    font-size: 2.25rem;
+    line-height: 3rem;
+  }
+
+  .peaui\:border-1 {
+    border-width: 0.0625rem;
+  }
+}

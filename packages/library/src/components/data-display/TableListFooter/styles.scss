@@ -1,0 +1,101 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-table-list-footer {
+  align-items: center;
+  @include set-param(gap, 1rem);
+  width: 100%;
+}
+
+.peaui-table-list-footer .peaui-grid-section__content--multi {
+  align-items: center;
+}
+
+.peaui-table-list-footer--flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.peaui-table-list-footer__summary {
+  min-width: 0;
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-700);
+  font-weight: 400;
+}
+
+.peaui-table-list-footer__pagination {
+  justify-self: center;
+  @include set-param(max-width, 34rem);
+  width: 100%;
+}
+
+.peaui-table-list-footer__pagination--under {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+.peaui-table-list-footer__pagination.peaui-pagination-control,
+.peaui-table-list-footer__pagination--under.peaui-pagination-control {
+  margin-inline: auto;
+}
+
+.peaui-table-list-footer__pagination.peaui-pagination-control .peaui-pagination-control__pages,
+.peaui-table-list-footer__pagination--under.peaui-pagination-control .peaui-pagination-control__pages {
+  justify-content: center;
+}
+
+.peaui-table-list-footer__limit {
+  justify-self: end;
+  @include set-param(max-width, 14rem);
+}
+
+.peaui-table-list-footer__placeholder {
+  min-width: 0;
+}
+
+@media (width <= 80rem) {
+  .peaui-table-list-footer {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .peaui-table-list-footer__summary {
+    grid-column: 1 / -1;
+  }
+
+  .peaui-table-list-footer__pagination {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .peaui-table-list-footer__limit {
+    justify-self: end;
+  }
+}
+
+@media (width <= 48rem) {
+  .peaui-table-list-footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .peaui-table-list-footer--flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .peaui-table-list-footer__summary,
+  .peaui-table-list-footer__limit,
+  .peaui-table-list-footer__placeholder {
+    grid-column: 1;
+    justify-self: stretch;
+    max-width: none;
+    width: 100%;
+  }
+
+  .peaui-table-list-footer__pagination,
+  .peaui-table-list-footer__pagination--under {
+    grid-column: 1;
+    justify-self: center;
+    width: 100%;
+  }
+}

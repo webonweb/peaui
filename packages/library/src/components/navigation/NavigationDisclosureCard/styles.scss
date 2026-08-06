@@ -1,0 +1,138 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-navigation-disclosure-card {
+  width: 100%;
+  border-radius: 0.5rem;
+  background-color: var(--peaui-color-grey-0);
+  @include transition(border-color, box-shadow, background-color);
+}
+
+.peaui-navigation-disclosure-card--open {
+  border-color: var(--peaui-color-primary-300);
+}
+
+.peaui-navigation-disclosure-card__summary {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  list-style: none;
+}
+
+.peaui-navigation-disclosure-card__summary::marker,
+.peaui-navigation-disclosure-card__summary::-webkit-details-marker {
+  display: none;
+}
+
+.peaui-navigation-disclosure-card__summary-inner {
+  width: 100%;
+}
+
+.peaui-navigation-disclosure-card__summary-content {
+  min-width: 0;
+}
+
+.peaui-navigation-disclosure-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  @include set-param(gap, 1rem);
+}
+
+.peaui-navigation-disclosure-card__title-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-navigation-disclosure-card__title {
+  margin: 0;
+  @include set-size-text(m);
+  color: var(--peaui-color-grey-700);
+  font-weight: 600;
+}
+
+.peaui-navigation-disclosure-card__description-additional {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  @include set-size-text(xs);
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-navigation-disclosure-card__description-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-navigation-disclosure-card__description {
+  margin: 0;
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-navigation-disclosure-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.peaui-navigation-disclosure-card__action--link {
+  @include set-param(width, 2rem);
+  @include set-param(height, 2rem);
+  border-radius: 0.5rem;
+  background-color: var(--peaui-color-primary-700);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-navigation-disclosure-card__action--disclosure {
+  @include set-param(padding-right, 0.5rem);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-disclosure-card__icon {
+  @include set-param(width, 1.125rem);
+  @include set-param(height, 1.125rem);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.peaui-navigation-disclosure-card__icon--link {
+  @include set-param(width, 1.125rem);
+  @include set-param(height, 1.125rem);
+}
+
+.peaui-navigation-disclosure-card__icon--open {
+  transform: rotate(180deg);
+}
+
+.peaui-navigation-disclosure-card-content-enter-active,
+.peaui-navigation-disclosure-card-content-leave-active {
+  transition:
+    opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.peaui-navigation-disclosure-card-content-enter-from,
+.peaui-navigation-disclosure-card-content-leave-to {
+  opacity: 0;
+  transform: translateY(-0.25rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-navigation-disclosure-card__icon,
+  .peaui-navigation-disclosure-card-content-enter-active,
+  .peaui-navigation-disclosure-card-content-leave-active {
+    transition: none;
+  }
+}
+
+.peaui-navigation-disclosure-card__content {
+  @include set-param(margin-top, 0.75rem);
+}

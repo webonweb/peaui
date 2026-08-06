@@ -1,0 +1,202 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - link "PEAUI — documentation home page" [ref=e5] [cursor=pointer]:
+      - /url: "#/"
+      - generic [ref=e7]: Docs
+    - generic [ref=e8]:
+      - navigation "Choose technology" [ref=e9]:
+        - link "Vue" [ref=e10] [cursor=pointer]:
+          - /url: "#/vue/start"
+        - link "React" [ref=e11] [cursor=pointer]:
+          - /url: "#/react/start"
+        - link "Web Components" [ref=e12] [cursor=pointer]:
+          - /url: "#/web-components/start"
+      - navigation "Main navigation" [ref=e13]:
+        - link "Start" [ref=e14] [cursor=pointer]:
+          - /url: "#/vue/start"
+        - link "Components" [ref=e15] [cursor=pointer]:
+          - /url: "#/vue/components"
+        - link "Icons" [ref=e16] [cursor=pointer]:
+          - /url: "#/vue/icons"
+    - generic [ref=e17]:
+      - button "Search Ctrl K" [ref=e18] [cursor=pointer]:
+        - generic [ref=e21]: Search
+        - generic [ref=e22]: Ctrl K
+      - group "Documentation language" [ref=e23]:
+        - button "EN" [pressed] [ref=e24] [cursor=pointer]
+        - button "PL" [ref=e25] [cursor=pointer]
+      - button "Enable dark mode" [ref=e26] [cursor=pointer]
+  - complementary [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Technology
+        - strong [ref=e33]: Vue
+        - generic [ref=e34]: 62 components · Stable
+        - generic [ref=e35]:
+          - link "Vue" [ref=e36] [cursor=pointer]:
+            - /url: "#/vue/start"
+          - link "React" [ref=e37] [cursor=pointer]:
+            - /url: "#/react/start"
+          - link "WC" [ref=e38] [cursor=pointer]:
+            - /url: "#/web-components/start"
+      - link "✦ Getting started Installation and setup" [ref=e39] [cursor=pointer]:
+        - /url: "#/vue/start"
+        - generic [ref=e40]: ✦
+        - generic [ref=e41]:
+          - strong [ref=e42]: Getting started
+          - generic [ref=e43]: Installation and setup
+      - link "Icon catalog 50" [ref=e44] [cursor=pointer]:
+        - /url: "#/vue/icons"
+        - text: Icon catalog
+        - generic [ref=e45]: "50"
+      - link "All components 62" [ref=e46] [cursor=pointer]:
+        - /url: "#/vue/components"
+        - text: All components
+        - generic [ref=e47]: "62"
+      - navigation "Component list" [ref=e48]:
+        - generic [ref=e49]:
+          - heading "Basic" [level=2] [ref=e50]
+          - link "ImageView" [ref=e51] [cursor=pointer]:
+            - /url: "#/vue/components/basic/image-view"
+          - link "PhotoEditor" [ref=e52] [cursor=pointer]:
+            - /url: "#/vue/components/basic/photo-editor"
+          - link "SvgIcon" [ref=e53] [cursor=pointer]:
+            - /url: "#/vue/components/basic/svg-icon"
+        - generic [ref=e54]:
+          - heading "Data display" [level=2] [ref=e55]
+          - link "CalculationResults" [ref=e56] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/calculation-results"
+          - link "CardCarousel" [ref=e57] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/card-carousel"
+          - link "CounterBadge" [ref=e58] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/counter-badge"
+          - link "DescriptionField" [ref=e59] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/description-field"
+          - link "DisclosurePanel" [ref=e60] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/disclosure-panel"
+          - link "SectionHeading" [ref=e61] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/section-heading"
+          - link "TableList" [ref=e62] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list"
+          - link "TableListFooter" [ref=e63] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list-footer"
+          - link "TableListHeader" [ref=e64] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list-header"
+          - link "TagChip" [ref=e65] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/tag-chip"
+          - link "TreeList" [ref=e66] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/tree-list"
+        - generic [ref=e67]:
+          - heading "Data entry" [level=2] [ref=e68]
+          - link "ButtonAction" [ref=e69] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/button-action"
+          - link "ButtonExport" [ref=e70] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/button-export"
+          - link "InputSlider" [ref=e71] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/input-slider"
+          - link "SearchInput" [ref=e72] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/search-input"
+          - link "SelectableCard" [ref=e73] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/selectable-card"
+        - generic [ref=e74]:
+          - heading "Feedback" [level=2] [ref=e75]
+          - link "EmptyState" [ref=e76] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/empty-state"
+          - link "MessageText" [ref=e77] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/message-text"
+          - link "ProgressIndicator" [ref=e78] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/progress-indicator"
+          - link "SkeletonLoading" [ref=e79] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/skeleton-loading"
+          - link "SpinnerLoader" [ref=e80] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/spinner-loader"
+          - link "ToastAlert" [ref=e81] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/toast-alert"
+        - generic [ref=e82]:
+          - heading "Forms" [level=2] [ref=e83]
+          - link "FieldLabel" [ref=e84] [cursor=pointer]:
+            - /url: "#/vue/components/form/field-label"
+          - link "FormButtonCheckbox" [ref=e85] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-button-checkbox"
+          - link "FormButtonGroup" [ref=e86] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-button-group"
+          - link "FormCheckbox" [ref=e87] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-checkbox"
+          - link "FormContainer" [ref=e88] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-container"
+          - link "FormDatePicker" [ref=e89] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-date-picker"
+          - link "FormField" [ref=e90] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-field"
+          - link "FormFileUpload" [ref=e91] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-file-upload"
+          - link "FormFileUploadSimple" [ref=e92] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-file-upload-simple"
+          - link "FormInput" [ref=e93] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-input"
+          - link "FormMultiSelect" [ref=e94] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-multi-select"
+          - link "FormNumber" [ref=e95] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-number"
+          - link "FormPassword" [ref=e96] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-password"
+          - link "FormRadio" [ref=e97] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-radio"
+          - link "FormSelect" [ref=e98] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-select"
+          - link "FormTextarea" [ref=e99] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-textarea"
+          - link "FormYearPicker" [ref=e100] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-year-picker"
+        - generic [ref=e101]:
+          - heading "Layout" [level=2] [ref=e102]
+          - link "CardPanel" [ref=e103] [cursor=pointer]:
+            - /url: "#/vue/components/layout/card-panel"
+          - link "FullscreenContainer" [ref=e104] [cursor=pointer]:
+            - /url: "#/vue/components/layout/fullscreen-container"
+          - link "GridItem" [ref=e105] [cursor=pointer]:
+            - /url: "#/vue/components/layout/grid-item"
+          - link "GridSection" [ref=e106] [cursor=pointer]:
+            - /url: "#/vue/components/layout/grid-section"
+          - link "PageLayout" [ref=e107] [cursor=pointer]:
+            - /url: "#/vue/components/layout/page-layout"
+          - link "SectionDivider" [ref=e108] [cursor=pointer]:
+            - /url: "#/vue/components/layout/section-divider"
+        - generic [ref=e109]:
+          - heading "Navigation" [level=2] [ref=e110]
+          - link "Breadcrumbs" [ref=e111] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/breadcrumbs"
+          - link "ListLimitControl" [ref=e112] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/list-limit-control"
+          - link "NavigationCard" [ref=e113] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-card"
+          - link "NavigationDisclosureCard" [ref=e114] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-disclosure-card"
+          - link "NavigationIconCard" [ref=e115] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-icon-card"
+          - link "NavigationLink" [ref=e116] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-link"
+          - link "NavigationStepper" [ref=e117] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-stepper"
+          - link "NavigationTabs" [ref=e118] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-tabs"
+          - link "PaginationControl" [ref=e119] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/pagination-control"
+        - generic [ref=e120]:
+          - heading "Overlays and dialogs" [level=2] [ref=e121]
+          - link "DrawerPanel" [ref=e122] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/drawer-panel"
+          - link "InfoTooltip" [ref=e123] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/info-tooltip"
+          - link "ModalDialog" [ref=e124] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/modal-dialog"
+          - link "PopoverButton" [ref=e125] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/popover-button"
+          - link "PopoverOverlayer" [ref=e126] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/popover-overlayer"
+  - main [ref=e127]:
+    - article [ref=e128]:
+      - generic [ref=e129]: "404"
+      - heading "Component not found" [level=1] [ref=e130]
+      - link "Back to catalog" [ref=e131] [cursor=pointer]:
+        - /url: "#/vue/components"

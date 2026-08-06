@@ -1,0 +1,186 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xs: (
+    py: 0.625rem,
+  ),
+  s: (
+    py: 0.875rem,
+  ),
+  m: (
+    py: 0.875rem,
+  ),
+  l: (
+    py: 1rem,
+  ),
+);
+
+.peaui-form-select,
+.peaui-popover-overlayer.peaui-form-select {
+  width: 100%;
+}
+
+.peaui-popover-overlayer.peaui-form-select {
+  anchor-name: none;
+}
+
+.peaui-popover-overlayer.peaui-form-select .peaui-form-field__content {
+  anchor-name: var(--unique-anchor);
+}
+
+.peaui-popover-overlayer.peaui-form-select[aria-disabled='true'] {
+  opacity: 1;
+}
+
+.peaui-form-select__overlayer {
+  display: block;
+  width: 100%;
+}
+
+.peaui-form-select .peaui-form-field__icon--after {
+  right: 0.75rem;
+  color: var(--peaui-color-grey-500);
+  padding-right: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+
+  @include set-param(width, 1.25rem);
+  @include set-param(height, 1.25rem);
+  @include transition(transform, color);
+}
+
+.peaui-form-select--open .peaui-form-field__icon--after {
+  transform: rotate(180deg);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-select__input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: var(--peaui-form-select-input-padding-right);
+}
+
+.peaui-form-select__input--searchable {
+  cursor: text;
+}
+
+.peaui-form-select__input--select-only {
+  cursor: pointer;
+}
+
+.peaui-popover-overlayer__content.peaui-form-select__popover-content[popover] {
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+}
+
+.peaui-form-select__panel {
+  width: 100%;
+}
+
+.peaui-form-select__listbox {
+  margin: 0;
+  list-style: none;
+
+  @include set-param(max-height, 15rem);
+  @include set-param(padding, 0.25rem);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @include scrollbar(var(--peaui-color-primary-700));
+}
+
+.peaui-form-select__option {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  color: var(--peaui-color-grey-700);
+
+  @include set-size-text(s);
+  @include set-param(column-gap, 0.5rem);
+  @include set-param(padding, 0.75rem);
+  @include set-param(border-radius, 0.5rem);
+  @include transition(background-color, color, box-shadow);
+
+  cursor: pointer;
+}
+
+.peaui-form-select__option--with-icon {
+  grid-template-columns: auto 1fr;
+}
+
+.peaui-form-select__option--with-hint {
+  grid-template-columns: 1fr auto;
+}
+
+.peaui-form-select__option--with-icon.peaui-form-select__option--with-hint {
+  grid-template-columns: auto 1fr auto;
+}
+
+.peaui-form-select__option--current,
+.peaui-form-select__option:not(.peaui-form-select__option--disabled):hover {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-select__option--selected {
+  color: var(--peaui-color-grey-900);
+  font-weight: 500;
+}
+
+.peaui-form-select__option--disabled {
+  cursor: not-allowed;
+  color: var(--peaui-color-grey-400);
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-select__option-icon {
+  color: var(--peaui-color-grey-500);
+
+  @include set-param(width, 1.25rem);
+  @include set-param(height, 1.25rem);
+}
+
+.peaui-form-select__option-label {
+  min-width: 0;
+}
+
+.peaui-form-select__option-hint {
+  justify-self: end;
+}
+
+.peaui-form-select__option-hint-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--peaui-color-primary-700);
+  border-radius: 50%;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--peaui-color-primary-700);
+
+  @include set-size-text(xs);
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+}
+
+.peaui-form-select__empty {
+  margin: 0;
+  color: var(--peaui-color-grey-700);
+  text-align: center;
+
+  @include set-size-text(s);
+  @include set-param(padding, 0.75rem);
+}
+
+@each $size, $values in $sizes {
+  .peaui-form-select--size-#{$size} .peaui-form-field__element {
+    @include set-param(padding-top, map.get($values, py));
+    @include set-param(padding-bottom, map.get($values, py));
+  }
+}

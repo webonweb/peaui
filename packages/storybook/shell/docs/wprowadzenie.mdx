@@ -1,0 +1,115 @@
+import { Meta, Source } from "@storybook/blocks";
+
+<Meta title="Wprowadzenie" />
+
+<style>
+  {`
+    .intro { max-width: 1080px; margin: 0 auto; color: #172033; }
+    .intro-hero { position: relative; overflow: hidden; padding: 48px; border: 1px solid #dce3ec; border-radius: 24px; background: radial-gradient(circle at 92% 5%, rgba(63,130,5,.18), transparent 34%), #fff; box-shadow: 0 24px 70px rgba(25,43,69,.1); }
+    .intro-logo { width: min(330px, 72%); margin-bottom: 36px; }
+    .intro-kicker { color: #3f8205; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .intro h1 { max-width: 780px; margin: 12px 0 20px; font-size: clamp(42px, 7vw, 76px); line-height: .98; letter-spacing: -.055em; }
+    .intro-lead { max-width: 760px; margin: 0; color: #596679; font-size: 18px; line-height: 1.75; }
+    .intro-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+    .intro-badge { padding: 7px 12px; border: 1px solid #cbd8e8; border-radius: 999px; background: #f8fbff; color: #304158; font-size: 12px; font-weight: 700; }
+    .intro-badge.primary { border-color: #d0ef8b; background: #f4fbe8; color: #3f8205; }
+    .intro-section { margin-top: 58px; }
+    .intro-section h2 { margin: 0 0 10px; font-size: 32px; letter-spacing: -.035em; }
+    .intro-section > p { max-width: 760px; color: #596679; line-height: 1.7; }
+    .intro-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+    .intro-card { padding: 22px; border: 1px solid #dce3ec; border-radius: 16px; background: #fff; }
+    .intro-card strong { display: block; margin-bottom: 8px; font-size: 18px; }
+    .intro-card p { margin: 0; color: #647084; line-height: 1.6; }
+    .intro-steps { display: grid; gap: 12px; margin: 22px 0 0; padding: 0; list-style: none; counter-reset: step; }
+    .intro-steps li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; padding: 16px; border: 1px solid #dce3ec; border-radius: 14px; background: #fff; color: #475569; line-height: 1.6; }
+    .intro-steps li::before { counter-increment: step; content: counter(step); display: grid; width: 32px; height: 32px; place-items: center; border-radius: 9px; background: #f4fbe8; color: #3f8205; font-weight: 800; }
+    @media (max-width: 800px) { .intro-hero { padding: 28px; } .intro-grid { grid-template-columns: 1fr; } }
+  `}
+</style>
+
+<div className="intro">
+  <section className="intro-hero">
+    <img className="intro-logo" src="./peaui-ui-logo.png" alt="PEAUI UI" />
+    <div className="intro-kicker">Design system i biblioteka komponentów</div>
+    <h1>Buduj dostępne interfejsy szybciej.</h1>
+    <p className="intro-lead">
+      PEAUI UI to produkcyjna biblioteka komponentów z głównym API dla Vue 3,
+      zestawem Web Components i eksperymentalną warstwą React. Ten katalog jest
+      żywą dokumentacją: pokazuje prawdziwy kod, zachowanie, warianty oraz kompletne API.
+    </p>
+    <div className="intro-badges">
+      <span className="intro-badge primary">64 komponenty Vue</span>
+      <span className="intro-badge">19 Web Components</span>
+      <span className="intro-badge">680 testów</span>
+      <span className="intro-badge">TypeScript</span>
+      <span className="intro-badge">WCAG</span>
+    </div>
+  </section>
+
+<section className="intro-section">
+  <h2>Co znajdziesz przy każdym komponencie?</h2>
+  <p>
+    Dokumentacja jest generowana z tych samych historii, których używamy podczas
+    rozwoju i testów wizualnych. Dzięki temu przykłady nie rozmijają się z
+    implementacją.
+  </p>
+  <div className="intro-grid">
+    <article className="intro-card">
+      <strong>Opis i przeznaczenie</strong>
+      <p>Co to za komponent, kiedy go używać i jakie zachowanie zapewnia.</p>
+    </article>
+    <article className="intro-card">
+      <strong>Podgląd i warianty</strong>
+      <p>
+        Działające scenariusze, stany, rozmiary oraz panel Controls do zmiany
+        danych.
+      </p>
+    </article>
+    <article className="intro-card">
+      <strong>API i dane wejściowe</strong>
+      <p>Propsy, typy, wartości domyślne, wymagane pola i rodzaj kontrolki.</p>
+    </article>
+  </div>
+</section>
+
+<section className="intro-section">
+  <h2>Jak korzystać z katalogu?</h2>
+  <ol className="intro-steps">
+    <li>
+      <span>
+        W lewym panelu wybierz <strong>Vue komponenty</strong>,{" "}
+        <strong>Web komponenty</strong> albo <strong>React komponenty</strong>.
+      </span>
+    </li>
+    <li>
+      <span>
+        Otwórz kategorię i komponent. Osobne historie pod nazwą komponentu
+        prezentują jego warianty i stany.
+      </span>
+    </li>
+    <li>
+      <span>
+        Użyj panelu <strong>Controls</strong>, aby zmieniać propsy na żywo, oraz
+        panelu <strong>Accessibility</strong>, aby sprawdzić dostępność.
+      </span>
+    </li>
+  </ol>
+</section>
+
+  <section className="intro-section">
+    <h2>Instalacja</h2>
+    <Source language="bash" code={`npm install @peaui/ui`} />
+    <Source
+      language="vue"
+      code={`<script setup lang="ts">
+import { ButtonAction, FormInput } from '@peaui/ui';
+import '@peaui/ui/styles.css';
+</script>
+
+<template>
+  <FormInput id="name" name="name" label="Imię" />
+  <ButtonAction aria-label="Zapisz formularz">Zapisz</ButtonAction>
+</template>`}
+    />
+  </section>
+</div>

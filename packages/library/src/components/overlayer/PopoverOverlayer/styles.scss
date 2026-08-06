@@ -1,0 +1,121 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-popover-overlayer {
+  anchor-name: var(--unique-anchor);
+  display: inline-flex;
+  width: max-content;
+  cursor: pointer;
+}
+
+.peaui-popover-overlayer--match-trigger-width {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+}
+
+.peaui-popover-overlayer--match-trigger-width > * {
+  min-width: 0;
+  width: 100%;
+}
+
+.peaui-popover-overlayer[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.peaui-popover-overlayer__content[popover] {
+  position: fixed;
+  position-anchor: var(--unique-anchor);
+  max-width: 20rem;
+  width: max-content;
+  background-color: var(--peaui-color-grey-0);
+
+  border: 0;
+  @include set-param(padding, 1rem);
+  //position-try-fallbacks: flip-block, flip-inline;
+
+  opacity: 1;
+  margin: 0;
+  @include transition(opacity);
+
+  border-radius: 0.75rem;
+
+  corner-shape: squircle;
+  user-select: none;
+
+  box-shadow:
+    0 9px 15px 8px rgb(from var(--peaui-color-grey-900) r g b / 0.12),
+    0 9px 10px -7px rgb(from var(--peaui-color-grey-900) r g b / 0.5);
+}
+
+.peaui-popover-overlayer__content--match-trigger-width[popover] {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: var(--peaui-popover-overlayer-trigger-width);
+  max-width: var(--peaui-popover-overlayer-trigger-width);
+}
+
+@starting-style {
+  .peaui-popover-overlayer__content[popover]:popover-open {
+    opacity: 0;
+  }
+}
+
+.peaui-popover-overlayer__content--placement-top[popover] {
+  left: anchor(center);
+  bottom: anchor(top);
+  translate: -50% -5px;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-overlayer__content--placement-top-left[popover] {
+  left: anchor(right);
+  bottom: anchor(top);
+  translate: -100% 0;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-overlayer__content--placement-top-right[popover] {
+  left: anchor(left);
+  bottom: anchor(top);
+  translate: 0 0;
+
+  top: auto;
+  right: auto;
+}
+
+.peaui-popover-overlayer__content--placement-bottom[popover] {
+  left: anchor(center);
+  top: anchor(bottom);
+  translate: -50% 5px;
+}
+
+.peaui-popover-overlayer__content--placement-bottom-left[popover] {
+  left: anchor(right);
+  top: anchor(bottom);
+  translate: -100% 0;
+}
+
+.peaui-popover-overlayer__content--placement-bottom-right[popover] {
+  left: anchor(left);
+  top: anchor(bottom);
+  translate: 0 0;
+}
+
+.peaui-popover-overlayer__content--placement-left[popover] {
+  right: anchor(left);
+  top: anchor(center);
+  translate: 0 -50%;
+
+  left: auto;
+}
+
+.peaui-popover-overlayer__content--placement-right[popover] {
+  left: anchor(right);
+  top: anchor(center);
+  translate: 0 -50%;
+}

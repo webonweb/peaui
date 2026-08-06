@@ -1,0 +1,36 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/**/*.tsx",
+    "typings.d.ts",
+    "src/types"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["src/*"],
+      "@/assets/*": ["src/assets/*"],
+      "@/types/*": ["src/types/*"],
+      "@/helpers/*": ["src/helpers/*"],
+      "@/composables/*": ["src/composables/*"],
+      "@/directives/*": ["src/directives/*"],
+      "@/components/*": ["src/components/*"],
+      "rollup/parseAst": ["./node_modules/rollup/dist/parseAst"]
+    },
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": false,
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "outDir": "dist"
+  }
+}

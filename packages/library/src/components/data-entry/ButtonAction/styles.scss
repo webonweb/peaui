@@ -1,0 +1,152 @@
+@use 'sass:map';
+@use 'sass:list';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xxs: (
+    px: 0.75rem,
+    py: 0.5rem,
+  ),
+  xs: (
+    px: 1rem,
+    py: 0.625rem,
+  ),
+  s: (
+    px: 1rem,
+    py: 0.8125rem,
+  ),
+  m: (
+    px: 1rem,
+    py: 0.875rem,
+  ),
+  l: (
+    px: 1.125rem,
+    py: 1rem,
+  ),
+);
+
+$button-variants: (
+  primary: (
+    color: var(--peaui-color-grey-0),
+    bg: var(--peaui-color-primary-700),
+    bg-hover: var(--peaui-color-primary-900),
+    outline: var(--peaui-color-primary-400),
+    focus-border: var(--peaui-color-primary-400),
+    disabled: (
+      color: var(--peaui-color-grey-600),
+      bg: var(--peaui-color-grey-200),
+    ),
+  ),
+
+  secondary: (
+    color: var(--peaui-color-primary-800),
+    bg: var(--peaui-color-grey-0),
+    bg-hover: var(--peaui-color-primary-50),
+    border: var(--peaui-color-grey-200),
+    outline: var(--peaui-color-primary-700),
+    focus-border: var(--peaui-color-primary-700),
+    focus-bg: var(--peaui-color-grey-50),
+    disabled: (
+      color: var(--peaui-color-grey-400),
+    ),
+  ),
+
+  danger: (
+    color: var(--peaui-color-grey-0),
+    bg: var(--peaui-color-danger-600),
+    bg-hover: var(--peaui-color-danger-700),
+    outline: var(--peaui-color-danger-400),
+    focus-border: var(--peaui-color-danger-400),
+    disabled: (
+      bg: var(--peaui-color-danger-500),
+    ),
+  ),
+
+  ghost: (
+    color: var(--peaui-color-primary-800),
+    bg: transparent,
+    bg-hover: var(--peaui-color-primary-50),
+    outline: var(--peaui-color-primary-700),
+    focus-border: var(--peaui-color-primary-700),
+    disabled: (
+      color: var(--peaui-color-grey-400),
+    ),
+  ),
+);
+
+.peaui-button-action {
+  @include unset-safe;
+
+  @include size-text((xs, s, m, l));
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid transparent;
+  @include transition(background-color);
+}
+
+@each $size, $values in $sizes {
+  .peaui-button-action--size-#{$size} {
+    @include set-param(padding-left, map.get($values, px));
+    @include set-param(padding-right, map.get($values, px));
+    @include set-param(padding-top, map.get($values, py));
+    @include set-param(padding-bottom, map.get($values, py));
+  }
+}
+
+@each $variant, $styles in $button-variants {
+  .peaui-button-action--variant-#{$variant} {
+    color: map.get($styles, color);
+    background-color: map.get($styles, bg);
+
+    svg {
+      fill: map.get($styles, color);
+    }
+
+    @if map.has-key($styles, border) {
+      border-color: map.get($styles, border);
+    }
+
+    @include outline(map.get($styles, outline));
+
+    &:focus-visible {
+      border-color: map.get($styles, focus-border);
+
+      @if map.has-key($styles, focus-bg) {
+        background-color: map.get($styles, focus-bg);
+      }
+    }
+
+    &:hover:enabled {
+      background-color: map.get($styles, bg-hover);
+    }
+
+    &.peaui-button-action--is-disabled {
+      @each $key, $value in map.get($styles, disabled) {
+        @if $key == color {
+          color: $value;
+        }
+
+        @if $key == bg {
+          background-color: $value;
+        }
+
+        @if $key == border {
+          border-color: $value;
+        }
+      }
+    }
+  }
+}
+
+.peaui-button-action--is-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

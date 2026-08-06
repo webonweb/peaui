@@ -1,0 +1,99 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-year-picker,
+.peaui-popover-overlayer.peaui-form-year-picker {
+  width: 100%;
+}
+
+.peaui-popover-overlayer.peaui-form-year-picker {
+  anchor-name: none;
+}
+
+.peaui-popover-overlayer.peaui-form-year-picker .peaui-form-field__content {
+  anchor-name: var(--unique-anchor);
+}
+
+.peaui-popover-overlayer.peaui-form-year-picker[aria-disabled='true'] {
+  opacity: 1;
+}
+
+.peaui-form-year-picker__overlayer {
+  display: block;
+  width: 100%;
+}
+
+.peaui-form-year-picker .peaui-form-field__icon--after {
+  right: 0.75rem;
+  color: var(--peaui-color-grey-500);
+  padding-right: 0;
+
+  @include set-param(width, 1.25rem);
+  @include set-param(height, 1.25rem);
+  @include transition(color);
+}
+
+.peaui-form-year-picker__input {
+  cursor: default;
+}
+
+.peaui-form-year-picker__input--interactive {
+  cursor: pointer;
+}
+
+.peaui-popover-overlayer.peaui-form-year-picker--disabled .peaui-form-year-picker__input,
+.peaui-popover-overlayer.peaui-form-year-picker--disabled .peaui-form-field__content,
+.peaui-popover-overlayer.peaui-form-year-picker--disabled .peaui-form-field__element {
+  cursor: not-allowed;
+}
+
+.peaui-form-year-picker .peaui-form-field__erase-button {
+  @include set-param(right, 2.75rem);
+}
+
+.peaui-popover-overlayer__content.peaui-form-year-picker__popover-content[popover] {
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+}
+
+.peaui-form-year-picker__panel {
+  display: grid;
+  width: 100%;
+  box-sizing: border-box;
+
+  @include set-param(gap, 0.75rem);
+  @include set-param(padding, 1rem);
+}
+
+.peaui-form-year-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include set-param(gap, 0.75rem);
+}
+
+.peaui-form-year-picker__range {
+  margin: 0;
+  color: var(--peaui-color-grey-800);
+  font-weight: 600;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-year-picker__grid {
+  display: grid;
+
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-form-year-picker__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @include set-param(gap, 0.5rem);
+}
+
+.peaui-form-year-picker__cell {
+  min-width: 0;
+}

@@ -1,0 +1,68 @@
+import {
+  defineCustomElement,
+  type Component,
+  type CustomElementOptions,
+  type VueElementConstructor,
+} from 'vue';
+
+export type PeauiVueElementConstructor = VueElementConstructor<Record<string, unknown>> & {
+  readonly tagName: string;
+};
+
+/**
+ * Exposes an existing Vue component through the Custom Elements platform.
+ *
+ * Light DOM is intentional: PEAUI styles are distributed through the shared
+ * `styles.css` entry and every framework implementation uses the same tokens
+ * and BEM selectors. Vue's custom-element runtime also translates component
+ * props, emits and native slots into their Custom Elements equivalents.
+ */
+export function createVueCustomElement(
+  component: unknown,
+  tagName: string,
+): PeauiVueElementConstructor {
+  const createElement = defineCustomElement as unknown as (
+    component: Component,
+    options: CustomElementOptions,
+  ) => VueElementConstructor<Record<string, unknown>>;
+  const vueElementConstructor = createElement(component as Component, {
+    shadowRoot: false,
+  });
+
+  class PeauiVueElement extends vueElementConstructor {
+    override dispatchEvent(event: Event): boolean {
+      if (event instanceof CustomEvent && Array.isArray(event.detail)) {
+        const normalizedDetail = event.detail.length === 1 ? event.detail[0] : event.detail;
+        const normalizedEvent = new CustomEvent(event.type, {
+          bubbles: event.bubbles,
+          cancelable: event.cancelable,
+          composed: event.composed,
+          detail: normalizedDetail,
+        });
+
+        return super.dispatchEvent(normalizedEvent);
+      }
+
+      return super.dispatchEvent(event);
+    }
+  }
+
+  const elementConstructor = PeauiVueElement as PeauiVueElementConstructor;
+
+  Object.defineProperty(elementConstructor, 'tagName', {
+    configurable: false,
+    enumerable: true,
+    value: tagName,
+    writable: false,
+  });
+
+  return elementConstructor;
+}
+
+export function definePeauiCustomElement(elementConstructor: PeauiVueElementConstructor): void {
+  if (typeof globalThis.customElements === 'undefined') return;
+
+  if (!globalThis.customElements.get(elementConstructor.tagName)) {
+    globalThis.customElements.define(elementConstructor.tagName, elementConstructor);
+  }
+}

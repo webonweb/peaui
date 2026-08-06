@@ -1,0 +1,622 @@
+- generic [ref=f5e3]:
+  - banner [ref=f5e4]:
+    - link "PEAUI — documentation home page" [ref=f5e5] [cursor=pointer]:
+      - /url: "#/"
+      - generic [ref=f5e7]: Docs
+    - generic [ref=f5e8]:
+      - navigation "Choose technology" [ref=f5e9]:
+        - link "Vue" [ref=f5e10] [cursor=pointer]:
+          - /url: "#/vue/start"
+        - link "React" [ref=f5e11] [cursor=pointer]:
+          - /url: "#/react/start"
+        - link "Web Components" [ref=f5e12] [cursor=pointer]:
+          - /url: "#/web-components/start"
+      - navigation "Main navigation" [ref=f5e13]:
+        - link "Start" [ref=f5e14] [cursor=pointer]:
+          - /url: "#/vue/start"
+        - link "Components" [ref=f5e15] [cursor=pointer]:
+          - /url: "#/vue/components"
+        - link "Icons" [ref=f5e16] [cursor=pointer]:
+          - /url: "#/vue/icons"
+    - generic [ref=f5e17]:
+      - button "Search Ctrl K" [ref=f5e18] [cursor=pointer]:
+        - generic [ref=f5e21]: Search
+        - generic [ref=f5e22]: Ctrl K
+      - group "Documentation language" [ref=f5e23]:
+        - button "EN" [pressed] [ref=f5e24] [cursor=pointer]
+        - button "PL" [ref=f5e25] [cursor=pointer]
+      - button "Enable dark mode" [ref=f5e26] [cursor=pointer]
+  - complementary [ref=f5e29]:
+    - generic [ref=f5e30]:
+      - generic [ref=f5e31]:
+        - generic [ref=f5e32]: Technology
+        - strong [ref=f5e33]: Vue
+        - generic [ref=f5e34]: 62 components · Stable
+        - generic [ref=f5e35]:
+          - link "Vue" [ref=f5e36] [cursor=pointer]:
+            - /url: "#/vue/start"
+          - link "React" [ref=f5e37] [cursor=pointer]:
+            - /url: "#/react/start"
+          - link "WC" [ref=f5e38] [cursor=pointer]:
+            - /url: "#/web-components/start"
+      - link "✦ Getting started Installation and setup" [ref=f5e39] [cursor=pointer]:
+        - /url: "#/vue/start"
+        - generic [ref=f5e40]: ✦
+        - generic [ref=f5e41]:
+          - strong [ref=f5e42]: Getting started
+          - generic [ref=f5e43]: Installation and setup
+      - link "Icon catalog 50" [ref=f5e44] [cursor=pointer]:
+        - /url: "#/vue/icons"
+        - text: Icon catalog
+        - generic [ref=f5e45]: "50"
+      - link "All components 62" [ref=f5e46] [cursor=pointer]:
+        - /url: "#/vue/components"
+        - text: All components
+        - generic [ref=f5e47]: "62"
+      - navigation "Component list" [ref=f5e48]:
+        - generic [ref=f5e49]:
+          - heading "Basic" [level=2] [ref=f5e50]
+          - link "ImageView" [ref=f5e51] [cursor=pointer]:
+            - /url: "#/vue/components/basic/image-view"
+          - link "PhotoEditor" [ref=f5e52] [cursor=pointer]:
+            - /url: "#/vue/components/basic/photo-editor"
+          - link "SvgIcon" [ref=f5e53] [cursor=pointer]:
+            - /url: "#/vue/components/basic/svg-icon"
+        - generic [ref=f5e54]:
+          - heading "Data display" [level=2] [ref=f5e55]
+          - link "CalculationResults" [ref=f5e56] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/calculation-results"
+          - link "CardCarousel" [ref=f5e57] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/card-carousel"
+          - link "CounterBadge" [ref=f5e58] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/counter-badge"
+          - link "DescriptionField" [ref=f5e59] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/description-field"
+          - link "DisclosurePanel" [ref=f5e60] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/disclosure-panel"
+          - link "SectionHeading" [ref=f5e61] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/section-heading"
+          - link "TableList" [ref=f5e62] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list"
+          - link "TableListFooter" [ref=f5e63] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list-footer"
+          - link "TableListHeader" [ref=f5e64] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list-header"
+          - link "TagChip" [ref=f5e65] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/tag-chip"
+          - link "TreeList" [ref=f5e66] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/tree-list"
+        - generic [ref=f5e67]:
+          - heading "Data entry" [level=2] [ref=f5e68]
+          - link "ButtonAction" [ref=f5e69] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/button-action"
+          - link "ButtonExport" [ref=f5e70] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/button-export"
+          - link "InputSlider" [ref=f5e71] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/input-slider"
+          - link "SearchInput" [ref=f5e72] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/search-input"
+          - link "SelectableCard" [ref=f5e73] [cursor=pointer]:
+            - /url: "#/vue/components/data-entry/selectable-card"
+        - generic [ref=f5e74]:
+          - heading "Feedback" [level=2] [ref=f5e75]
+          - link "EmptyState" [ref=f5e76] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/empty-state"
+          - link "MessageText" [ref=f5e77] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/message-text"
+          - link "ProgressIndicator" [ref=f5e78] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/progress-indicator"
+          - link "SkeletonLoading" [ref=f5e79] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/skeleton-loading"
+          - link "SpinnerLoader" [ref=f5e80] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/spinner-loader"
+          - link "ToastAlert" [ref=f5e81] [cursor=pointer]:
+            - /url: "#/vue/components/feedback/toast-alert"
+        - generic [ref=f5e82]:
+          - heading "Forms" [level=2] [ref=f5e83]
+          - link "FieldLabel" [ref=f5e84] [cursor=pointer]:
+            - /url: "#/vue/components/form/field-label"
+          - link "FormButtonCheckbox" [ref=f5e85] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-button-checkbox"
+          - link "FormButtonGroup" [ref=f5e86] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-button-group"
+          - link "FormCheckbox" [ref=f5e87] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-checkbox"
+          - link "FormContainer" [ref=f5e88] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-container"
+          - link "FormDatePicker" [ref=f5e89] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-date-picker"
+          - link "FormField" [ref=f5e90] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-field"
+          - link "FormFileUpload" [ref=f5e91] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-file-upload"
+          - link "FormFileUploadSimple" [ref=f5e92] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-file-upload-simple"
+          - link "FormInput" [ref=f5e93] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-input"
+          - link "FormMultiSelect" [ref=f5e94] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-multi-select"
+          - link "FormNumber" [ref=f5e95] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-number"
+          - link "FormPassword" [ref=f5e96] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-password"
+          - link "FormRadio" [ref=f5e97] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-radio"
+          - link "FormSelect" [ref=f5e98] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-select"
+          - link "FormTextarea" [ref=f5e99] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-textarea"
+          - link "FormYearPicker" [ref=f5e100] [cursor=pointer]:
+            - /url: "#/vue/components/form/form-year-picker"
+        - generic [ref=f5e101]:
+          - heading "Layout" [level=2] [ref=f5e102]
+          - link "CardPanel" [ref=f5e103] [cursor=pointer]:
+            - /url: "#/vue/components/layout/card-panel"
+          - link "FullscreenContainer" [ref=f5e104] [cursor=pointer]:
+            - /url: "#/vue/components/layout/fullscreen-container"
+          - link "GridItem" [ref=f5e105] [cursor=pointer]:
+            - /url: "#/vue/components/layout/grid-item"
+          - link "GridSection" [ref=f5e106] [cursor=pointer]:
+            - /url: "#/vue/components/layout/grid-section"
+          - link "PageLayout" [ref=f5e107] [cursor=pointer]:
+            - /url: "#/vue/components/layout/page-layout"
+          - link "SectionDivider" [ref=f5e108] [cursor=pointer]:
+            - /url: "#/vue/components/layout/section-divider"
+        - generic [ref=f5e109]:
+          - heading "Navigation" [level=2] [ref=f5e110]
+          - link "Breadcrumbs" [ref=f5e111] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/breadcrumbs"
+          - link "ListLimitControl" [ref=f5e112] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/list-limit-control"
+          - link "NavigationCard" [ref=f5e113] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-card"
+          - link "NavigationDisclosureCard" [ref=f5e114] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-disclosure-card"
+          - link "NavigationIconCard" [ref=f5e115] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-icon-card"
+          - link "NavigationLink" [ref=f5e116] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-link"
+          - link "NavigationStepper" [ref=f5e117] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-stepper"
+          - link "NavigationTabs" [ref=f5e118] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/navigation-tabs"
+          - link "PaginationControl" [ref=f5e119] [cursor=pointer]:
+            - /url: "#/vue/components/navigation/pagination-control"
+        - generic [ref=f5e120]:
+          - heading "Overlays and dialogs" [level=2] [ref=f5e121]
+          - link "DrawerPanel" [ref=f5e122] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/drawer-panel"
+          - link "InfoTooltip" [ref=f5e123] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/info-tooltip"
+          - link "ModalDialog" [ref=f5e124] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/modal-dialog"
+          - link "PopoverButton" [ref=f5e125] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/popover-button"
+          - link "PopoverOverlayer" [ref=f5e126] [cursor=pointer]:
+            - /url: "#/vue/components/overlayer/popover-overlayer"
+  - main [ref=f5e127]:
+    - article [ref=f5e128]:
+      - generic [ref=f5e129]:
+        - navigation "Documentation path" [ref=f5e130]:
+          - link "components Vue" [ref=f5e131] [cursor=pointer]:
+            - /url: "#/vue/components"
+          - generic [ref=f5e132]: /
+          - generic [ref=f5e133]: Data display
+          - generic [ref=f5e134]: /
+          - strong [ref=f5e135]: TableList
+        - generic [ref=f5e136]:
+          - generic [ref=f5e137]:
+            - generic [ref=f5e138]: stable
+            - generic [ref=f5e140]: Vue 3
+          - heading "TableList" [level=1] [ref=f5e141]
+          - paragraph [ref=f5e142]: An advanced data table with sorting, row selection, editing and column management.
+        - generic [ref=f5e143]:
+          - generic [ref=f5e144]:
+            - generic [ref=f5e145]: ts
+            - button "Copy" [ref=f5e146] [cursor=pointer]
+          - code [ref=f5e148]: "import { TableList } from '@peaui/ui'; import '@peaui/ui/styles.css';"
+        - generic [ref=f5e149]:
+          - generic [ref=f5e150]: "01"
+          - generic [ref=f5e151]:
+            - heading "What is this component?" [level=2] [ref=f5e152]
+            - paragraph [ref=f5e153]: An advanced data table with sorting, row selection, editing and column management.
+            - generic [ref=f5e154]:
+              - generic [ref=f5e155]: Input
+              - strong [ref=f5e156]: A records array and column definitions, with optional sorting, selection, editing and pagination settings.
+        - generic [ref=f5e157]:
+          - generic [ref=f5e158]: "02"
+          - generic [ref=f5e159]:
+            - heading "What does it do?" [level=2] [ref=f5e160]
+            - list [ref=f5e161]:
+              - listitem [ref=f5e162]:
+                - generic [ref=f5e163]: ✓
+                - text: Presents records through declarative columns.
+              - listitem [ref=f5e164]:
+                - generic [ref=f5e165]: ✓
+                - text: Handles empty, loading and record-action states.
+        - generic [ref=f5e166]:
+          - generic [ref=f5e167]: "03"
+          - generic [ref=f5e168]:
+            - heading "Variants and behavior" [level=2] [ref=f5e169]
+            - paragraph [ref=f5e170]: Switch variants, open the props playground and edit values live. The Code tab shows a ready-to-use configuration.
+            - generic [ref=f5e171]:
+              - tablist "Component variants" [ref=f5e172]:
+                - tab "Default" [selected] [ref=f5e173] [cursor=pointer]
+                - tab "isDetials" [ref=f5e174] [cursor=pointer]
+                - tab "canCreate" [ref=f5e175] [cursor=pointer]
+                - tab "canSelectRows" [ref=f5e176] [cursor=pointer]
+              - paragraph [ref=f5e177]: Recommended starting configuration with example data.
+              - generic [ref=f5e178]:
+                - generic [ref=f5e179]:
+                  - generic [ref=f5e180]:
+                    - button "Preview" [ref=f5e181] [cursor=pointer]
+                    - button "Code" [ref=f5e182] [cursor=pointer]
+                  - button "Reset" [ref=f5e183] [cursor=pointer]
+                - table "Data table" [ref=f5e186]:
+                  - rowgroup [ref=f5e187]:
+                    - row [ref=f5e188]:
+                      - columnheader "Pole zaznaczania lub odznaczania rekordow Zaznacz wszystkie rekordy na stronie" [ref=f5e189]:
+                        - generic [ref=f5e190]: Pole zaznaczania lub odznaczania rekordow
+                        - generic "Zaznacz wszystkie rekordy na stronie" [ref=f5e191]:
+                          - checkbox "Zaznacz wszystkie rekordy na stronie" [ref=f5e192] [cursor=pointer]
+                      - columnheader [ref=f5e193] [cursor=pointer]:
+                        - button "Sortuj tabele po Name" [ref=f5e195]:
+                          - generic [ref=f5e196]: Name
+                      - columnheader [ref=f5e197]:
+                        - button "Sortuj tabele po Updated" [disabled] [ref=f5e199]:
+                          - generic [ref=f5e200]: Updated
+                      - columnheader [ref=f5e203]:
+                        - button "Sortuj tabele po Status" [disabled] [ref=f5e205]:
+                          - generic [ref=f5e206]: Status
+                  - rowgroup [ref=f5e207]:
+                    - row [ref=f5e208]:
+                      - cell [ref=f5e209]:
+                        - generic "Zaznacz rekord 1" [ref=f5e210]:
+                          - checkbox "Zaznacz rekord 1" [ref=f5e211] [cursor=pointer]
+                      - cell "Application Alpha" [ref=f5e212]
+                      - cell [ref=f5e216]:
+                        - time [ref=f5e219]: 2026-08-04
+                      - cell [ref=f5e220]:
+                        - button "Active" [ref=f5e222] [cursor=pointer]
+                    - row [ref=f5e223]:
+                      - cell [ref=f5e224]:
+                        - generic "Zaznacz rekord 2" [ref=f5e225]:
+                          - checkbox "Zaznacz rekord 2" [ref=f5e226] [cursor=pointer]
+                      - cell "Application Beta" [ref=f5e227]
+                      - cell [ref=f5e231]:
+                        - time [ref=f5e234]: 2026-07-28
+                      - cell [ref=f5e235]:
+                        - button "Draft" [ref=f5e237] [cursor=pointer]
+                    - row [ref=f5e238]:
+                      - cell [ref=f5e239]:
+                        - generic "Zaznacz rekord 3" [ref=f5e240]:
+                          - checkbox "Zaznacz rekord 3" [ref=f5e241] [cursor=pointer]
+                      - cell "Application Gamma" [ref=f5e242]
+                      - cell [ref=f5e246]:
+                        - time [ref=f5e249]: 2026-07-21
+                      - cell [ref=f5e250]:
+                        - button "Active" [ref=f5e252] [cursor=pointer]
+              - group [ref=f5e253]:
+                - generic "Props playground Change the data and see the result without reloading the page." [ref=f5e254] [cursor=pointer]:
+                  - generic [ref=f5e255]:
+                    - strong [ref=f5e256]: Props playground
+                    - generic [ref=f5e257]: Change the data and see the result without reloading the page.
+                  - generic [ref=f5e258]: +
+        - generic [ref=f5e259]:
+          - generic [ref=f5e260]: "04"
+          - generic [ref=f5e261]:
+            - heading "Props and input data" [level=2] [ref=f5e262]
+            - paragraph [ref=f5e263]: This table is generated automatically from the component TypeScript declaration. Required entries must be provided.
+            - table [ref=f5e265]:
+              - rowgroup [ref=f5e266]:
+                - row [ref=f5e267]:
+                  - columnheader "Name" [ref=f5e268]
+                  - columnheader "Type" [ref=f5e269]
+                  - columnheader "Default" [ref=f5e270]
+                  - columnheader "Description" [ref=f5e271]
+              - rowgroup [ref=f5e272]:
+                - row [ref=f5e273]:
+                  - cell [ref=f5e274]:
+                    - code [ref=f5e275]: id
+                  - cell [ref=f5e276]:
+                    - code [ref=f5e277]: string
+                  - cell [ref=f5e278]:
+                    - code [ref=f5e279]: list
+                  - cell "Unique identifier of the element in the document." [ref=f5e280]
+                - row [ref=f5e281]:
+                  - cell [ref=f5e282]:
+                    - code [ref=f5e283]: ariaLabel
+                  - cell [ref=f5e284]:
+                    - code [ref=f5e285]: string
+                  - cell [ref=f5e286]:
+                    - code [ref=f5e287]: Data table
+                  - cell "Accessible element name passed through aria-label." [ref=f5e288]
+                - row [ref=f5e289]:
+                  - cell [ref=f5e290]:
+                    - code [ref=f5e291]: isDetials
+                  - cell [ref=f5e292]:
+                    - code [ref=f5e293]: boolean
+                  - cell "—" [ref=f5e294]
+                  - cell "Configures the component's is detials property." [ref=f5e295]
+                - row [ref=f5e296]:
+                  - cell [ref=f5e297]:
+                    - code [ref=f5e298]: additional
+                  - cell [ref=f5e299]:
+                    - code [ref=f5e300]: Record<string, any>
+                  - cell "—" [ref=f5e301]
+                  - cell "Configures the component's additional property." [ref=f5e302]
+                - row [ref=f5e303]:
+                  - cell [ref=f5e304]:
+                    - code [ref=f5e305]: canCreate
+                  - cell [ref=f5e306]:
+                    - code [ref=f5e307]: boolean
+                  - cell [ref=f5e308]:
+                    - code [ref=f5e309]: "true"
+                  - cell "Enables creating new records." [ref=f5e310]
+                - row [ref=f5e311]:
+                  - cell [ref=f5e312]:
+                    - code [ref=f5e313]: canSelectRows
+                  - cell [ref=f5e314]:
+                    - code [ref=f5e315]: boolean
+                  - cell [ref=f5e316]:
+                    - code [ref=f5e317]: "true"
+                  - cell "Enables row selection." [ref=f5e318]
+                - row [ref=f5e319]:
+                  - cell [ref=f5e320]:
+                    - code [ref=f5e321]: canCheckRows
+                  - cell [ref=f5e322]:
+                    - code [ref=f5e323]: boolean
+                  - cell [ref=f5e324]:
+                    - code [ref=f5e325]: "false"
+                  - cell "Configures the component's can check rows property." [ref=f5e326]
+                - row [ref=f5e327]:
+                  - cell [ref=f5e328]:
+                    - code [ref=f5e329]: canHideColumns
+                  - cell [ref=f5e330]:
+                    - code [ref=f5e331]: boolean
+                  - cell [ref=f5e332]:
+                    - code [ref=f5e333]: "false"
+                  - cell "Allows users to control column visibility." [ref=f5e334]
+                - row [ref=f5e335]:
+                  - cell [ref=f5e336]:
+                    - code [ref=f5e337]: canMultiSort
+                  - cell [ref=f5e338]:
+                    - code [ref=f5e339]: boolean
+                  - cell [ref=f5e340]:
+                    - code [ref=f5e341]: "false"
+                  - cell "Configures the component's can multi sort property." [ref=f5e342]
+                - row [ref=f5e343]:
+                  - cell "columns required" [ref=f5e344]:
+                    - code [ref=f5e345]: columns
+                    - generic [ref=f5e346]: required
+                  - cell [ref=f5e347]:
+                    - code [ref=f5e348]: TableColumn[] | any[]
+                  - cell "—" [ref=f5e349]
+                  - cell "Column definitions describing labels, keys and rendering behavior." [ref=f5e350]
+                - row [ref=f5e351]:
+                  - cell [ref=f5e352]:
+                    - code [ref=f5e353]: editable
+                  - cell [ref=f5e354]:
+                    - code [ref=f5e355]: boolean
+                  - cell "—" [ref=f5e356]
+                  - cell "Enables data editing mode." [ref=f5e357]
+                - row [ref=f5e358]:
+                  - cell [ref=f5e359]:
+                    - code [ref=f5e360]: emptyDescription
+                  - cell [ref=f5e361]:
+                    - code [ref=f5e362]: boolean
+                  - cell [ref=f5e363]:
+                    - code [ref=f5e364]: "true"
+                  - cell "Configures the component's empty description property." [ref=f5e365]
+                - row [ref=f5e366]:
+                  - cell [ref=f5e367]:
+                    - code [ref=f5e368]: emptyDescriptionInline
+                  - cell [ref=f5e369]:
+                    - code [ref=f5e370]: string
+                  - cell "—" [ref=f5e371]
+                  - cell "Configures the component's empty description inline property." [ref=f5e372]
+                - row [ref=f5e373]:
+                  - cell "records required" [ref=f5e374]:
+                    - code [ref=f5e375]: records
+                    - generic [ref=f5e376]: required
+                  - cell [ref=f5e377]:
+                    - code [ref=f5e378]: any[]
+                  - cell "—" [ref=f5e379]
+                  - cell "Record collection displayed by the component." [ref=f5e380]
+                - row [ref=f5e381]:
+                  - cell [ref=f5e382]:
+                    - code [ref=f5e383]: rowsPerPage
+                  - cell [ref=f5e384]:
+                    - code [ref=f5e385]: number
+                  - cell [ref=f5e386]:
+                    - code [ref=f5e387]: "10"
+                  - cell "Number of records displayed on one page." [ref=f5e388]
+                - row [ref=f5e389]:
+                  - cell [ref=f5e390]:
+                    - code [ref=f5e391]: currentCheckedRow
+                  - cell [ref=f5e392]:
+                    - code [ref=f5e393]: number | string
+                  - cell "—" [ref=f5e394]
+                  - cell "Configures the component's current checked row property." [ref=f5e395]
+                - row [ref=f5e396]:
+                  - cell [ref=f5e397]:
+                    - code [ref=f5e398]: rowsTotal
+                  - cell [ref=f5e399]:
+                    - code [ref=f5e400]: number
+                  - cell "—" [ref=f5e401]
+                  - cell "Configures the component's rows total property." [ref=f5e402]
+                - row [ref=f5e403]:
+                  - cell [ref=f5e404]:
+                    - code [ref=f5e405]: selectedRows
+                  - cell [ref=f5e406]:
+                    - code [ref=f5e407]: string[]
+                  - cell [ref=f5e408]:
+                    - code [ref=f5e409]: "[]"
+                  - cell "Identifiers of the currently selected rows." [ref=f5e410]
+                - row [ref=f5e411]:
+                  - cell [ref=f5e412]:
+                    - code [ref=f5e413]: sortColumn
+                  - cell [ref=f5e414]:
+                    - code [ref=f5e415]: string
+                  - cell [ref=f5e416]:
+                    - code [ref=f5e417]: updatedAt
+                  - cell "Configures the component's sort column property." [ref=f5e418]
+                - row [ref=f5e419]:
+                  - cell [ref=f5e420]:
+                    - code [ref=f5e421]: sortColumns
+                  - cell [ref=f5e422]:
+                    - code [ref=f5e423]: TableSortState[]
+                  - cell [ref=f5e424]:
+                    - code [ref=f5e425]: "[]"
+                  - cell "Configures the component's sort columns property." [ref=f5e426]
+                - row [ref=f5e427]:
+                  - cell [ref=f5e428]:
+                    - code [ref=f5e429]: sortType
+                  - cell [ref=f5e430]:
+                    - code [ref=f5e431]: TableSortDirection
+                  - cell [ref=f5e432]:
+                    - code [ref=f5e433]: DESC
+                  - cell "Configures the component's sort type property." [ref=f5e434]
+                - row [ref=f5e435]:
+                  - cell [ref=f5e436]:
+                    - code [ref=f5e437]: buttonEditableCreateText
+                  - cell [ref=f5e438]:
+                    - code [ref=f5e439]: string
+                  - cell [ref=f5e440]:
+                    - code [ref=f5e441]: Add
+                  - cell "Configures the component's button editable create text property." [ref=f5e442]
+                - row [ref=f5e443]:
+                  - cell [ref=f5e444]:
+                    - code [ref=f5e445]: titleRemoveLabel
+                  - cell [ref=f5e446]:
+                    - code [ref=f5e447]: string
+                  - cell [ref=f5e448]:
+                    - code [ref=f5e449]: Are you sure you want to delete the selected record?
+                  - cell "Configures the component's title remove label property." [ref=f5e450]
+                - row [ref=f5e451]:
+                  - cell [ref=f5e452]:
+                    - code [ref=f5e453]: descriptionRemoveLabel
+                  - cell [ref=f5e454]:
+                    - code [ref=f5e455]: string
+                  - cell [ref=f5e456]:
+                    - code [ref=f5e457]: This action will permanently delete the record.
+                  - cell "Configures the component's description remove label property." [ref=f5e458]
+                - row [ref=f5e459]:
+                  - cell [ref=f5e460]:
+                    - code [ref=f5e461]: isLoading
+                  - cell [ref=f5e462]:
+                    - code [ref=f5e463]: boolean
+                  - cell [ref=f5e464]:
+                    - code [ref=f5e465]: "false"
+                  - cell "Enables the loading state and announces an operation in progress." [ref=f5e466]
+                - row [ref=f5e467]:
+                  - cell [ref=f5e468]:
+                    - code [ref=f5e469]: scroll
+                  - cell [ref=f5e470]:
+                    - code [ref=f5e471]: boolean
+                  - cell [ref=f5e472]:
+                    - code [ref=f5e473]: "false"
+                  - cell "Configures the component's scroll property." [ref=f5e474]
+                - row [ref=f5e475]:
+                  - cell [ref=f5e476]:
+                    - code [ref=f5e477]: dataTestId
+                  - cell [ref=f5e478]:
+                    - code [ref=f5e479]: string
+                  - cell "—" [ref=f5e480]
+                  - cell "Stable data-testid identifier for automated tests." [ref=f5e481]
+        - generic [ref=f5e482]:
+          - generic [ref=f5e483]: "05"
+          - generic [ref=f5e484]:
+            - heading "Events" [level=2] [ref=f5e485]
+            - table [ref=f5e487]:
+              - rowgroup [ref=f5e488]:
+                - row [ref=f5e489]:
+                  - columnheader "Name" [ref=f5e490]
+                  - columnheader "Description" [ref=f5e491]
+              - rowgroup [ref=f5e492]:
+                - row [ref=f5e493]:
+                  - cell [ref=f5e494]:
+                    - code [ref=f5e495]: on:action
+                  - cell "Emitted when the component reports action." [ref=f5e496]
+                - row [ref=f5e497]:
+                  - cell [ref=f5e498]:
+                    - code [ref=f5e499]: on:createRecord
+                  - cell "Emitted when the component reports create record." [ref=f5e500]
+                - row [ref=f5e501]:
+                  - cell [ref=f5e502]:
+                    - code [ref=f5e503]: on:dbclick
+                  - cell "Emitted when the component reports dbclick." [ref=f5e504]
+                - row [ref=f5e505]:
+                  - cell [ref=f5e506]:
+                    - code [ref=f5e507]: on:select:row
+                  - cell "Emitted when the component reports select row." [ref=f5e508]
+                - row [ref=f5e509]:
+                  - cell [ref=f5e510]:
+                    - code [ref=f5e511]: on:sort
+                  - cell "Emitted when the component reports sort." [ref=f5e512]
+                - row [ref=f5e513]:
+                  - cell [ref=f5e514]:
+                    - code [ref=f5e515]: on:cancel
+                  - cell "Emitted when the component reports cancel." [ref=f5e516]
+                - row [ref=f5e517]:
+                  - cell [ref=f5e518]:
+                    - code [ref=f5e519]: on:check:row
+                  - cell "Emitted when the component reports check row." [ref=f5e520]
+                - row [ref=f5e521]:
+                  - cell [ref=f5e522]:
+                    - code [ref=f5e523]: on:submit
+                  - cell "Emitted when the component reports submit." [ref=f5e524]
+                - row [ref=f5e525]:
+                  - cell [ref=f5e526]:
+                    - code [ref=f5e527]: on:changeValue
+                  - cell "Emitted when the component reports change value." [ref=f5e528]
+        - generic [ref=f5e529]:
+          - generic [ref=f5e530]: "06"
+          - generic [ref=f5e531]:
+            - heading "Slots" [level=2] [ref=f5e532]
+            - table [ref=f5e534]:
+              - rowgroup [ref=f5e535]:
+                - row [ref=f5e536]:
+                  - columnheader "Name" [ref=f5e537]
+                  - columnheader "Description" [ref=f5e538]
+              - rowgroup [ref=f5e539]:
+                - row [ref=f5e540]:
+                  - cell [ref=f5e541]:
+                    - code [ref=f5e542]: "[`hint.${column.key}`]"
+                  - 'cell "Content placed in the named “[`hint.${column.key}`]” slot." [ref=f5e543]'
+                - row [ref=f5e544]:
+                  - cell [ref=f5e545]:
+                    - code [ref=f5e546]: detials-record
+                  - cell "Content placed in the named “detials-record” slot." [ref=f5e547]
+                - row [ref=f5e548]:
+                  - cell [ref=f5e549]:
+                    - code [ref=f5e550]: additionalRow
+                  - cell "Content placed in the named “additionalRow” slot." [ref=f5e551]
+        - navigation "Adjacent components" [ref=f5e552]:
+          - link "← Previous SectionHeading" [ref=f5e553] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/section-heading"
+            - generic [ref=f5e554]: ← Previous
+            - strong [ref=f5e555]: SectionHeading
+          - link "Next → TableListFooter" [ref=f5e556] [cursor=pointer]:
+            - /url: "#/vue/components/data-display/table-list-footer"
+            - generic [ref=f5e557]: Next →
+            - strong [ref=f5e558]: TableListFooter
+      - complementary [ref=f5e559]:
+        - strong [ref=f5e560]: On this page
+        - link "What is this component?" [ref=f5e561] [cursor=pointer]:
+          - /url: "#co-to-jest"
+        - link "What does it do?" [ref=f5e562] [cursor=pointer]:
+          - /url: "#co-robi"
+        - link "Variants" [ref=f5e563] [cursor=pointer]:
+          - /url: "#warianty"
+        - link "Props and input data" [ref=f5e564] [cursor=pointer]:
+          - /url: "#props"
+        - link "Events" [ref=f5e565] [cursor=pointer]:
+          - /url: "#events"
+        - link "Slots" [ref=f5e566] [cursor=pointer]:
+          - /url: "#slots"
+        - generic [ref=f5e567]:
+          - generic [ref=f5e568]: ✦
+          - paragraph [ref=f5e569]:
+            - strong [ref=f5e570]: API from source
+            - text: Refreshed every time the documentation starts.

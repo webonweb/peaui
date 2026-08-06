@@ -1,0 +1,102 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-section-heading {
+  display: flex;
+  flex-direction: column;
+}
+
+.peaui-section-heading__title {
+  @include set-size-text(m);
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+
+  @include set-param(column-gap, 0.5rem);
+}
+
+.peaui-section-heading__title--large {
+  @include set-size-text(l);
+}
+
+.peaui-section-heading__title--heading-medium {
+  @include set-size-text(heading-m);
+}
+
+.peaui-section-heading__title--heading-small {
+  @include set-size-text(heading-s);
+}
+
+.peaui-section-heading__title--heading-extra-small {
+  @include set-size-text(heading-xs);
+}
+
+.peaui-section-heading__title--heading-large {
+  @include set-size-text(heading-l);
+}
+
+.peaui-section-heading__title--extra-large {
+  @include set-size-text(xl);
+}
+
+.peaui-section-heading__title--small {
+  @include set-size-text(s);
+  font-weight: 400;
+}
+
+.peaui-section-heading__title--variant-primary {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-section-heading__title--variant-default {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-section-heading__title--variant-secondary {
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-section-heading__description {
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-600);
+  margin: 0;
+  padding: 0;
+}
+
+.peaui-section-heading__description--variant-secondary {
+  color: var(--peaui-color-grey-200);
+}
+
+.peaui-section-heading__description--large {
+  @include set-size-text(l);
+  font-weight: 500;
+}
+
+.peaui-section-heading__description--heading-medium {
+  @include set-size-text(l);
+  font-weight: 500;
+}
+
+.peaui-section-heading__description--heading-small {
+  font-weight: 500;
+}
+
+.peaui-section-heading__description--heading-extra-small {
+  font-weight: 500;
+}
+
+.peaui-section-heading__description--heading-large {
+  font-weight: 500;
+}
+
+.peaui-section-heading__description--extra-large {
+  font-weight: 500;
+}
+
+.peaui-section-heading__hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 0.875rem);
+  @include set-param(height, 0.875rem);
+}

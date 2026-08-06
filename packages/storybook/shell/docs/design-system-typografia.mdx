@@ -1,0 +1,193 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Design System/Typografia" />
+
+<style>
+  {`
+  .ds-header {
+    margin-bottom: 24px;
+    max-width: 980px;
+  }
+
+  .ds-header h1 {
+    margin: 0 0 8px 0; 
+  }
+
+  .ds-header p {
+    margin: 0;
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  .typo-section {
+    margin: 28px 0;
+  }
+
+  .typo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 850px) {
+    .typo-grid { grid-template-columns: 1fr; }
+  }
+
+  .typo-card {
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(255,255,255,0.65);
+  }
+
+  html[data-theme="dark"] .typo-card,
+  body[data-theme="dark"] .typo-card {
+    background: rgba(20, 20, 20, 0.6);
+    border-color: rgba(255,255,255,0.14);
+  }
+
+  .meta {
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin: 6px 0 0 0;
+  }
+
+  .meta b {
+    font-weight: 800;
+  }
+
+  .preview {
+    border: 1px dashed rgba(0,0,0,0.16);
+    border-radius: 10px;
+    padding: 12px;
+    background: rgba(255,255,255,0.35);
+  }
+
+  html[data-theme="dark"] .preview,
+  body[data-theme="dark"] .preview {
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(20, 20, 20, 0.35);
+  }
+
+  .divider {
+    margin: 26px 0;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,0.10);
+  }
+
+  html[data-theme="dark"] .divider,
+  body[data-theme="dark"] .divider {
+    border-top-color: rgba(255,255,255,0.14);
+  }
+
+  .text-xxs {
+    font-size: 0.625rem;
+    line-height: 1.125rem;
+  }
+
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+  }
+
+  .text-s {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .text-m {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .text-l {
+    font-size: 1.125rem;
+    line-height: 1.625rem;
+  }
+
+  .text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .text-heading-xs {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .text-heading-s {
+    font-size: 1.75rem;
+    line-height: 2.375rem;
+  }
+
+  .text-heading-m {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+
+  .text-heading-l {
+    font-size: 2.25rem;
+    line-height: 3rem;
+  }
+`}
+</style>
+
+export const typographyArray = [
+  { size: "xxs", height: "1.125rem", font: "0.625rem" },
+  { size: "xs", height: "1.25rem", font: "0.75rem" },
+  { size: "s", height: "1.25rem", font: "0.875rem" },
+  { size: "m", height: "1.5rem", font: "1rem" },
+  { size: "l", height: "1.625rem", font: "1.125rem" },
+  { size: "xl", height: "1.75rem", font: "1.25rem" },
+  { size: "heading-xs", height: "1.75rem", font: "1.25rem" },
+  { size: "heading-s", height: "2.375rem", font: "1.75rem" },
+  { size: "heading-m", height: "2.5rem", font: "2rem" },
+  { size: "heading-l", height: "3rem", font: "2.25rem" },
+];
+
+export const typography = typographyArray.map((type) => ({
+  name: `text-${type.size}`,
+  token: `text-${type.size}`,
+  description: `Font size: ${type.font} | Line Height: ${type.height}`,
+}));
+
+<div className="ds-header">
+  <h1>Typografia</h1>
+  <p>
+    Typografia jest kluczowym elementem naszego design systemu, który wpływa na
+    czytelność, hierarchię informacji oraz ogólne wrażenia estetyczne. Poniżej
+    znajdziesz dostępne tokeny <strong>font-size</strong> wraz z podglądem.
+  </p>
+</div>
+
+export function Text({ font, lineHeight, children }) {
+  return <div style={{ fontSize: font, lineHeight }}>{children}</div>;
+}
+
+{typography.map((item) => (
+
+  <div key={item.name} className="typo-section">
+    <div className="typo-grid">
+      <div className="typo-card">
+        <p className="meta">
+          <b>Name:</b> {item.name}
+        </p>
+        <p className="meta">
+          <b>Token:</b> {item.token}
+        </p>
+        <p className="meta">{item.description}</p>
+      </div>
+
+      <div className="preview">
+        <div className={`${item.name}`}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nisi
+          urna, tempor ac mi sed, feugiat ultricies nisi.
+        </div>
+      </div>
+    </div>
+
+    <hr className="divider" />
+
+  </div>
+))}

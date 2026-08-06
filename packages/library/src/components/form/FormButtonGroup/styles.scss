@@ -1,0 +1,212 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xs: (
+    px: 1rem,
+    py: 0.625rem,
+  ),
+  s: (
+    px: 1rem,
+    py: 0.875rem,
+  ),
+  m: (
+    px: 1rem,
+    py: 0.875rem,
+  ),
+  l: (
+    px: 1.125rem,
+    py: 1rem,
+  ),
+);
+
+.peaui-form-button-group {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.peaui-form-button-group.peaui-form-field__element {
+  padding: 0;
+}
+
+.peaui-form-button-group__layout {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.peaui-form-button-group__group {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+.peaui-form-button-group__buttons {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.peaui-form-button-group__button-item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  align-items: stretch;
+  opacity: 1;
+}
+
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip > .peaui-form-button-group__button {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.peaui-form-button-group__button-item > .peaui-form-button-group__button {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):hover
+  + .peaui-info-tooltip__content,
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip:not(
+    .peaui-info-tooltip--disabled
+  ):focus-visible
+  + .peaui-info-tooltip__content,
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip:not(
+    .peaui-info-tooltip--disabled
+  )[data-open='true']
+  + .peaui-info-tooltip__content,
+.peaui-form-button-group__button-tooltip.peaui-info-tooltip:not(
+    .peaui-info-tooltip--disabled
+  ):focus-within
+  + .peaui-info-tooltip__content {
+  opacity: 1 !important;
+}
+
+.peaui-form-button-group__group--disabled,
+.peaui-form-button-group__group--readonly {
+  cursor: not-allowed;
+}
+
+.peaui-form-button-group__button {
+  position: relative;
+  display: inline-flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background-color: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-700);
+  font-weight: 500;
+
+  @include size-text((xs, s, m, l));
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, border-color, color, box-shadow);
+
+  cursor: pointer;
+}
+
+@each $size, $values in $sizes {
+  .peaui-form-button-group__button--size-#{$size} {
+    @include set-param(padding-left, map.get($values, px));
+    @include set-param(padding-right, map.get($values, px));
+    @include set-param(padding-top, map.get($values, py));
+    @include set-param(padding-bottom, map.get($values, py));
+  }
+}
+
+.peaui-form-button-group__button:not(.peaui-form-button-group__button--disabled):hover {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-button-group__button:focus-visible {
+  z-index: 1;
+  box-shadow: inset 0 0 0 1px var(--peaui-color-primary-700);
+}
+
+.peaui-form-button-group__button--selected {
+  z-index: 1;
+  background-color: var(--peaui-color-primary-700);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-button-group__button--selected:hover {
+  background-color: var(--peaui-color-primary-900) !important;
+}
+
+.peaui-form-button-group__button--disabled {
+  cursor: not-allowed;
+  border-color: var(--peaui-color-grey-300);
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-button-group__button--disabled:hover {
+  box-shadow: none;
+}
+
+.peaui-form-button-group__button--readonly {
+  cursor: not-allowed;
+}
+
+.peaui-form-button-group__button--first {
+  @include set-param(border-radius, 0.5rem 0 0 0.5rem);
+}
+
+.peaui-form-button-group__button--last {
+  @include set-param(border-radius, 0 0.5rem 0.5rem 0);
+}
+
+.peaui-form-button-group__button--first.peaui-form-button-group__button--last {
+  @include set-param(border-radius, 0.5rem);
+}
+
+.peaui-form-button-group__button--not-first {
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: var(--peaui-color-grey-300);
+}
+
+.peaui-form-button-group__button-label {
+  display: block;
+  white-space: nowrap;
+}
+
+.peaui-form-button-group__additional-hint {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  align-self: center;
+}
+
+.peaui-form-button-group__additional-hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 1.125rem);
+  @include set-param(height, 1.125rem);
+}
+
+.peaui-form-button-group__additional-hint.peaui-info-tooltip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: max-content;
+
+  @include set-param(right, -1.5rem);
+}

@@ -1,0 +1,87 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-message-text {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5rem;
+}
+
+$color-aliases: (
+  info: 'primary',
+  error: 'danger',
+  success: 'success',
+  danger: 'warning',
+);
+
+$size-aliases: (
+  'xxs': 0.625rem,
+  'xs': 0.75rem,
+  's': 0.875rem,
+  'm': 1rem,
+  'l': 1.125rem,
+  'xl': 1.25rem,
+  'heading-xs': 1.375rem,
+  'heading-s': 1.5rem,
+  'heading-m': 1.625rem,
+  'heading-l': 1.75rem,
+);
+
+.peaui-message-text__content {
+  color: var(--peaui-color-grey-600);
+  padding: 0;
+  margin: 0;
+}
+
+.peaui-message-text__icon {
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+}
+
+.peaui-message-text__icon-own {
+  @include set-param(width, 1.25rem);
+  @include set-param(height, 1.25rem);
+}
+
+@each $alias, $real in $color-aliases {
+  .peaui-message-text__icon-own--variant-#{$alias} {
+    fill: var(--peaui-color-#{$real}-700);
+    color: var(--peaui-color-#{$real}-700);
+  }
+}
+
+.peaui-message-text__icon-own--variant-white {
+  fill: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-message-text--variant-white {
+  .peaui-message-text__content {
+    color: var(--peaui-color-grey-0);
+  }
+}
+
+@each $alias, $real in $color-aliases {
+  .peaui-message-text--variant-#{$alias} {
+    .peaui-message-text__content {
+      color: var(--peaui-color-#{$real}-700);
+    }
+
+    .peaui-message-text__icon {
+      fill: var(--peaui-color-#{$real}-700);
+    }
+  }
+}
+
+@each $alias, $size in $size-aliases {
+  .peaui-message-text--size-#{$alias} {
+    .peaui-message-text__content {
+      @include set-size-text(#{$alias});
+    }
+
+    .peaui-message-text__icon {
+      @include set-param(width, #{$size});
+      @include set-param(height, #{$size});
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@peaui/storybook-shell",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6009 --initial-path=/docs/wprowadzenie--docs",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^8.6.15",
+    "@storybook/addon-docs": "^8.6.14",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react-webpack5": "^8.6.14",
+    "@storybook/test": "^8.6.15",
+    "cross-env": "^10.1.0",
+    "storybook": "^8.6.14"
+  }
+}

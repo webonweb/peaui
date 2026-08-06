@@ -1,0 +1,70 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xs: (
+    height: 0.5rem,
+  ),
+  s: (
+    height: 0.75rem,
+  ),
+  m: (
+    height: 1rem,
+  ),
+  l: (
+    height: 1.25rem,
+  ),
+);
+
+.peaui-skeleton-loading {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.peaui-skeleton-loading__text {
+  @include sr-only;
+}
+
+.peaui-skeleton-loading__bar {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    var(--peaui-color-grey-100) 0%,
+    var(--peaui-color-grey-50) 50%,
+    var(--peaui-color-grey-100) 100%
+  );
+  background-size: 200% 100%;
+  animation: peaui-skeleton-loading-shimmer 1.4s ease-in-out infinite;
+}
+
+@each $size, $values in $sizes {
+  .peaui-skeleton-loading--size-#{$size} .peaui-skeleton-loading__bar {
+    @include set-param(height, map.get($values, height));
+  }
+}
+
+.peaui-skeleton-loading--rounded .peaui-skeleton-loading__bar {
+  border-radius: 9999px;
+}
+
+@keyframes peaui-skeleton-loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-skeleton-loading__bar {
+    animation: none;
+    background-position: 50% 0;
+  }
+}

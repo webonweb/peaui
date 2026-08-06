@@ -1,0 +1,59 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-drawer-panel {
+  border: none;
+  padding: 0;
+  background: transparent;
+  height: 100vh;
+  max-height: 100vh;
+  width: min(92vw, 520px);
+  margin: 0 0 0 auto;
+
+  @include outline(transparent);
+  overflow: hidden;
+  overflow-x: hidden;
+}
+
+.peaui-drawer-panel::backdrop {
+  background: rgb(from var(--peaui-color-grey-900) r g b / 0.3);
+  animation: backdrop-fade-in 160ms ease forwards;
+}
+
+.peaui-drawer-panel__inner {
+  height: 100%;
+  background-color: var(--peaui-color-grey-0);
+  border-left: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding: 1.5rem;
+  will-change: transform, opacity;
+  overflow-y: auto;
+
+  @include scrollbar(var(--color-primary-700));
+}
+
+html.peaui-drawer-panel--scroll-hidden,
+body.peaui-drawer-panel--scroll-hidden {
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+html.peaui-drawer-panel--scroll-hidden::-webkit-scrollbar,
+body.peaui-drawer-panel--scroll-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-drawer-panel::backdrop {
+    animation: none;
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

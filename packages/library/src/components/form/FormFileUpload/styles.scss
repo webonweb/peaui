@@ -1,0 +1,178 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-file-upload {
+  width: 100%;
+}
+
+.peaui-form-file-upload__surface {
+  height: 100%;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 1px;
+
+  @include set-param(border-radius, 0.5rem);
+  @include transition(border-color, box-shadow);
+}
+
+.peaui-form-file-upload__surface--primary {
+  border-color: var(--peaui-color-grey-200);
+}
+
+.peaui-form-file-upload__surface--primary:focus-within {
+  border-color: var(--peaui-color-primary-700);
+  box-shadow: 0 0 0 1px var(--peaui-color-primary-700);
+}
+
+.peaui-form-file-upload__surface--danger {
+  border-color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-file-upload__surface--danger:focus-within {
+  box-shadow: 0 0 0 1px var(--peaui-color-danger-600);
+}
+
+.peaui-form-file-upload__dropzone {
+  position: relative;
+  display: grid;
+  grid-auto-rows: max-content;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  @include set-param(padding, 1.5rem);
+}
+
+.peaui-form-file-upload__dropzone-icon {
+  margin: 0 auto;
+
+  @include set-param(width, 2rem);
+  @include set-param(height, 2rem);
+}
+
+.peaui-form-file-upload__dropzone-icon--primary {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-file-upload__dropzone-icon--danger {
+  color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-file-upload__message {
+  margin: 0;
+  font-weight: 500;
+  color: var(--peaui-color-danger-600);
+
+  @include set-size-text(m);
+  @include set-param(margin-top, 1rem);
+}
+
+.peaui-form-file-upload__actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+
+  @include set-param(gap, 0.5rem);
+  @include set-param(margin-top, 1rem);
+  @include set-param(margin-bottom, 1.5rem);
+}
+
+.peaui-form-file-upload__button.peaui-button-action {
+  width: auto;
+  margin: 0 auto;
+  pointer-events: none;
+}
+
+.peaui-form-file-upload__actions-text {
+  margin: 0;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(s);
+}
+
+.peaui-form-file-upload__description {
+  margin: 0;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-file-upload__description-line {
+  display: block;
+}
+
+.peaui-form-file-upload__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.peaui-form-file-upload__preview {
+  @include set-param(min-height, 24rem);
+}
+
+.peaui-form-file-upload__image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.peaui-form-file-upload__details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include set-param(margin-top, 1rem);
+}
+
+.peaui-form-file-upload__details-main {
+  display: flex;
+  align-items: center;
+
+  @include set-param(min-height, 2rem);
+  @include set-param(gap, 1rem);
+}
+
+.peaui-form-file-upload__details-icon,
+.peaui-form-file-upload__remove-icon {
+  color: var(--peaui-color-primary-700);
+
+  @include set-param(width, 1.5rem);
+  @include set-param(height, 1.5rem);
+}
+
+.peaui-form-file-upload__details-text {
+  min-width: 0;
+}
+
+.peaui-form-file-upload__details-name,
+.peaui-form-file-upload__details-size {
+  margin: 0;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(s);
+}
+
+.peaui-form-file-upload__details-name {
+  font-weight: 500;
+}
+
+.peaui-form-file-upload__remove {
+  @include unset-safe;
+  @include transition(background-color, box-shadow);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.peaui-form-file-upload__remove:focus-visible {
+  outline: none;
+  background-color: var(--peaui-color-primary-50);
+  box-shadow: 0 0 0 1px var(--peaui-color-primary-700);
+}

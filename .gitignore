@@ -1,0 +1,9 @@
+node_modules/
+dist/
+storybook-static/
+packages/react/node_modules/
+packages/react/node_modules/*
+packages/vue/node_modules/
+packages/vue/node_modules/*
+packages/storybook/**/node_modules/
+packages/storybook/**/node_modules/*

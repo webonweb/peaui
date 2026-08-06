@@ -1,0 +1,75 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-spinner-loader {
+  display: inline-flex;
+  position: absolute;
+
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+
+  &::before {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    inset: 0;
+    content: ' ';
+    opacity: 0.8;
+  }
+
+  @keyframes rotation-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes spinner-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.peaui-spinner-loader--fullscreen {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: all;
+  overscroll-behavior: contain;
+
+  cursor: progress;
+  animation: spinner-fade-in 120ms ease-out;
+}
+
+.peaui-spinner-loader__text {
+  @include sr-only;
+}
+
+.peaui-spinner-loader__spinner {
+  z-index: 2;
+  @include set-param(border-width, 0.25rem);
+
+  border-style: solid;
+  border-radius: 50%;
+  display: inline-block;
+  @include set-param(width, 3rem);
+  @include set-param(height, 3rem);
+
+  border-color: var(--peaui-color-grey-200);
+  border-bottom-color: var(--peaui-color-primary-700);
+
+  animation: rotation-spinner 1s linear infinite;
+}

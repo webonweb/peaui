@@ -1,0 +1,43 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-modal-dialog {
+  border: none;
+  padding: 0;
+  background: transparent;
+  width: min(92vw, 650px);
+
+  @include outline(transparent);
+}
+
+.peaui-modal-dialog::backdrop {
+  background: rgb(from var(--peaui-color-grey-900) r g b / 0.3);
+  animation: backdrop-fade-in 160ms ease forwards;
+}
+
+.peaui-modal-dialog__inner {
+  background-color: var(--peaui-color-grey-0);
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  will-change: transform, opacity;
+}
+
+.peaui-modal-dialog__header {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-modal-dialog::backdrop {
+    animation: none;
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

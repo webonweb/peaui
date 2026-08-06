@@ -1,0 +1,186 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xxs: (
+    px: 0.75rem,
+    py: 0.5rem,
+    gap: 0.5rem,
+    marker: 0.875rem,
+  ),
+  xs: (
+    px: 1rem,
+    py: 0.625rem,
+    gap: 0.625rem,
+    marker: 0.9375rem,
+  ),
+  s: (
+    px: 1rem,
+    py: 0.8125rem,
+    gap: 0.75rem,
+    marker: 1rem,
+  ),
+  m: (
+    px: 1rem,
+    py: 0.875rem,
+    gap: 0.75rem,
+    marker: 1rem,
+  ),
+  l: (
+    px: 1.125rem,
+    py: 1rem,
+    gap: 0.75rem,
+    marker: 1.125rem,
+  ),
+);
+
+.peaui-form-button-checkbox {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.peaui-form-button-checkbox__element {
+  @include sr-only;
+}
+
+.peaui-form-button-checkbox__label {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid var(--peaui-color-grey-200);
+  border-radius: 0.5rem;
+  background-color: var(--peaui-color-grey-0);
+  color: var(--peaui-color-primary-800);
+  user-select: none;
+
+  @include size-text((xxs, xs, s, m, l));
+  @include transition(background-color, border-color, box-shadow, color);
+
+  cursor: pointer;
+}
+
+.peaui-form-button-checkbox__element:focus-visible + .peaui-form-button-checkbox__label {
+  box-shadow: inset 0 0 0 1px var(--peaui-color-primary-700);
+}
+
+.peaui-form-button-checkbox__label:hover {
+  border-color: var(--peaui-color-primary-300);
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-button-checkbox__label--checked {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-button-checkbox__label--checked:hover {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-button-checkbox__label--disabled {
+  cursor: not-allowed;
+  border-color: var(--peaui-color-grey-200);
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-button-checkbox__label--disabled:hover {
+  border-color: var(--peaui-color-grey-200);
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-button-checkbox__label--invalid {
+  border-color: var(--peaui-color-danger-600);
+  color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-button-checkbox__label--invalid:hover {
+  border-color: var(--peaui-color-danger-600);
+  background-color: var(--peaui-color-danger-50);
+}
+
+.peaui-form-button-checkbox__marker {
+  position: relative;
+  flex: 0 0 auto;
+  border: 1px solid var(--peaui-color-primary-700);
+  border-radius: 0.25rem;
+  background-color: var(--peaui-color-grey-0);
+
+  @include transition(background-color, border-color, box-shadow);
+}
+
+.peaui-form-button-checkbox__marker::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.25rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--peaui-color-grey-0);
+  border-bottom: 2px solid var(--peaui-color-grey-0);
+  opacity: 0;
+  transform: translate(-50%, -60%) rotate(45deg);
+
+  @include transition(opacity);
+}
+
+.peaui-form-button-checkbox__marker--checked {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-button-checkbox__marker--checked::after {
+  opacity: 1;
+}
+
+.peaui-form-button-checkbox__marker--disabled {
+  border-color: var(--peaui-color-grey-400);
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-button-checkbox__marker--disabled.peaui-form-button-checkbox__marker--checked {
+  border-color: var(--peaui-color-grey-400);
+  background-color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-button-checkbox__marker--invalid {
+  border-color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-button-checkbox__marker--invalid.peaui-form-button-checkbox__marker--checked {
+  border-color: var(--peaui-color-danger-600);
+  background-color: var(--peaui-color-danger-600);
+}
+
+.peaui-form-button-checkbox__text {
+  min-width: 0;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.peaui-form-button-checkbox__text--checked {
+  font-weight: 500;
+}
+
+.peaui-form-button-checkbox__text--sr-only {
+  @include sr-only;
+}
+
+@each $size, $values in $sizes {
+  .peaui-form-button-checkbox--size-#{$size} .peaui-form-button-checkbox__label {
+    @include set-param(column-gap, map.get($values, gap));
+    @include set-param(padding-left, map.get($values, px));
+    @include set-param(padding-right, map.get($values, px));
+    @include set-param(padding-top, map.get($values, py));
+    @include set-param(padding-bottom, map.get($values, py));
+  }
+
+  .peaui-form-button-checkbox--size-#{$size} .peaui-form-button-checkbox__marker {
+    @include set-param(width, map.get($values, marker));
+    @include set-param(height, map.get($values, marker));
+  }
+}

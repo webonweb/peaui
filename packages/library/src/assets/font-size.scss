@@ -1,0 +1,134 @@
+@use 'sass:list';
+
+$size-tokens: (
+  xxs: (
+    0.625rem,
+    1.125rem,
+  ),
+  xs: (
+    0.75rem,
+    1.25rem,
+  ),
+  s: (
+    0.875rem,
+    1.25rem,
+  ),
+  m: (
+    1rem,
+    1.5rem,
+  ),
+  l: (
+    1.125rem,
+    1.625rem,
+  ),
+  xl: (
+    1.25rem,
+    1.75rem,
+  ),
+  heading-xs: (
+    1.25rem,
+    1.75rem,
+  ),
+  heading-s: (
+    1.75rem,
+    2.375rem,
+  ),
+  heading-m: (
+    2rem,
+    2.5rem,
+  ),
+  heading-l: (
+    2.25rem,
+    3rem,
+  ),
+);
+
+/**
+ * Generates scaled typography CSS variables using a font scale multiplier.
+ *
+ * For each entry in the provided token map, this mixin emits two CSS variables:
+ * - `--peaui-font-size-{name}`
+ * - `--peaui-line-height-{name}`
+ *
+ * Values are wrapped in `calc()` and multiplied by a CSS variable scale
+ * (e.g. `--peaui-font-scale`) to support accessibility font scaling and
+ * theme-based overrides.
+ *
+ * Expected token format:
+ * `(font-size, line-height)`
+ *
+ * @param {Map} $tokens
+ *   Map of typography tokens where each key represents a size name
+ *   and each value is a list containing:
+ *   `(font-size, line-height)`
+ *
+ *   Example:
+ *   (
+ *     s: (0.875rem, 1.25rem),
+ *     heading-m: (2rem, 2.5rem)
+ *   )
+ *
+ * @param {String} $scale-var
+ *   Name of the CSS variable used as the font scale multiplier.
+ *   Defaults to `--peaui-font-scale`.
+ *
+ * @example
+ * $type-tokens: (
+ *   m: (1rem, 1.5rem),
+ *   heading-l: (2.25rem, 3rem)
+ * );
+ *
+ * .peaui-theme {
+ *   --peaui-font-scale: 1;
+ *   @include generate-scaled-type-vars($type-tokens);
+ * }
+ */
+@mixin generate-scaled-type-vars($tokens, $scale-var: --peaui-font-scale) {
+  @each $name, $values in $tokens {
+    --peaui-font-size-#{$name}: calc(#{list.nth($values, 1)} * var(#{$scale-var}));
+    --peaui-line-height-#{$name}: calc(#{list.nth($values, 2)} * var(#{$scale-var}));
+  }
+}
+
+body {
+  --peaui-user-scale: 1;
+
+  &.peaui-size-s {
+    --peaui-user-scale: 0.5;
+  }
+
+  &.peaui-size-md {
+    --peaui-user-scale: 1;
+  }
+
+  &.peaui-size-lg {
+    --peaui-user-scale: 1.5;
+  }
+
+  &.peaui-size-xl {
+    --peaui-user-scale: 2;
+  }
+}
+
+:root {
+  --peaui-font-scale: 0.85;
+  @include generate-scaled-type-vars($size-tokens);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --peaui-font-scale: 0.9;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --peaui-font-scale: 0.95;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --peaui-font-scale: 1;
+  }
+}

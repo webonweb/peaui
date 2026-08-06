@@ -1,0 +1,25 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-list-limit-control {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  @include set-param(gap, 0.75rem);
+  width: 100%;
+}
+
+.peaui-list-limit-control__label {
+  flex: 0 0 auto;
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-700);
+  font-weight: 400;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.peaui-list-limit-control__select {
+  flex: 0 0 auto;
+  @include set-param(min-width, 4.5rem);
+  @include set-param(max-width, 9.375rem);
+  @include set-param(width, 9.375rem);
+}

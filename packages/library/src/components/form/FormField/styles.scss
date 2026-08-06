@@ -1,0 +1,172 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-field {
+  position: relative;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-auto-rows: max-content;
+  grid-template-rows: 1fr;
+
+  @include set-param(row-gap, 0.125rem);
+  @include set-param(column-gap, 0.25rem);
+}
+
+.peaui-form-field__element {
+  position: relative;
+  width: 100%;
+  border-radius: 0.5rem;
+  @include set-param(padding, 0.75rem);
+  box-sizing: border-box;
+
+  @include set-param(padding-left, var(--pl));
+  @include set-param(padding-right, var(--pr));
+
+  @include set-size-text(s);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--peaui-color-grey-300);
+  color: var(--peaui-color-grey-500);
+
+  @include outline(var(--peaui-color-primary-700));
+
+  @include transition(all);
+}
+
+.peaui-form-field__element::placeholder {
+  font-weight: 400;
+}
+
+.peaui-form-field__element:focus-visible {
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-primary-600) r g b / 0.7);
+}
+
+.peaui-form-field__element:hover {
+  border-color: var(--peaui-color-primary-600);
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-primary-600) r g b / 0.7);
+}
+
+.peaui-form-field__element--medium {
+  font-weight: 500;
+}
+
+.peaui-form-field__element--normal {
+  font-weight: 400;
+}
+
+.peaui-form-field__element--basic {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-field__element--disabled {
+  cursor: not-allowed;
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-field__element--readonly {
+  cursor: not-allowed;
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-field__element--error {
+  border-color: var(--peaui-color-danger-500);
+  @include outline(var(--peaui-color-danger-500));
+
+  // box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-danger-500) r g b / 0.7);
+}
+
+.peaui-form-field__element--success {
+  border-color: var(--peaui-color-success-500);
+  @include outline(var(--peaui-color-success-500));
+
+  //box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-success-500) r g b / 0.7);
+}
+
+.peaui-form-field__message {
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+.peaui-form-field__message--sr-only {
+  @include sr-only;
+}
+
+.peaui-form-field__content {
+  position: relative;
+  width: 100%;
+}
+
+.peaui-form-field__icon {
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  z-index: 1;
+  margin: auto;
+  display: flex;
+  align-items: center;
+
+  @include set-param(top, -0.125rem);
+  @include set-param(height, 1.75rem);
+  @include set-param(width, 1.75rem);
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-field__icon--before {
+  left: 0;
+  @include set-param(padding-left, 0.75rem);
+}
+
+.peaui-form-field__icon--after {
+  right: 0;
+  @include set-param(padding-right, 0.75rem);
+}
+
+.peaui-form-field__additional {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  color: var(--peaui-color-grey-500);
+
+  @include set-size-text(s);
+}
+
+.peaui-form-field__additional--before {
+  left: 0;
+  &::before {
+    content: attr(data-before);
+  }
+}
+
+.peaui-form-field__additional--after {
+  right: 0;
+  &::after {
+    content: attr(data-after);
+  }
+}
+
+.peaui-form-field__erase-button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  @include set-param(right, var(--right));
+
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  color: var(--peaui-color-grey-500);
+
+  @include transition(opacity);
+}
+
+.peaui-form-field__erase-icon {
+  @include set-param(width, 0.75rem);
+  @include set-param(height, 0.75rem);
+}

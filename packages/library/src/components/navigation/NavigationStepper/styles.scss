@@ -1,0 +1,174 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-navigation-stepper {
+  display: grid;
+  grid-template-columns: max-content minmax(0, max-content) max-content;
+  align-items: stretch;
+  width: 100%;
+}
+
+.peaui-navigation-stepper__control {
+  @include set-param(width, 2rem);
+  @include set-param(min-width, 2rem);
+  @include set-param(padding-left, 0.5rem);
+  @include set-param(padding-right, 0.5rem);
+  border-radius: 0;
+  height: 100%;
+}
+
+.peaui-navigation-stepper__control--prev {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.peaui-navigation-stepper__control--next {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.peaui-navigation-stepper__control-icon {
+  @include set-param(width, 1.375rem);
+  @include set-param(height, 1.375rem);
+}
+
+.peaui-navigation-stepper__control-icon--prev {
+  transform: rotate(90deg);
+}
+
+.peaui-navigation-stepper__control-icon--next {
+  transform: rotate(-90deg);
+}
+
+.peaui-navigation-stepper__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.peaui-navigation-stepper__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.peaui-navigation-stepper__list {
+  list-style: none;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.peaui-navigation-stepper__item {
+  flex: 0 0 auto;
+  @include set-param(width, 15.75rem);
+}
+
+.peaui-navigation-stepper__step {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  display: grid;
+  align-content: start;
+  width: 100%;
+  height: 100%;
+  @include set-param(min-height, 3.9375rem);
+  @include set-param(padding-top, 0.625rem);
+  @include set-param(padding-bottom, 0.625rem);
+  @include set-param(padding-left, 0.75rem);
+  @include set-param(padding-right, 0.75rem);
+  @include set-param(gap, 0.125rem);
+  border-top: 1px solid var(--peaui-color-grey-100);
+  border-right: 1px solid var(--peaui-color-grey-100);
+  border-bottom: 2px solid var(--peaui-color-grey-100);
+  background-color: var(--peaui-color-grey-0);
+  text-align: left;
+  cursor: pointer;
+  @include transition(background-color, border-color, box-shadow);
+}
+
+.peaui-navigation-stepper__item:first-child .peaui-navigation-stepper__step {
+  border-left: 1px solid var(--peaui-color-grey-100);
+}
+
+.peaui-navigation-stepper__step:hover:not(:disabled),
+.peaui-navigation-stepper__step:focus-visible {
+  border-bottom-color: var(--peaui-color-primary-700);
+  box-shadow: inset 0 0 0 1px var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-stepper__step:focus-visible {
+  outline: none;
+}
+
+.peaui-navigation-stepper__step--current {
+  border-bottom-width: 4px;
+  border-bottom-color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-stepper__step--status-complete {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-navigation-stepper__step--status-disabled,
+.peaui-navigation-stepper__step--status-hidden,
+.peaui-navigation-stepper__step--disabled {
+  background-color: var(--peaui-color-grey-50);
+  cursor: not-allowed;
+}
+
+.peaui-navigation-stepper__status {
+  display: inline-flex;
+  align-items: center;
+  @include set-param(gap, 0.5rem);
+  @include set-size-text(xs);
+  min-width: 0;
+}
+
+.peaui-navigation-stepper__status-label {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-navigation-stepper__status-label--status-complete {
+  font-weight: 500;
+}
+
+.peaui-navigation-stepper__status-label--status-during {
+  color: var(--peaui-color-grey-600);
+  font-weight: 500;
+}
+
+.peaui-navigation-stepper__status-label--status-complete {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-stepper__status-label--status-disabled,
+.peaui-navigation-stepper__status-label--status-hidden {
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-navigation-stepper__status-icon {
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-stepper__label {
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-700);
+  font-weight: 500;
+}
+
+.peaui-navigation-stepper__label--status-during,
+.peaui-navigation-stepper__label--status-complete {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-stepper__label--status-disabled,
+.peaui-navigation-stepper__label--status-hidden {
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-navigation-stepper__additional {
+  @include set-size-text(xs);
+  color: var(--peaui-color-grey-500);
+}

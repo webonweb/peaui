@@ -1,0 +1,73 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-calculation-results {
+  @include set-param(padding, 1rem);
+
+  background-color: var(--peaui-color-primary-50);
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include set-param(column-gap, 2rem);
+
+  position: relative;
+}
+
+.peaui-calculation-results--simple {
+  align-items: center;
+}
+
+.peaui-calculation-results__content-loading {
+  @include set-size-text(xs);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-calculation-results__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.peaui-calculation-results__content-label {
+  color: var(--peaui-color-primary-700);
+  font-weight: 500;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  @include set-param(column-gap, 0.5rem);
+  @include set-size-text(s);
+}
+
+.peaui-calculation-results__content-label--simple {
+  font-weight: 500;
+}
+
+.peaui-calculation-results__content-output {
+  color: var(--peaui-color-primary-700);
+  font-weight: 700;
+
+  @include set-size-text(m);
+}
+
+.peaui-calculation-results__content-output--simple {
+  flex-shrink: 0;
+  text-align: right;
+  width: max-content;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.peaui-calculation-results__content-button {
+  width: 7.875rem !important;
+}
+
+.peaui-calculation-results__hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 0.875rem);
+  @include set-param(height, 0.875rem);
+}

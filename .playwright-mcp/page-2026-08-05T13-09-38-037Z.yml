@@ -1,0 +1,392 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - link "PEAUI — documentation home page" [ref=e5] [cursor=pointer]:
+      - /url: "#/"
+      - generic [ref=e7]: Docs
+    - generic [ref=e8]:
+      - navigation "Choose technology" [ref=e9]:
+        - link "Vue" [ref=e10] [cursor=pointer]:
+          - /url: "#/vue/start"
+        - link "React" [ref=e11] [cursor=pointer]:
+          - /url: "#/react/start"
+        - link "Web Components" [ref=e12] [cursor=pointer]:
+          - /url: "#/web-components/start"
+      - navigation "Main navigation" [ref=e13]:
+        - link "Start" [ref=e14] [cursor=pointer]:
+          - /url: "#/react/start"
+        - link "Components" [ref=e15] [cursor=pointer]:
+          - /url: "#/react/components"
+        - link "Icons" [ref=e16] [cursor=pointer]:
+          - /url: "#/react/icons"
+    - generic [ref=e17]:
+      - button "Search Ctrl K" [ref=e18] [cursor=pointer]:
+        - generic [ref=e21]: Search
+        - generic [ref=e22]: Ctrl K
+      - group "Documentation language" [ref=e23]:
+        - button "EN" [pressed] [ref=e24] [cursor=pointer]
+        - button "PL" [ref=e25] [cursor=pointer]
+      - button "Enable dark mode" [ref=e26] [cursor=pointer]
+  - complementary [ref=e29]:
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Technology
+        - strong [ref=e33]: React
+        - generic [ref=e34]: 62 components · Stable
+        - generic [ref=e35]:
+          - link "Vue" [ref=e36] [cursor=pointer]:
+            - /url: "#/vue/start"
+          - link "React" [ref=e37] [cursor=pointer]:
+            - /url: "#/react/start"
+          - link "WC" [ref=e38] [cursor=pointer]:
+            - /url: "#/web-components/start"
+      - link "✦ Getting started Installation and setup" [ref=e39] [cursor=pointer]:
+        - /url: "#/react/start"
+        - generic [ref=e40]: ✦
+        - generic [ref=e41]:
+          - strong [ref=e42]: Getting started
+          - generic [ref=e43]: Installation and setup
+      - link "Icon catalog 50" [ref=e44] [cursor=pointer]:
+        - /url: "#/react/icons"
+        - text: Icon catalog
+        - generic [ref=e45]: "50"
+      - link "All components 62" [ref=e46] [cursor=pointer]:
+        - /url: "#/react/components"
+        - text: All components
+        - generic [ref=e47]: "62"
+      - navigation "Component list" [ref=e48]:
+        - generic [ref=e49]:
+          - heading "Basic" [level=2] [ref=e50]
+          - link "ImageView" [ref=e51] [cursor=pointer]:
+            - /url: "#/react/components/basic/image-view"
+          - link "PhotoEditor" [ref=e52] [cursor=pointer]:
+            - /url: "#/react/components/basic/photo-editor"
+          - link "SvgIcon" [ref=e53] [cursor=pointer]:
+            - /url: "#/react/components/basic/svg-icon"
+        - generic [ref=e54]:
+          - heading "Data display" [level=2] [ref=e55]
+          - link "CalculationResults" [ref=e56] [cursor=pointer]:
+            - /url: "#/react/components/data-display/calculation-results"
+          - link "CardCarousel" [ref=e57] [cursor=pointer]:
+            - /url: "#/react/components/data-display/card-carousel"
+          - link "CounterBadge" [ref=e58] [cursor=pointer]:
+            - /url: "#/react/components/data-display/counter-badge"
+          - link "DescriptionField" [ref=e59] [cursor=pointer]:
+            - /url: "#/react/components/data-display/description-field"
+          - link "DisclosurePanel" [ref=e60] [cursor=pointer]:
+            - /url: "#/react/components/data-display/disclosure-panel"
+          - link "SectionHeading" [ref=e61] [cursor=pointer]:
+            - /url: "#/react/components/data-display/section-heading"
+          - link "TableList" [ref=e62] [cursor=pointer]:
+            - /url: "#/react/components/data-display/table-list"
+          - link "TableListFooter" [ref=e63] [cursor=pointer]:
+            - /url: "#/react/components/data-display/table-list-footer"
+          - link "TableListHeader" [ref=e64] [cursor=pointer]:
+            - /url: "#/react/components/data-display/table-list-header"
+          - link "TagChip" [ref=e65] [cursor=pointer]:
+            - /url: "#/react/components/data-display/tag-chip"
+          - link "TreeList" [ref=e66] [cursor=pointer]:
+            - /url: "#/react/components/data-display/tree-list"
+        - generic [ref=e67]:
+          - heading "Data entry" [level=2] [ref=e68]
+          - link "ButtonAction" [ref=e69] [cursor=pointer]:
+            - /url: "#/react/components/data-entry/button-action"
+          - link "ButtonExport" [ref=e70] [cursor=pointer]:
+            - /url: "#/react/components/data-entry/button-export"
+          - link "InputSlider" [ref=e71] [cursor=pointer]:
+            - /url: "#/react/components/data-entry/input-slider"
+          - link "SearchInput" [ref=e72] [cursor=pointer]:
+            - /url: "#/react/components/data-entry/search-input"
+          - link "SelectableCard" [ref=e73] [cursor=pointer]:
+            - /url: "#/react/components/data-entry/selectable-card"
+        - generic [ref=e74]:
+          - heading "Feedback" [level=2] [ref=e75]
+          - link "EmptyState" [ref=e76] [cursor=pointer]:
+            - /url: "#/react/components/feedback/empty-state"
+          - link "MessageText" [ref=e77] [cursor=pointer]:
+            - /url: "#/react/components/feedback/message-text"
+          - link "ProgressIndicator" [ref=e78] [cursor=pointer]:
+            - /url: "#/react/components/feedback/progress-indicator"
+          - link "SkeletonLoading" [ref=e79] [cursor=pointer]:
+            - /url: "#/react/components/feedback/skeleton-loading"
+          - link "SpinnerLoader" [ref=e80] [cursor=pointer]:
+            - /url: "#/react/components/feedback/spinner-loader"
+          - link "ToastAlert" [ref=e81] [cursor=pointer]:
+            - /url: "#/react/components/feedback/toast-alert"
+        - generic [ref=e82]:
+          - heading "Forms" [level=2] [ref=e83]
+          - link "FieldLabel" [ref=e84] [cursor=pointer]:
+            - /url: "#/react/components/form/field-label"
+          - link "FormButtonCheckbox" [ref=e85] [cursor=pointer]:
+            - /url: "#/react/components/form/form-button-checkbox"
+          - link "FormButtonGroup" [ref=e86] [cursor=pointer]:
+            - /url: "#/react/components/form/form-button-group"
+          - link "FormCheckbox" [ref=e87] [cursor=pointer]:
+            - /url: "#/react/components/form/form-checkbox"
+          - link "FormContainer" [ref=e88] [cursor=pointer]:
+            - /url: "#/react/components/form/form-container"
+          - link "FormDatePicker" [ref=e89] [cursor=pointer]:
+            - /url: "#/react/components/form/form-date-picker"
+          - link "FormField" [ref=e90] [cursor=pointer]:
+            - /url: "#/react/components/form/form-field"
+          - link "FormFileUpload" [ref=e91] [cursor=pointer]:
+            - /url: "#/react/components/form/form-file-upload"
+          - link "FormFileUploadSimple" [ref=e92] [cursor=pointer]:
+            - /url: "#/react/components/form/form-file-upload-simple"
+          - link "FormInput" [ref=e93] [cursor=pointer]:
+            - /url: "#/react/components/form/form-input"
+          - link "FormMultiSelect" [ref=e94] [cursor=pointer]:
+            - /url: "#/react/components/form/form-multi-select"
+          - link "FormNumber" [ref=e95] [cursor=pointer]:
+            - /url: "#/react/components/form/form-number"
+          - link "FormPassword" [ref=e96] [cursor=pointer]:
+            - /url: "#/react/components/form/form-password"
+          - link "FormRadio" [ref=e97] [cursor=pointer]:
+            - /url: "#/react/components/form/form-radio"
+          - link "FormSelect" [ref=e98] [cursor=pointer]:
+            - /url: "#/react/components/form/form-select"
+          - link "FormTextarea" [ref=e99] [cursor=pointer]:
+            - /url: "#/react/components/form/form-textarea"
+          - link "FormYearPicker" [ref=e100] [cursor=pointer]:
+            - /url: "#/react/components/form/form-year-picker"
+        - generic [ref=e101]:
+          - heading "Layout" [level=2] [ref=e102]
+          - link "CardPanel" [ref=e103] [cursor=pointer]:
+            - /url: "#/react/components/layout/card-panel"
+          - link "FullscreenContainer" [ref=e104] [cursor=pointer]:
+            - /url: "#/react/components/layout/fullscreen-container"
+          - link "GridItem" [ref=e105] [cursor=pointer]:
+            - /url: "#/react/components/layout/grid-item"
+          - link "GridSection" [ref=e106] [cursor=pointer]:
+            - /url: "#/react/components/layout/grid-section"
+          - link "PageLayout" [ref=e107] [cursor=pointer]:
+            - /url: "#/react/components/layout/page-layout"
+          - link "SectionDivider" [ref=e108] [cursor=pointer]:
+            - /url: "#/react/components/layout/section-divider"
+        - generic [ref=e109]:
+          - heading "Navigation" [level=2] [ref=e110]
+          - link "Breadcrumbs" [ref=e111] [cursor=pointer]:
+            - /url: "#/react/components/navigation/breadcrumbs"
+          - link "ListLimitControl" [ref=e112] [cursor=pointer]:
+            - /url: "#/react/components/navigation/list-limit-control"
+          - link "NavigationCard" [ref=e113] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-card"
+          - link "NavigationDisclosureCard" [ref=e114] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-disclosure-card"
+          - link "NavigationIconCard" [ref=e115] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-icon-card"
+          - link "NavigationLink" [ref=e116] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-link"
+          - link "NavigationStepper" [ref=e117] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-stepper"
+          - link "NavigationTabs" [ref=e118] [cursor=pointer]:
+            - /url: "#/react/components/navigation/navigation-tabs"
+          - link "PaginationControl" [ref=e119] [cursor=pointer]:
+            - /url: "#/react/components/navigation/pagination-control"
+        - generic [ref=e120]:
+          - heading "Overlays and dialogs" [level=2] [ref=e121]
+          - link "DrawerPanel" [ref=e122] [cursor=pointer]:
+            - /url: "#/react/components/overlayer/drawer-panel"
+          - link "InfoTooltip" [ref=e123] [cursor=pointer]:
+            - /url: "#/react/components/overlayer/info-tooltip"
+          - link "ModalDialog" [ref=e124] [cursor=pointer]:
+            - /url: "#/react/components/overlayer/modal-dialog"
+          - link "PopoverButton" [ref=e125] [cursor=pointer]:
+            - /url: "#/react/components/overlayer/popover-button"
+          - link "PopoverOverlayer" [ref=e126] [cursor=pointer]:
+            - /url: "#/react/components/overlayer/popover-overlayer"
+  - main [ref=e127]:
+    - article [ref=e128]:
+      - generic [ref=e129]:
+        - navigation "Documentation path" [ref=e130]:
+          - link "components React" [ref=e131] [cursor=pointer]:
+            - /url: "#/react/components"
+          - generic [ref=e132]: /
+          - generic [ref=e133]: Data display
+          - generic [ref=e134]: /
+          - strong [ref=e135]: TableListFooter
+        - generic [ref=e136]:
+          - generic [ref=e137]:
+            - generic [ref=e138]: stable
+            - generic [ref=e140]: React 19
+          - heading "TableListFooter" [level=1] [ref=e141]
+          - paragraph [ref=e142]: A table footer showing record range and page information.
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - generic [ref=e145]: ts
+            - button "Copy" [ref=e146] [cursor=pointer]
+          - code [ref=e148]: import TableListFooter from '@peaui/ui/react/data-display/TableListFooter'; import '@peaui/ui/styles.css';
+        - generic [ref=e149]:
+          - generic [ref=e150]: "01"
+          - generic [ref=e151]:
+            - heading "What is this component?" [level=2] [ref=e152]
+            - paragraph [ref=e153]: A table footer showing record range and page information.
+            - generic [ref=e154]:
+              - generic [ref=e155]: Input
+              - strong [ref=e156]: Record count, page size, current page and total record count.
+        - generic [ref=e157]:
+          - generic [ref=e158]: "02"
+          - generic [ref=e159]:
+            - heading "What does it do?" [level=2] [ref=e160]
+            - list [ref=e161]:
+              - listitem [ref=e162]:
+                - generic [ref=e163]: ✓
+                - text: Summarizes visible data.
+              - listitem [ref=e164]:
+                - generic [ref=e165]: ✓
+                - text: Supports standard and flexible layouts.
+        - generic [ref=e166]:
+          - generic [ref=e167]: "03"
+          - generic [ref=e168]:
+            - heading "Variants and behavior" [level=2] [ref=e169]
+            - paragraph [ref=e170]: This is a real React component. Switch variants, edit props and controlled values, then copy the ready TSX.
+            - generic [ref=e171]:
+              - tablist "React component variants" [ref=e172]:
+                - tab "Default" [selected] [ref=e173] [cursor=pointer]
+                - tab "under" [ref=e174] [cursor=pointer]
+                - tab "isFlex" [ref=e175] [cursor=pointer]
+              - paragraph [ref=e176]: Recommended starting configuration with example data.
+              - generic [ref=e177]:
+                - generic [ref=e178]:
+                  - generic [ref=e179]:
+                    - button "Preview" [ref=e180] [cursor=pointer]
+                    - button "Code React" [ref=e181] [cursor=pointer]
+                  - button "Reset" [ref=e182] [cursor=pointer]
+                - generic [ref=e185]:
+                  - generic [ref=e186]: Wyświetlono 10 z 47
+                  - navigation "Paginacja tabeli" [ref=e188]:
+                    - generic [ref=e189]:
+                      - button "Przejdź do pierwszej strony" [ref=e190] [cursor=pointer]
+                      - button "Przejdź do poprzedniej strony" [ref=e194] [cursor=pointer]
+                    - generic [ref=e197]:
+                      - button "1" [ref=e198] [cursor=pointer]
+                      - button "2" [disabled] [ref=e199]
+                      - button "3" [ref=e200] [cursor=pointer]
+                      - button "4" [ref=e201] [cursor=pointer]
+                    - generic [ref=e202]:
+                      - button "Przejdź do kolejnej strony" [ref=e203] [cursor=pointer]
+                      - button "Przejdź do ostatniej strony" [ref=e206] [cursor=pointer]
+                  - generic [ref=e210]:
+                    - text: Na stronie
+                    - combobox "Liczba rekordów na stronie" [ref=e211]:
+                      - option "10" [selected]
+                      - option "20"
+                      - option "50"
+                      - option "100"
+              - group [ref=e212]:
+                - generic "React props playground Change props and see the result without reloading the page." [ref=e213] [cursor=pointer]:
+                  - generic [ref=e214]:
+                    - strong [ref=e215]: React props playground
+                    - generic [ref=e216]: Change props and see the result without reloading the page.
+                  - generic [ref=e217]: +
+        - generic [ref=e218]:
+          - generic [ref=e219]: "04"
+          - generic [ref=e220]:
+            - heading "Props and input data" [level=2] [ref=e221]
+            - paragraph [ref=e222]: Props are generated from the same public contract as Vue. Models support controlled values, default… values and on…Change callbacks.
+            - table [ref=e224]:
+              - rowgroup [ref=e225]:
+                - row [ref=e226]:
+                  - columnheader "Name" [ref=e227]
+                  - columnheader "Type" [ref=e228]
+                  - columnheader "Default" [ref=e229]
+                  - columnheader "Description" [ref=e230]
+              - rowgroup [ref=e231]:
+                - row [ref=e232]:
+                  - cell "rowsNumber required" [ref=e233]:
+                    - code [ref=e234]: rowsNumber
+                    - generic [ref=e235]: required
+                  - cell [ref=e236]:
+                    - code [ref=e237]: number
+                  - cell "—" [ref=e238]
+                  - cell "Configures the component's rows number property." [ref=e239]
+                - row [ref=e240]:
+                  - cell "rowsPerPage required" [ref=e241]:
+                    - code [ref=e242]: rowsPerPage
+                    - generic [ref=e243]: required
+                  - cell [ref=e244]:
+                    - code [ref=e245]: number
+                  - cell "—" [ref=e246]
+                  - cell "Number of records displayed on one page." [ref=e247]
+                - row [ref=e248]:
+                  - cell "page required" [ref=e249]:
+                    - code [ref=e250]: page
+                    - generic [ref=e251]: required
+                  - cell [ref=e252]:
+                    - code [ref=e253]: number
+                  - cell "—" [ref=e254]
+                  - cell "The controlled page value. React supports page, defaultPage and onPageChange." [ref=e255]
+                - row [ref=e256]:
+                  - cell "total required" [ref=e257]:
+                    - code [ref=e258]: total
+                    - generic [ref=e259]: required
+                  - cell [ref=e260]:
+                    - code [ref=e261]: number
+                  - cell "—" [ref=e262]
+                  - cell "Total number of items." [ref=e263]
+                - row [ref=e264]:
+                  - cell [ref=e265]:
+                    - code [ref=e266]: under
+                  - cell [ref=e267]:
+                    - code [ref=e268]: boolean
+                  - cell [ref=e269]:
+                    - code [ref=e270]: "false"
+                  - cell "Configures the component's under property." [ref=e271]
+                - row [ref=e272]:
+                  - cell [ref=e273]:
+                    - code [ref=e274]: isFlex
+                  - cell [ref=e275]:
+                    - code [ref=e276]: boolean
+                  - cell [ref=e277]:
+                    - code [ref=e278]: "false"
+                  - cell "Configures the component's is flex property." [ref=e279]
+                - row [ref=e280]:
+                  - cell [ref=e281]:
+                    - code [ref=e282]: dataTestId
+                  - cell [ref=e283]:
+                    - code [ref=e284]: string
+                  - cell "—" [ref=e285]
+                  - cell "Stable data-testid identifier for automated tests." [ref=e286]
+        - generic [ref=e287]:
+          - generic [ref=e288]: "05"
+          - generic [ref=e289]:
+            - heading "Callbacks" [level=2] [ref=e290]
+            - table [ref=e292]:
+              - rowgroup [ref=e293]:
+                - row [ref=e294]:
+                  - columnheader "Name" [ref=e295]
+                  - columnheader "Description" [ref=e296]
+              - rowgroup [ref=e297]:
+                - row [ref=e298]:
+                  - cell [ref=e299]:
+                    - code [ref=e300]: onChangePage
+                  - cell "Callback invoked when the component reports change page." [ref=e301]
+                - row [ref=e302]:
+                  - cell [ref=e303]:
+                    - code [ref=e304]: onChangeLimit
+                  - cell "Callback invoked when the component reports change limit." [ref=e305]
+        - navigation "Adjacent components" [ref=e306]:
+          - link "← Previous TableList" [ref=e307] [cursor=pointer]:
+            - /url: "#/react/components/data-display/table-list"
+            - generic [ref=e308]: ← Previous
+            - strong [ref=e309]: TableList
+          - link "Next → TableListHeader" [ref=e310] [cursor=pointer]:
+            - /url: "#/react/components/data-display/table-list-header"
+            - generic [ref=e311]: Next →
+            - strong [ref=e312]: TableListHeader
+      - complementary [ref=e313]:
+        - strong [ref=e314]: On this page
+        - link "What is this component?" [ref=e315] [cursor=pointer]:
+          - /url: "#co-to-jest"
+        - link "What does it do?" [ref=e316] [cursor=pointer]:
+          - /url: "#co-robi"
+        - link "Variants" [ref=e317] [cursor=pointer]:
+          - /url: "#warianty"
+        - link "Props and input data" [ref=e318] [cursor=pointer]:
+          - /url: "#props"
+        - link "Callbacks" [ref=e319] [cursor=pointer]:
+          - /url: "#events"
+        - generic [ref=e320]:
+          - generic [ref=e321]: ✦
+          - paragraph [ref=e322]:
+            - strong [ref=e323]: API from source
+            - text: Refreshed every time the documentation starts.

@@ -1,0 +1,52 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-navigation-link {
+  @include unset-safe;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 0.125rem;
+
+  font-weight: 500;
+  text-decoration: none;
+
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(color, opacity);
+}
+
+.peaui-navigation-link:hover,
+.peaui-navigation-link:focus-visible {
+  opacity: 0.85;
+}
+
+.peaui-navigation-link--size-s {
+  @include set-size-text(s);
+}
+
+.peaui-navigation-link--size-m {
+  @include set-size-text(m);
+}
+
+.peaui-navigation-link--size-xs {
+  @include set-size-text(xs);
+}
+
+.peaui-navigation-link--variant-default,
+.peaui-navigation-link--variant-default:visited {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-navigation-link--variant-default:hover,
+.peaui-navigation-link--variant-default:focus-visible {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-link--variant-primary,
+.peaui-navigation-link--variant-primary:visited {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-navigation-link--variant-primary:hover,
+.peaui-navigation-link--variant-primary:focus-visible {
+  color: var(--peaui-color-primary-600);
+}

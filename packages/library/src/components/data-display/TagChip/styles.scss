@@ -1,0 +1,67 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$color-aliases: (
+  primary: 'blue',
+  success: 'green',
+  danger: 'red',
+  warning: 'orange',
+  grey: 'grey',
+  violet: 'violet',
+);
+
+.peaui-tag-chip {
+  @include unset-safe;
+
+  border-radius: 1.5rem;
+  padding: 0.125rem 0.5rem 0.125rem;
+  font-weight: 500;
+  border: 1px solid;
+  user-select: none;
+  border-color: transparent;
+
+  @include size-text((xxs, xs, s));
+
+  @each $alias, $real in $color-aliases {
+    $tone: 600;
+
+    @if $alias == 'success' {
+      $tone: 800;
+    }
+
+    @if $alias == 'warning' {
+      $tone: 700;
+    }
+
+    &--variant-#{$real} {
+      background-color: var(--peaui-color-#{$alias}-50);
+      color: var(--peaui-color-#{$alias}-#{$tone});
+
+      @include outline(var(--peaui-color-#{$alias}-#{$tone}));
+    }
+
+    &--variant-#{$real}-active {
+      background-color: var(--peaui-color-#{$alias}-#{$tone});
+      color: var(--peaui-color-grey-0);
+
+      @include outline(var(--peaui-color-#{$alias}-#{$tone}));
+    }
+  }
+
+  &--variant-outline {
+    background-color: var(--peaui-color-grey-0);
+    color: var(--peaui-color-primary-700);
+    border-color: var(--peaui-color-primary-700);
+
+    @include outline(var(--peaui-color-primary-600));
+  }
+
+  &--variant-outline-active {
+    background-color: var(--peaui-color-primary-50);
+    color: var(--peaui-color-primary-700);
+    border-color: var(--peaui-color-primary-700);
+
+    @include outline(var(--peaui-color-primary-600));
+  }
+}

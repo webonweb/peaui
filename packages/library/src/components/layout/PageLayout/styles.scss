@@ -1,0 +1,37 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-page-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.peaui-page-layout__top {
+  flex: 0 0 auto;
+  background-color: var(--peaui-color-grey-0);
+  padding: 24px 2rem 1rem;
+}
+
+.peaui-page-layout__footer {
+  flex: 0 0 auto;
+  background-color: var(--peaui-color-grey-0);
+  padding: 24px 2rem 1rem;
+  position: relative;
+  z-index: 100;
+}
+
+.peaui-page-layout__top--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.peaui-page-layout__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-page-layout__body {
+  padding: 1rem 1.25rem;
+}

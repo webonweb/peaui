@@ -1,0 +1,182 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-info-tooltip {
+  anchor-name: var(--unique-anchor);
+  cursor: help;
+  width: max-content;
+  display: flex;
+  @include outline(var(--peaui-color-primary-400));
+}
+
+.peaui-info-tooltip--disabled {
+  cursor: default;
+}
+
+.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):hover + .peaui-info-tooltip__content,
+.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):focus-visible + .peaui-info-tooltip__content,
+.peaui-info-tooltip:not(.peaui-info-tooltip--disabled)[data-open='true'] + .peaui-info-tooltip__content,
+.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):focus-within + .peaui-info-tooltip__content {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.peaui-info-tooltip__content {
+  --arrow-size: 4px;
+  --arrow-block: auto;
+  --arrow-block2: auto;
+  --arrow-inline: 50%;
+  --arrow-rotate: 45deg;
+
+  position: fixed;
+  position-anchor: var(--unique-anchor);
+  max-width: 22.25rem;
+  z-index: 9999;
+  width: max-content;
+  background-color: var(--peaui-color-primary-700);
+
+  @include set-param(padding, 1.125rem);
+  //position-try-fallbacks: flip-block, flip-inline;
+
+  opacity: 0;
+  pointer-events: none;
+  @include transition(opacity);
+
+  border-radius: 0.75rem;
+
+  corner-shape: squircle;
+  user-select: none;
+
+  box-shadow:
+    0 9px 15px 8px rgb(from var(--peaui-color-grey-900) r g b / 0.12),
+    0 9px 10px -7px rgb(from var(--peaui-color-grey-900) r g b / 0.5);
+}
+
+.peaui-info-tooltip__content::before {
+  content: '';
+  position: absolute;
+  width: calc(var(--arrow-size) * 2);
+  height: calc(var(--arrow-size) * 2);
+
+  background: inherit;
+  border-radius: 2px;
+
+  inset-block-start: var(--arrow-block);
+  inset-block-end: var(--arrow-block2);
+  left: var(--arrow-inline);
+
+  transform: translateX(-50%) rotate(var(--arrow-rotate));
+
+  pointer-events: none;
+}
+
+.peaui-info-tooltip__title {
+  @include set-size-text(l);
+  color: var(--peaui-color-grey-0);
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  @include set-param(margin-bottom, 0.75rem);
+  display: block;
+}
+
+.peaui-info-tooltip__description {
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  @include set-size-text(s);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-info-tooltip__content--variant-disabled {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-info-tooltip__content--variant-disabled .peaui-info-tooltip__title,
+.peaui-info-tooltip__content--variant-disabled .peaui-info-tooltip__description {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-info-tooltip__content--placement-top {
+  left: anchor(center);
+  bottom: anchor(top);
+  translate: -50% 0;
+  margin-block: 0.625rem;
+
+  --arrow-block: auto;
+  --arrow-block2: calc(var(--arrow-size) * -1);
+  --arrow-inline: 50%;
+}
+
+.peaui-info-tooltip__content--placement-top-left {
+  left: anchor(right);
+  bottom: anchor(top);
+  translate: -100% 0;
+  margin-block: 0.625rem;
+
+  --arrow-block: auto;
+  --arrow-block2: calc(var(--arrow-size) * -1);
+  --arrow-inline: 90%;
+}
+
+.peaui-info-tooltip__content--placement-top-right {
+  left: anchor(left);
+  bottom: anchor(top);
+  translate: 0 0;
+  margin-block: 0.625rem;
+  --arrow-block: auto;
+  --arrow-block2: calc(var(--arrow-size) * -1);
+  --arrow-inline: 10%;
+}
+
+.peaui-info-tooltip__content--placement-bottom {
+  left: anchor(center);
+  top: anchor(bottom);
+  translate: -50% 0;
+  margin-block: 0.625rem;
+
+  --arrow-block: calc(var(--arrow-size) * -1);
+  --arrow-block2: auto;
+  --arrow-inline: 50%;
+}
+
+.peaui-info-tooltip__content--placement-bottom-left {
+  left: anchor(right);
+  top: anchor(bottom);
+  translate: -100% 0;
+  margin-block: 0.625rem;
+
+  --arrow-block: calc(var(--arrow-size) * -1);
+  --arrow-block2: auto;
+  --arrow-inline: 90%;
+}
+.peaui-info-tooltip__content--placement-bottom-right {
+  left: anchor(left);
+  top: anchor(bottom);
+  translate: 0 0;
+  margin-block: 0.625rem;
+
+  --arrow-block: calc(var(--arrow-size) * -1);
+  --arrow-block2: auto;
+  --arrow-inline: 10%;
+}
+
+.peaui-info-tooltip__content--placement-left {
+  right: anchor(left);
+  top: anchor(center);
+  translate: 0 -50%;
+  margin-inline: 0.625rem;
+
+  --arrow-block: 50%;
+  --arrow-block2: auto;
+  --arrow-inline: 100%;
+}
+
+.peaui-info-tooltip__content--placement-right {
+  left: anchor(right);
+  top: anchor(center);
+  translate: 0 -50%;
+  margin-inline: 0.625rem;
+
+  --arrow-block: 50%;
+  --arrow-inline: 0%;
+}

@@ -1,0 +1,1181 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-table-list {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  width: 100%;
+  min-inline-size: 0;
+  min-width: 0;
+  max-inline-size: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--peaui-color-grey-100);
+  border-radius: 1rem;
+  background-color: var(--peaui-color-grey-0);
+
+  @include scrollbar(var(--peaui-color-primary-700));
+}
+
+.peaui-table-list--details {
+  border-radius: 0;
+}
+
+.peaui-table-list--scroll {
+  max-height: calc(100dvh - 18.75rem);
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.peaui-table-list--loading .peaui-table-list__table {
+  opacity: 0.6;
+  filter: blur(1px);
+}
+
+.peaui-table-list:focus-visible {
+  @include outline(var(--peaui-color-primary-400));
+}
+
+.peaui-table-list__table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.peaui-table-list__head {
+  --peaui-table-list-head-bg: var(--peaui-color-grey-0);
+
+  position: relative;
+  background-color: var(--peaui-color-grey-0);
+  z-index: 3;
+}
+
+.peaui-table-list__head--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.peaui-table-list__head-row {
+  --peaui-table-list-head-bg: var(--peaui-color-grey-0);
+
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-table-list__head-row--details {
+  --peaui-table-list-head-bg: var(--peaui-color-grey-50);
+
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-table-list__head-cell,
+.peaui-table-list__check-head-cell,
+.peaui-table-list__select-head-cell,
+.peaui-table-list__actions-head-cell,
+.peaui-table-list__body-cell,
+.peaui-table-list__check-cell,
+.peaui-table-list__select-cell,
+.peaui-table-list__actions-cell,
+.peaui-table-list__editable-cell,
+.peaui-table-list__editable-actions-cell,
+.peaui-table-list__create-row-cell,
+.peaui-table-list__empty-inline-cell {
+  --peaui-table-list-cell-border-left-shadow: inset 0 0 0 0 transparent;
+  --peaui-table-list-cell-border-right-shadow: inset 0 0 0 0 transparent;
+  --peaui-table-list-cell-lock-shadow: 0 0 0 0 transparent;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--peaui-color-grey-100);
+  vertical-align: middle;
+}
+
+.peaui-table-list__expanded-cell {
+  padding: 0;
+  border-bottom: 1px solid var(--peaui-color-grey-100);
+  vertical-align: middle;
+}
+
+.peaui-table-list__check-head-cell,
+.peaui-table-list__check-cell,
+.peaui-table-list__select-head-cell,
+.peaui-table-list__select-cell,
+.peaui-table-list__actions-head-cell,
+.peaui-table-list__actions-cell {
+  width: 3rem;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.peaui-table-list__editable-actions-cell {
+  width: 5.25rem;
+  min-width: 5.25rem;
+  white-space: nowrap;
+}
+
+.peaui-table-list__head-cell,
+.peaui-table-list__check-head-cell,
+.peaui-table-list__select-head-cell,
+.peaui-table-list__actions-head-cell {
+  position: relative;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+
+.peaui-table-list__actions-head-cell,
+.peaui-table-list__actions-cell,
+.peaui-table-list__editable-actions-cell {
+  position: sticky;
+  right: 0;
+  inset-inline-end: 0;
+  border-inline-start: 1px solid var(--peaui-color-grey-100);
+  background-clip: padding-box;
+}
+
+.peaui-table-list__actions-head-cell {
+  background-color: var(--peaui-table-list-head-bg, var(--peaui-color-grey-0));
+  z-index: 6;
+}
+
+.peaui-table-list__actions-cell,
+.peaui-table-list__editable-actions-cell {
+  background-color: var(--peaui-table-list-row-bg, var(--peaui-color-grey-0));
+  z-index: 3;
+}
+
+.peaui-table-list__row:nth-of-type(odd) .peaui-table-list__actions-cell,
+.peaui-table-list__row:nth-of-type(odd) .peaui-table-list__editable-actions-cell {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-table-list__row:nth-of-type(even) .peaui-table-list__actions-cell,
+.peaui-table-list__row:nth-of-type(even) .peaui-table-list__editable-actions-cell {
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-table-list__head-cell {
+  @include set-size-text(s);
+
+  box-shadow:
+    var(--peaui-table-list-cell-border-left-shadow), var(--peaui-table-list-cell-border-right-shadow),
+    var(--peaui-table-list-cell-lock-shadow);
+  font-weight: 500;
+  color: var(--peaui-color-grey-700);
+  background-color: inherit;
+  text-align: left;
+}
+
+.peaui-table-list__body-cell,
+.peaui-table-list__editable-cell {
+  box-shadow:
+    var(--peaui-table-list-cell-border-left-shadow), var(--peaui-table-list-cell-border-right-shadow),
+    var(--peaui-table-list-cell-lock-shadow);
+}
+
+.peaui-table-list__head-cell--locked,
+.peaui-table-list__body-cell--locked,
+.peaui-table-list__editable-cell--locked {
+  position: sticky;
+  background-clip: padding-box;
+  transition:
+    left 0.18s ease-out,
+    right 0.18s ease-out,
+    box-shadow 0.18s ease-out;
+  will-change: left, right;
+}
+
+.peaui-table-list__head-cell--locked {
+  background-color: var(--peaui-table-list-head-bg, var(--peaui-color-grey-0));
+  z-index: 5;
+}
+
+.peaui-table-list__body-cell--locked,
+.peaui-table-list__editable-cell--locked {
+  background-color: var(--peaui-table-list-row-bg, var(--peaui-color-grey-0));
+  z-index: 2;
+}
+
+.peaui-table-list__head-cell--locked-left,
+.peaui-table-list__body-cell--locked-left,
+.peaui-table-list__editable-cell--locked-left {
+  --peaui-table-list-cell-lock-shadow: 1px 0 0 0 var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__head-cell--locked-right,
+.peaui-table-list__body-cell--locked-right,
+.peaui-table-list__editable-cell--locked-right {
+  --peaui-table-list-cell-lock-shadow: -1px 0 0 0 var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__head-cell--border-left,
+.peaui-table-list__body-cell--border-left,
+.peaui-table-list__editable-cell--border-left {
+  --peaui-table-list-cell-border-left-shadow: inset 1px 0 0 0 var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__head-cell--border-right,
+.peaui-table-list__body-cell--border-right,
+.peaui-table-list__editable-cell--border-right {
+  --peaui-table-list-cell-border-right-shadow: inset -1px 0 0 0 var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__head-cell--sortable {
+  cursor: pointer;
+}
+
+.peaui-table-list__head-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.375rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.peaui-table-list__head-button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(color, background-color, border-color, transform);
+  @include set-size-text(s);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 2rem;
+  padding: 0.125rem 0;
+  border-radius: 0.5rem;
+  color: inherit;
+  text-align: left;
+}
+
+.peaui-table-list__head-button--sortable:not(:disabled) {
+  cursor: pointer;
+}
+
+.peaui-table-list__head-button--sortable:not(:disabled):hover,
+.peaui-table-list__head-button--active {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-button--static,
+.peaui-table-list__head-button:disabled {
+  cursor: default;
+}
+
+.peaui-table-list__head-button:disabled {
+  opacity: 1;
+}
+
+.peaui-table-list__head-label {
+  min-width: 0;
+}
+
+.peaui-table-list__head-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+}
+
+.peaui-table-list__head-controls > .peaui-info-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.peaui-table-list__head-button > .peaui-info-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.peaui-table-list__head-sort-icon,
+.peaui-table-list__head-lock-icon,
+.peaui-table-list__head-actions-trigger-icon,
+.peaui-table-list__expandable-arrow,
+.peaui-table-list__hint-icon,
+.peaui-table-list__date-icon,
+.peaui-table-list__copy-icon,
+.peaui-table-list__actions-button-icon,
+.peaui-table-list__actions-simple-icon,
+.peaui-table-list__editable-action-icon,
+.peaui-table-list__editable-toggle-icon,
+.peaui-table-list__editable-editor-icon,
+.peaui-table-list__stepper-arrow,
+.peaui-table-list__stepper-complete-icon,
+.peaui-table-list__stepper-lock-icon {
+  flex: 0 0 auto;
+  color: currentColor;
+
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+}
+
+.peaui-table-list__hint-icon {
+  fill: var(--peaui-color-primary-700);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-lock-trigger {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(background-color, color);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: var(--peaui-color-grey-500);
+  cursor: pointer;
+}
+
+.peaui-table-list__head-lock-trigger:hover,
+.peaui-table-list__head-lock-trigger--active {
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-actions-popover-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.peaui-table-list__head-actions-trigger {
+  @include transition(background-color, color);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-actions-popover-trigger:hover .peaui-table-list__head-actions-trigger,
+.peaui-table-list__head-actions-popover-trigger:focus-visible
+  .peaui-table-list__head-actions-trigger {
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-actions-popover {
+  overflow: hidden;
+}
+
+.peaui-table-list__head-actions-popover.peaui-popover-overlayer__content[popover] {
+  padding: 0;
+  z-index: 20;
+}
+
+.peaui-table-list__head-actions-menu {
+  display: grid;
+  gap: 0.375rem;
+  min-width: 14rem;
+  padding: 0.875rem;
+}
+
+.peaui-table-list__head-actions-title {
+  @include set-size-text(s);
+
+  text-align: left;
+
+  margin: 0;
+  color: var(--peaui-color-grey-700);
+  font-weight: 600;
+}
+
+.peaui-table-list__head-actions-description {
+  @include set-size-text(xs);
+  text-align: left;
+
+  margin: -0.5rem 0 0;
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-table-list__head-actions-list {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 18.75rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.peaui-table-list__head-actions-item {
+  min-width: 0;
+}
+
+.peaui-table-list__head-actions-option {
+  @include transition(background-color, color);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.5rem;
+  color: var(--peaui-color-grey-700);
+  cursor: pointer;
+}
+
+.peaui-table-list__head-actions-option:hover {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__head-actions-option--disabled {
+  color: var(--peaui-color-grey-400);
+  cursor: not-allowed;
+}
+
+.peaui-table-list__head-actions-option--disabled:hover {
+  background-color: transparent;
+}
+
+.peaui-table-list__head-actions-checkbox {
+  @include outline(var(--peaui-color-primary-400));
+
+  accent-color: var(--peaui-color-primary-700);
+  cursor: pointer;
+}
+
+.peaui-table-list__head-actions-checkbox:disabled {
+  cursor: not-allowed;
+}
+
+.peaui-table-list__head-actions-option-label {
+  @include set-size-text(s);
+  text-align: left;
+  min-width: 0;
+}
+
+.peaui-table-list__actions-simple-icon {
+  @include set-param(width, 1.25rem);
+  @include set-param(height, 1.25rem);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__head-sort-icon.peaui-svg-icon {
+  @include set-param(width, 0.75rem);
+  @include set-param(height, 0.75rem);
+  @include transition(transform);
+}
+
+.peaui-table-list__head-sort-icon--asc {
+  transform: rotate(180deg);
+}
+
+.peaui-table-list__head-sort-icon--desc {
+  transform: rotate(0deg);
+}
+
+.peaui-table-list__body {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-table-list__row {
+  --peaui-table-list-row-bg: var(--peaui-color-grey-0);
+
+  @include transition(background-color, box-shadow);
+}
+
+.peaui-table-list__row:nth-of-type(odd) {
+  --peaui-table-list-row-bg: var(--peaui-color-grey-0);
+
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-table-list__row:nth-of-type(even) {
+  --peaui-table-list-row-bg: var(--peaui-color-grey-50);
+
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-table-list__row:hover {
+  --peaui-table-list-row-bg: var(--peaui-color-primary-50);
+
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__row--interactive {
+  cursor: pointer;
+}
+
+.peaui-table-list__row--interactive:hover {
+  --peaui-table-list-row-bg: var(--peaui-color-primary-50);
+
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__row--interactive:focus-visible {
+  position: relative;
+  box-shadow: inset 0 0 0 0.125rem var(--peaui-color-primary-400);
+  outline: none;
+}
+
+.peaui-table-list__row--selected {
+  --peaui-table-list-row-bg: var(--peaui-color-primary-50);
+
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__row--editing {
+  height: var(--peaui-table-list-editable-row-height, auto);
+}
+
+.peaui-table-list__body-cell,
+.peaui-table-list__editable-cell {
+  color: var(--peaui-color-grey-700);
+
+  @include set-size-text(s);
+}
+
+.peaui-table-list__editable-cell {
+  vertical-align: top;
+}
+
+.peaui-table-list__editable-actions-cell {
+  vertical-align: middle;
+}
+
+.peaui-table-list__body-cell-content,
+.peaui-table-list__text-column,
+.peaui-table-list__array-column,
+.peaui-table-list__action-column,
+.peaui-table-list__edit-action-column,
+.peaui-table-list__date-column,
+.peaui-table-list__expandable-column,
+.peaui-table-list__index-column,
+.peaui-table-list__empty-column,
+.peaui-table-list__link-column {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.peaui-table-list__text-column,
+.peaui-table-list__array-column,
+.peaui-table-list__edit-action-column,
+.peaui-table-list__date-column,
+.peaui-table-list__expandable-column,
+.peaui-table-list__link-column {
+  width: 100%;
+}
+
+.peaui-table-list__edit-action-column {
+  justify-content: space-between;
+}
+
+.peaui-table-list__edit-action-button {
+  cursor: pointer;
+}
+
+.peaui-table-list__expandable-button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(color, background-color);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.125rem 0;
+  border-radius: 0.5rem;
+  color: var(--peaui-color-grey-700);
+  cursor: pointer;
+  text-align: left;
+}
+
+.peaui-table-list__expandable-button:hover {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__expandable-button[aria-expanded='true'] {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__expandable-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peaui-table-list__expandable-arrow {
+  @include set-param(width, 0.75rem);
+  @include set-param(height, 0.75rem);
+  @include transition(transform);
+}
+
+.peaui-table-list__expandable-arrow--collapsed {
+  transform: rotate(0deg);
+}
+
+.peaui-table-list__expandable-arrow--expanded {
+  transform: rotate(180deg);
+}
+
+.peaui-table-list__body-cell-content--copyable {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.peaui-table-list__body-cell-content--copyable > :first-child {
+  min-width: 0;
+}
+
+.peaui-table-list__body-cell-content--copyable > .peaui-info-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.peaui-table-list__text-value,
+.peaui-table-list__edit-action-value,
+.peaui-table-list__date-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peaui-table-list__date-icon.peaui-svg-icon {
+  display: block;
+  align-self: center;
+}
+
+.peaui-table-list__link-column {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: var(--peaui-color-primary-700);
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: left;
+}
+
+.peaui-table-list__copy-button,
+.peaui-table-list__actions-simple-button,
+.peaui-table-list__editable-action-button,
+.peaui-table-list__editable-toggle,
+.peaui-table-list__editable-editor-button,
+.peaui-table-list__stepper-button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include transition(background-color, border-color, color, box-shadow, transform);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+}
+
+.peaui-table-list__copy-button,
+.peaui-table-list__actions-simple-button,
+.peaui-table-list__editable-action-button,
+.peaui-table-list__editable-toggle,
+.peaui-table-list__editable-editor-button {
+  width: 2rem;
+  height: 2rem;
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-table-list__copy-button {
+  cursor: copy;
+}
+
+.peaui-table-list__copy-button:hover,
+.peaui-table-list__actions-simple-button:hover,
+.peaui-table-list__editable-action-button:hover,
+.peaui-table-list__editable-toggle:hover,
+.peaui-table-list__editable-editor-button:hover {
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__editable-action-button--submit,
+.peaui-table-list__editable-editor-button--submit {
+  color: var(--peaui-color-success-700);
+}
+
+.peaui-table-list__editable-action-button--cancel,
+.peaui-table-list__editable-editor-button--cancel {
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-table-list__check-input {
+  @include outline(var(--peaui-color-primary-400));
+
+  accent-color: var(--peaui-color-primary-700);
+  cursor: pointer;
+}
+
+.peaui-table-list__actions-popover-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.peaui-table-list__actions-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: var(--peaui-color-primary-700);
+  font-size: 0;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.peaui-table-list__actions-trigger::before {
+  content: '';
+  width: 0.1875rem;
+  height: 0.1875rem;
+  border-radius: 999px;
+  background-color: currentColor;
+  box-shadow:
+    0 -0.3125rem 0 currentColor,
+    0 0.3125rem 0 currentColor;
+}
+
+.peaui-table-list__actions-popover-trigger:hover .peaui-table-list__actions-trigger,
+.peaui-table-list__actions-popover-trigger:focus-visible .peaui-table-list__actions-trigger {
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__actions-popover.peaui-popover-overlayer__content[popover] {
+  padding: 0;
+  translate: -5px -50%;
+  z-index: 20;
+}
+
+.peaui-table-list__actions-menu {
+  min-width: 11.5rem;
+  padding: 0.25rem;
+}
+
+.peaui-table-list__actions-list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+}
+
+.peaui-table-list__actions-button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, color);
+  @include set-size-text(s);
+
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background-color: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-700);
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+}
+
+.peaui-table-list__actions-button:hover {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__actions-button:focus-visible {
+  border-color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__actions-button-label {
+  min-width: 0;
+}
+
+.peaui-table-list__actions-button-icon {
+  @include set-param(width, 1.125rem);
+  @include set-param(height, 1.125rem);
+}
+
+.peaui-table-list__actions-simple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.peaui-table-list__editable-cell-field,
+.peaui-table-list__editable-field {
+  width: 100%;
+}
+
+.peaui-table-list__editable-field--invalid .peaui-form-field__element {
+  border-color: var(--peaui-color-danger-500);
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-danger-500) r g b / 0.7);
+}
+
+.peaui-table-list__editable-cell-field .peaui-form-field__message,
+.peaui-table-list__editable-field .peaui-form-field__message {
+  position: static;
+  margin-top: 0.25rem;
+}
+
+.peaui-table-list__editable-empty {
+  color: var(--peaui-color-grey-400);
+}
+
+.peaui-table-list__editable-inline,
+.peaui-table-list__editable-display,
+.peaui-table-list__editable-editor {
+  width: 100%;
+}
+
+.peaui-table-list__editable-editor-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.peaui-table-list__create-row-cell {
+  background-color: var(--peaui-color-grey-0);
+}
+
+.peaui-table-list__create-row-button {
+  width: max-content;
+  max-width: 100%;
+}
+
+.peaui-table-list__expanded-cell {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-table-list__empty-inline-cell {
+  @include set-size-text(s);
+
+  font-weight: 500;
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-table-list__dialog {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.peaui-table-list__dialog-header {
+  margin-bottom: 1rem;
+}
+
+.peaui-table-list__dialog-title,
+.peaui-table-list__dialog-description {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-table-list__dialog-title {
+  @include set-size-text(m);
+}
+
+.peaui-table-list__dialog-description {
+  @include set-size-text(s);
+
+  margin: 0;
+}
+
+.peaui-table-list__dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.peaui-table-list__dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-end;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.peaui-table-list__dialog-actions .peaui-button-action {
+  width: auto;
+  min-width: 4.5rem;
+  padding: 0.5rem 0.875rem;
+}
+
+.peaui-table-list__form-wrapper {
+  display: grid;
+  gap: 1rem;
+}
+
+.peaui-table-list__form-wrapper--compact {
+  gap: 0.75rem;
+}
+
+.peaui-table-list__grid-wrapper--flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.peaui-table-list__stepper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  @include scrollbar(var(--peaui-color-primary-700));
+}
+
+.peaui-table-list__stepper-list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: max-content;
+  min-width: max-content;
+}
+
+.peaui-table-list__stepper-separator {
+  @include set-size-text(xs);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin-inline: 0.375rem;
+  color: var(--peaui-color-grey-400);
+  font-weight: 500;
+  line-height: 1;
+  user-select: none;
+}
+
+.peaui-table-list__stepper-button {
+  @include set-size-text(s);
+
+  justify-content: flex-start;
+  gap: 0.25rem;
+  width: max-content;
+  min-width: max-content;
+  padding: 0.5rem 0.625rem;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  color: var(--peaui-color-grey-700);
+  font-weight: 500;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.peaui-table-list__stepper-button--separate {
+  border-radius: 0.5rem;
+}
+
+.peaui-table-list__stepper-button--first {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.peaui-table-list__stepper-button--last {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.peaui-table-list__stepper-button--status-default,
+.peaui-table-list__stepper-button--status-current {
+  border-top-color: var(--peaui-color-primary-50);
+  border-bottom-color: var(--peaui-color-primary-50);
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+  cursor: pointer;
+}
+
+.peaui-table-list__stepper-button--status-default:not(.peaui-table-list__stepper-button--last),
+.peaui-table-list__stepper-button--status-current:not(.peaui-table-list__stepper-button--last) {
+  border-right: 1px solid var(--peaui-color-primary-200);
+}
+
+.peaui-table-list__stepper-button--status-default.peaui-table-list__stepper-button--separate,
+.peaui-table-list__stepper-button--status-current.peaui-table-list__stepper-button--separate {
+  box-shadow: inset 0 0 0 1px var(--peaui-color-primary-200);
+}
+
+.peaui-table-list__stepper-button--status-disabled {
+  border-top-color: var(--peaui-color-grey-100);
+  border-bottom-color: var(--peaui-color-grey-100);
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-700);
+  cursor: not-allowed;
+}
+
+.peaui-table-list__stepper-button--status-disabled:not(.peaui-table-list__stepper-button--last) {
+  border-right: 1px solid var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__stepper-button--status-disabled.peaui-table-list__stepper-button--separate {
+  box-shadow: inset 0 0 0 1px var(--peaui-color-grey-100);
+}
+
+.peaui-table-list__stepper-button--status-complete {
+  border-top-color: var(--peaui-color-success-700);
+  border-right: 1px solid var(--peaui-color-success-700);
+  border-bottom-color: var(--peaui-color-success-700);
+  background-color: var(--peaui-color-success-50);
+  color: var(--peaui-color-grey-700);
+  cursor: pointer;
+}
+
+.peaui-table-list__stepper-button--status-complete.peaui-table-list__stepper-button--first {
+  border-left: 1px solid var(--peaui-color-success-700);
+}
+
+.peaui-table-list__stepper-button--status-complete.peaui-table-list__stepper-button--separate {
+  box-shadow: inset 0 0 0 1px var(--peaui-color-success-700);
+}
+
+.peaui-table-list__stepper-button:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+.peaui-table-list__stepper-button .peaui-info-tooltip {
+  display: inline-flex;
+  align-items: center;
+}
+
+.peaui-table-list__stepper-label {
+  @include set-size-text(xs);
+
+  white-space: nowrap;
+}
+
+.peaui-table-list__stepper-progress-indicator {
+  flex: 0 0 auto;
+}
+
+.peaui-table-list__stepper-progress-indicator .peaui-progress-indicator__track {
+  color: var(--peaui-color-primary-200);
+}
+
+.peaui-table-list__stepper-progress-indicator .peaui-progress-indicator__progress {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__stepper-progress-indicator .peaui-progress-indicator__text {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-table-list__stepper-arrow {
+  @include set-param(width, 0.5rem);
+  @include set-param(height, 0.5rem);
+}
+
+.peaui-table-list__stepper-arrow--collapsed {
+  transform: rotate(0deg);
+}
+
+.peaui-table-list__stepper-arrow--expanded {
+  transform: rotate(180deg);
+}
+
+.peaui-table-list__stepper-complete-icon {
+  color: var(--peaui-color-success-800);
+}
+
+.peaui-table-list .peaui-info-tooltip__content {
+  z-index: 30;
+}
+
+.peaui-table-list__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.fade-in-enter-from,
+.fade-in-leave-to {
+  opacity: 0;
+  transform: translateY(-0.25rem);
+}
+
+@media (max-width: 48rem) {
+  .peaui-table-list {
+    border-radius: 0.75rem;
+  }
+
+  .peaui-table-list__head-cell,
+  .peaui-table-list__check-head-cell,
+  .peaui-table-list__select-head-cell,
+  .peaui-table-list__actions-head-cell,
+  .peaui-table-list__body-cell,
+  .peaui-table-list__check-cell,
+  .peaui-table-list__select-cell,
+  .peaui-table-list__actions-cell,
+  .peaui-table-list__editable-cell,
+  .peaui-table-list__editable-actions-cell,
+  .peaui-table-list__create-row-cell,
+  .peaui-table-list__expanded-cell,
+  .peaui-table-list__empty-inline-cell {
+    padding: 0.75rem;
+  }
+
+  .peaui-table-list__dialog-actions {
+    gap: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-table-list,
+  .peaui-table-list *,
+  .fade-in-enter-active,
+  .fade-in-leave-active {
+    scroll-behavior: auto;
+    transition: none !important;
+  }
+}

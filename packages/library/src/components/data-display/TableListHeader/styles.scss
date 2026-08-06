@@ -1,0 +1,116 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-table-list-header {
+  display: flex;
+  flex-direction: column;
+  @include set-param(gap, 1rem);
+}
+
+.peaui-table-list-header--with-description {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.peaui-table-list-header--with-description > :nth-child(2) {
+  width: 100%;
+}
+
+.peaui-table-list-header__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  @include set-param(gap, 1rem);
+  width: 100%;
+}
+
+.peaui-table-list-header__search {
+  max-width: 33rem;
+  width: 100%;
+}
+
+.peaui-table-list-header__search-area,
+.peaui-table-list-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  @include set-param(gap, 1rem);
+  min-width: 0;
+}
+
+.peaui-table-list-header__search-area {
+  flex: 1 1 24rem;
+}
+
+.peaui-table-list-header__actions {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.peaui-table-list-header__search.peaui-search-input {
+  flex: 1 1 20rem;
+  min-width: min(100%, 18rem);
+}
+
+.peaui-table-list-header__filter-button.peaui-button-action,
+.peaui-table-list-header__filter-reset.peaui-button-action,
+.peaui-table-list-header__create-button.peaui-button-action,
+.peaui-table-list-header__export-button {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.peaui-table-list-header__filter-badge {
+  @include set-param(margin-left, 0.125rem);
+}
+
+.peaui-table-list-header__create-label,
+.peaui-table-list-header__filter-button-label,
+.peaui-table-list-header__filter-reset-label {
+  white-space: nowrap;
+}
+
+.peaui-table-list-header__create-icon,
+.peaui-table-list-header__filter-reset-icon {
+  @include set-param(width, 1rem);
+  @include set-param(height, 1rem);
+  flex: 0 0 auto;
+}
+
+.peaui-table-list-header__filters-drawer {
+  @include set-param(max-width, 32.5rem);
+}
+
+@media (width <= 64rem) {
+  .peaui-table-list-header__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .peaui-table-list-header__search-area,
+  .peaui-table-list-header__actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .peaui-table-list-header__actions {
+    justify-content: flex-start;
+  }
+
+  .peaui-table-list-header__search.peaui-search-input {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (width <= 48rem) {
+  .peaui-table-list-header__create-label {
+    display: none;
+  }
+
+  .peaui-table-list-header__search-area {
+    flex: 1;
+  }
+}

@@ -1,0 +1,66 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-year-picker-button {
+  @include unset-safe;
+
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 9999px;
+  font-weight: 400;
+  color: var(--peaui-color-grey-700);
+  background-color: transparent;
+  user-select: none;
+  cursor: pointer;
+
+  @include set-size-text(m);
+  @include set-param(padding, 0.25rem 0.625rem);
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, border-color, color, box-shadow);
+}
+
+.peaui-form-year-picker-button:hover:enabled {
+  background-color: var(--peaui-color-primary-50);
+}
+
+.peaui-form-year-picker-button:focus-visible {
+  box-shadow: 0 0 0 2px rgb(from var(--peaui-color-primary-400) r g b / 0.35);
+}
+
+.peaui-form-year-picker-button--variant-primary {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-700);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-year-picker-button--variant-primary:hover:enabled {
+  background-color: var(--peaui-color-primary-800);
+}
+
+.peaui-form-year-picker-button--variant-outline {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-grey-0);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-year-picker-button--variant-ghost {
+  background-color: transparent;
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-form-year-picker-button--disabled {
+  cursor: not-allowed;
+  border-color: var(--peaui-color-grey-200);
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-400);
+}
+
+.peaui-form-year-picker-button__label {
+  display: block;
+  min-width: 0;
+  text-align: center;
+}

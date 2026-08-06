@@ -1,0 +1,106 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-selectable-card__wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.peaui-selectable-card {
+  @include unset-safe;
+  cursor: pointer;
+
+  @include set-param(padding-top, 1.125rem);
+  @include set-param(padding-bottom, 1.125rem);
+  @include set-param(padding-left, 1rem);
+  @include set-param(padding-right, 1rem);
+
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  border: 1px solid var(--peaui-color-grey-100);
+  border-radius: 0.5rem;
+
+  background-color: var(--peaui-color-grey-0);
+
+  @include transition(background-color, border, box-shadow);
+  @include outline(var(--peaui-color-primary-700));
+}
+
+.peaui-selectable-card--with-hint {
+  @include set-param(padding-right, 2.75rem);
+}
+
+.peaui-selectable-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.peaui-selectable-card:hover:enabled:not(.peaui-selectable-card--is-readonly) {
+  border-color: var(--peaui-color-primary-700);
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-primary-600) r g b / 0.7);
+}
+
+.peaui-selectable-card__content__title {
+  @include unset-safe;
+  font-weight: 600;
+  text-align: left;
+
+  @include set-size-text(m);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-selectable-card__content__description {
+  @include unset-safe;
+  font-weight: 400;
+  text-align: left;
+
+  @include set-size-text(xs);
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-selectable-card--is-active {
+  cursor: default;
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-50);
+
+  .peaui-selectable-card__content__description {
+    color: var(--peaui-color-primary-700);
+  }
+}
+
+.peaui-selectable-card--is-disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+
+  background-color: var(--peaui-color-grey-50);
+  .peaui-selectable-card__content__description,
+  .peaui-selectable-card__content__title {
+    color: var(--peaui-color-grey-600);
+  }
+}
+
+.peaui-selectable-card--is-readonly {
+  cursor: not-allowed;
+}
+
+.peaui-selectable-card__hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 0.875rem);
+  @include set-param(height, 0.875rem);
+}
+
+.peaui-selectable-card__additional {
+  display: flex;
+  align-items: center;
+}
+
+.peaui-selectable-card__hint {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+}

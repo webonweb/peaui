@@ -1,0 +1,102 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Komponenty/Katalog" />
+
+<style>
+  {`
+    .catalog { max-width: 1080px; margin: 0 auto; color: #172033; }
+    .catalog-header { max-width: 780px; margin-bottom: 34px; }
+    .catalog-kicker { color: #3f8205; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .catalog h1 { margin: 10px 0 14px; font-size: clamp(42px, 6vw, 68px); letter-spacing: -.055em; }
+    .catalog-header p { color: #596679; font-size: 17px; line-height: 1.75; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .catalog-card { min-height: 150px; padding: 24px; border: 1px solid #dce3ec; border-radius: 18px; background: #fff; box-shadow: 0 10px 30px rgba(25,43,69,.05); }
+    .catalog-card__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .catalog-card h2 { margin: 0; font-size: 21px; letter-spacing: -.025em; }
+    .catalog-count { padding: 5px 9px; border-radius: 999px; background: #f4fbe8; color: #3f8205; font-size: 12px; font-weight: 800; }
+    .catalog-card p { margin: 14px 0 0; color: #647084; line-height: 1.65; }
+    .catalog-note { margin-top: 30px; padding: 22px; border: 1px solid #b8d6fc; border-radius: 16px; background: #f2f7ff; color: #29405d; line-height: 1.7; }
+    @media (max-width: 760px) { .catalog-grid { grid-template-columns: 1fr; } }
+  `}
+</style>
+
+export const categories = [
+  {
+    name: "Basic",
+    count: 3,
+    description:
+      "Obrazy, ikony SVG i edycja zdjęć — podstawowe elementy używane przez pozostałe komponenty.",
+  },
+  {
+    name: "Data Display",
+    count: 13,
+    description:
+      "Tabele, karty, nagłówki, etykiety i drzewa do czytelnej prezentacji danych.",
+  },
+  {
+    name: "Data Entry",
+    count: 5,
+    description:
+      "Przyciski, wyszukiwarki, suwaki i karty wyboru zbierające akcje użytkownika.",
+  },
+  {
+    name: "Feedback",
+    count: 6,
+    description:
+      "Komunikaty, powiadomienia, postęp i stany ładowania informujące o wyniku operacji.",
+  },
+  {
+    name: "Form",
+    count: 17,
+    description:
+      "Kompletny zestaw pól formularza, walidacji, wyborów, dat i przesyłania plików.",
+  },
+  {
+    name: "Layout",
+    count: 6,
+    description:
+      "Kontenery, siatka i podziały strony odpowiedzialne za responsywną strukturę widoku.",
+  },
+  {
+    name: "Navigation",
+    count: 9,
+    description:
+      "Linki, breadcrumbs, zakładki, paginacja i kroki prowadzące użytkownika przez aplikację.",
+  },
+  {
+    name: "Overlayer",
+    count: 5,
+    description:
+      "Dialogi, szuflady, popovery i tooltipy wyświetlane nad główną treścią.",
+  },
+];
+
+<div className="catalog">
+  <header className="catalog-header">
+    <div className="catalog-kicker">64 komponenty Vue</div>
+    <h1>Katalog komponentów</h1>
+    <p>
+      Komponenty są uporządkowane według roli w interfejsie. Otwórz sekcję
+      <strong> Vue komponenty</strong> w lewym panelu, aby przejść do działających przykładów,
+      wariantów oraz kompletnego API.
+    </p>
+  </header>
+
+<div className="catalog-grid">
+  {categories.map((category) => (
+    <article className="catalog-card" key={category.name}>
+      <div className="catalog-card__top">
+        <h2>{category.name}</h2>
+        <span className="catalog-count">{category.count}</span>
+      </div>
+      <p>{category.description}</p>
+    </article>
+  ))}
+</div>
+
+  <div className="catalog-note">
+    <strong>Wskazówka:</strong> wyszukiwarka w lewym górnym rogu filtruje wszystkie historie.
+    Warianty komponentu są widoczne jako osobne pozycje pod jego nazwą, a panel Controls
+    pozwala zmieniać dane wejściowe bez edytowania kodu.
+  </div>
+</div>

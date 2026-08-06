@@ -16,13 +16,18 @@ export const STORY_CONTENT_TAG_NAME = "peaui-story-content";
 
 const styles = `
   :host {
+    box-sizing: border-box;
     display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .story-content {
+    box-sizing: border-box;
     display: grid;
-    width: 800px;
-    max-width: 100%;
+    width: min(800px, 100%);
+    min-width: 0;
     margin: 1.5rem auto 0;
     padding-bottom: 2.5rem;
     overflow: visible;
@@ -31,7 +36,13 @@ const styles = `
     row-gap: 1.5rem;
   }
 
+  .story-content > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .story-content__preview {
+    box-sizing: border-box;
     position: relative;
     display: flex;
     min-width: 0;
@@ -61,6 +72,16 @@ const styles = `
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  @media (max-width: 48rem) {
+    .story-content {
+      margin-top: 0.5rem;
+    }
+
+    .story-content__preview {
+      padding: 1rem;
+    }
   }
 `;
 

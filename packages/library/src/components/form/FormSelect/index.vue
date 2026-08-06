@@ -393,12 +393,10 @@ function syncPopoverPlacement(): void {
   const availableAbove = rect.top;
   const availableBelow = window.innerHeight - rect.bottom;
   const preferredPlacement = placement ?? 'bottom';
-  const preferredSpace =
-    preferredPlacement === 'bottom' ? availableBelow : availableAbove;
+  const preferredSpace = preferredPlacement === 'bottom' ? availableBelow : availableAbove;
   const fallbackPlacement: SelectPopoverPlacement =
     preferredPlacement === 'bottom' ? 'top' : 'bottom';
-  const fallbackSpace =
-    fallbackPlacement === 'bottom' ? availableBelow : availableAbove;
+  const fallbackSpace = fallbackPlacement === 'bottom' ? availableBelow : availableAbove;
 
   popoverPlacement.value =
     preferredSpace >= estimatedPopoverHeight || preferredSpace >= fallbackSpace

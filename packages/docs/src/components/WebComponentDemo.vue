@@ -332,6 +332,23 @@ function handleComponentEvent(name: string, event: Event): void {
   const value = event instanceof CustomEvent ? event.detail : undefined;
   logEvent(name, value);
 
+  if (props.definition.name === 'TableList') {
+    if (name === 'on:select:row' && Array.isArray(value)) {
+      interactiveProps.value = { ...interactiveProps.value, selectedRows: value };
+      void renderPreview();
+    }
+    if (name === 'on:check:row' && value && typeof value === 'object') {
+      const detail = Array.isArray(value) ? value[0] : value;
+      if (detail && typeof detail === 'object') {
+        interactiveProps.value = {
+          ...interactiveProps.value,
+          currentCheckedRow: (detail as Record<string, unknown>).id,
+        };
+        void renderPreview();
+      }
+    }
+  }
+
   if (!name.startsWith('update:')) return;
   const modelName = name.slice('update:'.length);
   const inputName = findInputName(modelName);

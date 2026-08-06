@@ -12,6 +12,8 @@ import {
   type ComponentPublicInstance,
 } from 'vue';
 
+defineOptions({ inheritAttrs: false });
+
 type ButtonSize = 'xs' | 's' | 'm' | 'l';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 

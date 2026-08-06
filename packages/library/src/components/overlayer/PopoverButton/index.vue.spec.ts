@@ -96,6 +96,19 @@ describe('PopoverButtonComponent', () => {
     expect(wrapper.get('button').attributes('aria-haspopup')).toBe('listbox');
   });
 
+  it('forwards host classes to the trigger without leaking attrs across fragment roots', () => {
+    const wrapper = mount(PopoverButtonComponent, {
+      attrs: { class: 'export-trigger' },
+      slots: {
+        default: 'Trigger text',
+        content: 'Popover content',
+      },
+    });
+
+    expect(wrapper.get('button').classes()).toContain('export-trigger');
+    expect(wrapper.get('[popover]').classes()).not.toContain('export-trigger');
+  });
+
   it('applies default placement class (top)', () => {
     const wrapper = mount(PopoverButtonComponent, {
       props: { ariaLabel: 'A11y label' },

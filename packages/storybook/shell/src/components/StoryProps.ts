@@ -11,10 +11,14 @@ export const STORY_PROPS_TAG_NAME = "peaui-story-props";
 const styles = `
   :host {
     display: block;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .story-props {
     display: grid;
+    min-width: 0;
+    max-width: 100%;
     grid-template-rows: repeat(2, max-content);
     row-gap: 1rem;
   }
@@ -28,6 +32,7 @@ const styles = `
 
   .story-props__description {
     margin: 0;
+    overflow-wrap: anywhere;
     color: light-dark(rgba(0, 0, 0, 0.6), #ffffff);
     font-size: 1rem;
     line-height: 160%;
@@ -39,6 +44,11 @@ const styles = `
     color: light-dark(#6b7280, #ffffff);
     font-size: 0.875rem;
     text-align: left;
+  }
+
+  .story-props__table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   .story-props__thead {
@@ -113,7 +123,7 @@ export class StoryPropsElement extends HTMLElement {
             </table>
           </div>
         </div>
-      `
+      `,
     );
 
     const rowsTarget =
@@ -156,10 +166,10 @@ export function defineStoryProps(): typeof StoryPropsElement {
 }
 
 export function createStoryProps(
-  propsList: StoryPropItem[] = []
+  propsList: StoryPropItem[] = [],
 ): StoryPropsElement {
   const element = document.createElement(
-    STORY_PROPS_TAG_NAME
+    STORY_PROPS_TAG_NAME,
   ) as StoryPropsElement;
 
   element.propsList = propsList;

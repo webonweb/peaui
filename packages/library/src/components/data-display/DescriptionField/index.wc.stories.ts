@@ -132,10 +132,11 @@ function createRender(
   return (args: Partial<DescriptionFieldStoryArgs>) => {
     const wrapper = document.createElement('div');
 
-    wrapper.style.width = 'max-content';
+    wrapper.style.width = '100%';
     wrapper.style.margin = 'auto';
     wrapper.style.maxWidth = '42rem';
     wrapper.style.minWidth = '0';
+    wrapper.style.boxSizing = 'border-box';
     wrapper.appendChild((factory ?? ((nextArgs) => createDescriptionField(nextArgs)))(args));
 
     return createStoryContent({

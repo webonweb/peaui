@@ -144,6 +144,30 @@ describe('TableHeadColumn.vue', () => {
     expect(wrapper.emitted('on:lock')).toEqual([['name']]);
   });
 
+  it('provides an accessible fallback for a column hint', () => {
+    const wrapper = mount(TableHeadColumn, {
+      props: {
+        columns: [
+          {
+            key: 'name',
+            label: 'Nazwa',
+            hint: true,
+            hintColumn: 'Pełna nazwa rekordu.',
+          },
+        ],
+        sortType: 'ASC',
+      },
+      global: {
+        stubs: {
+          InfoTooltip: InfoTooltipStub,
+          SvgIcon: SvgIconStub,
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('Pełna nazwa rekordu.');
+  });
+
   it('applies semantic border classes for left and right column dividers', () => {
     const wrapper = mount(TableHeadColumn, {
       props: {

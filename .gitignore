@@ -1,6 +1,9 @@
 node_modules/
 dist/
 storybook-static/
+test-results/
+playwright-report/
+.pnpm-store/
 packages/react/node_modules/
 packages/react/node_modules/*
 packages/vue/node_modules/

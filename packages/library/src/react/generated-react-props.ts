@@ -107,9 +107,11 @@ export type PeauiOption = {
 export type PeauiTableColumn = PeauiRecord & {
   key: string;
   label?: string;
+  canSort?: boolean;
   sortable?: boolean;
   type?: string;
   actionName?: string;
+  actionLabel?: string;
   inline?: boolean;
   manage?: PeauiRecord;
 };

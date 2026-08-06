@@ -286,7 +286,7 @@ function handleToggleLockColumn(column: TableColumn): void {
           <SvgIcon :class="`${TABLE_LIST_CLASS}__hint-icon`" name="hint" aria-hidden="true" />
 
           <template #description>
-            <slot :column="column" name="hint" />
+            <slot :column="column" name="hint">{{ column.hintColumn || column.label }}</slot>
           </template>
         </InfoTooltip>
       </div>

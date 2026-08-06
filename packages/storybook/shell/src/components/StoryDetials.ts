@@ -10,6 +10,8 @@ export const STORY_DETAILS_TAG_NAME = "peaui-story-details";
 const styles = `
   :host {
     display: block;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .story-details {
@@ -27,12 +29,14 @@ const styles = `
   .story-details__title {
     margin: 0;
     padding: 0;
-    font-size: 3rem;
+    overflow-wrap: anywhere;
+    font-size: clamp(2rem, 8vw, 3rem);
     font-weight: 700;
   }
 
   .story-details__description {
     margin: 0;
+    overflow-wrap: anywhere;
     color: light-dark(rgba(0, 0, 0, 0.6), #ffffff);
     font-size: 1rem;
     line-height: 160%;
@@ -79,14 +83,14 @@ export class StoryDetialsElement extends HTMLElement {
           </div>
           <p class="story-details__description"></p>
         </div>
-      `
+      `,
     );
 
     const titleElement = shadowRoot.querySelector<HTMLHeadingElement>(
-      ".story-details__title"
+      ".story-details__title",
     );
     const descriptionElement = shadowRoot.querySelector<HTMLParagraphElement>(
-      ".story-details__description"
+      ".story-details__description",
     );
 
     if (titleElement) {
@@ -108,10 +112,10 @@ export function defineStoryDetials(): typeof StoryDetialsElement {
 }
 
 export function createStoryDetials(
-  init: Partial<Pick<StoryDetialsElement, "description" | "name">> = {}
+  init: Partial<Pick<StoryDetialsElement, "description" | "name">> = {},
 ): StoryDetialsElement {
   const element = document.createElement(
-    STORY_DETAILS_TAG_NAME
+    STORY_DETAILS_TAG_NAME,
   ) as StoryDetialsElement;
 
   if (init.name !== undefined) {

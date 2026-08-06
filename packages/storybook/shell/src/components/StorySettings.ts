@@ -9,17 +9,24 @@ import {
 export const STORY_SETTINGS_TAG_NAME = "peaui-story-settings";
 
 type SizeKey =
-  "peaui-size-s" | "peaui-size-md" | "peaui-size-lg" | "peaui-size-xl";
+  | "peaui-size-s"
+  | "peaui-size-md"
+  | "peaui-size-lg"
+  | "peaui-size-xl";
 
 const styles = `
   :host {
     display: block;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .story-settings {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .story-settings__title {
@@ -30,6 +37,7 @@ const styles = `
   .story-settings__actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     column-gap: 0.5rem;
   }
 

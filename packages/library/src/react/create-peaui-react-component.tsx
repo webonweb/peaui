@@ -13,6 +13,9 @@ import {
   type CSSProperties,
   type ElementType,
   type ForwardedRef,
+  type KeyboardEventHandler,
+  type MouseEventHandler,
+  type PointerEventHandler,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -42,14 +45,25 @@ type Option = {
   value?: unknown;
 };
 type TableColumn = {
+  actionLabel?: string;
   actionName?: string;
   align?: string;
+  border?: 'left' | 'right';
+  canCopy?: boolean;
+  canSort?: boolean;
+  hintColumn?: string;
   inline?: boolean;
   key: string;
   label?: string;
+  manage?: Record<string, unknown>;
   name?: string;
+  resolve?: (record: Record<string, unknown>) => unknown;
   sortable?: boolean;
+  statusDictionary?: Record<string, string>;
+  steps?: (record: Record<string, unknown>) => Array<Record<string, unknown>>;
   type?: string;
+  visible?: boolean;
+  withLock?: boolean;
   width?: string | number;
 };
 
@@ -99,9 +113,18 @@ const common = (props: RuntimeProps) => ({
   'aria-label': text(props, 'ariaLabel') || text(props, 'aria-label') || undefined,
   'aria-describedby': text(props, 'aria-describedby') || undefined,
   'aria-labelledby': text(props, 'aria-labelledby') || undefined,
-  onClick: typeof props.onClick === 'function' ? props.onClick : undefined,
-  onKeyDown: typeof props.onKeyDown === 'function' ? props.onKeyDown : undefined,
-  onPointerDown: typeof props.onPointerDown === 'function' ? props.onPointerDown : undefined,
+  onClick:
+    typeof props.onClick === 'function'
+      ? (props.onClick as MouseEventHandler<HTMLElement>)
+      : undefined,
+  onKeyDown:
+    typeof props.onKeyDown === 'function'
+      ? (props.onKeyDown as KeyboardEventHandler<HTMLElement>)
+      : undefined,
+  onPointerDown:
+    typeof props.onPointerDown === 'function'
+      ? (props.onPointerDown as PointerEventHandler<HTMLElement>)
+      : undefined,
 });
 
 type NativePopoverElement = HTMLDivElement & {
@@ -119,6 +142,73 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
     target instanceof Element &&
     Boolean(target.closest('a, button, input, select, textarea, [role="button"]'))
   );
+}
+
+function copyTextToClipboard(value: string): void {
+  try {
+    void navigator.clipboard.writeText(value).catch(() => undefined);
+  } catch {
+    // Clipboard API is unavailable in some browsers and non-secure contexts.
+  }
+}
+
+type ReactTableSortDescriptor = {
+  direction: 'asc' | 'desc';
+  key: string;
+};
+
+function normalizeReactTableSortDescriptors(value: unknown): ReactTableSortDescriptor[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .flatMap((entry): ReactTableSortDescriptor[] => {
+      if (typeof entry !== 'object' || entry === null) return [];
+
+      const record = entry as Record<string, unknown>;
+      const descriptorKey = typeof record.key === 'string' ? record.key : undefined;
+      const legacyEntry = Object.entries(record).find(
+        ([key, direction]) =>
+          key !== 'key' &&
+          key !== 'direction' &&
+          typeof direction === 'string' &&
+          ['asc', 'desc'].includes(direction.toLowerCase()),
+      );
+      const key = descriptorKey ?? legacyEntry?.[0];
+      const rawDirection = descriptorKey ? record.direction : legacyEntry?.[1];
+
+      if (!key || typeof rawDirection !== 'string') return [];
+
+      return [
+        {
+          direction: rawDirection.toLowerCase() === 'desc' ? 'desc' : 'asc',
+          key,
+        },
+      ];
+    })
+    .slice(0, 2);
+}
+
+function getNextReactTableSortDescriptors(
+  current: ReactTableSortDescriptor[],
+  key: string,
+): ReactTableSortDescriptor[] {
+  const currentIndex = current.findIndex((entry) => entry.key === key);
+
+  if (currentIndex === 0) {
+    return [
+      { key, direction: current[0]?.direction === 'asc' ? 'desc' : 'asc' },
+      ...current.slice(1),
+    ];
+  }
+
+  if (currentIndex > 0) {
+    const selected = current[currentIndex];
+    return selected ? [selected, ...current.filter((_, index) => index !== currentIndex)] : current;
+  }
+
+  const next: ReactTableSortDescriptor[] = [{ key, direction: 'asc' }, ...current];
+
+  return next.slice(0, 2);
 }
 
 function useNativePopover(open: boolean): React.RefObject<NativePopoverElement | null> {
@@ -2901,11 +2991,180 @@ function TreeNode({
   );
 }
 
+function tableCellValue(record: Record<string, unknown>, column: TableColumn): unknown {
+  const value = record[column.key];
+  if (!column.name || typeof value !== 'object' || value === null) return value;
+  return (value as Record<string, unknown>)[column.name];
+}
+
+function resolveTableActions(
+  column: TableColumn,
+  record: Record<string, unknown>,
+): Array<Record<string, unknown>> {
+  const resolved = column.resolve?.(record);
+  return Array.isArray(resolved)
+    ? resolved.filter(
+        (entry): entry is Record<string, unknown> => typeof entry === 'object' && entry !== null,
+      )
+    : [];
+}
+
+function TableCellContent({
+  column,
+  props,
+  record,
+  rowIndex,
+}: {
+  column: TableColumn;
+  props: RuntimeProps;
+  record: Record<string, unknown>;
+  rowIndex: number;
+}): ReactNode {
+  const value = tableCellValue(record, column);
+  const display = value === undefined || value === null || value === '' ? '-/-' : String(value);
+  const type = column.type ?? 'text';
+
+  if (type === 'index')
+    return <span className="peaui-table-list__index-column">{rowIndex + 1}</span>;
+  if (type === 'empty') return <span className="peaui-table-list__empty-column">-/-</span>;
+  if (type === 'array')
+    return (
+      <span className="peaui-table-list__array-column">
+        {Array.isArray(value) && value.length ? value.join(', ') : '-/-'}
+      </span>
+    );
+  if (type === 'date') {
+    const date =
+      typeof value === 'string' || typeof value === 'number' ? new Date(value) : undefined;
+    const formatted = date && !Number.isNaN(date.valueOf()) ? date.toLocaleDateString() : display;
+    return <time dateTime={typeof value === 'string' ? value : undefined}>{formatted}</time>;
+  }
+  if (type === 'status' || type === 'tag') {
+    const label = type === 'status' ? (value ? 'TAK' : 'NIE') : display;
+    const variant =
+      type === 'status'
+        ? value
+          ? 'green'
+          : 'red'
+        : (column.statusDictionary?.[display] ?? 'green');
+    return (
+      <span
+        className={cx(
+          'peaui-tag-chip',
+          'peaui-tag-chip--size-xs',
+          `peaui-tag-chip--variant-${variant}`,
+        )}
+      >
+        {label}
+      </span>
+    );
+  }
+  if (type === 'link') {
+    const href = /^(https?:\/\/|\/|#|mailto:|tel:|\.\/|\.\.\/)/.test(display) ? display : undefined;
+    const label = `Otwórz powiązanie ${display}`;
+    return href ? (
+      <a aria-label={label} className="peaui-table-list__link-column" href={href}>
+        {display}
+      </a>
+    ) : (
+      <button
+        aria-label={label}
+        className="peaui-table-list__link-column"
+        type="button"
+        onClick={() =>
+          callback(props, 'onAction')?.(record.id, column.actionName ?? 'link', record)
+        }
+      >
+        {display}
+      </button>
+    );
+  }
+  if (type === 'action' || type === 'editAction' || type === 'EditActionColumn') {
+    const label = column.actionLabel ?? (type === 'action' ? 'Akcja' : 'Edytuj');
+    return (
+      <button
+        aria-label={`${label}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+        className={cx(
+          'peaui-button-action',
+          'peaui-button-action--size-xs',
+          'peaui-button-action--variant-secondary',
+          type === 'action'
+            ? 'peaui-table-list__actions-simple-button'
+            : 'peaui-table-list__edit-action-button',
+        )}
+        type="button"
+        onClick={() =>
+          callback(props, 'onAction')?.(
+            record.id,
+            column.actionName ?? (type === 'action' ? 'action' : 'edit-inline'),
+            record,
+          )
+        }
+      >
+        {label}
+      </button>
+    );
+  }
+  if (type === 'stepper' && column.steps) {
+    const steps = column.steps(record);
+    return (
+      <ol
+        aria-label={`Etapy dla ${String(record.name ?? `wiersza ${rowIndex + 1}`)}`}
+        className="peaui-table-list__stepper-list"
+      >
+        {steps.map((step, index) => (
+          <li
+            className={cx(
+              'peaui-table-list__stepper-button',
+              `peaui-table-list__stepper-button--status-${String(step.status ?? 'default')}`,
+            )}
+            key={String(step.key ?? index)}
+          >
+            {String(step.label ?? step.key ?? index + 1)}
+          </li>
+        ))}
+      </ol>
+    );
+  }
+  if (type === 'expandable') {
+    return (
+      <button
+        aria-label={`Pokaż szczegóły: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+        className="peaui-table-list__expandable-button"
+        type="button"
+        onClick={() => callback(props, 'onAction')?.(record.id, 'expand', record)}
+      >
+        <span className="peaui-table-list__expandable-value">{display}</span>
+        <span aria-hidden="true">›</span>
+      </button>
+    );
+  }
+
+  const content = <span className="peaui-table-list__text-value">{display}</span>;
+  if (!column.canCopy) return content;
+  return (
+    <span className="peaui-table-list__body-cell-content peaui-table-list__body-cell-content--copyable">
+      {content}
+      <button
+        aria-label={`Kopiuj ${column.label ?? column.key}: ${display}`}
+        className="peaui-table-list__copy-button"
+        type="button"
+        onClick={() => copyTextToClipboard(display)}
+      >
+        <Svg className="peaui-table-list__copy-icon" name="copy" />
+      </button>
+    </span>
+  );
+}
+
 function TableRenderer({
   forwardedRef,
   ...props
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const kind = text(props, '__name');
+  const [hiddenColumnKeys, setHiddenColumnKeys] = useState<Set<string>>(new Set());
+  useEffect(() => setHiddenColumnKeys(new Set()), [props.columns]);
+
   const [filtersOpen, setFiltersOpen] = useModel<boolean>(props, 'filtersOpen', false);
   if (kind === 'TableListHeader')
     return (
@@ -3044,7 +3303,12 @@ function TableRenderer({
           : String(index);
     return [
       {
+        actionLabel: typeof record.actionLabel === 'string' ? record.actionLabel : undefined,
         actionName: typeof record.actionName === 'string' ? record.actionName : undefined,
+        border: record.border === 'left' || record.border === 'right' ? record.border : undefined,
+        canCopy: record.canCopy === true,
+        canSort: record.canSort === true,
+        hintColumn: typeof record.hintColumn === 'string' ? record.hintColumn : undefined,
         inline: record.inline === true,
         key,
         label:
@@ -3053,13 +3317,42 @@ function TableRenderer({
             : typeof record.title === 'string'
               ? record.title
               : key,
-        sortable: record.sortable === true,
+        manage:
+          typeof record.manage === 'object' && record.manage !== null
+            ? (record.manage as Record<string, unknown>)
+            : undefined,
+        resolve:
+          typeof record.resolve === 'function'
+            ? (record.resolve as (row: Record<string, unknown>) => unknown)
+            : undefined,
+        sortable: record.canSort === true || record.sortable === true,
+        statusDictionary:
+          typeof record.statusDictionary === 'object' && record.statusDictionary !== null
+            ? (record.statusDictionary as Record<string, string>)
+            : undefined,
+        steps:
+          typeof record.steps === 'function'
+            ? (record.steps as (row: Record<string, unknown>) => Array<Record<string, unknown>>)
+            : undefined,
         type: typeof record.type === 'string' ? record.type : undefined,
+        visible: record.visible !== false,
+        width:
+          typeof record.width === 'string' || typeof record.width === 'number'
+            ? record.width
+            : undefined,
+        withLock: record.withLock === true,
       },
     ];
   });
+  const visibleColumns = columns.filter(
+    (column) => column.visible !== false && !hiddenColumnKeys.has(column.key),
+  );
   const records = Array.isArray(props.records) ? props.records : [];
   const selected = new Set(Array.isArray(props.selectedRows) ? props.selectedRows.map(String) : []);
+  const currentCheckedRow = String(props.currentCheckedRow ?? '');
+  const activeSortColumns = bool(props, 'canMultiSort')
+    ? normalizeReactTableSortDescriptors(props.sortColumns)
+    : [];
   const renderCell =
     typeof props.renderCell === 'function'
       ? (props.renderCell as (
@@ -3079,7 +3372,37 @@ function TableRenderer({
         props.className,
       )}
       ref={forwardedRef as ForwardedRef<HTMLDivElement>}
+      aria-busy={bool(props, 'isLoading') || undefined}
     >
+      {bool(props, 'canHideColumns') ? (
+        <details className="peaui-table-list__head-actions-popover">
+          <summary className="peaui-table-list__head-actions-trigger">Widoczność kolumn</summary>
+          <fieldset className="peaui-table-list__head-actions-menu">
+            <legend className="peaui-table-list__head-actions-title">Widoczne kolumny</legend>
+            {columns.map((column) => (
+              <label className="peaui-table-list__head-actions-option" key={column.key}>
+                <input
+                  checked={!hiddenColumnKeys.has(column.key)}
+                  disabled={
+                    column.withLock ||
+                    (!hiddenColumnKeys.has(column.key) && visibleColumns.length <= 3)
+                  }
+                  type="checkbox"
+                  onChange={(event) => {
+                    setHiddenColumnKeys((current) => {
+                      const next = new Set(current);
+                      if (event.target.checked) next.delete(column.key);
+                      else if (columns.length - next.size > 3) next.add(column.key);
+                      return next;
+                    });
+                  }}
+                />
+                <span>{column.label}</span>
+              </label>
+            ))}
+          </fieldset>
+        </details>
+      ) : null}
       {bool(props, 'canCreate') ? (
         <button
           className="peaui-table-list__create"
@@ -3105,31 +3428,74 @@ function TableRenderer({
                 <span className="peaui-table-list__sr-only">Wybór</span>
               </th>
             ) : null}
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                className={cx(
-                  'peaui-table-list__head-cell',
-                  column.sortable && 'peaui-table-list__head-cell--sortable',
-                )}
-                scope="col"
-              >
-                <button
-                  className={cx(
-                    'peaui-table-list__head-button',
-                    column.sortable && 'peaui-table-list__head-button--sortable',
-                  )}
-                  disabled={!column.sortable}
-                  type="button"
-                  onClick={() => callback(props, 'onSort')?.(column.key)}
-                >
-                  <span className="peaui-table-list__head-content">{column.label}</span>
-                  {column.sortable ? (
-                    <Svg className="peaui-table-list__sort-icon" name="sort" />
-                  ) : null}
-                </button>
+            {bool(props, 'canCheckRows') ? (
+              <th className="peaui-table-list__check-head-cell" scope="col">
+                <span className="peaui-table-list__sr-only">Wybór pojedynczy</span>
               </th>
-            ))}
+            ) : null}
+            {visibleColumns.map((column) => {
+              const activeMultiSort = activeSortColumns.find((entry) => entry.key === column.key);
+              const activeSortDirection = bool(props, 'canMultiSort')
+                ? activeMultiSort?.direction
+                : text(props, 'sortColumn') === column.key
+                  ? text(props, 'sortType', 'desc').toLowerCase() === 'asc'
+                    ? 'asc'
+                    : 'desc'
+                  : undefined;
+
+              return (
+                <th
+                  key={column.key}
+                  className={cx(
+                    'peaui-table-list__head-cell',
+                    column.sortable && 'peaui-table-list__head-cell--sortable',
+                    column.border === 'left' && 'peaui-table-list__head-cell--border-left',
+                    column.border === 'right' && 'peaui-table-list__head-cell--border-right',
+                    column.withLock && 'peaui-table-list__head-cell--locked',
+                  )}
+                  scope="col"
+                  style={{ width: column.width }}
+                  aria-sort={
+                    activeSortDirection === 'asc'
+                      ? 'ascending'
+                      : activeSortDirection === 'desc'
+                        ? 'descending'
+                        : undefined
+                  }
+                  data-sort-priority={
+                    activeMultiSort ? activeSortColumns.indexOf(activeMultiSort) + 1 : undefined
+                  }
+                >
+                  <button
+                    className={cx(
+                      'peaui-table-list__head-button',
+                      column.sortable && 'peaui-table-list__head-button--sortable',
+                    )}
+                    aria-disabled={!column.sortable || undefined}
+                    type="button"
+                    onClick={() => {
+                      if (!column.sortable) return;
+
+                      callback(
+                        props,
+                        'onSort',
+                      )?.(
+                        bool(props, 'canMultiSort')
+                          ? getNextReactTableSortDescriptors(activeSortColumns, column.key)
+                          : column.key,
+                      );
+                    }}
+                  >
+                    <span className="peaui-table-list__head-content" title={column.hintColumn}>
+                      {column.label}
+                    </span>
+                    {column.sortable ? (
+                      <Svg className="peaui-table-list__sort-icon" name="sort" />
+                    ) : null}
+                  </button>
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody className="peaui-table-list__body">
@@ -3184,35 +3550,100 @@ function TableRenderer({
                     />
                   </td>
                 ) : null}
-                {columns.map((column) => (
-                  <td key={column.key} className="peaui-table-list__body-cell">
+                {bool(props, 'canCheckRows') ? (
+                  <td className="peaui-table-list__check-cell">
+                    <input
+                      aria-label={`Wybierz wiersz ${rowIndex + 1}`}
+                      checked={currentCheckedRow === id}
+                      name={`${text(props, 'id', 'table')}-checked-row`}
+                      type="radio"
+                      onChange={() => callback(props, 'onCheckRow')?.(record)}
+                    />
+                  </td>
+                ) : null}
+                {visibleColumns.map((column) => (
+                  <td
+                    key={column.key}
+                    className={cx(
+                      'peaui-table-list__body-cell',
+                      column.border === 'left' && 'peaui-table-list__body-cell--border-left',
+                      column.border === 'right' && 'peaui-table-list__body-cell--border-right',
+                      column.withLock && 'peaui-table-list__body-cell--locked',
+                    )}
+                    style={{ width: column.width }}
+                  >
                     {renderCell ? (
                       renderCell(column.key, record, rowIndex)
-                    ) : column.inline ? (
-                      <input
-                        aria-label={`Edytuj ${column.label ?? column.key}`}
+                    ) : column.resolve ? (
+                      <div className="peaui-table-list__actions-simple">
+                        {resolveTableActions(column, record).map((action, actionIndex) => {
+                          const item = action;
+                          const actionKey = String(item.key ?? actionIndex);
+                          return (
+                            <button
+                              aria-label={`${String(item.label ?? actionKey)}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+                              className="peaui-table-list__actions-simple-button"
+                              key={actionKey}
+                              type="button"
+                              onClick={() =>
+                                callback(props, 'onAction')?.(record.id, actionKey, record)
+                              }
+                            >
+                              {String(item.label ?? actionKey)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (column.inline || (bool(props, 'editable') && column.manage)) &&
+                      String(column.manage?.type ?? 'text') === 'select' ? (
+                      <select
+                        aria-label={`${column.label ?? column.key}, wiersz ${rowIndex + 1}`}
                         defaultValue={String(record[column.key] ?? '')}
                         onChange={(event) =>
                           callback(props, 'onChangeValue')?.(record.id, event.target.value)
                         }
-                      />
-                    ) : column.type === 'action' || column.type === 'editAction' ? (
-                      <button
-                        aria-label={`${column.label ?? column.key}: ${String(record[column.key] ?? '')}`}
-                        type="button"
-                        onClick={() =>
-                          callback(props, 'onAction')?.(
+                      >
+                        {(Array.isArray(column.manage?.options) ? column.manage.options : []).map(
+                          (option, optionIndex) => {
+                            const item = option as Record<string, unknown>;
+                            return (
+                              <option
+                                key={String(item.value ?? optionIndex)}
+                                value={String(item.value ?? '')}
+                              >
+                                {String(item.label ?? item.value ?? '')}
+                              </option>
+                            );
+                          },
+                        )}
+                      </select>
+                    ) : column.inline || (bool(props, 'editable') && column.manage) ? (
+                      <input
+                        aria-label={`${column.label ?? column.key}, wiersz ${rowIndex + 1}`}
+                        defaultValue={String(record[column.key] ?? '')}
+                        max={typeof column.manage?.max === 'number' ? column.manage.max : undefined}
+                        maxLength={
+                          typeof column.manage?.maxLength === 'number'
+                            ? column.manage.maxLength
+                            : undefined
+                        }
+                        min={typeof column.manage?.min === 'number' ? column.manage.min : undefined}
+                        required={column.manage?.required === true}
+                        step={
+                          typeof column.manage?.step === 'number' ? column.manage.step : undefined
+                        }
+                        type={column.manage?.type === 'number' ? 'number' : 'text'}
+                        onChange={(event) =>
+                          callback(props, 'onChangeValue')?.(
                             record.id,
-                            column.actionName ??
-                              (column.type === 'editAction' ? 'edit-inline' : 'edit'),
-                            record,
+                            column.manage?.type === 'number'
+                              ? Number(event.target.value)
+                              : event.target.value,
                           )
                         }
-                      >
-                        {String(record[column.key] ?? column.label ?? column.key)}
-                      </button>
+                      />
                     ) : (
-                      String(record[column.key] ?? '—')
+                      TableCellContent({ column, props, record, rowIndex })
                     )}
                   </td>
                 ))}

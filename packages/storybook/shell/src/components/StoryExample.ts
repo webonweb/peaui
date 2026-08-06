@@ -12,9 +12,13 @@ export const STORY_EXAMPLE_TAG_NAME = "peaui-story-example";
 const styles = `
   :host {
     display: block;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .story-source {
+    box-sizing: border-box;
+    max-width: 100%;
     overflow-x: auto;
     border-radius: 0.5rem;
     padding: 0 1rem;
@@ -32,6 +36,8 @@ const styles = `
   }
 
   .story-source pre {
+    width: max-content;
+    min-width: 100%;
     margin: 0;
     background: transparent;
   }
@@ -43,7 +49,7 @@ function getSingletonHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       langs: ["vue", "ts", "js", "html", "css", "json", "bash"],
-      themes: ["github-light", "github-dark"],
+      themes: ["github-light-high-contrast", "github-dark-high-contrast"],
     });
   }
 
@@ -93,7 +99,7 @@ export class StoryExampleElement extends HTMLElement {
         <div class="story-source">
           <div data-role="code"></div>
         </div>
-      `
+      `,
     );
 
     void this.#renderCode(shadowRoot);
@@ -117,8 +123,8 @@ export class StoryExampleElement extends HTMLElement {
     const html = highlighter.codeToHtml(this.code, {
       lang: this.language,
       themes: {
-        light: "github-light",
-        dark: "github-dark",
+        light: "github-light-high-contrast",
+        dark: "github-dark-high-contrast",
       },
     });
 
@@ -144,10 +150,10 @@ export function defineStoryExample(): typeof StoryExampleElement {
 }
 
 export function createStoryExample(
-  init: Partial<Pick<StoryExampleElement, "code" | "language">> = {}
+  init: Partial<Pick<StoryExampleElement, "code" | "language">> = {},
 ): StoryExampleElement {
   const element = document.createElement(
-    STORY_EXAMPLE_TAG_NAME
+    STORY_EXAMPLE_TAG_NAME,
   ) as StoryExampleElement;
 
   if (init.language !== undefined) {

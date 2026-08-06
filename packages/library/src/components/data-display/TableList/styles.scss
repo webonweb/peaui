@@ -30,7 +30,7 @@
 }
 
 .peaui-table-list--loading .peaui-table-list__table {
-  opacity: 0.6;
+  opacity: 0.75;
   filter: blur(1px);
 }
 
@@ -158,8 +158,8 @@
   @include set-size-text(s);
 
   box-shadow:
-    var(--peaui-table-list-cell-border-left-shadow), var(--peaui-table-list-cell-border-right-shadow),
-    var(--peaui-table-list-cell-lock-shadow);
+    var(--peaui-table-list-cell-border-left-shadow),
+    var(--peaui-table-list-cell-border-right-shadow), var(--peaui-table-list-cell-lock-shadow);
   font-weight: 500;
   color: var(--peaui-color-grey-700);
   background-color: inherit;
@@ -169,8 +169,8 @@
 .peaui-table-list__body-cell,
 .peaui-table-list__editable-cell {
   box-shadow:
-    var(--peaui-table-list-cell-border-left-shadow), var(--peaui-table-list-cell-border-right-shadow),
-    var(--peaui-table-list-cell-lock-shadow);
+    var(--peaui-table-list-cell-border-left-shadow),
+    var(--peaui-table-list-cell-border-right-shadow), var(--peaui-table-list-cell-lock-shadow);
 }
 
 .peaui-table-list__head-cell--locked,

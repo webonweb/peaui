@@ -11,6 +11,7 @@
 }
 
 .peaui-search-input__field {
+  box-sizing: border-box;
   position: relative;
   display: flex;
   align-items: center;
@@ -114,7 +115,7 @@
   position: absolute;
   width: auto;
   flex-shrink: 0;
-  right: -2px;
+  right: 0;
   align-self: stretch;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;

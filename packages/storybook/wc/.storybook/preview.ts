@@ -1,8 +1,11 @@
-import type { Preview } from '@storybook/web-components-vite';
+import type { Preview } from "@storybook/web-components-vite";
+
+import "../../../library/src/styles.scss";
+import "../../preview.css";
 
 const preview: Preview = {
   parameters: {
-    layout: 'centered',
+    layout: "padded",
     controls: {
       matchers: {
         color: /(background|color)$/i,

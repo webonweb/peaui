@@ -239,7 +239,11 @@ const emit = defineEmits<{
   ): void;
   (e: 'on:createRecord'): void;
   /** Prefer this correctly spelled event for row double-clicks. */
-  (e: 'on:dblclick', record: string | number | undefined, currentRecord?: Record<string, any>): void;
+  (
+    e: 'on:dblclick',
+    record: string | number | undefined,
+    currentRecord?: Record<string, any>,
+  ): void;
   /** @deprecated Use `on:dblclick`. Kept for backwards compatibility. */
   (e: 'on:dbclick', record: string | number | undefined, currentRecord?: Record<string, any>): void;
   (e: 'on:select:row', records: string[]): void;
@@ -1217,7 +1221,9 @@ watch(
             @on:sort="handleSort"
           >
             <template #hint="{ column }">
-              <slot v-if="column" :name="[`hint.${column.key}`]" />
+              <slot v-if="column" :name="[`hint.${column.key}`]">
+                {{ column.hintColumn || column.label }}
+              </slot>
             </template>
           </TableHeadColumn>
 

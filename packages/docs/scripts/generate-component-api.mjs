@@ -81,7 +81,8 @@ const modelDescriptions = {
 
 const eventDescriptions = {
   'on:change': 'Emitowane po zmianie wartości.',
-  'on:changeValue': 'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
+  'on:changeValue':
+    'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
   'on:click': 'Emitowane po aktywacji komponentu.',
   'on:close': 'Emitowane podczas zamykania komponentu.',
   'on:dblclick': 'Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord.',

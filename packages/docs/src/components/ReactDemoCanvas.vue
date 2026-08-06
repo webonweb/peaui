@@ -42,8 +42,27 @@ const renderedBindings = computed(() => {
   }
 
   for (const event of props.definition.events) {
-    bindings[event.name] = (...values: unknown[]) =>
+    bindings[event.name] = (...values: unknown[]) => {
+      if (props.definition.name === 'TableList') {
+        if (event.name === 'onSelectRow' && Array.isArray(values[0])) {
+          interactiveProps.value = { ...interactiveProps.value, selectedRows: values[0] };
+        }
+        if (event.name === 'onCheckRow') {
+          const record =
+            values[1] && typeof values[1] === 'object'
+              ? (values[1] as Record<string, unknown>)
+              : values[0] && typeof values[0] === 'object'
+                ? (values[0] as Record<string, unknown>)
+                : undefined;
+          const checkedId = record?.id ?? values[0];
+          interactiveProps.value = {
+            ...interactiveProps.value,
+            currentCheckedRow: checkedId,
+          };
+        }
+      }
       logEvent(event.name, values.length < 2 ? values[0] : values);
+    };
   }
 
   return bindings;

@@ -26,6 +26,10 @@ $color-aliases: (
   @each $alias, $real in $color-aliases {
     $tone: 600;
 
+    @if $alias == 'primary' {
+      $tone: 700;
+    }
+
     @if $alias == 'success' {
       $tone: 800;
     }

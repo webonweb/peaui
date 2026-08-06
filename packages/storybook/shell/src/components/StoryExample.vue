@@ -18,7 +18,7 @@ let copyResetTimeout: number | undefined;
 function getSingletonHighlighter() {
   highlighterPromise ??= createHighlighter({
     langs: ["vue", "ts", "js", "html", "css", "json", "bash"],
-    themes: ["github-light", "github-dark"],
+    themes: ["github-light-high-contrast", "github-dark-high-contrast"],
   });
 
   return highlighterPromise;
@@ -42,7 +42,10 @@ watchEffect(async () => {
 
   html.value = highlighter.codeToHtml(props.code, {
     lang: props.language,
-    themes: { light: "github-light", dark: "github-dark" },
+    themes: {
+      light: "github-light-high-contrast",
+      dark: "github-dark-high-contrast",
+    },
   });
 });
 </script>

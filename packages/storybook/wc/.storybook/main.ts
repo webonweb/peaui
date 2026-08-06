@@ -30,6 +30,7 @@ const config: StorybookConfig = {
         // so discovery must stay disabled while explicit Storybook dependencies
         // can still be prebundled.
         noDiscovery: true,
+        include: ["property-expr", "tiny-case", "toposort"],
       },
       resolve: {
         alias: {

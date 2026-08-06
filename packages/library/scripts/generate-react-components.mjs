@@ -61,7 +61,11 @@ function normalizeType(type, propertyName = '') {
     .trim()
     .replace(/^\|\s*/, '');
 
-  if (/^(?:string|number|boolean|unknown|null|undefined|File|Date)(?:\[\])?(?:\s*\|\s*(?:string|number|boolean|unknown|null|undefined|File|Date)(?:\[\])?)*$/.test(normalized)) {
+  if (
+    /^(?:string|number|boolean|unknown|null|undefined|File|Date)(?:\[\])?(?:\s*\|\s*(?:string|number|boolean|unknown|null|undefined|File|Date)(?:\[\])?)*$/.test(
+      normalized,
+    )
+  ) {
     return normalized;
   }
 
@@ -120,7 +124,9 @@ function renderProps(api) {
 
     if (['onClick', 'onKeyDown', 'onPointerDown'].includes(callbackName)) continue;
     if (entries.some((entry) => entry.includes(` ${callbackName}?`))) continue;
-    entries.push(renderProperty(callbackName, '(...args: unknown[]) => void', false, event.description));
+    entries.push(
+      renderProperty(callbackName, '(...args: unknown[]) => void', false, event.description),
+    );
   }
 
   for (const slot of api.slots) {
@@ -149,11 +155,10 @@ function renderProps(api) {
 function writePropsFile(components) {
   const names = components.map((api) => `'${toPublicName(api.name)}'`).join(' | ');
   const map = components
-    .map(
-      (api) => `  ${toPublicName(api.name)}: PeauiReactBaseProps & {\n${renderProps(api)}\n  };`,
-    )
+    .map((api) => `  ${toPublicName(api.name)}: PeauiReactBaseProps & {\n${renderProps(api)}\n  };`)
     .join('\n');
-  const source = `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
+  const source =
+    `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
     `// Źródłem kontraktu są publiczne propsy, modele, zdarzenia i sloty komponentów Vue.\n\n` +
     `import type { CSSProperties, KeyboardEventHandler, MouseEventHandler, PointerEventHandler, ReactNode } from 'react';\n\n` +
     `export type ReactComponentName = ${names};\n\n` +
@@ -173,7 +178,7 @@ function writePropsFile(components) {
     `};\n\n` +
     `export type PeauiRecord = Record<string, unknown>;\n` +
     `export type PeauiOption = { id?: string; key?: string; label: string; value?: unknown; active?: boolean; disabled?: boolean; hint?: string; icon?: string; path?: string; isValid?: boolean; number?: string; status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden'; additional?: ReactNode };\n` +
-    `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; sortable?: boolean; type?: string; actionName?: string; inline?: boolean; manage?: PeauiRecord };\n` +
+    `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; canSort?: boolean; sortable?: boolean; type?: string; actionName?: string; actionLabel?: string; inline?: boolean; manage?: PeauiRecord };\n` +
     `export type PeauiTreeNode = PeauiRecord & { id?: string | number; label?: string; children?: PeauiTreeNode[] | Record<string, PeauiTreeNode> };\n` +
     `export type PeauiSortDescriptor = { key: string; direction?: 'asc' | 'desc' };\n` +
     `export type PeauiRangeValue<Value> = { from?: Value; to?: Value; start?: Value; end?: Value };\n\n` +
@@ -191,7 +196,8 @@ function writeCatalogFile(components) {
         `  { category: '${api.category}', name: '${toPublicName(api.name)}', sourceName: '${api.name}' },`,
     )
     .join('\n');
-  const source = `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
+  const source =
+    `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
     `import type { ReactComponentName } from './generated-react-props';\n\n` +
     `export const reactComponentCatalog = [\n${entries}\n] as const satisfies readonly { category: string; name: ReactComponentName; sourceName: string }[];\n`;
   fs.writeFileSync(path.join(reactRoot, 'generated-react-catalog.ts'), source, 'utf8');
@@ -209,7 +215,8 @@ function writeIconData() {
       const body = source.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)?.[1]?.trim() ?? '';
       return [path.basename(file, '.svg'), { body, viewBox }];
     });
-  const source = `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
+  const source =
+    `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
     `export const reactIconData: Readonly<Record<string, { body: string; viewBox: string }>> = ${JSON.stringify(Object.fromEntries(icons), null, 2)};\n`;
   fs.writeFileSync(path.join(reactRoot, 'generated-icon-data.ts'), source, 'utf8');
 }
@@ -218,12 +225,14 @@ function writeComponentFiles(components) {
   for (const api of components) {
     const publicName = toPublicName(api.name);
     const directory = path.join(componentsRoot, api.category, api.name);
-    const componentSource = `import { createPeauiReactComponent } from '@/react/create-peaui-react-component';\n` +
+    const componentSource =
+      `import { createPeauiReactComponent } from '@/react/create-peaui-react-component';\n` +
       `import type { PeauiReactProps } from '@/react/generated-react-props';\n\n` +
       `export type ${publicName}Props = PeauiReactProps<'${publicName}'>;\n\n` +
       `const ${publicName} = createPeauiReactComponent('${publicName}');\n\n` +
       `export default ${publicName};\n`;
-    const storySource = `import type { Meta, StoryObj } from '@storybook/react';\n\n` +
+    const storySource =
+      `import type { Meta, StoryObj } from '@storybook/react';\n\n` +
       `import { getReactStoryArgs } from '@/react/story-args';\n` +
       `import ${publicName} from './index';\n\n` +
       `const meta = {\n` +

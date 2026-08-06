@@ -122,17 +122,44 @@ describe('katalog komponentów React', () => {
     fireEvent.click(row);
     expect(onCheckRow).toHaveBeenCalledWith(record);
 
-    fireEvent.change(screen.getByRole('textbox', { name: 'Edytuj Status' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'Status, wiersz 1' }), {
       target: { value: 'Nieaktywny' },
     });
     expect(onChangeValue).toHaveBeenCalledWith('1', 'Nieaktywny');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Akcja:' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Akcja:/ }));
     expect(onAction).toHaveBeenCalledWith('1', 'open', record);
 
     fireEvent.doubleClick(row);
     expect(onRowDoubleClick).toHaveBeenCalledWith('1', record);
     expect(onDbclick).toHaveBeenCalledWith('1', record);
+  });
+
+  it('bezpiecznie kopiuje komórkę i przekazuje stan sortowania wielokolumnowego', () => {
+    const onSort = vi.fn();
+
+    render(
+      <TableList
+        canMultiSort
+        columns={[
+          { canCopy: true, canSort: true, key: 'name', label: 'Nazwa' },
+          { canSort: true, key: 'status', label: 'Status' },
+        ]}
+        records={[{ id: '1', name: 'Wniosek', status: 'Aktywny' }]}
+        sortColumns={[{ direction: 'asc', key: 'status' }]}
+        onSort={onSort}
+      />,
+    );
+
+    expect(() =>
+      fireEvent.click(screen.getByRole('button', { name: 'Kopiuj Nazwa: Wniosek' })),
+    ).not.toThrow();
+    fireEvent.click(screen.getByRole('button', { name: 'Nazwa' }));
+
+    expect(onSort).toHaveBeenCalledWith([
+      { direction: 'asc', key: 'name' },
+      { direction: 'asc', key: 'status' },
+    ]);
   });
 
   it('wspiera niekontrolowany model i callback zmiany pola', () => {

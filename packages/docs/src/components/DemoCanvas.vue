@@ -41,6 +41,24 @@ const renderedBindings = computed(() => {
     };
   }
 
+  for (const event of props.definition.events) {
+    const eventBinding = `on${event.name.charAt(0).toUpperCase()}${event.name.slice(1)}`;
+    bindings[eventBinding] = (...values: unknown[]) => {
+      if (props.definition.name === 'TableList') {
+        if (event.name === 'on:select:row' && Array.isArray(values[0])) {
+          interactiveProps.value = { ...interactiveProps.value, selectedRows: values[0] };
+        }
+        if (event.name === 'on:check:row' && values[0] && typeof values[0] === 'object') {
+          interactiveProps.value = {
+            ...interactiveProps.value,
+            currentCheckedRow: (values[0] as Record<string, unknown>).id,
+          };
+        }
+      }
+      logEvent(event.name, values.length < 2 ? values[0] : values);
+    };
+  }
+
   return bindings;
 });
 const exampleCode = computed(() => getExampleCode(props.definition, interactiveProps.value));

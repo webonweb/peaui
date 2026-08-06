@@ -1,4 +1,5 @@
 import type { ApiEntry, ComponentDefinition, DemoPreset, DemoVariant } from '../types';
+import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
 import { t } from '../i18n';
 import { localizeDemoData } from './demo-localization';
 import { serializeDemoValue } from './demo-utils';
@@ -27,6 +28,16 @@ const componentPresets: Record<string, DemoPreset> = {
   },
   PhotoEditor: { props: { image: undefined, ariaLabel: 'Edytor przykładowego zdjęcia' } },
   SvgIcon: { props: { name: 'checkCircle' } },
+  Avatar: {
+    props: {
+      alt: 'Portret Anny Kowalskiej',
+      name: 'Anna Kowalska',
+      size: 'l',
+      src: avatarDemoImage,
+      status: 'online',
+      statusLabel: 'Dostępna',
+    },
+  },
   CalculationResults: {
     props: { label: 'Szacowany wynik', result: '128,40 kWh/m²/rok', showCalculateButton: true },
   },

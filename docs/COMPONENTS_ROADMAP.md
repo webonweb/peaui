@@ -88,7 +88,7 @@ Każdy komponent musi spełnić poniższe zasady, o ile jego opis jawnie nie uza
 
 | ID           | Komponent                  | Etap | Status | Priorytet | Złożoność | Zależności                                            |
 | ------------ | -------------------------- | ---: | ------ | --------- | --------- | ----------------------------------------------------- |
-| PEA-COMP-001 | Avatar                     |    1 | IN_PROGRESS | P0        | S         | ImageView, SvgIcon                                    |
+| PEA-COMP-001 | Avatar                     |    1 | DONE   | P0        | S         | ImageView, SvgIcon                                    |
 | PEA-COMP-002 | AvatarGroup                |    1 | TODO   | P1        | M         | Avatar, InfoTooltip/PopoverOverlayer                  |
 | PEA-COMP-003 | DropdownMenu               |    1 | TODO   | P0        | L         | PopoverOverlayer, ButtonAction                        |
 | PEA-COMP-004 | ContextMenu                |    1 | TODO   | P1        | L         | DropdownMenu lub wspólne menu, PopoverOverlayer       |
@@ -195,7 +195,7 @@ Celem etapu jest uzupełnienie podstawowego zestawu PeaUI o powszechne kontrolki
 
 ### Avatar
 
-- Status: IN_PROGRESS
+- Status: DONE
 - Priorytet: P0
 - Złożoność: S
 - Kategoria: Data display / Media
@@ -271,6 +271,10 @@ Fallback nie powoduje skoku layoutu; semantyka obrazu i wariantu interaktywnego 
 #### Poza zakresem pierwszej wersji
 
 Kadrowanie zdjęcia, upload, edycja profilu i pobieranie danych użytkownika.
+
+#### Notatka wdrożeniowa (2026-08-06)
+
+Komponent wdrożono z parytetem Vue, React i Web Components, wspólnymi stylami oraz publicznymi eksportami. Bezpośredni element `img` obsługuje wymagany cykl `load`/`error` i reset po zmianie `src`, a `SvgIcon` zapewnia końcowy fallback; `ImageView` nie udostępniał wymaganej kontroli tego cyklu bez dublowania logiki. Wariant interaktywny używa natywnego przycisku, status ma dostępną nazwę bez live regionu i dodatkowe rozróżnienie niewymagające koloru. Wszystkie frameworki i portal dokumentacji korzystają z tego samego neutralnego fixture'u demonstracyjnego, a bazowe warianty zachowują identyczne wymiary, tokeny i kolejność fallbacków. Dodano testy jednostkowe i przeglądarkowe (axe oraz mobilny overflow), stories dla wszystkich frameworków, dokumentację portalu i changeset.
 
 ### AvatarGroup
 
@@ -5229,5 +5233,5 @@ Notatkę dodaje się dopiero po rozpoczęciu rzeczywistej implementacji; nie nal
 - Nowa pozycja otrzymuje kolejny wolny ID, pełny opis w tym samym formacie, wpis w tabeli i mapie zależności.
 - Zmiana nazwy zachowuje ID i dodaje notatkę migracyjną. Połączenie pozycji wskazuje następcę; nie usuwa historii.
 - Status w tabeli i sekcji komponentu musi być zawsze identyczny.
-- Aktualnym pierwszym etapem jest Etap 1. Pierwszym kandydatem bez nieukończonych nowych zależności jest `PEA-COMP-001 Avatar`; wybór zawsze wymaga polecenia użytkownika.
+- Aktualnym pierwszym etapem jest Etap 1. Pierwszym kandydatem bez nieukończonych nowych zależności jest `PEA-COMP-002 AvatarGroup`; wybór zawsze wymaga polecenia użytkownika.
 - Roadmapę należy aktualizować w tym samym zadaniu, w którym ukończono komponent lub milestone, ale nie należy zmieniać zakresów niezwiązanych z tym zadaniem.

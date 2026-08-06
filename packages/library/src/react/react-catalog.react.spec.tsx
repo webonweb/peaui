@@ -6,6 +6,7 @@ import { createElement, type ComponentType } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import ButtonAction from '@/components/data-entry/ButtonAction';
+import Avatar from '@/components/data-display/Avatar';
 import DisclosurePanel from '@/components/data-display/DisclosurePanel';
 import EmptyState from '@/components/feedback/EmptyState';
 import ProgressIndicator from '@/components/feedback/ProgressIndicator';
@@ -36,8 +37,8 @@ afterEach(cleanup);
 
 describe('katalog komponentów React', () => {
   it('udostępnia natywny komponent React dla każdego komponentu Vue', () => {
-    expect(reactComponentCatalog).toHaveLength(62);
-    expect(Object.keys(componentModules)).toHaveLength(62);
+    expect(reactComponentCatalog).toHaveLength(63);
+    expect(Object.keys(componentModules)).toHaveLength(63);
 
     for (const definition of reactComponentCatalog) {
       const modulePath = `../components/${definition.category}/${definition.sourceName}/index.tsx`;
@@ -78,6 +79,83 @@ describe('katalog komponentów React', () => {
     expect(progress).toHaveAttribute('aria-labelledby', 'progress-label');
     fireEvent.keyDown(progress as Element, { key: 'Enter' });
     expect(onKeyDown).toHaveBeenCalledTimes(1);
+  });
+
+  it('renderuje dostępny Avatar z przewidywalną kolejnością fallbacków', () => {
+    const { rerender } = render(<Avatar dataTestId="avatar" name="Anna Maria Kowalska" />);
+    const avatar = screen.getByRole('img', { name: 'Anna Maria Kowalska' });
+
+    expect(avatar).not.toHaveAttribute('tabindex');
+    expect(screen.getByText('AK')).toBeInTheDocument();
+
+    rerender(<Avatar dataTestId="avatar" fallbackIcon="users" />);
+
+    expect(screen.getByTestId('avatar-icon')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('resetuje stan obrazu Avatara po zmianie src i przekazuje zdarzenia', () => {
+    const onError = vi.fn();
+    const onLoad = vi.fn();
+    const { rerender } = render(
+      <Avatar
+        alt="Portret Anny"
+        dataTestId="avatar-image-state"
+        name="Anna Kowalska"
+        onError={onError}
+        onLoad={onLoad}
+        src="/anna.jpg"
+      />,
+    );
+    const firstImage = screen.getByTestId('avatar-image-state-image');
+
+    expect(screen.getByTestId('avatar-image-state')).toHaveAttribute('data-state', 'loading');
+    fireEvent.load(firstImage);
+    expect(onLoad).toHaveBeenCalledOnce();
+    expect(firstImage).toHaveAttribute('alt', 'Portret Anny');
+
+    rerender(
+      <Avatar
+        alt="Portret Anny"
+        dataTestId="avatar-image-state"
+        name="Anna Kowalska"
+        onError={onError}
+        onLoad={onLoad}
+        src="/replacement.jpg"
+      />,
+    );
+
+    expect(screen.getByTestId('avatar-image-state')).toHaveAttribute('data-state', 'loading');
+    const replacementImage = screen.getByTestId('avatar-image-state-image');
+    fireEvent.error(replacementImage);
+    expect(onError).toHaveBeenCalledOnce();
+    expect(screen.getByText('AK')).toBeInTheDocument();
+  });
+
+  it('używa przycisku i tekstowego opisu statusu tylko dla interaktywnego Avatara', () => {
+    const onClick = vi.fn();
+    const { container, rerender } = render(
+      <Avatar
+        ariaLabel="Otwórz profil Anny"
+        interactive
+        onClick={onClick}
+        status="busy"
+        statusContent="!"
+      />,
+    );
+    const button = screen.getByRole('button', { name: 'Otwórz profil Anny' });
+
+    expect(button).toHaveAttribute('type', 'button');
+    expect(button.getAttribute('aria-describedby')).toBeTruthy();
+    expect(container.querySelector('.peaui-avatar__status-label')).toHaveTextContent('Zajęty');
+    expect(container.querySelector('.peaui-avatar__status-label')).not.toHaveAttribute('aria-live');
+    fireEvent.click(button);
+    expect(onClick).toHaveBeenCalledOnce();
+
+    rerender(<Avatar alt="" src="/decorative.jpg" />);
+    fireEvent.load(document.querySelector('.peaui-avatar__image') as Element);
+
+    expect(document.querySelector('.peaui-avatar')).not.toHaveAttribute('role');
+    expect(document.querySelector('.peaui-avatar__image')).toHaveAttribute('alt', '');
   });
 
   it('łączy trigger InfoTooltip z dymkiem i obsługuje mysz oraz fokus', () => {

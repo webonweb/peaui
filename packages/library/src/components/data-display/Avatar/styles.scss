@@ -1,0 +1,231 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-avatar {
+  --peaui-avatar-background: var(--peaui-color-grey-100);
+  --peaui-avatar-foreground: var(--peaui-color-grey-700);
+  --peaui-avatar-border: var(--peaui-color-grey-200);
+  --peaui-avatar-status-ring: var(--peaui-color-grey-0);
+
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: visible;
+  box-sizing: border-box;
+  padding: 0;
+  color: var(--peaui-avatar-foreground);
+  font: inherit;
+  line-height: 1;
+  vertical-align: middle;
+  appearance: none;
+  background-color: var(--peaui-avatar-background);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--peaui-avatar-border);
+  inline-size: var(--peaui-avatar-size);
+  block-size: var(--peaui-avatar-size);
+  aspect-ratio: 1;
+  isolation: isolate;
+}
+
+.peaui-avatar--size-xs {
+  --peaui-avatar-size: 1.5rem;
+  --peaui-avatar-status-size: 0.5rem;
+
+  @include set-size-text(xs);
+}
+
+.peaui-avatar--size-s {
+  --peaui-avatar-size: 2rem;
+  --peaui-avatar-status-size: 0.625rem;
+
+  @include set-size-text(xs);
+}
+
+.peaui-avatar--size-m {
+  --peaui-avatar-size: 2.5rem;
+  --peaui-avatar-status-size: 0.75rem;
+
+  @include set-size-text(s);
+}
+
+.peaui-avatar--size-l {
+  --peaui-avatar-size: 3rem;
+  --peaui-avatar-status-size: 0.875rem;
+
+  @include set-size-text(m);
+}
+
+.peaui-avatar--size-xl {
+  --peaui-avatar-size: 4rem;
+  --peaui-avatar-status-size: 1rem;
+
+  @include set-size-text(l);
+}
+
+.peaui-avatar--shape-circle,
+.peaui-avatar--shape-circle .peaui-avatar__media {
+  border-radius: 50%;
+}
+
+.peaui-avatar--shape-rounded,
+.peaui-avatar--shape-rounded .peaui-avatar__media {
+  border-radius: 25%;
+}
+
+.peaui-avatar__media {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  background: inherit;
+}
+
+.peaui-avatar__image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.peaui-avatar__image--visible {
+  opacity: 1;
+}
+
+.peaui-avatar__fallback {
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  max-inline-size: 100%;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-transform: uppercase;
+  user-select: none;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.peaui-avatar__initials {
+  overflow: hidden;
+  max-inline-size: calc(100% - 0.25rem);
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.peaui-avatar__icon {
+  display: grid;
+  place-items: center;
+  inline-size: 55%;
+  block-size: 55%;
+}
+
+.peaui-avatar__icon > .peaui-svg-icon,
+.peaui-avatar__icon > peaui-svg-icon,
+.peaui-avatar__icon > peaui-svg-icon > .peaui-svg-icon {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.peaui-avatar__icon > peaui-svg-icon {
+  display: grid;
+  place-items: center;
+}
+
+.peaui-avatar__status {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: -0.0625rem;
+  inset-block-end: -0.0625rem;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background-color: var(--peaui-color-grey-500);
+  border: 0.125rem solid var(--peaui-avatar-status-ring);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgb(from var(--peaui-color-grey-900) r g b / 0.2);
+  inline-size: var(--peaui-avatar-status-size);
+  block-size: var(--peaui-avatar-status-size);
+}
+
+.peaui-avatar__status--online {
+  background-color: var(--peaui-color-success-700);
+}
+
+.peaui-avatar__status--online:empty::after {
+  width: 35%;
+  height: 35%;
+  content: '';
+  background: var(--peaui-color-grey-0);
+  border-radius: 50%;
+}
+
+.peaui-avatar__status--offline:empty::after {
+  box-sizing: border-box;
+  width: 50%;
+  height: 50%;
+  content: '';
+  border: 1px solid var(--peaui-color-grey-0);
+  border-radius: 50%;
+}
+
+.peaui-avatar__status--away {
+  background-color: var(--peaui-color-warning-700);
+}
+
+.peaui-avatar__status--away:empty::after {
+  width: 35%;
+  height: 35%;
+  content: '';
+  border-block-start: 1px solid var(--peaui-color-grey-0);
+  border-inline-start: 1px solid var(--peaui-color-grey-0);
+}
+
+.peaui-avatar__status--busy {
+  background-color: var(--peaui-color-danger-700);
+}
+
+.peaui-avatar__status--busy:empty::after {
+  width: 55%;
+  height: 2px;
+  content: '';
+  background: var(--peaui-color-grey-0);
+  border-radius: 999px;
+}
+
+.peaui-avatar__status-label {
+  @include sr-only;
+}
+
+.peaui-avatar--interactive {
+  cursor: pointer;
+
+  @include outline(var(--peaui-color-primary-600));
+}
+
+.peaui-avatar--interactive:not(:disabled):hover {
+  box-shadow:
+    inset 0 0 0 1px var(--peaui-color-grey-300),
+    0 2px 6px rgb(from var(--peaui-color-grey-900) r g b / 0.14);
+}
+
+.peaui-avatar--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (forced-colors: active) {
+  .peaui-avatar {
+    border: 1px solid CanvasText;
+  }
+
+  .peaui-avatar__status {
+    background-color: CanvasText;
+    border-color: Canvas;
+  }
+}

@@ -28,6 +28,16 @@ export const componentCopy: Record<string, ComponentCopy> = {
     ['Ładuje ikonę po nazwie.', 'Ukrywa dekoracyjną grafikę przed czytnikami ekranu.'],
     'Nazwa pliku ikony bez rozszerzenia, na przykład „check”, „edit” albo „search”.',
   ),
+  Avatar: copy(
+    'Awatar użytkownika z obrazem, inicjałami lub ikoną zastępczą oraz opcjonalnym statusem obecności.',
+    [
+      'Zapewnia stabilny rozmiar i przewidywalną kolejność fallbacków: obraz, inicjały, ikona.',
+      'Używa neutralnej powierzchni fallbacku i identycznych tokenów wizualnych w Vue, React i Web Components.',
+      'Obsługuje wariant prezentacyjny oraz semantyczny przycisk dostępny z klawiatury.',
+      'Udostępnia tekstowy opis statusu technologiom asystującym bez automatycznych komunikatów live.',
+    ],
+    'Adres obrazu i opis alternatywny albo nazwa lub inicjały; opcjonalnie rozmiar, kształt, status i tryb interaktywny.',
+  ),
   CalculationResults: copy(
     'Panel wyniku obliczeń z opcjonalną akcją ponownego przeliczenia.',
     [

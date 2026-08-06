@@ -144,7 +144,8 @@ function renderProps(api) {
       }
       continue;
     }
-    const name = toCamelCase(slot.name.replace(/[^A-Za-z0-9-]/g, '-'));
+    const rawName = toCamelCase(slot.name.replace(/[^A-Za-z0-9-]/g, '-'));
+    const name = api.name === 'Avatar' && rawName === 'status' ? 'statusContent' : rawName;
     if (!name || entries.some((entry) => entry.includes(` ${name}?`))) continue;
     entries.push(renderProperty(name, 'ReactNode', false, slot.description));
   }
@@ -245,7 +246,7 @@ function writeComponentFiles(components) {
       `type Story = StoryObj<typeof meta>;\n\n` +
       `export const Default: Story = {};\n` +
       (api.props.some((prop) => prop.name === 'disabled')
-        ? `\nexport const Disabled: Story = { args: { disabled: true } };\n`
+        ? `\nexport const Disabled: Story = { args: { disabled: true${publicName === 'Avatar' ? ', interactive: true' : ''} } };\n`
         : '');
 
     fs.writeFileSync(path.join(directory, 'index.tsx'), componentSource, 'utf8');

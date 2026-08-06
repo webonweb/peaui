@@ -38,6 +38,16 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     ['Loads an icon by name.', 'Keeps decorative graphics hidden from screen readers.'],
     'An icon filename without its extension, for example check, edit or search.',
   ),
+  Avatar: enCopy(
+    'A user avatar with an image, initials or icon fallback and an optional presence status.',
+    [
+      'Keeps a stable size and a predictable image-to-initials-to-icon fallback order.',
+      'Uses a neutral fallback surface and the same visual tokens in Vue, React and Web Components.',
+      'Supports both presentational use and a keyboard-accessible native button.',
+      'Exposes status text to assistive technologies without announcing it as a live update.',
+    ],
+    'An image URL and alternative text, or a name or initials, plus optional size, shape, status and interactive settings.',
+  ),
   CalculationResults: enCopy(
     'A calculation result panel with an optional recalculate action.',
     ['Highlights a result and its label.', 'Supports loading, disabled and simplified states.'],

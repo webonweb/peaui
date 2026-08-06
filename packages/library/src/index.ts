@@ -8,6 +8,19 @@ export {
 } from './components/basic/PhotoEditior/index.vue';
 export { default as SvgIcon } from './components/basic/SvgIcon/index.vue';
 
+export { default as Avatar } from './components/data-display/Avatar/index.vue';
+export type {
+  AvatarImageState,
+  AvatarLoading,
+  AvatarProps,
+  AvatarShape,
+  AvatarSize,
+  AvatarStatus,
+} from './components/data-display/Avatar/index.vue';
+export {
+  getAvatarInitials,
+  normalizeAvatarInitials,
+} from './components/data-display/Avatar/avatar.helper';
 export { default as CalculationResults } from './components/data-display/CalculationResults/index.vue';
 export { default as CardCarousel } from './components/data-display/CardCarousel/index.vue';
 export { default as CounterBadge } from './components/data-display/CounterBadge/index.vue';

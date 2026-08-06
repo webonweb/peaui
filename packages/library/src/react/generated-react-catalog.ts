@@ -5,6 +5,7 @@ export const reactComponentCatalog = [
   { category: 'basic', name: 'ImageView', sourceName: 'ImageView' },
   { category: 'basic', name: 'PhotoEditor', sourceName: 'PhotoEditior' },
   { category: 'basic', name: 'SvgIcon', sourceName: 'SvgIcon' },
+  { category: 'data-display', name: 'Avatar', sourceName: 'Avatar' },
   { category: 'data-display', name: 'CalculationResults', sourceName: 'CalculationResults' },
   { category: 'data-display', name: 'CardCarousel', sourceName: 'CardCarousel' },
   { category: 'data-display', name: 'CounterBadge', sourceName: 'CounterBadge' },

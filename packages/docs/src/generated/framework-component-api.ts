@@ -117,6 +117,129 @@ export const generatedReactComponentApi = [
   {
     "category": "data-display",
     "categoryLabel": "Prezentacja danych",
+    "name": "Avatar",
+    "sourceName": "Avatar",
+    "framework": "react",
+    "importPath": "@peaui/ui/react/data-display/Avatar",
+    "status": "stable",
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "description": "Adres obrazu prezentowanego w awatarze."
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": false,
+        "description": "Alternatywny opis obrazu. Pusty tekst oznacza obraz dekoracyjny."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Nazwa używana do wyliczenia inicjałów i nazwy dostępnej fallbacku."
+      },
+      {
+        "name": "initials",
+        "type": "string",
+        "required": false,
+        "description": "Jawne inicjały mają pierwszeństwo przed inicjałami wyliczonymi z name."
+      },
+      {
+        "name": "size",
+        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
+        "required": false,
+        "default": "m",
+        "description": "Wariant rozmiaru awatara."
+      },
+      {
+        "name": "shape",
+        "type": "'circle' | 'rounded'",
+        "required": false,
+        "default": "circle",
+        "description": "Kształt awatara."
+      },
+      {
+        "name": "status",
+        "type": "'online' | 'offline' | 'away' | 'busy' | 'none'",
+        "required": false,
+        "default": "none",
+        "description": "Status obecności prezentowany wizualnie i tekstowo."
+      },
+      {
+        "name": "statusLabel",
+        "type": "string",
+        "required": false,
+        "description": "Własna dostępna etykieta statusu."
+      },
+      {
+        "name": "loading",
+        "type": "'eager' | 'lazy'",
+        "required": false,
+        "default": "lazy",
+        "description": "Strategia ładowania natywnego obrazu."
+      },
+      {
+        "name": "fallbackIcon",
+        "type": "string",
+        "required": false,
+        "default": "users",
+        "description": "Nazwa ikony używanej, gdy obraz i inicjały nie są dostępne."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renderuje semantyczny przycisk zamiast prezentacyjnego awatara."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wyłącza interaktywny awatar."
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Dostępna nazwa awatara lub przycisku."
+      },
+      {
+        "name": "dataTestId",
+        "type": "string",
+        "required": false,
+        "description": "Stabilny identyfikator używany w testach automatycznych."
+      }
+    ],
+    "models": [],
+    "events": [
+      {
+        "name": "onLoad",
+        "description": "Emitowane po poprawnym załadowaniu obrazu. W React przekaż callback onLoad."
+      },
+      {
+        "name": "onError",
+        "description": "Emitowane, gdy nie udało się załadować obrazu. W React przekaż callback onError."
+      }
+    ],
+    "slots": [
+      {
+        "name": "children",
+        "description": "Główna treść React przekazywana przez children."
+      },
+      {
+        "name": "statusContent",
+        "description": "Treść osadzana w nazwanym slocie „status”. W React jest to prop ReactNode „statusContent”."
+      }
+    ]
+  },
+  {
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
     "name": "CalculationResults",
     "sourceName": "CalculationResults",
     "framework": "react",
@@ -4567,12 +4690,7 @@ export const generatedWebComponentApi = [
     ],
     "models": [],
     "events": [],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
-      }
-    ]
+    "slots": []
   },
   {
     "category": "basic",
@@ -4644,6 +4762,153 @@ export const generatedWebComponentApi = [
     "models": [],
     "events": [],
     "slots": []
+  },
+  {
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
+    "name": "Avatar",
+    "sourceName": "Avatar",
+    "framework": "web-components",
+    "importPath": "@peaui/ui/wc/data-display/Avatar",
+    "tagName": "peaui-avatar",
+    "status": "stable",
+    "props": [
+      {
+        "name": "alt",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Alternatywny opis obrazu używany przez technologie asystujące."
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „aria-describedby” konfigurujący komponent Avatar."
+      },
+      {
+        "name": "aria-label",
+        "type": "string | null",
+        "required": false,
+        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „aria-labelledby” konfigurujący komponent Avatar."
+      },
+      {
+        "name": "class",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „class” konfigurujący komponent Avatar."
+      },
+      {
+        "name": "data-testid",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „data-testid” konfigurujący komponent Avatar."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "Wyłącza komponent i blokuje jego interakcje."
+      },
+      {
+        "name": "fallback-icon",
+        "type": "string",
+        "required": false,
+        "description": "Nazwa ikony używanej, gdy obraz ani inicjały nie są dostępne."
+      },
+      {
+        "name": "initials",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Jawne inicjały wyświetlane przed fallbackiem ikonowym."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "required": false,
+        "description": "Renderuje komponent jako natywną kontrolkę interaktywną."
+      },
+      {
+        "name": "loading",
+        "type": "AvatarLoading",
+        "required": false,
+        "description": "Wybiera natywną strategię ładowania obrazu."
+      },
+      {
+        "name": "name",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+      },
+      {
+        "name": "role",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „role” konfigurujący komponent Avatar."
+      },
+      {
+        "name": "shape",
+        "type": "AvatarShape",
+        "required": false,
+        "description": "Wariant kształtu komponentu."
+      },
+      {
+        "name": "size",
+        "type": "AvatarSize",
+        "required": false,
+        "description": "Wariant rozmiaru komponentu."
+      },
+      {
+        "name": "src",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Adres źródłowy obrazu albo innego zasobu."
+      },
+      {
+        "name": "status",
+        "type": "AvatarStatus",
+        "required": false,
+        "description": "Stan wizualny i semantyczny komponentu."
+      },
+      {
+        "name": "status-label",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Dostępna etykieta tekstowa opisująca status."
+      },
+      {
+        "name": "style",
+        "type": "string",
+        "required": false,
+        "description": "Atrybut HTML „style” konfigurujący komponent Avatar."
+      }
+    ],
+    "models": [],
+    "events": [
+      {
+        "name": "load",
+        "description": "Emitowane po poprawnym załadowaniu obrazu."
+      },
+      {
+        "name": "error",
+        "description": "Emitowane, gdy nie udało się załadować obrazu."
+      }
+    ],
+    "slots": [
+      {
+        "name": "default",
+        "description": "Główna treść przekazywana do komponentu."
+      },
+      {
+        "name": "status",
+        "description": "Treść osadzana w nazwanym slocie „status”."
+      }
+    ]
   },
   {
     "category": "data-display",
@@ -4798,12 +5063,7 @@ export const generatedWebComponentApi = [
     ],
     "models": [],
     "events": [],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
-      }
-    ]
+    "slots": []
   },
   {
     "category": "data-display",
@@ -4873,8 +5133,20 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
+        "name": "additional-before",
+        "description": "Treść osadzana w nazwanym slocie „additional-before”."
+      },
+      {
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
+      },
+      {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
+      },
+      {
+        "name": "additional-after",
+        "description": "Treść osadzana w nazwanym slocie „additional-after”."
       }
     ]
   },
@@ -4990,8 +5262,16 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "name": "title",
+        "description": "Treść osadzana w nazwanym slocie „title”."
+      },
+      {
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
+      },
+      {
+        "name": "description",
+        "description": "Treść osadzana w nazwanym slocie „description”."
       }
     ]
   },
@@ -5667,7 +5947,7 @@ export const generatedWebComponentApi = [
     "slots": [
       {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },
@@ -6033,7 +6313,7 @@ export const generatedWebComponentApi = [
     "slots": [
       {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },
@@ -6282,8 +6562,8 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
       }
     ]
   },
@@ -6945,8 +7225,28 @@ export const generatedWebComponentApi = [
     ],
     "slots": [
       {
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
+      },
+      {
+        "name": "additional",
+        "description": "Treść osadzana w nazwanym slocie „additional”."
+      },
+      {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
+      },
+      {
+        "name": "description",
+        "description": "Treść osadzana w nazwanym slocie „description”."
+      },
+      {
+        "name": "error",
+        "description": "Treść osadzana w nazwanym slocie „error”."
+      },
+      {
+        "name": "success",
+        "description": "Treść osadzana w nazwanym slocie „success”."
       }
     ]
   },
@@ -7199,8 +7499,20 @@ export const generatedWebComponentApi = [
     ],
     "slots": [
       {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
+      },
+      {
+        "name": "description",
+        "description": "Treść osadzana w nazwanym slocie „description”."
+      },
+      {
+        "name": "error",
+        "description": "Treść osadzana w nazwanym slocie „error”."
+      },
+      {
+        "name": "success",
+        "description": "Treść osadzana w nazwanym slocie „success”."
       }
     ]
   },
@@ -7639,8 +7951,20 @@ export const generatedWebComponentApi = [
     ],
     "slots": [
       {
-        "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "name": "hint",
+        "description": "Treść osadzana w nazwanym slocie „hint”."
+      },
+      {
+        "name": "description",
+        "description": "Treść osadzana w nazwanym slocie „description”."
+      },
+      {
+        "name": "error",
+        "description": "Treść osadzana w nazwanym slocie „error”."
+      },
+      {
+        "name": "success",
+        "description": "Treść osadzana w nazwanym slocie „success”."
       }
     ]
   },
@@ -8199,8 +8523,12 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
+        "name": "header",
+        "description": "Treść osadzana w nazwanym slocie „header”."
+      },
+      {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },
@@ -8302,7 +8630,7 @@ export const generatedWebComponentApi = [
     "slots": [
       {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },
@@ -8339,8 +8667,12 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
+        "name": "additional",
+        "description": "Treść osadzana w nazwanym slocie „additional”."
+      },
+      {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },
@@ -8377,8 +8709,20 @@ export const generatedWebComponentApi = [
     "events": [],
     "slots": [
       {
+        "name": "top",
+        "description": "Treść osadzana w nazwanym slocie „top”."
+      },
+      {
+        "name": "additional",
+        "description": "Treść osadzana w nazwanym slocie „additional”."
+      },
+      {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
+      },
+      {
+        "name": "footer",
+        "description": "Treść osadzana w nazwanym slocie „footer”."
       }
     ]
   },
@@ -8748,7 +9092,7 @@ export const generatedWebComponentApi = [
     "slots": [
       {
         "name": "default",
-        "description": "Treść umieszczana wewnątrz elementu niestandardowego."
+        "description": "Główna treść przekazywana do komponentu."
       }
     ]
   },

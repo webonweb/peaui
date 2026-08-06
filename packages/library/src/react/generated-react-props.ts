@@ -13,6 +13,7 @@ export type ReactComponentName =
   | 'ImageView'
   | 'PhotoEditor'
   | 'SvgIcon'
+  | 'Avatar'
   | 'CalculationResults'
   | 'CardCarousel'
   | 'CounterBadge'
@@ -155,6 +156,42 @@ export type ReactComponentPropsMap = {
     dataTestId?: string;
     /** Nazwa pola używana przez formularz lub nazwa zasobu. */
     name: string;
+  };
+  Avatar: PeauiReactBaseProps & {
+    /** Adres obrazu prezentowanego w awatarze. */
+    src?: string;
+    /** Alternatywny opis obrazu. Pusty tekst oznacza obraz dekoracyjny. */
+    alt?: string;
+    /** Nazwa używana do wyliczenia inicjałów i nazwy dostępnej fallbacku. */
+    name?: string;
+    /** Jawne inicjały mają pierwszeństwo przed inicjałami wyliczonymi z name. */
+    initials?: string;
+    /** Wariant rozmiaru awatara. */
+    size?: 'xs' | 's' | 'm' | 'l' | 'xl';
+    /** Kształt awatara. */
+    shape?: 'circle' | 'rounded';
+    /** Status obecności prezentowany wizualnie i tekstowo. */
+    status?: 'online' | 'offline' | 'away' | 'busy' | 'none';
+    /** Własna dostępna etykieta statusu. */
+    statusLabel?: string;
+    /** Strategia ładowania natywnego obrazu. */
+    loading?: 'eager' | 'lazy';
+    /** Nazwa ikony używanej, gdy obraz i inicjały nie są dostępne. */
+    fallbackIcon?: string;
+    /** Renderuje semantyczny przycisk zamiast prezentacyjnego awatara. */
+    interactive?: boolean;
+    /** Wyłącza interaktywny awatar. */
+    disabled?: boolean;
+    /** Dostępna nazwa awatara lub przycisku. */
+    ariaLabel?: string;
+    /** Stabilny identyfikator używany w testach automatycznych. */
+    dataTestId?: string;
+    /** Emitowane po poprawnym załadowaniu obrazu. */
+    onLoad?: (...args: unknown[]) => void;
+    /** Emitowane, gdy nie udało się załadować obrazu. */
+    onError?: (...args: unknown[]) => void;
+    /** Treść osadzana w nazwanym slocie „status”. */
+    statusContent?: ReactNode;
   };
   CalculationResults: PeauiReactBaseProps & {
     /** Włącza stan ładowania i informuje o trwającej operacji. */
@@ -313,9 +350,9 @@ export type ReactComponentPropsMap = {
     onAction?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”. */
     onCreateRecord?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „on:dblclick”. */
+    /** Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord. */
     onRowDoubleClick?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „on:dbclick”. */
+    /** Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”. */
     onDbclick?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”. */
     onSelectRow?: (...args: unknown[]) => void;
@@ -327,7 +364,7 @@ export type ReactComponentPropsMap = {
     onCheckRow?: (...args: unknown[]) => void;
     /** Emitowane po zatwierdzeniu danych. */
     onSubmit?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „on:changeValue”. */
+    /** Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość. */
     onChangeValue?: (...args: unknown[]) => void;
     /** Renderuje niestandardową zawartość komórki tabeli. */
     renderCell?: (columnKey: string, record: PeauiRecord, rowIndex: number) => ReactNode;

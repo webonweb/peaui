@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
+import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
 import { getDemoPreset } from '../data/demo-presets';
 import { cloneDemoValue, serializeDemoValue } from '../data/demo-utils';
 import { localizeDemoData } from '../data/demo-localization';
@@ -43,6 +44,16 @@ const imageSource =
 const presets: Record<string, PreviewPreset> = {
   ImageView: { attributes: { src: imageSource, alt: 'Grafika demonstracyjna PEAUI', size: 'm' } },
   SvgIcon: { attributes: { name: 'check' } },
+  Avatar: {
+    attributes: {
+      alt: 'Portret Anny Kowalskiej',
+      name: 'Anna Kowalska',
+      size: 'l',
+      src: avatarDemoImage,
+      status: 'online',
+      'status-label': 'Dostępna',
+    },
+  },
   CardCarousel: {
     attributes: { 'aria-label': 'Przykładowa karuzela', 'default-visible-slides': '2' },
     cards: ['Pierwsza karta', 'Druga karta', 'Trzecia karta'],

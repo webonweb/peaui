@@ -1,5 +1,7 @@
 import { createElement } from 'react';
 
+import { avatarDemoProps } from '@/components/data-display/Avatar/avatar.demo';
+
 import type { PeauiReactProps, ReactComponentName } from './generated-react-props';
 
 const card = (title: string) =>
@@ -12,6 +14,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
   ImageView: { alt: 'Zielony groszek PEAUI', max: '18rem', size: 'm', src: '/peaui-logo.png' },
   PhotoEditor: { ariaLabel: 'Edytor zdjęcia' },
   SvgIcon: { name: 'checkCircle' },
+  Avatar: { ...avatarDemoProps },
   CalculationResults: {
     additional: 'Wynik orientacyjny',
     hint: 'Na podstawie podanych danych',

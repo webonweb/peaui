@@ -106,6 +106,126 @@ export const generatedComponentApi = [
     "slots": []
   },
   {
+    "name": "Avatar",
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
+    "importPath": "@peaui/ui/data-display/Avatar",
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "description": "Adres obrazu prezentowanego w awatarze."
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": false,
+        "description": "Alternatywny opis obrazu. Pusty tekst oznacza obraz dekoracyjny."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Nazwa używana do wyliczenia inicjałów i nazwy dostępnej fallbacku."
+      },
+      {
+        "name": "initials",
+        "type": "string",
+        "required": false,
+        "description": "Jawne inicjały mają pierwszeństwo przed inicjałami wyliczonymi z name."
+      },
+      {
+        "name": "size",
+        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
+        "required": false,
+        "default": "m",
+        "description": "Wariant rozmiaru awatara."
+      },
+      {
+        "name": "shape",
+        "type": "'circle' | 'rounded'",
+        "required": false,
+        "default": "circle",
+        "description": "Kształt awatara."
+      },
+      {
+        "name": "status",
+        "type": "'online' | 'offline' | 'away' | 'busy' | 'none'",
+        "required": false,
+        "default": "none",
+        "description": "Status obecności prezentowany wizualnie i tekstowo."
+      },
+      {
+        "name": "statusLabel",
+        "type": "string",
+        "required": false,
+        "description": "Własna dostępna etykieta statusu."
+      },
+      {
+        "name": "loading",
+        "type": "'eager' | 'lazy'",
+        "required": false,
+        "default": "lazy",
+        "description": "Strategia ładowania natywnego obrazu."
+      },
+      {
+        "name": "fallbackIcon",
+        "type": "string",
+        "required": false,
+        "default": "users",
+        "description": "Nazwa ikony używanej, gdy obraz i inicjały nie są dostępne."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Renderuje semantyczny przycisk zamiast prezentacyjnego awatara."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wyłącza interaktywny awatar."
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "description": "Dostępna nazwa awatara lub przycisku."
+      },
+      {
+        "name": "dataTestId",
+        "type": "string",
+        "required": false,
+        "description": "Stabilny identyfikator używany w testach automatycznych."
+      }
+    ],
+    "models": [],
+    "events": [
+      {
+        "name": "load",
+        "description": "Emitowane po poprawnym załadowaniu obrazu."
+      },
+      {
+        "name": "error",
+        "description": "Emitowane, gdy nie udało się załadować obrazu."
+      }
+    ],
+    "slots": [
+      {
+        "name": "default",
+        "description": "Główna treść przekazywana do komponentu."
+      },
+      {
+        "name": "status",
+        "description": "Treść osadzana w nazwanym slocie „status”."
+      }
+    ]
+  },
+  {
     "name": "CalculationResults",
     "category": "data-display",
     "categoryLabel": "Prezentacja danych",

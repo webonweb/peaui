@@ -20,6 +20,12 @@ const categoryLabels = {
 };
 
 const propDescriptions = {
+  fallbackIcon: 'Nazwa ikony używanej, gdy obraz ani inicjały nie są dostępne.',
+  initials: 'Jawne inicjały wyświetlane przed fallbackiem ikonowym.',
+  interactive: 'Renderuje komponent jako natywną kontrolkę interaktywną.',
+  loading: 'Wybiera natywną strategię ładowania obrazu.',
+  shape: 'Wariant kształtu komponentu.',
+  statusLabel: 'Dostępna etykieta tekstowa opisująca status.',
   active: 'Określa aktywny element albo aktywny krok.',
   after: 'Treść wyświetlana za właściwą wartością pola.',
   alt: 'Alternatywny opis obrazu używany przez technologie asystujące.',
@@ -80,6 +86,8 @@ const modelDescriptions = {
 };
 
 const eventDescriptions = {
+  error: 'Emitowane, gdy nie udało się załadować obrazu.',
+  load: 'Emitowane po poprawnym załadowaniu obrazu.',
   'on:change': 'Emitowane po zmianie wartości.',
   'on:changeValue':
     'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
@@ -290,6 +298,7 @@ function extractComponent(componentDirectory) {
   const props = [];
   const models = [];
   const events = [];
+  const slots = new Set();
 
   function visit(node) {
     if (isCallNamed(node, 'defineProps')) {
@@ -344,12 +353,18 @@ function extractComponent(componentDirectory) {
       events.push(...extractEvents(node.typeArguments?.[0], sourceFile));
     }
 
+    if (isCallNamed(node, 'defineSlots')) {
+      for (const member of resolveMembers(node.typeArguments?.[0], definitions)) {
+        const name = getPropertyName(member, sourceFile);
+        if (name) slots.add(name);
+      }
+    }
+
     ts.forEachChild(node, visit);
   }
 
   visit(sourceFile);
 
-  const slots = new Set();
   for (const match of template.matchAll(/<slot(?:\s[^>]*)?>/g)) {
     const slotMarkup = match[0];
     const name = slotMarkup.match(/\bname=['\"]([^'\"]+)['\"]/)?.[1] ?? 'default';
@@ -391,6 +406,12 @@ function toKebabCase(value) {
 
 function toCamelCase(value) {
   return value.replace(/[-:]([a-z])/g, (_, character) => character.toUpperCase());
+}
+
+function toReactSlotName(componentName, slotName) {
+  if (componentName === 'Avatar' && slotName === 'status') return 'statusContent';
+
+  return toCamelCase(slotName);
 }
 
 function toReactCallbackName(value) {
@@ -534,9 +555,7 @@ function extractWebComponent(componentDirectory) {
         eventDescriptions[name] ??
         `Natywne zdarzenie CustomEvent „${name}” emitowane przez element.`,
     })),
-    slots: source.includes('childNodes')
-      ? [{ name: 'default', description: 'Treść umieszczana wewnątrz elementu niestandardowego.' }]
-      : [],
+    slots: source.includes('childNodes') ? extractComponent(componentDirectory).slots : [],
   };
 }
 
@@ -572,13 +591,13 @@ function extractReactComponent(componentDirectory) {
           ? 'children'
           : slot.name.includes('[')
             ? 'renderCell'
-            : toCamelCase(slot.name),
+            : toReactSlotName(identity.name, slot.name),
       description:
         slot.name === 'default'
           ? 'Główna treść React przekazywana przez children.'
           : slot.name.includes('[')
             ? 'Funkcja renderCell pozwala renderować niestandardową zawartość komórki tabeli.'
-            : `${slot.description} W React jest to prop ReactNode „${toCamelCase(slot.name)}”.`,
+            : `${slot.description} W React jest to prop ReactNode „${toReactSlotName(identity.name, slot.name)}”.`,
     })),
   };
 }

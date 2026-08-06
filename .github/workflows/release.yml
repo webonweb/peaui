@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   release:
+    name: Build and publish release
     runs-on: ubuntu-latest
 
     steps:
@@ -21,27 +22,64 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build library
-        run: npm run build
+      - name: Build PeaUI library
+        run: npm run library:build
 
-      - name: Create dist archive
+      - name: Verify library build
         run: |
-          zip -r "peaui-ui-${GITHUB_REF_NAME}.zip" dist
+          DIST_DIRECTORY="packages/library/dist"
 
-      - name: Create or update release
+          if [ ! -d "$DIST_DIRECTORY" ]; then
+            echo "::error::Build directory does not exist: $DIST_DIRECTORY"
+
+            echo "Available dist directories:"
+            find . -maxdepth 6 -type d -name "dist" -print
+
+            echo "Files inside packages/library:"
+            find packages/library -maxdepth 3 -type f -print || true
+
+            exit 1
+          fi
+
+          if [ -z "$(find "$DIST_DIRECTORY" -mindepth 1 -print -quit)" ]; then
+            echo "::error::Build directory is empty: $DIST_DIRECTORY"
+            exit 1
+          fi
+
+          echo "Library build created successfully:"
+          find "$DIST_DIRECTORY" -maxdepth 4 -type f -print
+
+      - name: Create release archive
+        run: |
+          ARCHIVE_PATH="${GITHUB_WORKSPACE}/peaui-ui-${GITHUB_REF_NAME}.zip"
+
+          cd packages/library/dist
+          zip -r "$ARCHIVE_PATH" .
+
+          echo "Created archive:"
+          ls -lh "$ARCHIVE_PATH"
+
+      - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ARCHIVE="peaui-ui-${GITHUB_REF_NAME}.zip"
+          TAG="${GITHUB_REF_NAME}"
+          ARCHIVE="peaui-ui-${TAG}.zip"
 
-          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-            gh release upload "${GITHUB_REF_NAME}" "$ARCHIVE" --clobber
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists. Uploading archive."
+
+            gh release upload "$TAG" "$ARCHIVE" --clobber
           else
-            gh release create "${GITHUB_REF_NAME}" "$ARCHIVE" \
-              --title "PeaUI ${GITHUB_REF_NAME}" \
+            echo "Creating release $TAG."
+
+            gh release create "$TAG" "$ARCHIVE" \
+              --verify-tag \
+              --title "PeaUI ${TAG}" \
               --generate-notes
           fi

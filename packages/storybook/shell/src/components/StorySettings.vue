@@ -124,7 +124,7 @@ function handleToggleDarkMode(): void {
 .story-settings button:hover,
 .story-settings button:focus-visible {
   background: var(--docs-accent-soft, #f4fbe8);
-  color: var(--docs-accent, #3f8205);
+  color: var(--docs-accent, #326a04);
   outline: none;
 }
 

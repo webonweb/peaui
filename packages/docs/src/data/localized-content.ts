@@ -13,7 +13,7 @@ const categoryEnglish: Record<string, string> = {
   overlayer: 'Overlays and dialogs',
 };
 
-const enCopy = (description: string, purpose: [string, string], input: string): ComponentCopy => ({
+const enCopy = (description: string, purpose: string[], input: string): ComponentCopy => ({
   description,
   purpose,
   input,
@@ -76,6 +76,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Presents records through declarative columns.',
       'Handles empty, loading and record-action states.',
+      'Provides keyboard support and consistent selection, editing and row double-click events.',
     ],
     'A records array and column definitions, with optional sorting, selection, editing and pagination settings.',
   ),
@@ -235,7 +236,10 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormSelect: enCopy(
     'A single-choice select field with optional search.',
-    ['Selects one option.', 'Supports searchable lists and custom entries.'],
+    [
+      'Selects one option.',
+      'Supports searchable lists, custom entries and viewport-safe placement.',
+    ],
     'An options list, ID, name and controlled selected value.',
   ),
   FormTextarea: enCopy(
@@ -285,7 +289,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   ListLimitControl: enCopy(
     'A control for selecting the number of items displayed per page.',
-    ['Changes a list page size.', 'Synchronizes the selected limit.'],
+    ['Changes a list page size.', 'Synchronizes the limit and keeps its list in the viewport.'],
     'ID, label, available limits and controlled current limit.',
   ),
   NavigationCard: enCopy(

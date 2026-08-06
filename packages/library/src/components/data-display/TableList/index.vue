@@ -238,6 +238,9 @@ const emit = defineEmits<{
     currentRecord?: Record<string, any>,
   ): void;
   (e: 'on:createRecord'): void;
+  /** Prefer this correctly spelled event for row double-clicks. */
+  (e: 'on:dblclick', record: string | number | undefined, currentRecord?: Record<string, any>): void;
+  /** @deprecated Use `on:dblclick`. Kept for backwards compatibility. */
   (e: 'on:dbclick', record: string | number | undefined, currentRecord?: Record<string, any>): void;
   (e: 'on:select:row', records: string[]): void;
   (e: 'on:sort', column: string): void;
@@ -822,6 +825,13 @@ function handleUpdateValueColumn(
 ): void {
   setFieldValue(column.key, value);
 
+  const rawColumnValue = isRecordValue(value) ? value[column.key] : value;
+  const emittedValue =
+    typeof rawColumnValue === 'string' || typeof rawColumnValue === 'number'
+      ? rawColumnValue
+      : undefined;
+  emit('on:changeValue', index === undefined ? undefined : records[index]?.id, emittedValue);
+
   if (column.manage?.onUpdate) {
     const inlineUpdatedRecord = getInlineUpdatedRecord(value, column, index);
     const nextValues = column.manage.onUpdate(
@@ -1031,6 +1041,7 @@ function handleBodyColumnDblClick(record: Record<string, any>, column: TableColu
     return;
   }
 
+  emit('on:dblclick', record.id, record);
   emit('on:dbclick', record.id, record);
 }
 

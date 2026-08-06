@@ -1271,6 +1271,16 @@ describe('TableList (index.vue)', () => {
     expect(wrapper.emitted('on:check:row')?.[2]?.[0]).toEqual({ id: '1', name: 'Alfa' });
   });
 
+  it('emits the corrected and legacy row double-click events', async () => {
+    const wrapper = factory({ canSelectRows: false });
+    const record = { id: '1', name: 'Alfa' };
+
+    await wrapper.get('[data-testid="cell-button"]').trigger('dblclick');
+
+    expect(wrapper.emitted('on:dblclick')).toEqual([['1', record]]);
+    expect(wrapper.emitted('on:dbclick')).toEqual([['1', record]]);
+  });
+
   it('renders inline empty row and empty state with create action data test ids', async () => {
     const inlineWrapper = factory({
       records: [],
@@ -1358,6 +1368,7 @@ describe('TableList (index.vue)', () => {
       category: 'Techniczny',
       id: '1',
     });
+    expect(wrapper.emitted('on:changeValue')).toEqual([['1', 'Techniczny']]);
     expect(onUpdate.mock.invocationCallOrder[0]).toBeLessThan(steps.mock.invocationCallOrder[0]);
   });
 

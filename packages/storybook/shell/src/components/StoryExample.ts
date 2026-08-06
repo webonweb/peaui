@@ -18,7 +18,7 @@ const styles = `
     overflow-x: auto;
     border-radius: 0.5rem;
     padding: 0 1rem;
-    background-color: light-dark(rgba(0, 0, 0, 0.04), #ffffff);
+    background-color: light-dark(#ffffff, #0c1220);
     font-size: 0.875rem;
     line-height: 1.45;
   }

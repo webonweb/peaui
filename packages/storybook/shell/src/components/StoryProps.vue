@@ -83,7 +83,16 @@ function getControlLabel(item: StoryPropItem): string {
 </template>
 
 <style lang="scss" scoped>
+.story-props {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .story-props__table-wrapper {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--docs-border, #dce3ec);
   border-radius: 0.9rem;

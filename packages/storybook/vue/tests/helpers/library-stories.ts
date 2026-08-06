@@ -23,7 +23,7 @@ function listStoryFiles(directory: string): string[] {
       return listStoryFiles(entryPath);
     }
 
-    return entry.isFile() && entry.name.endsWith('.stories.ts') ? [entryPath] : [];
+    return entry.isFile() && entry.name.endsWith('.vue.stories.ts') ? [entryPath] : [];
   });
 }
 

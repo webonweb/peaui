@@ -62,6 +62,65 @@ const messages = {
     en: 'Recommended starting configuration with example data.',
     pl: 'Rekomendowana konfiguracja startowa z przykładowymi danymi.',
   },
+  'tableList.demo.default': {
+    en: 'A practical starting point with sortable text and date columns, a status tag and a row actions menu.',
+    pl: 'Praktyczny punkt wyjścia: sortowany tekst i data, tag statusu oraz menu akcji wiersza.',
+  },
+  'tableList.demo.selectionLabel': { en: 'Multiple selection', pl: 'Wybór wielu' },
+  'tableList.demo.selection': {
+    en: 'Checkbox selection with a controlled selectedRows collection and an initially selected row.',
+    pl: 'Wybór checkboxami z kontrolowaną tablicą selectedRows i początkowo zaznaczonym wierszem.',
+  },
+  'tableList.demo.singleLabel': { en: 'Single selection', pl: 'Wybór pojedynczy' },
+  'tableList.demo.single': {
+    en: 'Radio-style selection driven by canCheckRows and currentCheckedRow.',
+    pl: 'Wybór pojedynczego wiersza sterowany przez canCheckRows i currentCheckedRow.',
+  },
+  'tableList.demo.sortLabel': { en: 'Multi-column sorting', pl: 'Sortowanie wielu kolumn' },
+  'tableList.demo.sort': {
+    en: 'Independent sort controls with an initial multi-column sort order and a scrollable table.',
+    pl: 'Niezależne kontrolki sortowania, początkowa kolejność wielu kolumn i przewijana tabela.',
+  },
+  'tableList.demo.typesLabel': { en: 'All column types', pl: 'Wszystkie typy kolumn' },
+  'tableList.demo.types': {
+    en: 'Index, text, date, boolean status, tag, array, link, quick action, inline edit action and empty columns.',
+    pl: 'Kolumny: indeks, tekst, data, status logiczny, tag, tablica, link, szybka akcja, edycja inline i pusta wartość.',
+  },
+  'tableList.demo.workflowLabel': { en: 'Workflow and details', pl: 'Proces i szczegóły' },
+  'tableList.demo.workflow': {
+    en: 'A stepper column and expandable row details for process-oriented tables.',
+    pl: 'Kolumna etapów i rozwijane szczegóły wiersza dla tabel procesowych.',
+  },
+  'tableList.demo.layoutLabel': { en: 'Borders and sticky columns', pl: 'Obramowanie i sticky' },
+  'tableList.demo.layout': {
+    en: 'Column widths, borders, horizontal scrolling and columns that users can pin.',
+    pl: 'Szerokości i obramowania kolumn, przewijanie poziome oraz kolumny przypinane przez użytkownika.',
+  },
+  'tableList.demo.visibilityLabel': { en: 'Column visibility', pl: 'Widoczność kolumn' },
+  'tableList.demo.visibility': {
+    en: 'A column manager that lets users hide optional columns while keeping required columns visible.',
+    pl: 'Menedżer pozwalający ukrywać opcjonalne kolumny przy zachowaniu kolumn wymaganych.',
+  },
+  'tableList.demo.editableLabel': { en: 'Editable records', pl: 'Edycja rekordów' },
+  'tableList.demo.editable': {
+    en: 'Create and edit flows using text, number and select field definitions with validation constraints.',
+    pl: 'Tworzenie i edycja przez pola tekstowe, liczbowe i select wraz z ograniczeniami walidacji.',
+  },
+  'tableList.demo.actionsLabel': { en: 'Row actions', pl: 'Akcje wiersza' },
+  'tableList.demo.actions': {
+    en: 'Quick action, inline edit action and a contextual action menu in one table.',
+    pl: 'Szybka akcja, akcja edycji inline oraz kontekstowe menu akcji w jednej tabeli.',
+  },
+  'tableList.demo.emptyLabel': { en: 'Empty state', pl: 'Brak danych' },
+  'tableList.demo.empty': {
+    en: 'An empty result with an explanatory message and an enabled create action.',
+    pl: 'Pusty wynik z komunikatem wyjaśniającym i dostępną akcją utworzenia rekordu.',
+  },
+  'tableList.demo.loadingLabel': { en: 'Loading', pl: 'Ładowanie' },
+  'tableList.demo.loading': {
+    en: 'A busy state that preserves the table layout and announces progress to assistive technology.',
+    pl: 'Stan zajętości zachowujący układ tabeli i ogłaszający postęp technologiom asystującym.',
+  },
   'demo.variantDescription': {
     en: 'Variant with the {name} property set to “{value}”.',
     pl: 'Wariant z właściwością {name} ustawioną na „{value}”.',

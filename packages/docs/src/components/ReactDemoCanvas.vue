@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 
 import { getDemoPreset, getDemoVariants, getReactExampleCode } from '../data/demo-presets';
+import { cloneDemoValue } from '../data/demo-utils';
 import { useDemoTranslation } from '../composables/use-demo-translation';
 import type { FrameworkComponentDefinition } from '../types';
 import { useI18n } from '../i18n';
@@ -49,14 +50,10 @@ const renderedBindings = computed(() => {
 });
 const exampleCode = computed(() => getReactExampleCode(props.definition, interactiveProps.value));
 
-function clone(value: Record<string, unknown>): Record<string, unknown> {
-  return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
-}
-
 function selectVariant(id: string): void {
   activeVariantId.value = id;
   const variant = variants.value.find((entry) => entry.id === id) ?? variants.value[0];
-  interactiveProps.value = clone(variant?.props ?? {});
+  interactiveProps.value = cloneDemoValue(variant?.props ?? {});
   eventLog.value = [];
 }
 
@@ -73,7 +70,7 @@ watch(
   () => [props.definition.name, locale.value],
   () => {
     activeVariantId.value = 'default';
-    interactiveProps.value = clone(variants.value[0]?.props ?? {});
+    interactiveProps.value = cloneDemoValue(variants.value[0]?.props ?? {});
     panel.value = 'preview';
     eventLog.value = [];
   },

@@ -24,6 +24,13 @@ const config: StorybookConfig = {
   viteFinal: async (config) =>
     mergeConfig(config, {
       plugins: [peauiVueCustomElementPlugin(), vue(), svgLoader()],
+      optimizeDeps: {
+        // `index.ce.vue` is supplied by the pre-enforced virtual-source plugin.
+        // Vite's discovery scanner reads virtual Vue ids from disk before `load`,
+        // so discovery must stay disabled while explicit Storybook dependencies
+        // can still be prebundled.
+        noDiscovery: true,
+      },
       resolve: {
         alias: {
           "@": librarySrc,

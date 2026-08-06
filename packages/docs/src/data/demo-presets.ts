@@ -1,6 +1,8 @@
 import type { ApiEntry, ComponentDefinition, DemoPreset, DemoVariant } from '../types';
 import { t } from '../i18n';
 import { localizeDemoData } from './demo-localization';
+import { serializeDemoValue } from './demo-utils';
+import { getTableListDemoVariants } from './table-list-demos';
 
 type DemoDefinition = Pick<
   ComponentDefinition,
@@ -427,6 +429,8 @@ function unionValues(type: string): string[] {
 
 export function getDemoVariants(component: DemoDefinition): DemoVariant[] {
   const preset = getDemoPreset(component);
+  if (component.name === 'TableList') return getTableListDemoVariants(preset.props);
+
   const variants: DemoVariant[] = [
     {
       id: 'default',
@@ -493,12 +497,12 @@ export function getExampleCode(component: DemoDefinition, props: Record<string, 
     .join('\n');
   const attributes = Object.entries(props)
     .filter(([name, value]) => value !== undefined && !modelNames.has(name))
-    .slice(0, 8)
+    .slice(0, component.name === 'TableList' ? undefined : 8)
     .map(([name, value]) => {
       const kebabName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
       if (value === true) return `  ${kebabName}`;
       if (typeof value === 'string') return `  ${kebabName}="${value}"`;
-      return `  :${kebabName}='${JSON.stringify(value)}'`;
+      return `  :${kebabName}='${serializeDemoValue(value)}'`;
     });
   const models = component.models
     .filter((model) => props[model.name] !== undefined)
@@ -514,7 +518,7 @@ export function getExampleCode(component: DemoDefinition, props: Record<string, 
 
 function reactPropValue(value: unknown): string {
   if (typeof value === 'string') return JSON.stringify(value);
-  return `{${JSON.stringify(value, null, 2)}}`;
+  return `{${serializeDemoValue(value)}}`;
 }
 
 export function getReactExampleCode(
@@ -531,7 +535,7 @@ export function getReactExampleCode(
     .join('\n');
   const attributes = Object.entries(props)
     .filter(([name, value]) => value !== undefined && !modelNames.has(name))
-    .slice(0, 8)
+    .slice(0, component.name === 'TableList' ? undefined : 8)
     .map(([name, value]) => `      ${name}=${reactPropValue(value)}`);
   const models = activeModels.flatMap((model) => {
     const capitalized = model.name.charAt(0).toUpperCase() + model.name.slice(1);

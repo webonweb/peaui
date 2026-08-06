@@ -34,6 +34,7 @@ function toPascalCase(value) {
 
 function getCallbackName(eventName) {
   if (eventName === 'update:open') return 'onOpenChange';
+  if (eventName === 'on:dblclick') return 'onRowDoubleClick';
   if (eventName === 'keydown') return 'onKeyDown';
   if (eventName === 'pointerdown') return 'onPointerDown';
   return `on${toPascalCase(eventName)}`;
@@ -172,7 +173,7 @@ function writePropsFile(components) {
     `};\n\n` +
     `export type PeauiRecord = Record<string, unknown>;\n` +
     `export type PeauiOption = { id?: string; key?: string; label: string; value?: unknown; active?: boolean; disabled?: boolean; hint?: string; icon?: string; path?: string; isValid?: boolean; number?: string; status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden'; additional?: ReactNode };\n` +
-    `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; sortable?: boolean };\n` +
+    `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; sortable?: boolean; type?: string; actionName?: string; inline?: boolean; manage?: PeauiRecord };\n` +
     `export type PeauiTreeNode = PeauiRecord & { id?: string | number; label?: string; children?: PeauiTreeNode[] | Record<string, PeauiTreeNode> };\n` +
     `export type PeauiSortDescriptor = { key: string; direction?: 'asc' | 'desc' };\n` +
     `export type PeauiRangeValue<Value> = { from?: Value; to?: Value; start?: Value; end?: Value };\n\n` +

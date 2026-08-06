@@ -81,8 +81,11 @@ const modelDescriptions = {
 
 const eventDescriptions = {
   'on:change': 'Emitowane po zmianie wartości.',
+  'on:changeValue': 'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
   'on:click': 'Emitowane po aktywacji komponentu.',
   'on:close': 'Emitowane podczas zamykania komponentu.',
+  'on:dblclick': 'Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord.',
+  'on:dbclick': 'Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”.',
   'on:remove': 'Emitowane po wybraniu akcji usunięcia.',
   'on:select': 'Emitowane po wybraniu elementu.',
   'on:submit': 'Emitowane po zatwierdzeniu danych.',
@@ -391,6 +394,7 @@ function toCamelCase(value) {
 
 function toReactCallbackName(value) {
   if (value === 'update:open') return 'onOpenChange';
+  if (value === 'on:dblclick') return 'onRowDoubleClick';
   const normalized = toCamelCase(value.replace(/^on:/, ''));
   return `on${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}`;
 }

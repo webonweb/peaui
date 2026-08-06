@@ -61,7 +61,8 @@ const meta: Meta<typeof ListLimitControlComponent> = {
     position: {
       control: { type: 'select' },
       options: ['top', 'bottom'],
-      description: 'Wariant pozycji zachowany dla zgodnosci API.',
+      description:
+        'Preferowana strona otwarcia listy. Kierunek jest automatycznie odwracany, gdy przy krawędzi viewportu brakuje miejsca.',
       table: {
         type: { summary: "'top' | 'bottom'" },
         defaultValue: { summary: 'bottom' },

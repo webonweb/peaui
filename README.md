@@ -353,7 +353,7 @@ PEAUI is actively developed. The catalog will continue to grow with new componen
 
 ## Support and issues
 
-Report defects and feature requests in the [project issue tracker](https://github.com/webonweb/peaui/-/issues).
+Report defects and feature requests in the [project issue tracker](https://github.com/webonweb/peaui/issues).
 
 ## License
 
@@ -700,7 +700,7 @@ PEAUI jest aktywnie rozwijane. Katalog będzie rozszerzany o nowe komponenty, do
 
 ## Wsparcie i zgłoszenia
 
-Błędy oraz propozycje nowych funkcji można zgłaszać w [systemie zgłoszeń projektu](https://github.com/webonweb/peaui/-/issues).
+Błędy oraz propozycje nowych funkcji można zgłaszać w [systemie zgłoszeń projektu](https://github.com/webonweb/peaui/issues).
 
 ## Licencja
 

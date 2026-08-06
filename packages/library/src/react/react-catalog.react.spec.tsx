@@ -9,6 +9,8 @@ import ButtonAction from '@/components/data-entry/ButtonAction';
 import DisclosurePanel from '@/components/data-display/DisclosurePanel';
 import EmptyState from '@/components/feedback/EmptyState';
 import ProgressIndicator from '@/components/feedback/ProgressIndicator';
+import TableList from '@/components/data-display/TableList';
+import TableListHeader from '@/components/data-display/TableListHeader';
 import FormFileUpload from '@/components/form/FormFileUpload';
 import FormFileUploadSimple from '@/components/form/FormFileUploadSimple';
 import FormButtonGroup from '@/components/form/FormButtonGroup';
@@ -47,6 +49,7 @@ describe('katalog komponentów React', () => {
     const { rerender } = render(<ButtonAction onClick={onClick}>Zapisz</ButtonAction>);
     fireEvent.click(screen.getByRole('button', { name: 'Zapisz' }));
     expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onClick.mock.calls[0]?.[0]).toBeInstanceOf(Object);
 
     rerender(
       <ButtonAction disabled onClick={onClick}>
@@ -55,6 +58,81 @@ describe('katalog komponentów React', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'Zapisz' }));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('przekazuje publiczne atrybuty ARIA i zdarzenia do korzenia komponentu React', () => {
+    const onKeyDown = vi.fn();
+    const { container } = render(
+      <ProgressIndicator
+        active={1}
+        aria-describedby="progress-help"
+        aria-labelledby="progress-label"
+        onKeyDown={onKeyDown}
+        steps={3}
+      />,
+    );
+    const progress = container.firstElementChild;
+
+    expect(progress).toHaveAttribute('aria-describedby', 'progress-help');
+    expect(progress).toHaveAttribute('aria-labelledby', 'progress-label');
+    fireEvent.keyDown(progress as Element, { key: 'Enter' });
+    expect(onKeyDown).toHaveBeenCalledTimes(1);
+  });
+
+  it('przekazuje zdarzenia interakcji tabeli z payloadami zgodnymi z Vue', () => {
+    const onAction = vi.fn();
+    const onChangeValue = vi.fn();
+    const onCheckRow = vi.fn();
+    const onDbclick = vi.fn();
+    const onResetFilters = vi.fn();
+    const onRowDoubleClick = vi.fn();
+    const onSelectRow = vi.fn();
+    const record = { id: '1', name: 'Alfa', status: 'Aktywny' };
+
+    render(
+      <>
+        <TableListHeader canFilter countFilters={2} onResetFilters={onResetFilters} />
+        <TableList
+          canCheckRows
+          canSelectRows
+          columns={[
+            { key: 'name', label: 'Nazwa' },
+            { inline: true, key: 'status', label: 'Status' },
+            { actionName: 'open', key: 'action', label: 'Akcja', type: 'action' },
+          ]}
+          onAction={onAction}
+          onChangeValue={onChangeValue}
+          onCheckRow={onCheckRow}
+          onDbclick={onDbclick}
+          onRowDoubleClick={onRowDoubleClick}
+          onSelectRow={onSelectRow}
+          records={[record]}
+        />
+      </>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Wyczyść filtry' }));
+    expect(onResetFilters).toHaveBeenCalledOnce();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Zaznacz wiersz 1' }));
+    expect(onSelectRow).toHaveBeenCalledWith(['1']);
+    expect(onCheckRow).not.toHaveBeenCalled();
+
+    const row = screen.getByRole('row', { name: /Alfa/ });
+    fireEvent.click(row);
+    expect(onCheckRow).toHaveBeenCalledWith(record);
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'Edytuj Status' }), {
+      target: { value: 'Nieaktywny' },
+    });
+    expect(onChangeValue).toHaveBeenCalledWith('1', 'Nieaktywny');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Akcja:' }));
+    expect(onAction).toHaveBeenCalledWith('1', 'open', record);
+
+    fireEvent.doubleClick(row);
+    expect(onRowDoubleClick).toHaveBeenCalledWith('1', record);
+    expect(onDbclick).toHaveBeenCalledWith('1', record);
   });
 
   it('wspiera niekontrolowany model i callback zmiany pola', () => {

@@ -61,10 +61,13 @@ watchEffect(async () => {
 
 <style lang="scss" scoped>
 .story-source {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   border: 1px solid var(--docs-border, #dce3ec);
   border-radius: 0.9rem;
-  background: #f7f9fc;
+  background: #fff;
 }
 
 .story-source__toolbar {
@@ -74,7 +77,7 @@ watchEffect(async () => {
   justify-content: space-between;
   padding: 0 0.85rem 0 1rem;
   border-bottom: 1px solid var(--docs-border, #dce3ec);
-  color: #687487;
+  color: #5d6878;
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -94,7 +97,7 @@ watchEffect(async () => {
 .story-source__toolbar button:hover,
 .story-source__toolbar button:focus-visible {
   border-color: #afe34b;
-  color: #3f8205;
+  color: #326a04;
   outline: none;
 }
 

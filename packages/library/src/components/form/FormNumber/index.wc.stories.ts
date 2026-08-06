@@ -15,7 +15,10 @@ defineFormNumber();
 const meta = {
   title: '5. Form/FormNumber',
   component: FormNumberElement.tagName,
-  args: createVueCustomElementStoryArgs(FormNumberVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormNumberVueComponent),
+    value: 42,
+  },
   argTypes: createVueCustomElementArgTypes(FormNumberVueComponent),
   parameters: {
     name: 'FormNumber',

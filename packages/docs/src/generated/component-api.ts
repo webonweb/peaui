@@ -628,8 +628,12 @@ export const generatedComponentApi = [
         "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”."
       },
       {
+        "name": "on:dblclick",
+        "description": "Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord."
+      },
+      {
         "name": "on:dbclick",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:dbclick”."
+        "description": "Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”."
       },
       {
         "name": "on:select:row",
@@ -653,7 +657,7 @@ export const generatedComponentApi = [
       },
       {
         "name": "on:changeValue",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:changeValue”."
+        "description": "Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość."
       }
     ],
     "slots": [
@@ -3016,7 +3020,7 @@ export const generatedComponentApi = [
         "name": "placement",
         "type": "'top' | 'bottom'",
         "required": false,
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        "description": "Preferred list placement. The list flips when the preferred side has insufficient space."
       },
       {
         "name": "placeholder",
@@ -3675,7 +3679,7 @@ export const generatedComponentApi = [
         "type": "'top' | 'bottom'",
         "required": false,
         "default": "bottom",
-        "description": "Konfiguruje właściwość „position” komponentu."
+        "description": "Preferred list placement; it flips automatically when the selected side has insufficient space."
       },
       {
         "name": "dataTestId",

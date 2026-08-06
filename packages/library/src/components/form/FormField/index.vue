@@ -228,6 +228,7 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
 
       <button
         v-if="isEraseButtonVisible"
+        type="button"
         :class="`${classNameComponent}__erase-button`"
         :data-testid="eraseButtonTestId"
         aria-label="Usuń wartość pola"

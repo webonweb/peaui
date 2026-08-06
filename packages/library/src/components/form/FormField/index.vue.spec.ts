@@ -199,6 +199,7 @@ describe('FormField (index.vue)', () => {
 
     const button = wrapper.get('[data-testid="form-field-erase-button"]');
 
+    expect(button.attributes('type')).toBe('button');
     expect(button.attributes('style')).toContain('--right: 44px');
 
     await button.trigger('click');

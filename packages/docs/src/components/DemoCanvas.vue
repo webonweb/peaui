@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 
 import { getDemoPreset, getDemoVariants, getExampleCode } from '../data/demo-presets';
+import { cloneDemoValue } from '../data/demo-utils';
 import { useDemoTranslation } from '../composables/use-demo-translation';
 import type { ComponentDefinition } from '../types';
 import { useI18n } from '../i18n';
@@ -48,14 +49,10 @@ const resetKey = computed(
     `${props.definition.name}-${activeVariantId.value}-${JSON.stringify(interactiveProps.value)}`,
 );
 
-function clone<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
-
 function selectVariant(id: string) {
   activeVariantId.value = id;
   const variant = variants.value.find((entry) => entry.id === id) ?? variants.value[0];
-  interactiveProps.value = clone(variant?.props ?? {});
+  interactiveProps.value = cloneDemoValue(variant?.props ?? {});
   eventLog.value = [];
 }
 
@@ -72,7 +69,7 @@ watch(
   () => [props.definition.name, locale.value],
   () => {
     activeVariantId.value = 'default';
-    interactiveProps.value = clone(variants.value[0]?.props ?? {});
+    interactiveProps.value = cloneDemoValue(variants.value[0]?.props ?? {});
     panel.value = 'preview';
     eventLog.value = [];
   },

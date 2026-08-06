@@ -21,6 +21,7 @@ const {
   id: string;
   label: string;
   limitList?: number[];
+  /** Preferred list placement; it flips automatically when the selected side has insufficient space. */
   position?: 'top' | 'bottom';
   dataTestId?: string;
 }>();

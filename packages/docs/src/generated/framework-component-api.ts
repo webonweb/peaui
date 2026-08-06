@@ -658,8 +658,12 @@ export const generatedReactComponentApi = [
         "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”. W React przekaż callback onCreateRecord."
       },
       {
+        "name": "onRowDoubleClick",
+        "description": "Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord. W React przekaż callback onRowDoubleClick."
+      },
+      {
         "name": "onDbclick",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:dbclick”. W React przekaż callback onDbclick."
+        "description": "Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”. W React przekaż callback onDbclick."
       },
       {
         "name": "onSelectRow",
@@ -683,7 +687,7 @@ export const generatedReactComponentApi = [
       },
       {
         "name": "onChangeValue",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:changeValue”. W React przekaż callback onChangeValue."
+        "description": "Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość. W React przekaż callback onChangeValue."
       }
     ],
     "slots": [
@@ -3136,7 +3140,7 @@ export const generatedReactComponentApi = [
         "name": "placement",
         "type": "'top' | 'bottom'",
         "required": false,
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        "description": "Preferred list placement. The list flips when the preferred side has insufficient space."
       },
       {
         "name": "placeholder",
@@ -3825,7 +3829,7 @@ export const generatedReactComponentApi = [
         "type": "'top' | 'bottom'",
         "required": false,
         "default": "bottom",
-        "description": "Konfiguruje właściwość „position” komponentu."
+        "description": "Preferred list placement; it flips automatically when the selected side has insufficient space."
       },
       {
         "name": "dataTestId",
@@ -5193,8 +5197,12 @@ export const generatedWebComponentApi = [
         "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”."
       },
       {
+        "name": "on:dblclick",
+        "description": "Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord."
+      },
+      {
         "name": "on:dbclick",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:dbclick”."
+        "description": "Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”."
       },
       {
         "name": "on:select:row",
@@ -5218,7 +5226,7 @@ export const generatedWebComponentApi = [
       },
       {
         "name": "on:changeValue",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:changeValue”."
+        "description": "Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość."
       }
     ],
     "slots": [
@@ -7773,7 +7781,7 @@ export const generatedWebComponentApi = [
         "name": "placement",
         "type": "'top' | 'bottom'",
         "required": false,
-        "description": "Konfiguruje właściwość „placement” komponentu. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+        "description": "Preferred list placement. The list flips when the preferred side has insufficient space. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
       },
       {
         "name": "placeholder",
@@ -8489,7 +8497,7 @@ export const generatedWebComponentApi = [
         "type": "'top' | 'bottom'",
         "required": false,
         "default": "bottom",
-        "description": "Konfiguruje właściwość „position” komponentu. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+        "description": "Preferred list placement; it flips automatically when the selected side has insufficient space. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
       },
       {
         "name": "data-testid",

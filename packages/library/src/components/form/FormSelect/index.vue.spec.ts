@@ -529,6 +529,43 @@ describe('FormSelect (index.vue)', () => {
     });
   });
 
+  it('treats explicit placement as preferred and flips it when options would leave the viewport', async () => {
+    const originalInnerHeight = window.innerHeight;
+    const inputRectSpy = vi.spyOn(HTMLInputElement.prototype, 'getBoundingClientRect');
+
+    inputRectSpy.mockReturnValue({
+      x: 0,
+      y: 560,
+      top: 560,
+      right: 320,
+      bottom: 608,
+      left: 0,
+      width: 320,
+      height: 48,
+      toJSON: () => ({}),
+    });
+
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: 700,
+    });
+
+    const wrapper = mountComponent({ placement: 'bottom' });
+
+    await wrapper.get('input').trigger('click');
+    await nextTick();
+
+    expect(
+      wrapper.get('[data-testid="form-select-popover-trigger"]').attributes('data-placement'),
+    ).toBe('top');
+
+    inputRectSpy.mockRestore();
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: originalInnerHeight,
+    });
+  });
+
   it('does not force active option scroll when the listbox itself is scrolled', async () => {
     const originalScrollIntoView = Element.prototype.scrollIntoView;
     const scrollIntoViewSpy = vi.fn();

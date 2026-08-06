@@ -75,6 +75,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Prezentuje rekordy według deklaratywnych kolumn.',
       'Obsługuje stany puste i ładowania oraz akcje na rekordach.',
+      'Zapewnia obsługę klawiatury oraz spójne zdarzenia wyboru, edycji i dwukrotnego kliknięcia.',
     ],
     'Tablica records i definicje columns; opcjonalnie konfiguracja sortowania, zaznaczeń, edycji i paginacji.',
   ),
@@ -249,7 +250,10 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   FormSelect: copy(
     'Pole pojedynczego wyboru z listą rozwijaną i opcjonalnym wyszukiwaniem.',
-    ['Pozwala wybrać jedną pozycję.', 'Obsługuje listy wyszukiwalne i własne wpisy.'],
+    [
+      'Pozwala wybrać jedną pozycję.',
+      'Obsługuje listy wyszukiwalne, własne wpisy i bezpieczne pozycjonowanie przy krawędzi ekranu.',
+    ],
     'Lista options, id, name i wybrana wartość przez v-model:value.',
   ),
   FormTextarea: copy(
@@ -308,7 +312,10 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   ListLimitControl: copy(
     'Kontrolka wyboru liczby elementów prezentowanych na stronie.',
-    ['Zmienia rozmiar strony listy.', 'Synchronizuje wybór przez v-model:limit.'],
+    [
+      'Zmienia rozmiar strony listy.',
+      'Synchronizuje wybór i utrzymuje rozwiniętą listę w obszarze ekranu.',
+    ],
     'Id, etykieta, lista dostępnych limitów i bieżący limit.',
   ),
   NavigationCard: copy(

@@ -179,6 +179,16 @@ const meta: Meta<typeof FormSelectComponent> = {
         defaultValue: { summary: 'true' },
       },
     },
+    placement: {
+      control: { type: 'select' },
+      options: ['top', 'bottom'],
+      description:
+        'Preferowana strona otwarcia listy. Komponent automatycznie odwraca kierunek, gdy brakuje miejsca w viewportcie.',
+      table: {
+        type: { summary: "'top' | 'bottom' | undefined" },
+        defaultValue: { summary: 'bottom' },
+      },
+    },
     size: {
       control: { type: 'select' },
       options: ['xs', 's', 'm', 'l'],
@@ -243,6 +253,7 @@ export const FormSelect: Story = {
     canErase: true,
     canWrite: false,
     searchable: true,
+    placement: undefined,
     size: 'm',
     options: defaultOptions,
     dataTestId: 'form-select',

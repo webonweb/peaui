@@ -2,7 +2,9 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { getDemoPreset } from '../data/demo-presets';
+import { cloneDemoValue, serializeDemoValue } from '../data/demo-utils';
 import { localizeDemoData } from '../data/demo-localization';
+import { getTableListDemoVariants } from '../data/table-list-demos';
 import { useDemoTranslation } from '../composables/use-demo-translation';
 import { useI18n } from '../i18n';
 import type { ApiEntry, DemoVariant, FrameworkComponentDefinition } from '../types';
@@ -217,6 +219,8 @@ function unionValues(type: string): string[] {
 }
 
 function createVariants(initialProps: Record<string, unknown>): DemoVariant[] {
+  if (props.definition.name === 'TableList') return getTableListDemoVariants(initialProps);
+
   const result: DemoVariant[] = [
     {
       id: 'default',
@@ -277,10 +281,6 @@ function createVariants(initialProps: Record<string, unknown>): DemoVariant[] {
   }
 
   return result;
-}
-
-function clone(value: Record<string, unknown>): Record<string, unknown> {
-  return JSON.parse(JSON.stringify(value)) as Record<string, unknown>;
 }
 
 function getContentPreset(): Required<Pick<PreviewPreset, 'slots' | 'cards'>> & { text: string } {
@@ -393,7 +393,7 @@ async function renderPreview(): Promise<void> {
 function selectVariant(id: string): void {
   activeVariantId.value = id;
   const variant = variants.value.find((entry) => entry.id === id) ?? variants.value[0];
-  interactiveProps.value = clone(variant?.props ?? {});
+  interactiveProps.value = cloneDemoValue(variant?.props ?? {});
   eventLog.value = [];
   void renderPreview();
 }
@@ -408,8 +408,7 @@ function escapeAttribute(value: unknown): string {
 }
 
 function serializeProperty(value: unknown): string {
-  if (value === undefined) return 'undefined';
-  return JSON.stringify(value, null, 2) ?? 'undefined';
+  return serializeDemoValue(value);
 }
 
 function createExampleCode(): string {

@@ -93,6 +93,10 @@ $color-aliases: (
   .peaui-toast-alert--variant-#{$alias} {
     $content-tone: 600;
 
+    @if $real == 'primary' {
+      $content-tone: 700;
+    }
+
     @if $real == 'warning' {
       $content-tone: 700;
     }

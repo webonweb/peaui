@@ -2,7 +2,6 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, type Locator, type Page } from '@playwright/test';
 
 const AXE_DISABLED_RULES = [
-  'color-contrast',
   'landmark-one-main',
   'page-has-heading-one',
   'region',

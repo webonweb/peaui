@@ -42,11 +42,14 @@ type Option = {
   value?: unknown;
 };
 type TableColumn = {
+  actionName?: string;
   align?: string;
+  inline?: boolean;
   key: string;
   label?: string;
   name?: string;
   sortable?: boolean;
+  type?: string;
   width?: string | number;
 };
 
@@ -94,6 +97,11 @@ const common = (props: RuntimeProps) => ({
   tabIndex: typeof props.tabIndex === 'number' ? props.tabIndex : undefined,
   'data-testid': dataTest(props),
   'aria-label': text(props, 'ariaLabel') || text(props, 'aria-label') || undefined,
+  'aria-describedby': text(props, 'aria-describedby') || undefined,
+  'aria-labelledby': text(props, 'aria-labelledby') || undefined,
+  onClick: typeof props.onClick === 'function' ? props.onClick : undefined,
+  onKeyDown: typeof props.onKeyDown === 'function' ? props.onKeyDown : undefined,
+  onPointerDown: typeof props.onPointerDown === 'function' ? props.onPointerDown : undefined,
 });
 
 type NativePopoverElement = HTMLDivElement & {
@@ -105,6 +113,13 @@ const nativePopoverValue = (): 'auto' | undefined =>
   typeof HTMLElement !== 'undefined' && typeof HTMLElement.prototype.showPopover === 'function'
     ? 'auto'
     : undefined;
+
+function isInteractiveTarget(target: EventTarget | null): boolean {
+  return (
+    target instanceof Element &&
+    Boolean(target.closest('a, button, input, select, textarea, [role="button"]'))
+  );
+}
 
 function useNativePopover(open: boolean): React.RefObject<NativePopoverElement | null> {
   const popoverRef = useRef<NativePopoverElement | null>(null);
@@ -446,7 +461,7 @@ function ButtonRenderer({
         disabled={disabled}
         ref={forwardedRef as ForwardedRef<HTMLButtonElement>}
         type={text(props, 'type', 'button') as 'button' | 'submit' | 'reset'}
-        onClick={() => callback(props, 'onClick')?.()}
+        onClick={(event) => callback(props, 'onClick')?.(event)}
       >
         {props.children ?? 'Akcja'}
       </button>
@@ -760,6 +775,7 @@ function TextInputRenderer({
           ) : null}
         </div>
         <button
+          aria-label="Szukaj"
           className="peaui-search-input__button peaui-button-action peaui-button-action--variant-primary"
           disabled={disabled || readonly}
           type="button"
@@ -2180,6 +2196,14 @@ function FeedbackRenderer({
     return (
       <div
         {...common(props)}
+        aria-label={
+          text(props, 'ariaLabel') ||
+          (steps <= 0
+            ? 'Postęp: brak zdefiniowanych kroków.'
+            : removeActive
+              ? `Postęp: ${steps} kroków.`
+              : `Postęp: krok ${active} z ${steps}.`)
+        }
         aria-valuemax={steps}
         aria-valuemin={0}
         aria-valuenow={active}
@@ -2415,10 +2439,10 @@ function DisplayRenderer({
   }
   if (kind === 'DescriptionField')
     return (
-      <div
+      <dl
         {...common(props)}
         className={cx('peaui-description-field', props.className)}
-        ref={forwardedRef as ForwardedRef<HTMLDivElement>}
+        ref={forwardedRef as ForwardedRef<HTMLDListElement>}
       >
         <dd className="peaui-description-field__addon peaui-description-field__addon--before">
           {node(props, 'additionalBefore')}
@@ -2435,7 +2459,7 @@ function DisplayRenderer({
         <dd className="peaui-description-field__addon peaui-description-field__addon--after">
           {node(props, 'additionalAfter')}
         </dd>
-      </div>
+      </dl>
     );
   if (kind === 'DisclosurePanel') return <Disclosure props={props} forwardedRef={forwardedRef} />;
   if (kind === 'SectionHeading') {
@@ -2840,7 +2864,12 @@ function TreeNode({
           </div>
         )}
         {canRemove ? (
-          <button className={`${root}__remove`} type="button" onClick={onRemove}>
+          <button
+            aria-label={`Usuń ${label}`}
+            className={`${root}__remove`}
+            type="button"
+            onClick={onRemove}
+          >
             <Svg className={`${root}__remove-icon`} name="close" />
           </button>
         ) : null}
@@ -2877,6 +2906,7 @@ function TableRenderer({
   ...props
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const kind = text(props, '__name');
+  const [filtersOpen, setFiltersOpen] = useModel<boolean>(props, 'filtersOpen', false);
   if (kind === 'TableListHeader')
     return (
       <header
@@ -2907,7 +2937,7 @@ function TableRenderer({
               <button
                 className="peaui-table-list-header__filter-button peaui-button-action peaui-button-action--variant-secondary"
                 type="button"
-                onClick={() => callback(props, 'onFiltersOpenChange')?.(true)}
+                onClick={() => setFiltersOpen(!filtersOpen)}
               >
                 <span className="peaui-table-list-header__filter-button-label">Filtry</span>
                 {num(props, 'countFilters') ? (
@@ -2915,6 +2945,17 @@ function TableRenderer({
                     {num(props, 'countFilters')}
                   </span>
                 ) : null}
+              </button>
+            ) : null}
+            {bool(props, 'canFilter') && num(props, 'countFilters') > 0 ? (
+              <button
+                aria-label="Wyczyść filtry"
+                className="peaui-table-list-header__filter-reset peaui-button-action peaui-button-action--variant-ghost"
+                type="button"
+                onClick={() => callback(props, 'onResetFilters')?.()}
+              >
+                <Svg className="peaui-table-list-header__filter-reset-icon" name="close" />
+                <span className="peaui-table-list-header__filter-reset-label">Wyczyść filtry</span>
               </button>
             ) : null}
             {bool(props, 'canCreate') ? (
@@ -3003,6 +3044,8 @@ function TableRenderer({
           : String(index);
     return [
       {
+        actionName: typeof record.actionName === 'string' ? record.actionName : undefined,
+        inline: record.inline === true,
         key,
         label:
           typeof record.label === 'string'
@@ -3011,6 +3054,7 @@ function TableRenderer({
               ? record.title
               : key,
         sortable: record.sortable === true,
+        type: typeof record.type === 'string' ? record.type : undefined,
       },
     ];
   });
@@ -3101,9 +3145,29 @@ function TableRenderer({
                 className={cx(
                   'peaui-table-list__row',
                   selected.has(id) && 'peaui-table-list__row--selected',
-                  callback(props, 'onDbclick') && 'peaui-table-list__row--interactive',
+                  (callback(props, 'onRowDoubleClick') || callback(props, 'onDbclick')) &&
+                    'peaui-table-list__row--interactive',
                 )}
-                onDoubleClick={() => callback(props, 'onDbclick')?.(entry)}
+                tabIndex={bool(props, 'canCheckRows') ? 0 : undefined}
+                onClick={(event) => {
+                  if (bool(props, 'canCheckRows') && !isInteractiveTarget(event.target)) {
+                    callback(props, 'onCheckRow')?.(record);
+                  }
+                }}
+                onDoubleClick={() => {
+                  callback(props, 'onRowDoubleClick')?.(record.id, record);
+                  callback(props, 'onDbclick')?.(record.id, record);
+                }}
+                onKeyDown={(event) => {
+                  if (
+                    bool(props, 'canCheckRows') &&
+                    ['Enter', ' ', 'Spacebar'].includes(event.key) &&
+                    !isInteractiveTarget(event.target)
+                  ) {
+                    event.preventDefault();
+                    callback(props, 'onCheckRow')?.(record);
+                  }
+                }}
               >
                 {bool(props, 'canSelectRows') ? (
                   <td className="peaui-table-list__select-cell">
@@ -3111,17 +3175,45 @@ function TableRenderer({
                       aria-label={`Zaznacz wiersz ${rowIndex + 1}`}
                       checked={selected.has(id)}
                       type="checkbox"
-                      onChange={(event) =>
-                        callback(props, 'onSelectRow')?.(id, event.target.checked)
-                      }
+                      onChange={(event) => {
+                        const nextSelectedRows = event.target.checked
+                          ? [...selected, id]
+                          : [...selected].filter((selectedId) => selectedId !== id);
+                        callback(props, 'onSelectRow')?.(nextSelectedRows);
+                      }}
                     />
                   </td>
                 ) : null}
                 {columns.map((column) => (
                   <td key={column.key} className="peaui-table-list__body-cell">
-                    {renderCell
-                      ? renderCell(column.key, record, rowIndex)
-                      : String(record[column.key] ?? '—')}
+                    {renderCell ? (
+                      renderCell(column.key, record, rowIndex)
+                    ) : column.inline ? (
+                      <input
+                        aria-label={`Edytuj ${column.label ?? column.key}`}
+                        defaultValue={String(record[column.key] ?? '')}
+                        onChange={(event) =>
+                          callback(props, 'onChangeValue')?.(record.id, event.target.value)
+                        }
+                      />
+                    ) : column.type === 'action' || column.type === 'editAction' ? (
+                      <button
+                        aria-label={`${column.label ?? column.key}: ${String(record[column.key] ?? '')}`}
+                        type="button"
+                        onClick={() =>
+                          callback(props, 'onAction')?.(
+                            record.id,
+                            column.actionName ??
+                              (column.type === 'editAction' ? 'edit-inline' : 'edit'),
+                            record,
+                          )
+                        }
+                      >
+                        {String(record[column.key] ?? column.label ?? column.key)}
+                      </button>
+                    ) : (
+                      String(record[column.key] ?? '—')
+                    )}
                   </td>
                 ))}
               </tr>

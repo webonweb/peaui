@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import type { PeauiReactProps, ReactComponentName } from './generated-react-props';
 
 const card = (title: string) =>
-  createElement('article', { style: { minHeight: 140, minWidth: 220, padding: 24 } }, [
+  createElement('article', { key: title, style: { minHeight: 140, minWidth: 220, padding: 24 } }, [
     createElement('strong', { key: 'title' }, title),
     createElement('p', { key: 'body' }, 'Przykładowa treść komponentu PEAUI.'),
   ]);

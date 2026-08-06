@@ -104,7 +104,15 @@ export type PeauiOption = {
   status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden';
   additional?: ReactNode;
 };
-export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; sortable?: boolean };
+export type PeauiTableColumn = PeauiRecord & {
+  key: string;
+  label?: string;
+  sortable?: boolean;
+  type?: string;
+  actionName?: string;
+  inline?: boolean;
+  manage?: PeauiRecord;
+};
 export type PeauiTreeNode = PeauiRecord & {
   id?: string | number;
   label?: string;
@@ -303,6 +311,8 @@ export type ReactComponentPropsMap = {
     onAction?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”. */
     onCreateRecord?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „on:dblclick”. */
+    onRowDoubleClick?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:dbclick”. */
     onDbclick?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”. */
@@ -1117,7 +1127,7 @@ export type ReactComponentPropsMap = {
     iconBefore?: string;
     /** Oznacza wartość jako wymaganą. */
     required?: boolean;
-    /** Konfiguruje właściwość „placement” komponentu. */
+    /** Preferred list placement. The list flips when the preferred side has insufficient space. */
     placement?: 'top' | 'bottom';
     /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
     placeholder?: string;
@@ -1325,7 +1335,7 @@ export type ReactComponentPropsMap = {
     label: string;
     /** Konfiguruje właściwość „limit list” komponentu. */
     limitList?: number[];
-    /** Konfiguruje właściwość „position” komponentu. */
+    /** Preferred list placement; it flips automatically when the selected side has insufficient space. */
     position?: 'top' | 'bottom';
     /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
     dataTestId?: string;

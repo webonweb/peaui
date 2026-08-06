@@ -81,6 +81,7 @@ const {
   label?: string;
   iconBefore?: string;
   required?: boolean;
+  /** Preferred list placement. The list flips when the preferred side has insufficient space. */
   placement?: SelectPopoverPlacement;
   placeholder?: string;
   disabled?: boolean;
@@ -383,11 +384,6 @@ function getEstimatedPopoverHeight(): number {
 }
 
 function syncPopoverPlacement(): void {
-  if (placement) {
-    popoverPlacement.value = placement;
-    return;
-  }
-
   if (!inputReference.value) {
     return;
   }
@@ -396,9 +392,18 @@ function syncPopoverPlacement(): void {
   const estimatedPopoverHeight = getEstimatedPopoverHeight() + 5;
   const availableAbove = rect.top;
   const availableBelow = window.innerHeight - rect.bottom;
+  const preferredPlacement = placement ?? 'bottom';
+  const preferredSpace =
+    preferredPlacement === 'bottom' ? availableBelow : availableAbove;
+  const fallbackPlacement: SelectPopoverPlacement =
+    preferredPlacement === 'bottom' ? 'top' : 'bottom';
+  const fallbackSpace =
+    fallbackPlacement === 'bottom' ? availableBelow : availableAbove;
 
   popoverPlacement.value =
-    availableBelow >= estimatedPopoverHeight || availableBelow >= availableAbove ? 'bottom' : 'top';
+    preferredSpace >= estimatedPopoverHeight || preferredSpace >= fallbackSpace
+      ? preferredPlacement
+      : fallbackPlacement;
 }
 
 function refreshOpenPopoverPosition(): void {

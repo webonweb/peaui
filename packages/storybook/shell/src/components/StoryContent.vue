@@ -105,13 +105,15 @@ const documentedProps = computed(() => props.settings.props ?? []);
 
 <style lang="scss" scoped>
 .story-content {
-  --docs-accent: #3f8205;
+  --docs-accent: #326a04;
   --docs-accent-soft: #f4fbe8;
   --docs-border: #dce3ec;
   --docs-muted: #5d6878;
   --docs-surface: #ffffff;
   box-sizing: border-box;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   width: min(70rem, calc(100% - 2rem));
   margin: 0 auto;
   padding: 3.5rem 0 5rem;
@@ -128,6 +130,7 @@ const documentedProps = computed(() => props.settings.props ?? []);
 }
 
 .story-hero {
+  min-width: 0;
   display: grid;
   gap: 1.25rem;
   padding: 2.25rem;
@@ -162,6 +165,8 @@ const documentedProps = computed(() => props.settings.props ?? []);
 
 .story-hero__title {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 750;
   letter-spacing: -0.055em;
@@ -171,6 +176,7 @@ const documentedProps = computed(() => props.settings.props ?? []);
 .story-hero__description {
   max-width: 52rem;
   margin: 0;
+  overflow-wrap: anywhere;
   color: var(--docs-muted);
   font-size: 1.08rem;
   line-height: 1.75;
@@ -181,6 +187,8 @@ const documentedProps = computed(() => props.settings.props ?? []);
 }
 
 .story-badge {
+  box-sizing: border-box;
+  max-width: 100%;
   padding: 0.38rem 0.7rem;
   border: 1px solid var(--docs-border);
   border-radius: 999px;
@@ -221,6 +229,8 @@ const documentedProps = computed(() => props.settings.props ?? []);
 
 .story-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 1.25rem;
   scroll-margin-top: 1rem;
 }

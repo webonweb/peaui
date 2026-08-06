@@ -240,6 +240,141 @@ export const generatedReactComponentApi = [
   {
     "category": "data-display",
     "categoryLabel": "Prezentacja danych",
+    "name": "AvatarGroup",
+    "sourceName": "AvatarGroup",
+    "framework": "react",
+    "importPath": "@peaui/ui/react/data-display/AvatarGroup",
+    "status": "stable",
+    "props": [
+      {
+        "name": "items",
+        "type": "AvatarGroupItem[]",
+        "required": false,
+        "default": "[]",
+        "description": "Osoby prezentowane w stabilnej kolejności wejściowej."
+      },
+      {
+        "name": "maxVisible",
+        "type": "number",
+        "required": false,
+        "default": "3",
+        "description": "Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru."
+      },
+      {
+        "name": "size",
+        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
+        "required": false,
+        "default": "m",
+        "description": "Rozmiar awatarów i licznika."
+      },
+      {
+        "name": "shape",
+        "type": "'circle' | 'rounded'",
+        "required": false,
+        "default": "circle",
+        "description": "Kształt awatarów i licznika."
+      },
+      {
+        "name": "overlap",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Włącza kompaktowy układ z nachodzącymi na siebie elementami."
+      },
+      {
+        "name": "direction",
+        "type": "'start' | 'end'",
+        "required": false,
+        "default": "end",
+        "description": "Określa, która krawędź stosu znajduje się wizualnie na wierzchu."
+      },
+      {
+        "name": "overflowMode",
+        "type": "'count' | 'popover' | 'none'",
+        "required": false,
+        "default": "count",
+        "description": "Sposób prezentacji pozycji poza limitem."
+      },
+      {
+        "name": "itemKey",
+        "type": "keyof AvatarGroupItem | ((item: AvatarGroupItem, index: number) => string | number)",
+        "required": false,
+        "default": "id",
+        "description": "Pole lub funkcja zwracająca stabilny klucz elementu."
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "Członkowie grupy",
+        "description": "Dostępna nazwa listy widocznych osób."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wyłącza wszystkie akcje grupy."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Sygnalizuje ładowanie szczegółowej listy w popoverze."
+      },
+      {
+        "name": "dataTestId",
+        "type": "string",
+        "required": false,
+        "description": "Stabilny identyfikator używany w testach automatycznych."
+      }
+    ],
+    "models": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stan otwarcia kontrolowany przez v-model:open. W React dostępne są propsy open, defaultOpen i onOpenChange."
+      }
+    ],
+    "events": [
+      {
+        "name": "onSelect",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „select”. W React przekaż callback onSelect."
+      },
+      {
+        "name": "onOverflowClick",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”. W React przekaż callback onOverflowClick."
+      }
+    ],
+    "slots": [
+      {
+        "name": "renderItem",
+        "description": "Treść osadzana w nazwanym slocie „item”. W React jest to prop ReactNode „renderItem”."
+      },
+      {
+        "name": "renderOverflow",
+        "description": "Treść osadzana w nazwanym slocie „overflow”. W React jest to prop ReactNode „renderOverflow”."
+      },
+      {
+        "name": "popoverHeader",
+        "description": "Treść osadzana w nazwanym slocie „popover-header”. W React jest to prop ReactNode „popoverHeader”."
+      },
+      {
+        "name": "renderPopoverItem",
+        "description": "Treść osadzana w nazwanym slocie „popover-item”. W React jest to prop ReactNode „renderPopoverItem”."
+      },
+      {
+        "name": "empty",
+        "description": "Treść osadzana w nazwanym slocie „empty”. W React jest to prop ReactNode „empty”."
+      }
+    ]
+  },
+  {
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
     "name": "CalculationResults",
     "sourceName": "CalculationResults",
     "framework": "react",
@@ -4907,6 +5042,146 @@ export const generatedWebComponentApi = [
       {
         "name": "status",
         "description": "Treść osadzana w nazwanym slocie „status”."
+      }
+    ]
+  },
+  {
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
+    "name": "AvatarGroup",
+    "sourceName": "AvatarGroup",
+    "framework": "web-components",
+    "importPath": "@peaui/ui/wc/data-display/AvatarGroup",
+    "tagName": "peaui-avatar-group",
+    "status": "stable",
+    "props": [
+      {
+        "name": "items",
+        "type": "AvatarGroupItem[]",
+        "required": false,
+        "default": "[]",
+        "description": "Osoby prezentowane w stabilnej kolejności wejściowej. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "max-visible",
+        "type": "number",
+        "required": false,
+        "default": "3",
+        "description": "Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "size",
+        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
+        "required": false,
+        "default": "m",
+        "description": "Rozmiar awatarów i licznika. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "shape",
+        "type": "'circle' | 'rounded'",
+        "required": false,
+        "default": "circle",
+        "description": "Kształt awatarów i licznika. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "overlap",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Włącza kompaktowy układ z nachodzącymi na siebie elementami. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "direction",
+        "type": "'start' | 'end'",
+        "required": false,
+        "default": "end",
+        "description": "Określa, która krawędź stosu znajduje się wizualnie na wierzchu. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "overflow-mode",
+        "type": "'count' | 'popover' | 'none'",
+        "required": false,
+        "default": "count",
+        "description": "Sposób prezentacji pozycji poza limitem. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "item-key",
+        "type": "keyof AvatarGroupItem | ((item: AvatarGroupItem, index: number) => string | number)",
+        "required": false,
+        "default": "id",
+        "description": "Pole lub funkcja zwracająca stabilny klucz elementu. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "Członkowie grupy",
+        "description": "Dostępna nazwa listy widocznych osób. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wyłącza wszystkie akcje grupy. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Sygnalizuje ładowanie szczegółowej listy w popoverze. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      },
+      {
+        "name": "data-testid",
+        "type": "string",
+        "required": false,
+        "description": "Stabilny identyfikator używany w testach automatycznych. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      }
+    ],
+    "models": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stan otwarcia kontrolowany przez v-model:open. W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property."
+      }
+    ],
+    "events": [
+      {
+        "name": "select",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „select”."
+      },
+      {
+        "name": "overflowClick",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”."
+      },
+      {
+        "name": "update:open",
+        "description": "Natywne zdarzenie CustomEvent emitowane po zmianie właściwości „open”."
+      }
+    ],
+    "slots": [
+      {
+        "name": "item",
+        "description": "Treść osadzana w nazwanym slocie „item”."
+      },
+      {
+        "name": "overflow",
+        "description": "Treść osadzana w nazwanym slocie „overflow”."
+      },
+      {
+        "name": "popover-header",
+        "description": "Treść osadzana w nazwanym slocie „popover-header”."
+      },
+      {
+        "name": "popover-item",
+        "description": "Treść osadzana w nazwanym slocie „popover-item”."
+      },
+      {
+        "name": "empty",
+        "description": "Treść osadzana w nazwanym slocie „empty”."
       }
     ]
   },

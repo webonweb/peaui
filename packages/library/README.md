@@ -24,7 +24,7 @@ PEAUI is a continuously developed UI component library for building consistent, 
 - native React components;
 - standards-based Web Components.
 
-The current catalog contains **63 components**. New components, variants and improvements will be added as the library evolves.
+The current catalog contains **64 components**. New components, variants and improvements will be added as the library evolves.
 
 ## What PEAUI is for
 
@@ -371,7 +371,7 @@ PEAUI to stale rozwijana biblioteka komponentów interfejsu przeznaczona do budo
 - natywnych komponentów React;
 - zgodnych ze standardami Web Components.
 
-Aktualny katalog zawiera **63 komponenty**. Wraz z rozwojem biblioteki będą pojawiały się kolejne komponenty, warianty oraz ulepszenia.
+Aktualny katalog zawiera **64 komponenty**. Wraz z rozwojem biblioteki będą pojawiały się kolejne komponenty, warianty oraz ulepszenia.
 
 ## Do czego służy PEAUI
 

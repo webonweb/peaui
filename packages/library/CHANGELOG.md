@@ -1,5 +1,12 @@
 # @peaui/ui
 
+## 2.3.0
+
+### Minor Changes
+
+- Dodano dostępny komponent AvatarGroup dla Vue, React i Web Components z limitowaniem widocznych osób, trybami nadmiaru, kontrolowanym popoverem, obsługą klawiatury, wspólnymi stylami, testami, stories oraz dokumentacją.
+- 26f2c47: Dodano dostępny komponent Avatar dla Vue, React i Web Components wraz z fallbackami obrazu, inicjałów i ikony, statusami obecności, trybem interaktywnym, wspólną neutralną warstwą wizualną, testami, stories oraz dokumentacją.
+
 ## 2.0.0
 
 ### Major Changes

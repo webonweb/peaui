@@ -89,7 +89,7 @@ Każdy komponent musi spełnić poniższe zasady, o ile jego opis jawnie nie uza
 | ID           | Komponent                  | Etap | Status | Priorytet | Złożoność | Zależności                                            |
 | ------------ | -------------------------- | ---: | ------ | --------- | --------- | ----------------------------------------------------- |
 | PEA-COMP-001 | Avatar                     |    1 | DONE   | P0        | S         | ImageView, SvgIcon                                    |
-| PEA-COMP-002 | AvatarGroup                |    1 | TODO   | P1        | M         | Avatar, InfoTooltip/PopoverOverlayer                  |
+| PEA-COMP-002 | AvatarGroup                |    1 | DONE   | P1        | M         | Avatar, InfoTooltip/PopoverOverlayer                  |
 | PEA-COMP-003 | DropdownMenu               |    1 | TODO   | P0        | L         | PopoverOverlayer, ButtonAction                        |
 | PEA-COMP-004 | ContextMenu                |    1 | TODO   | P1        | L         | DropdownMenu lub wspólne menu, PopoverOverlayer       |
 | PEA-COMP-005 | MenuBar                    |    1 | TODO   | P2        | L         | DropdownMenu lub wspólne menu                         |
@@ -148,6 +148,56 @@ Każdy komponent musi spełnić poniższe zasady, o ile jego opis jawnie nie uza
 | PEA-COMP-058 | WorkflowCanvas             |    7 | TODO   | P2        | XL        | FullscreenContainer, ContextMenu, KeyboardShortcutMap |
 | PEA-COMP-059 | RelationshipGraph Advanced |    7 | TODO   | P3        | XL        | RelationshipGraph                                     |
 | PEA-COMP-060 | OrganizationChart Advanced |    7 | TODO   | P3        | XL        | OrganizationChart                                     |
+| PEA-COMP-061 | KanbanBoard                |    8 | TODO   | P1        | XL        | ContextMenu, InlineEdit, ScrollArea                   |
+| PEA-COMP-062 | GanttChart                 |    8 | TODO   | P2        | XL        | ScrollArea, InfoTooltip, ContextMenu                  |
+| PEA-COMP-063 | ResourceScheduler          |    8 | TODO   | P2        | XL        | DateRangePicker, TimePicker, ScrollArea               |
+| PEA-COMP-064 | RoadmapTimeline            |    8 | TODO   | P2        | L         | StatusFlow, InfoTooltip, ScrollArea                   |
+| PEA-COMP-065 | DependencyBoard            |    8 | TODO   | P2        | L         | RelationshipGraph lub wspólne prymitywy grafu        |
+| PEA-COMP-066 | PivotTable                 |    9 | TODO   | P2        | XL        | SmartDataGrid lub wspólne prymitywy tabeli           |
+| PEA-COMP-067 | DataImportWizard           |    9 | TODO   | P1        | XL        | FormWizard, FormFileUpload, DataValidationReport      |
+| PEA-COMP-068 | DataMappingBuilder         |    9 | TODO   | P1        | L         | FormSelect, dostępny renderer połączeń                |
+| PEA-COMP-069 | BulkEditPanel              |    9 | TODO   | P1        | M         | FormContainer, ContextActionBar                       |
+| PEA-COMP-070 | ColumnConfigurator         |    9 | TODO   | P1        | L         | FormCheckbox, ToggleButton, InlineEdit                |
+| PEA-COMP-071 | SavedViewManager           |    9 | TODO   | P2        | M         | DropdownMenu, ModalDialog, InlineEdit                 |
+| PEA-COMP-072 | DataValidationReport       |    9 | TODO   | P1        | L         | SmartDataGrid lub TableList                           |
+| PEA-COMP-073 | AuditLogViewer             |    9 | TODO   | P2        | L         | DiffViewer, ActivityTimeline                          |
+| PEA-COMP-074 | LogViewer                  |    9 | TODO   | P2        | L         | VirtualList, SearchInput, FullscreenContainer         |
+| PEA-COMP-075 | DynamicFormBuilder         |   10 | TODO   | P2        | XL        | SchemaFormRenderer, PropertyGrid, formularze PeaUI    |
+| PEA-COMP-076 | SchemaFormRenderer         |   10 | TODO   | P1        | XL        | FormContainer, komponenty formularzowe PeaUI          |
+| PEA-COMP-077 | SurveyBuilder              |   10 | TODO   | P2        | XL        | SchemaFormRenderer, FormWizard                        |
+| PEA-COMP-078 | RuleDecisionTable          |   10 | TODO   | P2        | XL        | SmartDataGrid, QueryBuilder                           |
+| PEA-COMP-079 | CronExpressionBuilder      |   10 | TODO   | P2        | L         | SegmentedControl, FormNumber, FormSelect              |
+| PEA-COMP-080 | RecurrenceRuleBuilder      |   10 | TODO   | P2        | L         | FormDatePicker, FormNumber, FormCheckbox              |
+| PEA-COMP-081 | PropertyGrid               |   10 | TODO   | P1        | L         | DisclosurePanel, komponenty formularzowe PeaUI        |
+| PEA-COMP-082 | TemplateBuilder            |   10 | TODO   | P2        | L         | PropertyGrid, ResizableWorkspace                      |
+| PEA-COMP-083 | WhiteboardCanvas           |   11 | TODO   | P2        | XL        | FullscreenContainer, ContextMenu, KeyboardShortcutMap |
+| PEA-COMP-084 | MatrixBoard                |   11 | TODO   | P2        | L         | InfoTooltip, ContextMenu                              |
+| PEA-COMP-085 | RiskMatrix                 |   11 | TODO   | P2        | M         | MatrixBoard                                           |
+| PEA-COMP-086 | FloorPlanViewer            |   11 | TODO   | P2        | XL        | ImageView, HotspotViewer, LayerSwitcher               |
+| PEA-COMP-087 | SeatMapPicker              |   11 | TODO   | P2        | XL        | ScrollArea, InfoTooltip                               |
+| PEA-COMP-088 | MapLegend                  |   11 | TODO   | P2        | M         | FormCheckbox, DisclosurePanel                         |
+| PEA-COMP-089 | LayerSwitcher              |   11 | TODO   | P2        | L         | FormCheckbox, InputSlider, InlineEdit                 |
+| PEA-COMP-090 | SignaturePad               |   12 | TODO   | P2        | L         | FullscreenContainer                                   |
+| PEA-COMP-091 | MediaGallery               |   12 | TODO   | P2        | L         | ImageView, FilePreview, ModalDialog                   |
+| PEA-COMP-092 | DocumentPageOrganizer      |   12 | TODO   | P2        | XL        | CardPanel, ContextMenu, VirtualList                   |
+| PEA-COMP-093 | BarcodeScanner             |   12 | TODO   | P2        | L         | ModalDialog, FormInput                                |
+| PEA-COMP-094 | CodeGenerator              |   12 | TODO   | P2        | M         | ImageView, CopyButton                                 |
+| PEA-COMP-095 | ResponsivePreview          |   12 | TODO   | P2        | L         | ResizableWorkspace                                    |
+| PEA-COMP-096 | CompareGallery             |   12 | TODO   | P2        | L         | BeforeAfterSlider, ImageView                          |
+| PEA-COMP-097 | ThemeEditor                |   13 | TODO   | P2        | XL        | ColorPicker, GradientBuilder, ShadowBuilder           |
+| PEA-COMP-098 | DesignTokenTable           |   13 | TODO   | P1        | L         | SmartDataGrid lub TableList, CopyButton               |
+| PEA-COMP-099 | ColorTokenMatrix           |   13 | TODO   | P2        | L         | ContrastChecker, CopyButton                           |
+| PEA-COMP-100 | ContrastChecker            |   13 | TODO   | P1        | M         | ColorPicker                                           |
+| PEA-COMP-101 | IconPicker                 |   13 | TODO   | P2        | L         | SvgIcon, SearchInput, VirtualList                     |
+| PEA-COMP-102 | GradientBuilder            |   13 | TODO   | P1        | L         | ColorPicker, InputSlider                              |
+| PEA-COMP-103 | ShadowBuilder              |   13 | TODO   | P1        | L         | ColorPicker, FormNumber                               |
+| PEA-COMP-104 | TypographyPreview          |   13 | TODO   | P2        | M         | SegmentedControl, ResponsivePreview                   |
+| PEA-COMP-105 | CurrencyInput              |   14 | TODO   | P0        | M         | FormNumber                                            |
+| PEA-COMP-106 | UnitInput                  |   14 | TODO   | P1        | M         | FormNumber, FormSelect                                |
+| PEA-COMP-107 | DurationInput              |   14 | TODO   | P1        | M         | FormNumber                                            |
+| PEA-COMP-108 | TimeZonePicker             |   14 | TODO   | P2        | L         | SearchInput, FormSelect lub CommandPalette            |
+| PEA-COMP-109 | MaskedInput                |   14 | TODO   | P0        | M         | FormInput                                             |
+| PEA-COMP-110 | CoordinatesInput           |   14 | TODO   | P2        | M         | FormNumber, SegmentedControl                          |
 
 ## 9. Mapa zależności i sugerowana kolejność
 
@@ -185,6 +235,56 @@ SmartDataGrid → TableList lub wydzielone prymitywy tabeli + VirtualList + Inli
 WorkflowCanvas → FullscreenContainer + ContextMenu + KeyboardShortcutMap
 RelationshipGraph Advanced → RelationshipGraph
 OrganizationChart Advanced → OrganizationChart
+KanbanBoard → ContextMenu + InlineEdit + ScrollArea
+GanttChart → ScrollArea + InfoTooltip + ContextMenu
+ResourceScheduler → DateRangePicker + TimePicker + ScrollArea
+RoadmapTimeline → StatusFlow + InfoTooltip + ScrollArea
+DependencyBoard → RelationshipGraph lub wspólne prymitywy grafu
+PivotTable → SmartDataGrid lub wspólne prymitywy tabeli
+DataImportWizard → FormWizard + FormFileUpload + DataValidationReport
+DataMappingBuilder → FormSelect + RelationshipGraph lub własny dostępny renderer połączeń
+BulkEditPanel → FormContainer + ContextActionBar
+ColumnConfigurator → FormCheckbox + ToggleButton + InlineEdit
+SavedViewManager → DropdownMenu + ModalDialog + InlineEdit
+DataValidationReport → SmartDataGrid lub TableList
+AuditLogViewer → DiffViewer + ActivityTimeline
+LogViewer → VirtualList + SearchInput + FullscreenContainer
+DynamicFormBuilder → SchemaFormRenderer + PropertyGrid + komponenty formularzowe PeaUI
+SchemaFormRenderer → FormContainer + komponenty formularzowe PeaUI
+SurveyBuilder → SchemaFormRenderer + FormWizard
+RuleDecisionTable → SmartDataGrid + QueryBuilder
+CronExpressionBuilder → SegmentedControl + FormNumber + FormSelect
+RecurrenceRuleBuilder → FormDatePicker + FormNumber + FormCheckbox
+PropertyGrid → DisclosurePanel + komponenty formularzowe PeaUI
+TemplateBuilder → PropertyGrid + ResizableWorkspace
+WhiteboardCanvas → FullscreenContainer + ContextMenu + KeyboardShortcutMap
+MatrixBoard → InfoTooltip + ContextMenu
+RiskMatrix → MatrixBoard
+FloorPlanViewer → ImageView + HotspotViewer + LayerSwitcher
+SeatMapPicker → ScrollArea + InfoTooltip
+MapLegend → FormCheckbox + DisclosurePanel
+LayerSwitcher → FormCheckbox + InputSlider + InlineEdit
+SignaturePad → FullscreenContainer
+MediaGallery → ImageView + FilePreview + ModalDialog
+DocumentPageOrganizer → CardPanel + ContextMenu + VirtualList
+BarcodeScanner → ModalDialog + FormInput
+CodeGenerator → ImageView + CopyButton
+ResponsivePreview → ResizableWorkspace
+CompareGallery → BeforeAfterSlider + ImageView
+ThemeEditor → ColorPicker + GradientBuilder + ShadowBuilder + TypographyPreview
+DesignTokenTable → SmartDataGrid lub TableList + CopyButton
+ColorTokenMatrix → ContrastChecker + CopyButton
+ContrastChecker → ColorPicker
+IconPicker → SvgIcon + SearchInput + VirtualList
+GradientBuilder → ColorPicker + InputSlider
+ShadowBuilder → ColorPicker + FormNumber
+TypographyPreview → SegmentedControl + ResponsivePreview
+CurrencyInput → FormNumber
+UnitInput → FormNumber + FormSelect
+DurationInput → FormNumber
+TimeZonePicker → SearchInput + FormSelect lub CommandPalette
+MaskedInput → FormInput
+CoordinatesInput → FormNumber + SegmentedControl
 ```
 
 Rekomendowana kolejność fundamentów w etapie 1: `Avatar`, `SwitchToggle`, `ToggleButton`, `ScrollArea`, `KeyboardKey`, `DropdownMenu`; następnie komponenty zależne. Zależność nie oznacza automatycznego rozpoczęcia pracy — status każdej pozycji zmienia się wyłącznie w ramach jawnego zadania.
@@ -278,7 +378,7 @@ Komponent wdrożono z parytetem Vue, React i Web Components, wspólnymi stylami 
 
 ### AvatarGroup
 
-- Status: TODO
+- Status: DONE
 - Priorytet: P1
 - Złożoność: M
 - Kategoria: Data display
@@ -354,6 +454,10 @@ Limit i licznik są poprawne dla wartości brzegowych; każdą akcję da się wy
 #### Poza zakresem pierwszej wersji
 
 Pobieranie użytkowników, presence transport, edycja członkostwa i wirtualizacja pełnej listy.
+
+#### Notatka z wdrożenia — 2026-08-06
+
+Komponent wdrożono z parytetem Vue, React i Web Components oraz jednym zestawem responsywnych stylów. Semantyczna, etykietowana lista zachowuje kolejność danych w DOM, interaktywne pozycje i licznik `+N` używają natywnych przycisków, a popover udostępnia `aria-controls`, `aria-expanded`, `aria-haspopup="dialog"`, obsługę Escape i deterministyczny powrót focusu. Panel renderuje wyłącznie ukryte osoby, dzięki czemu nie dubluje już widocznej treści dla technologii asystujących. Listener kliknięcia poza panelem działa tylko podczas jego otwarcia i jest zawsze sprzątany. Dodano pełne API, sloty/render props, stany loading/disabled/empty, testy jednostkowe, testy przeglądarkowe axe i mobile, stories dla trzech targetów, dokumentację portalu, publiczne eksporty i changeset.
 
 ### DropdownMenu
 
@@ -5233,5 +5337,5 @@ Notatkę dodaje się dopiero po rozpoczęciu rzeczywistej implementacji; nie nal
 - Nowa pozycja otrzymuje kolejny wolny ID, pełny opis w tym samym formacie, wpis w tabeli i mapie zależności.
 - Zmiana nazwy zachowuje ID i dodaje notatkę migracyjną. Połączenie pozycji wskazuje następcę; nie usuwa historii.
 - Status w tabeli i sekcji komponentu musi być zawsze identyczny.
-- Aktualnym pierwszym etapem jest Etap 1. Pierwszym kandydatem bez nieukończonych nowych zależności jest `PEA-COMP-002 AvatarGroup`; wybór zawsze wymaga polecenia użytkownika.
+- Aktualnym pierwszym etapem jest Etap 1. Pierwszym kandydatem bez nieukończonych nowych zależności jest `PEA-COMP-003 DropdownMenu`; wybór zawsze wymaga polecenia użytkownika.
 - Roadmapę należy aktualizować w tym samym zadaniu, w którym ukończono komponent lub milestone, ale nie należy zmieniać zakresów niezwiązanych z tym zadaniem.

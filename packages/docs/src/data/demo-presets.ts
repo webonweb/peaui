@@ -1,5 +1,6 @@
 import type { ApiEntry, ComponentDefinition, DemoPreset, DemoVariant } from '../types';
 import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
+import { avatarGroupDemoItems } from '../../../library/src/components/data-display/AvatarGroup/avatar-group.demo';
 import { t } from '../i18n';
 import { localizeDemoData } from './demo-localization';
 import { serializeDemoValue } from './demo-utils';
@@ -36,6 +37,15 @@ const componentPresets: Record<string, DemoPreset> = {
       src: avatarDemoImage,
       status: 'online',
       statusLabel: 'Dostępna',
+    },
+  },
+  AvatarGroup: {
+    props: {
+      ariaLabel: 'Zespół projektu',
+      items: avatarGroupDemoItems,
+      maxVisible: 3,
+      overflowMode: 'popover',
+      size: 'l',
     },
   },
   CalculationResults: {

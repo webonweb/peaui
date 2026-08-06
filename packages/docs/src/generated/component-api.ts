@@ -226,6 +226,138 @@ export const generatedComponentApi = [
     ]
   },
   {
+    "name": "AvatarGroup",
+    "category": "data-display",
+    "categoryLabel": "Prezentacja danych",
+    "importPath": "@peaui/ui/data-display/AvatarGroup",
+    "props": [
+      {
+        "name": "items",
+        "type": "AvatarGroupItem[]",
+        "required": false,
+        "default": "[]",
+        "description": "Osoby prezentowane w stabilnej kolejności wejściowej."
+      },
+      {
+        "name": "maxVisible",
+        "type": "number",
+        "required": false,
+        "default": "3",
+        "description": "Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru."
+      },
+      {
+        "name": "size",
+        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
+        "required": false,
+        "default": "m",
+        "description": "Rozmiar awatarów i licznika."
+      },
+      {
+        "name": "shape",
+        "type": "'circle' | 'rounded'",
+        "required": false,
+        "default": "circle",
+        "description": "Kształt awatarów i licznika."
+      },
+      {
+        "name": "overlap",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Włącza kompaktowy układ z nachodzącymi na siebie elementami."
+      },
+      {
+        "name": "direction",
+        "type": "'start' | 'end'",
+        "required": false,
+        "default": "end",
+        "description": "Określa, która krawędź stosu znajduje się wizualnie na wierzchu."
+      },
+      {
+        "name": "overflowMode",
+        "type": "'count' | 'popover' | 'none'",
+        "required": false,
+        "default": "count",
+        "description": "Sposób prezentacji pozycji poza limitem."
+      },
+      {
+        "name": "itemKey",
+        "type": "keyof AvatarGroupItem | ((item: AvatarGroupItem, index: number) => string | number)",
+        "required": false,
+        "default": "id",
+        "description": "Pole lub funkcja zwracająca stabilny klucz elementu."
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "Członkowie grupy",
+        "description": "Dostępna nazwa listy widocznych osób."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Wyłącza wszystkie akcje grupy."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Sygnalizuje ładowanie szczegółowej listy w popoverze."
+      },
+      {
+        "name": "dataTestId",
+        "type": "string",
+        "required": false,
+        "description": "Stabilny identyfikator używany w testach automatycznych."
+      }
+    ],
+    "models": [
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stan otwarcia kontrolowany przez v-model:open."
+      }
+    ],
+    "events": [
+      {
+        "name": "select",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „select”."
+      },
+      {
+        "name": "overflowClick",
+        "description": "Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”."
+      }
+    ],
+    "slots": [
+      {
+        "name": "item",
+        "description": "Treść osadzana w nazwanym slocie „item”."
+      },
+      {
+        "name": "overflow",
+        "description": "Treść osadzana w nazwanym slocie „overflow”."
+      },
+      {
+        "name": "popover-header",
+        "description": "Treść osadzana w nazwanym slocie „popover-header”."
+      },
+      {
+        "name": "popover-item",
+        "description": "Treść osadzana w nazwanym slocie „popover-item”."
+      },
+      {
+        "name": "empty",
+        "description": "Treść osadzana w nazwanym slocie „empty”."
+      }
+    ]
+  },
+  {
     "name": "CalculationResults",
     "category": "data-display",
     "categoryLabel": "Prezentacja danych",

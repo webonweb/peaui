@@ -410,6 +410,9 @@ function toCamelCase(value) {
 
 function toReactSlotName(componentName, slotName) {
   if (componentName === 'Avatar' && slotName === 'status') return 'statusContent';
+  if (componentName === 'AvatarGroup' && slotName === 'item') return 'renderItem';
+  if (componentName === 'AvatarGroup' && slotName === 'overflow') return 'renderOverflow';
+  if (componentName === 'AvatarGroup' && slotName === 'popover-item') return 'renderPopoverItem';
 
   return toCamelCase(slotName);
 }

@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 
 import { avatarDemoProps } from '@/components/data-display/Avatar/avatar.demo';
+import { avatarGroupDemoProps } from '@/components/data-display/AvatarGroup/avatar-group.demo';
 
 import type { PeauiReactProps, ReactComponentName } from './generated-react-props';
 
@@ -15,6 +16,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
   PhotoEditor: { ariaLabel: 'Edytor zdjęcia' },
   SvgIcon: { name: 'checkCircle' },
   Avatar: { ...avatarDemoProps },
+  AvatarGroup: { ...avatarGroupDemoProps },
   CalculationResults: {
     additional: 'Wynik orientacyjny',
     hint: 'Na podstawie podanych danych',

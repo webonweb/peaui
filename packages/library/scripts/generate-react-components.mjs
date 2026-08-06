@@ -40,7 +40,13 @@ function getCallbackName(eventName) {
   return `on${toPascalCase(eventName)}`;
 }
 
-function normalizeType(type, propertyName = '') {
+function normalizeType(type, propertyName = '', componentName = '') {
+  if (componentName === 'AvatarGroup' && propertyName === 'items') {
+    return 'PeauiAvatarGroupItem[]';
+  }
+  if (componentName === 'AvatarGroup' && propertyName === 'itemKey') {
+    return 'keyof PeauiAvatarGroupItem | ((item: PeauiAvatarGroupItem, index: number) => string | number)';
+  }
   if (propertyName === 'columns') return 'PeauiTableColumn[]';
   if (propertyName === 'records') return 'PeauiRecord[]';
   if (['items', 'options', 'tabs'].includes(propertyName)) return 'PeauiOption[]';
@@ -89,7 +95,7 @@ function renderProps(api) {
     entries.push(
       renderProperty(
         prop.name,
-        normalizeType(prop.type, prop.name),
+        normalizeType(prop.type, prop.name, api.name),
         prop.required,
         prop.description,
       ),
@@ -124,9 +130,13 @@ function renderProps(api) {
 
     if (['onClick', 'onKeyDown', 'onPointerDown'].includes(callbackName)) continue;
     if (entries.some((entry) => entry.includes(` ${callbackName}?`))) continue;
-    entries.push(
-      renderProperty(callbackName, '(...args: unknown[]) => void', false, event.description),
-    );
+    const eventType =
+      api.name === 'AvatarGroup' && event.name === 'select'
+        ? '(item: PeauiAvatarGroupItem, index: number) => void'
+        : api.name === 'AvatarGroup' && event.name === 'overflowClick'
+          ? '(items: PeauiAvatarGroupItem[]) => void'
+          : '(...args: unknown[]) => void';
+    entries.push(renderProperty(callbackName, eventType, false, event.description));
   }
 
   for (const slot of api.slots) {
@@ -145,9 +155,27 @@ function renderProps(api) {
       continue;
     }
     const rawName = toCamelCase(slot.name.replace(/[^A-Za-z0-9-]/g, '-'));
-    const name = api.name === 'Avatar' && rawName === 'status' ? 'statusContent' : rawName;
+    const avatarGroupSlotNames = {
+      item: 'renderItem',
+      overflow: 'renderOverflow',
+      popoverItem: 'renderPopoverItem',
+    };
+    const name =
+      api.name === 'Avatar' && rawName === 'status'
+        ? 'statusContent'
+        : api.name === 'AvatarGroup'
+          ? (avatarGroupSlotNames[rawName] ?? rawName)
+          : rawName;
     if (!name || entries.some((entry) => entry.includes(` ${name}?`))) continue;
-    entries.push(renderProperty(name, 'ReactNode', false, slot.description));
+    const slotType =
+      api.name === 'AvatarGroup' && name === 'renderItem'
+        ? '(item: PeauiAvatarGroupItem, index: number) => ReactNode'
+        : api.name === 'AvatarGroup' && name === 'renderOverflow'
+          ? '(count: number, items: PeauiAvatarGroupItem[]) => ReactNode'
+          : api.name === 'AvatarGroup' && name === 'renderPopoverItem'
+            ? '(item: PeauiAvatarGroupItem, index: number) => ReactNode'
+            : 'ReactNode';
+    entries.push(renderProperty(name, slotType, false, slot.description));
   }
 
   return entries.join('\n');
@@ -178,6 +206,7 @@ function writePropsFile(components) {
     `  'data-testid'?: string;\n` +
     `};\n\n` +
     `export type PeauiRecord = Record<string, unknown>;\n` +
+    `export type PeauiAvatarGroupItem = { id: string | number; name?: string; src?: string; alt?: string; initials?: string; status?: 'online' | 'offline' | 'away' | 'busy' | 'none'; disabled?: boolean; metadata?: unknown };\n` +
     `export type PeauiOption = { id?: string; key?: string; label: string; value?: unknown; active?: boolean; disabled?: boolean; hint?: string; icon?: string; path?: string; isValid?: boolean; number?: string; status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden'; additional?: ReactNode };\n` +
     `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; canSort?: boolean; sortable?: boolean; type?: string; actionName?: string; actionLabel?: string; inline?: boolean; manage?: PeauiRecord };\n` +
     `export type PeauiTreeNode = PeauiRecord & { id?: string | number; label?: string; children?: PeauiTreeNode[] | Record<string, PeauiTreeNode> };\n` +
@@ -250,7 +279,11 @@ function writeComponentFiles(components) {
         : '');
 
     fs.writeFileSync(path.join(directory, 'index.tsx'), componentSource, 'utf8');
-    fs.writeFileSync(path.join(directory, 'index.react.stories.tsx'), storySource, 'utf8');
+    // TableList owns an extended hand-written story suite next to the generated entry point.
+    // Keep it intact when the catalog is regenerated.
+    if (api.name !== 'TableList') {
+      fs.writeFileSync(path.join(directory, 'index.react.stories.tsx'), storySource, 'utf8');
+    }
   }
 }
 

@@ -14,6 +14,7 @@ export type ReactComponentName =
   | 'PhotoEditor'
   | 'SvgIcon'
   | 'Avatar'
+  | 'AvatarGroup'
   | 'CalculationResults'
   | 'CardCarousel'
   | 'CounterBadge'
@@ -90,6 +91,16 @@ export type PeauiReactBaseProps = {
 };
 
 export type PeauiRecord = Record<string, unknown>;
+export type PeauiAvatarGroupItem = {
+  id: string | number;
+  name?: string;
+  src?: string;
+  alt?: string;
+  initials?: string;
+  status?: 'online' | 'offline' | 'away' | 'busy' | 'none';
+  disabled?: boolean;
+  metadata?: unknown;
+};
 export type PeauiOption = {
   id?: string;
   key?: string;
@@ -192,6 +203,54 @@ export type ReactComponentPropsMap = {
     onError?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „status”. */
     statusContent?: ReactNode;
+  };
+  AvatarGroup: PeauiReactBaseProps & {
+    /** Osoby prezentowane w stabilnej kolejności wejściowej. */
+    items?: PeauiAvatarGroupItem[];
+    /** Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru. */
+    maxVisible?: number;
+    /** Rozmiar awatarów i licznika. */
+    size?: 'xs' | 's' | 'm' | 'l' | 'xl';
+    /** Kształt awatarów i licznika. */
+    shape?: 'circle' | 'rounded';
+    /** Włącza kompaktowy układ z nachodzącymi na siebie elementami. */
+    overlap?: boolean;
+    /** Określa, która krawędź stosu znajduje się wizualnie na wierzchu. */
+    direction?: 'start' | 'end';
+    /** Sposób prezentacji pozycji poza limitem. */
+    overflowMode?: 'count' | 'popover' | 'none';
+    /** Pole lub funkcja zwracająca stabilny klucz elementu. */
+    itemKey?:
+      | keyof PeauiAvatarGroupItem
+      | ((item: PeauiAvatarGroupItem, index: number) => string | number);
+    /** Dostępna nazwa listy widocznych osób. */
+    ariaLabel?: string;
+    /** Wyłącza wszystkie akcje grupy. */
+    disabled?: boolean;
+    /** Sygnalizuje ładowanie szczegółowej listy w popoverze. */
+    loading?: boolean;
+    /** Stabilny identyfikator używany w testach automatycznych. */
+    dataTestId?: string;
+    /** Stan otwarcia kontrolowany przez v-model:open. */
+    open?: boolean;
+    /** Początkowa niekontrolowana wartość właściwości open. */
+    defaultOpen?: boolean;
+    /** Callback React wywoływany po zmianie właściwości open. */
+    onOpenChange?: (value: boolean) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    onSelect?: (item: PeauiAvatarGroupItem, index: number) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”. */
+    onOverflowClick?: (items: PeauiAvatarGroupItem[]) => void;
+    /** Treść osadzana w nazwanym slocie „item”. */
+    renderItem?: (item: PeauiAvatarGroupItem, index: number) => ReactNode;
+    /** Treść osadzana w nazwanym slocie „overflow”. */
+    renderOverflow?: (count: number, items: PeauiAvatarGroupItem[]) => ReactNode;
+    /** Treść osadzana w nazwanym slocie „popover-header”. */
+    popoverHeader?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „popover-item”. */
+    renderPopoverItem?: (item: PeauiAvatarGroupItem, index: number) => ReactNode;
+    /** Treść osadzana w nazwanym slocie „empty”. */
+    empty?: ReactNode;
   };
   CalculationResults: PeauiReactBaseProps & {
     /** Włącza stan ładowania i informuje o trwającej operacji. */

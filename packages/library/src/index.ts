@@ -21,6 +21,16 @@ export {
   getAvatarInitials,
   normalizeAvatarInitials,
 } from './components/data-display/Avatar/avatar.helper';
+export { default as AvatarGroup } from './components/data-display/AvatarGroup/index.vue';
+export type {
+  AvatarGroupDirection,
+  AvatarGroupItem,
+  AvatarGroupOverflowMode,
+  AvatarGroupProps,
+  AvatarGroupShape,
+  AvatarGroupSize,
+  AvatarGroupStatus,
+} from './components/data-display/AvatarGroup/index.vue';
 export { default as CalculationResults } from './components/data-display/CalculationResults/index.vue';
 export { default as CardCarousel } from './components/data-display/CardCarousel/index.vue';
 export { default as CounterBadge } from './components/data-display/CounterBadge/index.vue';

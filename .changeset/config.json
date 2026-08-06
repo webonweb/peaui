@@ -3,7 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "access": "public",
-  "baseBranch": "develop-chreb",
+  "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
     "@peaui/playground-react",

@@ -37,8 +37,8 @@ afterEach(cleanup);
 
 describe('katalog komponentów React', () => {
   it('udostępnia natywny komponent React dla każdego komponentu Vue', () => {
-    expect(reactComponentCatalog).toHaveLength(63);
-    expect(Object.keys(componentModules)).toHaveLength(63);
+    expect(reactComponentCatalog).toHaveLength(64);
+    expect(Object.keys(componentModules)).toHaveLength(64);
 
     for (const definition of reactComponentCatalog) {
       const modulePath = `../components/${definition.category}/${definition.sourceName}/index.tsx`;

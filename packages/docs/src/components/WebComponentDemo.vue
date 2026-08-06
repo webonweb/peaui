@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
+import { avatarGroupDemoItems } from '../../../library/src/components/data-display/AvatarGroup/avatar-group.demo';
 import { getDemoPreset } from '../data/demo-presets';
 import { cloneDemoValue, serializeDemoValue } from '../data/demo-utils';
 import { localizeDemoData } from '../data/demo-localization';
@@ -53,6 +54,15 @@ const presets: Record<string, PreviewPreset> = {
       status: 'online',
       'status-label': 'Dostępna',
     },
+  },
+  AvatarGroup: {
+    attributes: {
+      'aria-label': 'Zespół projektu',
+      'max-visible': '3',
+      'overflow-mode': 'popover',
+      size: 'l',
+    },
+    properties: { items: avatarGroupDemoItems },
   },
   CardCarousel: {
     attributes: { 'aria-label': 'Przykładowa karuzela', 'default-visible-slides': '2' },

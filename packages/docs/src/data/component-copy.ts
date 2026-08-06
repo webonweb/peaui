@@ -38,6 +38,16 @@ export const componentCopy: Record<string, ComponentCopy> = {
     ],
     'Adres obrazu i opis alternatywny albo nazwa lub inicjały; opcjonalnie rozmiar, kształt, status i tryb interaktywny.',
   ),
+  AvatarGroup: copy(
+    'Kompaktowa grupa awatarów ze stabilną kolejnością, kontrolowanym limitem i dostępną listą pozostałych osób.',
+    [
+      'Pokazuje zespół w układzie nakładającym się lub z odstępami bez zmiany kolejności DOM.',
+      'Udostępnia każdą osobę i licznik nadmiaru jako natywną akcję klawiaturową.',
+      'Opcjonalny popover prezentuje wyłącznie ukryte osoby i przywraca fokus po zamknięciu.',
+      'Zachowuje identyczne klasy, tokeny i zachowanie w Vue, React i Web Components.',
+    ],
+    'Tablica osób z identyfikatorami i nazwami; opcjonalnie limit, rozmiar, kształt, kierunek, sposób obsługi nadmiaru i sterowany stan open.',
+  ),
   CalculationResults: copy(
     'Panel wyniku obliczeń z opcjonalną akcją ponownego przeliczenia.',
     [

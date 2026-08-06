@@ -48,6 +48,16 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     ],
     'An image URL and alternative text, or a name or initials, plus optional size, shape, status and interactive settings.',
   ),
+  AvatarGroup: enCopy(
+    'A compact avatar group with stable ordering, a controlled visible limit and an accessible list of remaining people.',
+    [
+      'Presents a team in overlapping or spaced layouts without changing DOM order.',
+      'Exposes every person and the overflow counter as native keyboard actions.',
+      'Optionally shows only hidden people in a popover and restores focus when it closes.',
+      'Uses the same classes, tokens and behavior in Vue, React and Web Components.',
+    ],
+    'An array of people with identifiers and names, plus an optional limit, size, shape, direction, overflow mode and controlled open state.',
+  ),
   CalculationResults: enCopy(
     'A calculation result panel with an optional recalculate action.',
     ['Highlights a result and its label.', 'Supports loading, disabled and simplified states.'],

@@ -1,6 +1,6 @@
 module.exports = function expressMiddleware(router) {
   const base = process.env.STORYBOOK_BASE
-    ? `https://gitpages.gunb.gov.pl`
+    ? `https://github.com/webonweb/peaui`
     : "http://localhost:6009";
 
   router.use((req, res, next) => {

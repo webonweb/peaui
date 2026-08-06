@@ -16,13 +16,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components.git",
+    "url": "git+https://github.com/webonweb/peaui.git",
     "directory": "packages/library"
   },
   "bugs": {
-    "url": "https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components/-/issues"
+    "url": "https://github.com/webonweb/peaui/issues"
   },
-  "homepage": "https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components",
+  "homepage": "https://github.com/webonweb/peaui",
   "sideEffects": [
     "**/*.css",
     "**/*.scss",

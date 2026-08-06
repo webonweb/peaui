@@ -10,15 +10,15 @@ const config: StorybookConfig = {
   refs: {
     react: {
       title: "React komponenty",
-      url: process.env.STORYBOOK_BASE ? `https://gitpages.gunb.gov.pl${base}react` : `${base}:6006`
+      url: process.env.STORYBOOK_BASE ? `https://github.com/webonweb/peaui${base}react` : `${base}:6006`
     },
     vue: {
       title: "Vue komponenty",
-      url: process.env.STORYBOOK_BASE ? `https://gitpages.gunb.gov.pl${base}vue` : `${base}:6007`
+      url: process.env.STORYBOOK_BASE ? `https://github.com/webonweb/peaui${base}vue` : `${base}:6007`
     },
     wc: {
       title: "Web komponenty",
-      url: process.env.STORYBOOK_BASE ? `https://gitpages.gunb.gov.pl${base}wc` : `${base}:6008`
+      url: process.env.STORYBOOK_BASE ? `https://github.com/webonweb/peaui${base}wc` : `${base}:6008`
     }
   },
   // webpackFinal: async (config) => {

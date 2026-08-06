@@ -294,7 +294,7 @@ npm run docs:build
 npm run docs:preview
 ```
 
-Repository: [gitlab.gunb.gov.pl/duc-peaui/tools/ui-components](https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components)
+Repository: [https://github.com/webonweb/peaui](https://github.com/webonweb/peaui)
 
 ## Development
 
@@ -353,7 +353,7 @@ PEAUI is actively developed. The catalog will continue to grow with new componen
 
 ## Support and issues
 
-Report defects and feature requests in the [project issue tracker](https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components/-/issues).
+Report defects and feature requests in the [project issue tracker](https://github.com/webonweb/peaui/-/issues).
 
 ## License
 
@@ -641,7 +641,7 @@ npm run docs:build
 npm run docs:preview
 ```
 
-Repozytorium: [gitlab.gunb.gov.pl/duc-peaui/tools/ui-components](https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components)
+Repozytorium: [https://github.com/webonweb/peaui](https://github.com/webonweb/peaui)
 
 ## Rozwój projektu
 
@@ -700,7 +700,7 @@ PEAUI jest aktywnie rozwijane. Katalog będzie rozszerzany o nowe komponenty, do
 
 ## Wsparcie i zgłoszenia
 
-Błędy oraz propozycje nowych funkcji można zgłaszać w [systemie zgłoszeń projektu](https://gitlab.gunb.gov.pl/duc-peaui/tools/ui-components/-/issues).
+Błędy oraz propozycje nowych funkcji można zgłaszać w [systemie zgłoszeń projektu](https://github.com/webonweb/peaui/-/issues).
 
 ## Licencja
 

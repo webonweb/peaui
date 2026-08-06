@@ -4,6 +4,7 @@ import {
   Children,
   createElement,
   forwardRef,
+  isValidElement,
   useEffect,
   useId,
   useMemo,
@@ -12,6 +13,7 @@ import {
   type ComponentType,
   type CSSProperties,
   type ElementType,
+  type FocusEvent as ReactFocusEvent,
   type ForwardedRef,
   type KeyboardEventHandler,
   type MouseEventHandler,
@@ -142,6 +144,49 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
     target instanceof Element &&
     Boolean(target.closest('a, button, input, select, textarea, [role="button"]'))
   );
+}
+
+const INFO_TOOLTIP_FOCUSABLE_TRIGGER_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+const INFO_TOOLTIP_MANAGED_TRIGGER_ANCESTOR_SELECTOR =
+  'button, a[href], summary, [role="button"], [role="link"], [role="option"], [role="radio"], [role="tab"], [role="menuitem"], [role="checkbox"], [role="switch"]';
+const INFO_TOOLTIP_DEFAULT_ARIA_LABEL = 'Pokaz dodatkowe informacje';
+
+function hasVisibleReactText(value: ReactNode): boolean {
+  if (typeof value === 'string' || typeof value === 'number')
+    return String(value).trim().length > 0;
+  if (!isValidElement(value)) {
+    return Children.toArray(value).some((entry) => {
+      if (typeof entry === 'string' || typeof entry === 'number') {
+        return String(entry).trim().length > 0;
+      }
+
+      return (
+        isValidElement(entry) &&
+        hasVisibleReactText((entry.props as { children?: ReactNode }).children)
+      );
+    });
+  }
+
+  return hasVisibleReactText((value.props as { children?: ReactNode }).children);
+}
+
+function addDescriptionId(element: HTMLElement, id: string): void {
+  const ids = new Set(
+    (element.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean),
+  );
+  ids.add(id);
+  element.setAttribute('aria-describedby', [...ids].join(' '));
+}
+
+function removeDescriptionId(element: HTMLElement, id: string): void {
+  const ids = (element.getAttribute('aria-describedby') ?? '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((entry) => entry !== id);
+
+  if (ids.length > 0) element.setAttribute('aria-describedby', ids.join(' '));
+  else element.removeAttribute('aria-describedby');
 }
 
 function copyTextToClipboard(value: string): void {
@@ -4384,38 +4429,162 @@ function OverlayRenderer({
   if (kind === 'ModalDialog' || kind === 'DrawerPanel')
     return <Dialog props={props} kind={kind} forwardedRef={forwardedRef} />;
   if (kind === 'InfoTooltip')
-    return (
-      <>
-        <div
-          {...common(props)}
-          className={cx(
-            'peaui-info-tooltip',
-            bool(props, 'disabled') && 'peaui-info-tooltip--disabled',
-            props.className,
-          )}
-          ref={forwardedRef as ForwardedRef<HTMLDivElement>}
-          tabIndex={bool(props, 'disabled') ? -1 : 0}
-        >
-          {props.children ?? <Svg name="info" />}
-        </div>
-        <div
-          className={cx(
-            'peaui-info-tooltip__content',
-            `peaui-info-tooltip__content--variant-${text(props, 'variant', 'default')}`,
-            `peaui-info-tooltip__content--placement-${text(props, 'placement', 'top')}`,
-          )}
-          role="tooltip"
-        >
-          {node(props, 'title') ? (
-            <strong className="peaui-info-tooltip__title">{node(props, 'title')}</strong>
-          ) : null}
-          {node(props, 'description') ? (
-            <p className="peaui-info-tooltip__description">{node(props, 'description')}</p>
-          ) : null}
-        </div>
-      </>
-    );
+    return <InfoTooltipRenderer props={props} forwardedRef={forwardedRef} />;
   return <Popover props={props} kind={kind} forwardedRef={forwardedRef} />;
+}
+
+function InfoTooltipRenderer({
+  props,
+  forwardedRef,
+}: {
+  props: RuntimeProps;
+  forwardedRef?: ForwardedRef<HTMLElement>;
+}): ReactElement {
+  const disabled = bool(props, 'disabled');
+  const tooltipId = `info-tooltip-react-${useId().replaceAll(':', '')}`;
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+  const [triggerMode, setTriggerMode] = useState<'own' | 'descendant' | 'ancestor'>('own');
+  const [open, setOpen] = useState(false);
+  const triggerContent = props.children ?? <Svg name="info" />;
+  const commonProps = common(props);
+  const baseTestId = text(props, 'dataTestId');
+  const sharedStyles = { '--unique-anchor': `--anchor-${tooltipId}` } as CSSProperties;
+  const managesOwnTrigger = !disabled && triggerMode === 'own';
+  const describedByIds = new Set(
+    (commonProps['aria-describedby'] ?? '').split(/\s+/).filter(Boolean),
+  );
+
+  if (managesOwnTrigger) describedByIds.add(tooltipId);
+
+  useEffect(() => {
+    const trigger = triggerRef.current;
+
+    if (!trigger || disabled) {
+      setOpen(false);
+      return;
+    }
+
+    const focusableDescendants = Array.from(
+      trigger.querySelectorAll<HTMLElement>(INFO_TOOLTIP_FOCUSABLE_TRIGGER_SELECTOR),
+    );
+    let managedAncestor: HTMLElement | null = null;
+
+    if (focusableDescendants.length === 0) {
+      let currentElement = trigger.parentElement;
+
+      while (currentElement) {
+        if (currentElement.matches(INFO_TOOLTIP_MANAGED_TRIGGER_ANCESTOR_SELECTOR)) {
+          managedAncestor = currentElement;
+          break;
+        }
+        currentElement = currentElement.parentElement;
+      }
+    }
+
+    const describedTriggers =
+      focusableDescendants.length > 0
+        ? focusableDescendants
+        : managedAncestor
+          ? [managedAncestor]
+          : [];
+    const nextMode =
+      focusableDescendants.length > 0 ? 'descendant' : managedAncestor ? 'ancestor' : 'own';
+
+    setTriggerMode(nextMode);
+    describedTriggers.forEach((element) => addDescriptionId(element, tooltipId));
+
+    const handleAncestorFocusIn = (): void => setOpen(true);
+    const handleAncestorFocusOut = (event: FocusEvent): void => {
+      const relatedTarget = event.relatedTarget;
+      if (relatedTarget instanceof Node && managedAncestor?.contains(relatedTarget)) return;
+      setOpen(false);
+    };
+
+    if (managedAncestor) {
+      managedAncestor.addEventListener('focusin', handleAncestorFocusIn);
+      managedAncestor.addEventListener('focusout', handleAncestorFocusOut);
+    }
+
+    return () => {
+      describedTriggers.forEach((element) => removeDescriptionId(element, tooltipId));
+      managedAncestor?.removeEventListener('focusin', handleAncestorFocusIn);
+      managedAncestor?.removeEventListener('focusout', handleAncestorFocusOut);
+    };
+  }, [disabled, props.children, tooltipId]);
+
+  const handleBlur = (event: ReactFocusEvent<HTMLDivElement>): void => {
+    if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
+      return;
+    }
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <div
+        {...commonProps}
+        aria-describedby={describedByIds.size > 0 ? [...describedByIds].join(' ') : undefined}
+        aria-label={
+          commonProps['aria-label'] ??
+          (managesOwnTrigger &&
+          !commonProps['aria-labelledby'] &&
+          !hasVisibleReactText(triggerContent)
+            ? INFO_TOOLTIP_DEFAULT_ARIA_LABEL
+            : undefined)
+        }
+        className={cx(
+          'peaui-info-tooltip',
+          disabled && 'peaui-info-tooltip--disabled',
+          props.className,
+        )}
+        data-open={open && !disabled ? 'true' : undefined}
+        data-testid={baseTestId ? `${baseTestId}-content` : dataTest(props)}
+        ref={(element) => {
+          triggerRef.current = element;
+          if (typeof forwardedRef === 'function') forwardedRef(element);
+          else if (forwardedRef) forwardedRef.current = element;
+        }}
+        role={commonProps.role ?? (managesOwnTrigger ? 'button' : undefined)}
+        style={{ ...props.style, ...sharedStyles }}
+        tabIndex={commonProps.tabIndex ?? (managesOwnTrigger ? 0 : undefined)}
+        onBlur={handleBlur}
+        onFocus={() => !disabled && setOpen(true)}
+        onMouseEnter={() => !disabled && setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        {triggerContent}
+      </div>
+      <div
+        aria-hidden={disabled ? 'true' : undefined}
+        className={cx(
+          'peaui-info-tooltip__content',
+          `peaui-info-tooltip__content--variant-${text(props, 'variant', 'default')}`,
+          `peaui-info-tooltip__content--placement-${text(props, 'placement', 'top')}`,
+        )}
+        data-testid={baseTestId ? `${baseTestId}-tooltip` : undefined}
+        id={tooltipId}
+        role="tooltip"
+        style={sharedStyles}
+      >
+        {node(props, 'title') ? (
+          <strong
+            className="peaui-info-tooltip__title"
+            data-testid={baseTestId ? `${baseTestId}-title` : undefined}
+          >
+            {node(props, 'title')}
+          </strong>
+        ) : null}
+        {node(props, 'description') ? (
+          <p
+            className="peaui-info-tooltip__description"
+            data-testid={baseTestId ? `${baseTestId}-description` : undefined}
+          >
+            {node(props, 'description')}
+          </p>
+        ) : null}
+      </div>
+    </>
+  );
 }
 
 function Dialog({

@@ -22,6 +22,7 @@ import FormSelect from '@/components/form/FormSelect';
 import FormTextarea from '@/components/form/FormTextarea';
 import NavigationCard from '@/components/navigation/NavigationCard';
 import PaginationControl from '@/components/navigation/PaginationControl';
+import InfoTooltip from '@/components/overlayer/InfoTooltip';
 import PopoverOverlayer from '@/components/overlayer/PopoverOverlayer';
 
 import { reactComponentCatalog } from './generated-react-catalog';
@@ -77,6 +78,45 @@ describe('katalog komponentów React', () => {
     expect(progress).toHaveAttribute('aria-labelledby', 'progress-label');
     fireEvent.keyDown(progress as Element, { key: 'Enter' });
     expect(onKeyDown).toHaveBeenCalledTimes(1);
+  });
+
+  it('łączy trigger InfoTooltip z dymkiem i obsługuje mysz oraz fokus', () => {
+    const { container } = render(
+      <InfoTooltip dataTestId="info-tooltip" description="Treść podpowiedzi" title="Podpowiedź">
+        Najedź albo ustaw fokus
+      </InfoTooltip>,
+    );
+    const trigger = screen.getByRole('button', { name: 'Najedź albo ustaw fokus' });
+    const tooltip = screen.getByRole('tooltip');
+
+    expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
+    expect(trigger).toHaveAttribute('tabindex', '0');
+    expect(tooltip).toHaveAttribute('data-testid', 'info-tooltip-tooltip');
+    expect(container.querySelector('.peaui-info-tooltip__content--placement-top')).toBe(tooltip);
+
+    fireEvent.mouseEnter(trigger);
+    expect(trigger).toHaveAttribute('data-open', 'true');
+    fireEvent.mouseLeave(trigger);
+    expect(trigger).not.toHaveAttribute('data-open');
+    fireEvent.focus(trigger);
+    expect(trigger).toHaveAttribute('data-open', 'true');
+    fireEvent.blur(trigger);
+    expect(trigger).not.toHaveAttribute('data-open');
+  });
+
+  it('nie tworzy dodatkowego tab stopu dla interaktywnego triggera InfoTooltip', () => {
+    render(
+      <InfoTooltip description="Treść podpowiedzi">
+        <button type="button">Pomoc</button>
+      </InfoTooltip>,
+    );
+    const button = screen.getByRole('button', { name: 'Pomoc' });
+    const tooltip = screen.getByRole('tooltip');
+    const wrapper = document.querySelector('.peaui-info-tooltip');
+
+    expect(wrapper).not.toHaveAttribute('role');
+    expect(wrapper).not.toHaveAttribute('tabindex');
+    expect(button).toHaveAttribute('aria-describedby', tooltip.id);
   });
 
   it('przekazuje zdarzenia interakcji tabeli z payloadami zgodnymi z Vue', () => {

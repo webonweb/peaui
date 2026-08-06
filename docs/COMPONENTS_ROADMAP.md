@@ -88,7 +88,7 @@ Każdy komponent musi spełnić poniższe zasady, o ile jego opis jawnie nie uza
 
 | ID           | Komponent                  | Etap | Status | Priorytet | Złożoność | Zależności                                            |
 | ------------ | -------------------------- | ---: | ------ | --------- | --------- | ----------------------------------------------------- |
-| PEA-COMP-001 | Avatar                     |    1 | TODO   | P0        | S         | ImageView, SvgIcon                                    |
+| PEA-COMP-001 | Avatar                     |    1 | IN_PROGRESS | P0        | S         | ImageView, SvgIcon                                    |
 | PEA-COMP-002 | AvatarGroup                |    1 | TODO   | P1        | M         | Avatar, InfoTooltip/PopoverOverlayer                  |
 | PEA-COMP-003 | DropdownMenu               |    1 | TODO   | P0        | L         | PopoverOverlayer, ButtonAction                        |
 | PEA-COMP-004 | ContextMenu                |    1 | TODO   | P1        | L         | DropdownMenu lub wspólne menu, PopoverOverlayer       |
@@ -195,7 +195,7 @@ Celem etapu jest uzupełnienie podstawowego zestawu PeaUI o powszechne kontrolki
 
 ### Avatar
 
-- Status: TODO
+- Status: IN_PROGRESS
 - Priorytet: P0
 - Złożoność: S
 - Kategoria: Data display / Media

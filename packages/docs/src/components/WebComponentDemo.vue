@@ -94,7 +94,7 @@ const presets: Record<string, PreviewPreset> = {
   },
   NavigationLink: { attributes: { path: '#demo', variant: 'primary' }, text: 'Przejdź dalej' },
   InfoTooltip: {
-    attributes: { placement: 'top', variant: 'primary' },
+    attributes: { placement: 'top', variant: 'default' },
     text: 'Najedź lub ustaw fokus',
     slots: { title: 'Informacja', description: 'To jest natywny Web Component PEAUI.' },
   },

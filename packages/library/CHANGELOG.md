@@ -1,5 +1,11 @@
 # @peaui/ui
 
+## 2.0.0
+
+### Major Changes
+
+- Fix InfoTooltip component
+
 ## 1.27.1
 
 ### Patch Changes

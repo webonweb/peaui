@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import InputSlider from '@peaui/ui/data-entry/InputSlider'
+import ButtonAction from '@peaui/ui/data-entry/ButtonAction'
+import '@peaui/ui/styles.css'
 import { ref } from 'vue'
 
 const ttt = ref(0)
 </script>
 
 <template>
-  <InputSlider v-model:value="ttt" data-test-id="dodaje" name="kg" />
+  <ButtonAction size="xs"> Dodaj </ButtonAction>
 </template>

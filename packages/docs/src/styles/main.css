@@ -1593,7 +1593,7 @@ kbd {
   pointer-events: none;
 }
 
-.demo-stage > * {
+.demo-stage > :not(.peaui-info-tooltip__content) {
   position: relative;
   z-index: 1;
   max-width: 100%;
@@ -1604,8 +1604,8 @@ kbd {
   display: contents;
 }
 
-.react-live-root > *,
-.wc-live-root > * {
+.react-live-root > :not(.peaui-info-tooltip__content),
+.wc-live-root > :not(.peaui-info-tooltip__content) {
   position: relative;
   z-index: 1;
   max-width: 100%;

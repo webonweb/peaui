@@ -1,7 +1,7 @@
 {
   "name": "@peaui/ui",
   "type": "module",
-  "version": "1.27.0",
+  "version": "2.0.0",
   "description": "Dostępna biblioteka komponentów PEAUI dla Vue, React i Web Components.",
   "license": "MIT",
   "keywords": [

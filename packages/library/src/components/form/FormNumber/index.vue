@@ -6,12 +6,12 @@ import { computed, useAttrs, useSlots, useTemplateRef } from 'vue';
 
 // HELPERS
 //-----------------------------------------------------------------------------------------------//
-import { getPaddingRight } from '@/helpers/functions.helper';
 import { countDecimalPlaces } from '@/helpers/number.helper';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
 import FormField from '@/components/form/FormField/index.vue';
+import { getFormFieldEraseOffset } from '@/components/form/FormField/form-field-layout.shared';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -63,7 +63,13 @@ const modelValue = defineModel<number | undefined | string>('value', {
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
-const rightErasePosition = computed(() => getPaddingRight(inputReference.value));
+const rightErasePosition = computed(() =>
+  getFormFieldEraseOffset({
+    after,
+    iconAfter,
+    trailingControlWidth: isRangeVisible && !readonly && !disabled ? 20 : 0,
+  }),
+);
 
 const bindings = computed(() => {
   const bindings: Record<string, unknown> = {

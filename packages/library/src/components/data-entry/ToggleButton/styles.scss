@@ -1,0 +1,241 @@
+@use 'sass:map';
+
+@use '@/assets/mixins.scss' as *;
+
+$sizes: (
+  xxs: (
+    icon-size: 0.875rem,
+    padding-block: 0.5rem,
+    padding-inline: 0.75rem,
+  ),
+  xs: (
+    icon-size: 1rem,
+    padding-block: 0.625rem,
+    padding-inline: 1rem,
+  ),
+  s: (
+    icon-size: 1.0625rem,
+    padding-block: 0.8125rem,
+    padding-inline: 1rem,
+  ),
+  m: (
+    icon-size: 1.125rem,
+    padding-block: 0.875rem,
+    padding-inline: 1rem,
+  ),
+  l: (
+    icon-size: 1.25rem,
+    padding-block: 1rem,
+    padding-inline: 1.125rem,
+  ),
+);
+
+peaui-toggle-button {
+  display: inline-flex;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  vertical-align: middle;
+}
+
+.peaui-toggle-button {
+  @include unset-safe;
+  @include size-text((xxs, xs, s, m, l));
+  @include outline(var(--peaui-color-primary-700));
+
+  --peaui-toggle-button-icon-size: 1.125rem;
+
+  display: inline-flex;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-block-size: 2.75rem;
+  min-inline-size: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  color: var(--peaui-color-primary-800);
+  background: var(--peaui-color-grey-0);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  text-align: center;
+
+  @include transition(background-color, border-color, box-shadow, color);
+}
+
+@each $size, $values in $sizes {
+  .peaui-toggle-button--size-#{$size} {
+    --peaui-toggle-button-icon-size: #{map.get($values, icon-size)};
+
+    padding-block: map.get($values, padding-block);
+    padding-inline: map.get($values, padding-inline);
+  }
+}
+
+.peaui-toggle-button--content-icon {
+  flex: 0 0 auto;
+  inline-size: 2.75rem;
+  padding: 0;
+}
+
+.peaui-toggle-button__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peaui-toggle-button--wrap {
+  inline-size: auto;
+  block-size: auto;
+}
+
+.peaui-toggle-button--wrap .peaui-toggle-button__label {
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.peaui-toggle-button__icon,
+.peaui-toggle-button__spinner {
+  display: inline-grid;
+  flex: 0 0 var(--peaui-toggle-button-icon-size);
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: var(--peaui-toggle-button-icon-size);
+  block-size: var(--peaui-toggle-button-icon-size);
+}
+
+.peaui-toggle-button__icon .peaui-svg-icon {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  color: currentColor;
+  fill: currentColor;
+}
+
+.peaui-toggle-button__spinner {
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: 50%;
+  opacity: 0.82;
+  animation: peaui-toggle-button-spin 700ms linear infinite;
+}
+
+.peaui-toggle-button--variant-default {
+  border-color: var(--peaui-color-grey-200);
+  color: var(--peaui-color-primary-800);
+  background: var(--peaui-color-grey-0);
+}
+
+.peaui-toggle-button--variant-outline {
+  border-color: var(--peaui-color-grey-200);
+  color: var(--peaui-color-primary-800);
+  background: transparent;
+}
+
+.peaui-toggle-button--variant-ghost {
+  color: var(--peaui-color-primary-800);
+  background: transparent;
+  box-shadow: none;
+}
+
+.peaui-toggle-button--pressed {
+  border-color: var(--peaui-color-primary-700);
+  color: var(--peaui-color-primary-800);
+  background: var(--peaui-color-primary-50);
+}
+
+.peaui-toggle-button--variant-default.peaui-toggle-button--pressed {
+  color: var(--peaui-color-grey-0);
+  background: var(--peaui-color-primary-700);
+}
+
+.peaui-toggle-button--variant-ghost.peaui-toggle-button--pressed {
+  border-color: transparent;
+  color: var(--peaui-color-primary-800);
+  background: var(--peaui-color-primary-50);
+}
+
+.peaui-toggle-button:not(:disabled):not(.peaui-toggle-button--readonly):hover {
+  border-color: var(--peaui-color-primary-300);
+  background: var(--peaui-color-primary-50);
+}
+
+.peaui-toggle-button--pressed:not(:disabled):not(.peaui-toggle-button--readonly):hover {
+  border-color: var(--peaui-color-primary-700);
+  background: var(--peaui-color-primary-100);
+}
+
+.peaui-toggle-button--variant-default.peaui-toggle-button--pressed:not(:disabled):not(
+    .peaui-toggle-button--readonly
+  ):hover {
+  color: var(--peaui-color-grey-0);
+  background: var(--peaui-color-primary-900);
+}
+
+.peaui-toggle-button--readonly {
+  cursor: default;
+}
+
+.peaui-toggle-button:disabled {
+  border-color: var(--peaui-color-grey-200);
+  color: var(--peaui-color-grey-400);
+  background: var(--peaui-color-grey-50);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.peaui-toggle-button__loading-status {
+  @include sr-only;
+}
+
+@keyframes peaui-toggle-button-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-toggle-button {
+    transition: none;
+  }
+
+  .peaui-toggle-button__spinner {
+    border-block-start-color: currentColor;
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-toggle-button {
+    border-color: ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+    box-shadow: none;
+    forced-color-adjust: auto;
+  }
+
+  .peaui-toggle-button--pressed {
+    border-color: Highlight;
+    color: HighlightText;
+    background: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -4px;
+  }
+
+  .peaui-toggle-button:focus-visible {
+    outline-color: Highlight;
+    outline-offset: 2px;
+  }
+
+  .peaui-toggle-button:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

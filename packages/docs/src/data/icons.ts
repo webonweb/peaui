@@ -1,7 +1,6 @@
-import type { Component } from 'vue';
+import iconCatalogSource from '../../../library/src/assets/icons/catalog.json';
 
-export type IconCategoryId =
-  'actions' | 'files' | 'interface' | 'navigation' | 'security' | 'status' | 'users';
+export type IconCategoryId = string;
 
 type IconMetadata = {
   category: IconCategoryId;
@@ -11,49 +10,108 @@ type IconMetadata = {
 };
 
 export type IconDefinition = IconMetadata & {
-  component: Component;
   name: string;
 };
+
+const catalogCategoryMetadata: Record<string, { description: string; label: string }> = {
+  core: {
+    label: 'Podstawowe',
+    description: 'Podstawowe symbole PEAUI oraz ich warianty w okręgach, kwadratach i odznakach.',
+  },
+  extended: {
+    label: 'Rozszerzone',
+    description: 'Dodatkowe symbole semantyczne uzupełniające podstawowy katalog.',
+  },
+  ring: {
+    label: 'Warianty ring',
+    description: 'Symbole osadzone w lekkim, okrągłym obramowaniu.',
+  },
+  tile: {
+    label: 'Warianty tile',
+    description: 'Symbole osadzone w zaokrąglonym, kwadratowym obramowaniu.',
+  },
+  accessibility: {
+    label: 'Dostępność',
+    description: 'Symbole wspierające dostępność, napisy i technologie asystujące.',
+  },
+  actions: {
+    label: 'Akcje',
+    description: 'Operacje wykonywane przez użytkownika i narzędzia interfejsu.',
+  },
+  animals: { label: 'Zwierzęta', description: 'Zwierzęta i powiązane symbole.' },
+  arrows: { label: 'Strzałki', description: 'Kierunki, cofanie i przemieszczanie elementów.' },
+  brands: { label: 'Marki', description: 'Znaki usług, platform i systemów.' },
+  buildings: { label: 'Budynki', description: 'Budynki, instytucje i miejsca.' },
+  charts: { label: 'Wykresy', description: 'Wizualizacja danych, trendy i statystyki.' },
+  communication: {
+    label: 'Komunikacja',
+    description: 'Rozmowy, telefony, wiadomości i kontakty.',
+  },
+  connectivity: { label: 'Łączność', description: 'Sieci, sygnały i połączenia urządzeń.' },
+  design: { label: 'Projektowanie', description: 'Narzędzia graficzne, kolor i edycja.' },
+  development: { label: 'Programowanie', description: 'Kod, dane, serwery i integracje.' },
+  devices: { label: 'Urządzenia', description: 'Komputery, ekrany i urządzenia elektroniczne.' },
+  files: { label: 'Pliki i dokumenty', description: 'Dokumenty, foldery i operacje na plikach.' },
+  finance: { label: 'Finanse', description: 'Płatności, waluty, portfele i rozliczenia.' },
+  food: { label: 'Jedzenie i napoje', description: 'Produkty spożywcze, posiłki i napoje.' },
+  gaming: { label: 'Gry', description: 'Gry, kontrolery i rozrywka.' },
+  home: { label: 'Dom', description: 'Wyposażenie domu i codzienne urządzenia.' },
+  interface: { label: 'Interfejs', description: 'Ogólne elementy i obiekty aplikacji.' },
+  layout: { label: 'Układ', description: 'Siatki, panele, wyrównanie i rozmieszczenie.' },
+  mail: { label: 'Poczta', description: 'E-mail, skrzynki odbiorcze i wysyłanie.' },
+  maps: { label: 'Mapy i lokalizacje', description: 'Położenie, trasy, mapy i nawigacja.' },
+  math: { label: 'Matematyka', description: 'Działania, symbole i narzędzia matematyczne.' },
+  media: { label: 'Multimedia', description: 'Dźwięk, film, odtwarzanie i nagrywanie.' },
+  medical: { label: 'Medycyna', description: 'Zdrowie, opieka i wyposażenie medyczne.' },
+  nature: { label: 'Natura', description: 'Rośliny, krajobrazy i środowisko.' },
+  people: { label: 'Osoby', description: 'Użytkownicy, grupy i profile.' },
+  photography: { label: 'Fotografia', description: 'Aparaty, obrazy i obróbka zdjęć.' },
+  science: { label: 'Nauka', description: 'Badania, laboratoria i symbole naukowe.' },
+  security: { label: 'Bezpieczeństwo', description: 'Dostęp, blokady i zabezpieczenia.' },
+  shapes: { label: 'Kształty', description: 'Podstawowe figury i symbole geometryczne.' },
+  shopping: { label: 'Zakupy', description: 'Sklepy, produkty, paczki i promocje.' },
+  sports: { label: 'Sport', description: 'Dyscypliny, aktywność i wyposażenie sportowe.' },
+  status: {
+    label: 'Status i komunikaty',
+    description: 'Potwierdzenia, alerty i informacje o stanie.',
+  },
+  text: { label: 'Tekst', description: 'Typografia, formatowanie i redagowanie treści.' },
+  time: { label: 'Czas i kalendarz', description: 'Daty, godziny, alarmy i harmonogramy.' },
+  tools: { label: 'Narzędzia', description: 'Ustawienia, naprawa i narzędzia techniczne.' },
+  transportation: { label: 'Transport', description: 'Pojazdy, podróż i infrastruktura.' },
+  weather: { label: 'Pogoda', description: 'Warunki atmosferyczne i temperatura.' },
+};
+
+type IconCatalog = {
+  catalogVersion: number;
+  categories: string[];
+  iconSize: number;
+  icons: Array<{ category: string; name: string; sourceName: string; tags: string[] }>;
+  profile: { generator: string; geometrySource: string; name: string };
+  strokeWidth: number;
+};
+
+export const iconCatalog = iconCatalogSource as IconCatalog;
 
 export const iconCategories: ReadonlyArray<{
   description: string;
   id: IconCategoryId;
   label: string;
 }> = [
-  {
-    id: 'actions',
-    label: 'Akcje',
-    description: 'Operacje wykonywane przez użytkownika i narzędzia interfejsu.',
-  },
+  ...iconCatalog.categories.map((id) => ({ id, ...catalogCategoryMetadata[id]! })),
+  ...(['actions', 'status', 'interface', 'files', 'security'] as const).map((id) => ({
+    id,
+    ...catalogCategoryMetadata[id]!,
+  })),
   {
     id: 'navigation',
     label: 'Nawigacja',
     description: 'Kierunki, przechodzenie między widokami i sterowanie pozycją.',
   },
   {
-    id: 'status',
-    label: 'Status i komunikaty',
-    description: 'Potwierdzenia, pomoc, wskazówki i informacje o stanie procesu.',
-  },
-  {
-    id: 'files',
-    label: 'Pliki i multimedia',
-    description: 'Dokumenty, obrazy oraz operacje związane z plikami.',
-  },
-  {
-    id: 'security',
-    label: 'Bezpieczeństwo',
-    description: 'Blokady, dostęp i stany zabezpieczeń.',
-  },
-  {
     id: 'users',
     label: 'Użytkownicy',
     description: 'Osoby, grupy i odbiorcy.',
-  },
-  {
-    id: 'interface',
-    label: 'Interfejs i obiekty',
-    description: 'Pozostałe obiekty, moduły i ustawienia aplikacji.',
   },
 ];
 
@@ -360,18 +418,52 @@ const iconMetadata: Record<string, IconMetadata> = {
   },
 };
 
-const iconModules = import.meta.glob<Component>('../../../library/src/assets/icons/*.svg', {
-  eager: true,
+const catalogMetadata: ReadonlyMap<
+  string,
+  { category: string; name: string; sourceName: string; tags: string[] }
+> = new Map(iconCatalog.icons.map((icon) => [icon.name, icon] as const));
+
+const legacyIconModules = import.meta.glob<string>('../../../library/src/assets/icons/*.svg', {
   import: 'default',
-  query: '?component',
+  query: '?raw',
 });
 
-const iconNames = Object.keys(iconModules)
-  .map((path) => path.match(/\/([^/]+)\.svg$/)?.[1])
-  .filter((name): name is string => Boolean(name));
+function getIconName(path: string): string | undefined {
+  return path.match(/\/assets\/icons\/(.+)\.svg$/)?.[1];
+}
 
-const missingMetadata = iconNames.filter((name) => !iconMetadata[name]);
-const missingFiles = Object.keys(iconMetadata).filter((name) => !iconNames.includes(name));
+function humanizeCatalogName(name: string): string {
+  const text = (name.split('/').at(-1) ?? name).replace(/-/g, ' ');
+
+  return text.charAt(0).toLocaleUpperCase('en') + text.slice(1);
+}
+
+function getMetadata(name: string): IconMetadata | undefined {
+  const legacyMetadata = iconMetadata[name];
+
+  if (legacyMetadata) return legacyMetadata;
+
+  const catalogIcon = catalogMetadata.get(name);
+
+  if (!catalogIcon) return undefined;
+
+  const label = humanizeCatalogName(name);
+
+  return {
+    category: catalogIcon.category,
+    description: `Ikona PEAUI: ${label}.`,
+    keywords: [catalogIcon.sourceName, ...catalogIcon.tags],
+    label,
+  };
+}
+
+const legacyIconNames = Object.keys(legacyIconModules)
+  .map(getIconName)
+  .filter((name): name is string => Boolean(name));
+const iconNames = [...legacyIconNames, ...catalogMetadata.keys()];
+
+const missingMetadata = iconNames.filter((name) => !getMetadata(name));
+const missingFiles = Object.keys(iconMetadata).filter((name) => !legacyIconNames.includes(name));
 
 if (missingMetadata.length > 0 || missingFiles.length > 0) {
   throw new Error(
@@ -379,15 +471,14 @@ if (missingMetadata.length > 0 || missingFiles.length > 0) {
   );
 }
 
-export const icons: IconDefinition[] = Object.entries(iconModules)
-  .map(([path, component]) => {
-    const name = path.match(/\/([^/]+)\.svg$/)?.[1];
+export const icons: IconDefinition[] = iconNames
+  .map((name) => {
+    const metadata = getMetadata(name);
 
-    if (!name) return undefined;
+    if (!metadata) return undefined;
 
     return {
-      ...iconMetadata[name],
-      component,
+      ...metadata,
       name,
     };
   })

@@ -1,7 +1,10 @@
 @use '@/assets/mixins.scss' as *;
 
 .peaui-tree-list {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .peaui-tree-list--level-1,
@@ -46,6 +49,7 @@
 
 .peaui-tree-list__leaf-content {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   flex: 1 1 auto;
   min-width: 0;
@@ -58,6 +62,7 @@
 
   min-width: 0;
   color: var(--peaui-color-grey-700);
+  overflow-wrap: anywhere;
 }
 
 .peaui-tree-list__label--emphasized {
@@ -68,6 +73,8 @@
   @include set-size-text(xs);
 
   color: var(--peaui-color-primary-700);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .peaui-tree-list__toggle-icon {
@@ -146,6 +153,9 @@
 
 .peaui-tree-list__content {
   position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 
   @include set-param(padding-top, 0.25rem);
   @include set-param(padding-left, 1.25rem);

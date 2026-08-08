@@ -19,17 +19,16 @@ import {
   nextTick,
   onBeforeUnmount,
   ref,
-  type StyleValue,
   useAttrs,
   useSlots,
   useTemplateRef,
   watch,
+  type StyleValue,
 } from 'vue';
 
 // HELPERS
 //-----------------------------------------------------------------------------------------------//
-import { getPaddingRight } from '@/helpers/functions.helper';
-import { capitalizeFirstLetter } from '@/helpers/string.helepr';
+import { capitalizeFirstLetter } from '@/helpers/string.helper';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -125,7 +124,6 @@ const listboxAriaLabel = computed(
   () => explicitAriaLabel.value ?? (!label && !explicitAriaLabelledBy.value ? name : undefined),
 );
 const inputIsReadonly = computed(() => readonly || !searchable);
-const inputReferencePaddingRight = computed(() => getPaddingRight(inputReference.value));
 const normalizedSearchPhrase = computed(() => normalizeText(searchPhrase.value));
 
 const selectedOption = computed(() =>
@@ -194,14 +192,6 @@ const rootClass = computed(() => [
   },
 ]);
 
-const inputStyles = computed(() => ({
-  '--peaui-form-select-input-padding-right': canErase ? '4.5rem' : '2.75rem',
-}));
-
-function getInputStyles(fieldStyle: unknown): StyleValue {
-  return [fieldStyle as StyleValue, inputStyles.value];
-}
-
 const bindings = computed(() => {
   const inputBindings: Record<string, unknown> = {
     ...attrs,
@@ -223,8 +213,6 @@ const bindings = computed(() => {
 
   return inputBindings;
 });
-
-const rightErasePosition = computed(() => inputReferencePaddingRight.value);
 
 const elementTestId = computed(() => (dataTestId ? `${dataTestId}-element` : undefined));
 const listboxTestId = computed(() => (dataTestId ? `${dataTestId}-listbox` : undefined));
@@ -621,7 +609,6 @@ onBeforeUnmount(() => {
       :placeholder="currentPlaceholder"
       :readonly
       :required
-      :right-erase-position="rightErasePosition"
       :value="displayValue"
       :data-test-id="dataTestId"
       @on:remove="handleEraseValue"
@@ -635,7 +622,7 @@ onBeforeUnmount(() => {
           v-bind="{ ...bindings, ...fieldProps }"
           :class="inputClass"
           :readonly="inputIsReadonly"
-          :style="getInputStyles(fieldProps.style)"
+          :style="fieldProps.style as StyleValue"
           :value="displayValue"
           @input.stop.prevent="handleInput"
           @keydown.down.stop.prevent="moveCurrentIndex(1)"

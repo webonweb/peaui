@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/components/form/FieldLabel/index.wc', () => {
-  class MockFieldLabelElement extends HTMLElement {
-    static readonly tagName = 'peaui-field-label';
+vi.mock('@/components/form/FormFieldLabel/index.wc', () => {
+  class MockFormFieldLabelElement extends HTMLElement {
+    static readonly tagName = 'peaui-form-field-label';
 
     connectedCallback(): void {
       this.render();
@@ -50,20 +50,20 @@ vi.mock('@/components/form/FieldLabel/index.wc', () => {
     }
   }
 
-  function defineFieldLabel(): typeof MockFieldLabelElement {
-    if (!window.customElements.get(MockFieldLabelElement.tagName)) {
-      window.customElements.define(MockFieldLabelElement.tagName, MockFieldLabelElement);
+  function defineFormFieldLabel(): typeof MockFormFieldLabelElement {
+    if (!window.customElements.get(MockFormFieldLabelElement.tagName)) {
+      window.customElements.define(MockFormFieldLabelElement.tagName, MockFormFieldLabelElement);
     }
 
-    return MockFieldLabelElement;
+    return MockFormFieldLabelElement;
   }
 
-  defineFieldLabel();
+  defineFormFieldLabel();
 
   return {
-    FieldLabelElement: MockFieldLabelElement,
-    defineFieldLabel,
-    default: MockFieldLabelElement,
+    FormFieldLabelElement: MockFormFieldLabelElement,
+    defineFormFieldLabel,
+    default: MockFormFieldLabelElement,
   };
 });
 
@@ -441,11 +441,37 @@ describe('FormField (index.wc.ts)', () => {
     const button = element.querySelector<HTMLButtonElement>(
       '[data-testid="form-field-erase-button"]',
     );
+    const input = element.querySelector<HTMLInputElement>('[data-testid="field-element"]');
 
     expect(button?.getAttribute('style')).toContain('--right: 44px');
+    expect(input?.getAttribute('style')).toContain('--pr: 80px');
     button?.click();
 
     expect(removeSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('reserves a stable action rail when erase and a trailing icon are enabled', async () => {
+    const element = mountFormField({
+      value: '2026-08-07',
+      canErase: true,
+      iconAfter: 'calendar',
+      dataTestId: 'form-field',
+    });
+
+    await syncFormFieldState();
+
+    expect(
+      element
+        .querySelector<HTMLInputElement>('[data-testid="field-element"]')
+        ?.style.getPropertyValue('--pr')
+        .trim(),
+    ).toBe('80px');
+    expect(
+      element
+        .querySelector<HTMLButtonElement>('[data-testid="form-field-erase-button"]')
+        ?.style.getPropertyValue('--right')
+        .trim(),
+    ).toBe('44px');
   });
 
   it('keeps focus on the input when value updates trigger a parent re-render', async () => {
@@ -517,7 +543,7 @@ describe('FormField (index.wc.ts)', () => {
     await syncFormFieldState();
 
     const input = element.querySelector<HTMLInputElement>('[data-testid="field-element"]');
-    const label = element.querySelector('peaui-field-label');
+    const label = element.querySelector('peaui-form-field-label');
 
     expect(input?.getAttribute('id')).toMatch(/^peaui-form-field-\d+$/);
     expect(label?.getAttribute('for')).toBe(input?.getAttribute('id'));

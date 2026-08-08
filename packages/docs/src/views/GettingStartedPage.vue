@@ -168,7 +168,7 @@ const copy = computed(() =>
       forFramework: 'PEAUI for',
       packageSingular: 'component in the package',
       packagePlural: 'components in the package',
-      reactTitle: '62 native React components',
+      reactTitle: `${availableComponents.value.length} native React components`,
       reactNotice:
         'The React API provides the complete Vue-compatible catalog. Every model supports a controlled value, a default… initial value and an on…Change callback.',
       installTitle: '1. Installation',
@@ -187,12 +187,10 @@ const copy = computed(() =>
       importRulesText:
         'The main package API remains the Vue API. React uses separate, stable subpaths.',
       fullCatalogTitle: '4. Full catalog and documentation',
-      fullCatalogText:
-        'The documentation covers all 62 components with variants, a props editor, ready TSX, callbacks and ReactNode content.',
+      fullCatalogText: `The documentation covers all ${availableComponents.value.length} components with variants, a props editor, ready TSX, callbacks and ReactNode content.`,
       viewReact: 'View React components',
       registerTitle: '2. Register elements',
-      registerText:
-        'Importing a module registers that element through customElements.define. Import only the elements used by your application. All 62 elements share the Vue rendering layer declared as a peer dependency, while their public interface remains standard Custom Elements.',
+      registerText: `Importing a module registers that element through customElements.define. Import only the elements used by your application. All ${availableComponents.value.length} elements share the Vue rendering layer declared as a peer dependency, while their public interface remains standard Custom Elements.`,
       htmlTitle: '3. Use in HTML',
       htmlText:
         'After registration, use native peaui-* tags. Pass simple values as HTML attributes.',
@@ -239,7 +237,7 @@ const copy = computed(() =>
       forFramework: 'PEAUI dla',
       packageSingular: 'komponent w paczce',
       packagePlural: 'komponentów w paczce',
-      reactTitle: '62 natywne komponenty React',
+      reactTitle: `${availableComponents.value.length} natywnych komponentów React`,
       reactNotice:
         'API React ma pełny katalog zgodny z Vue. Każdy model obsługuje tryb kontrolowany, wartość początkową default… i callback on…Change.',
       installTitle: '1. Instalacja',
@@ -258,12 +256,10 @@ const copy = computed(() =>
       importRulesTitle: '3. Zasady importowania',
       importRulesText: 'Główne API paczki pozostaje API Vue. React ma osobne, stabilne podścieżki.',
       fullCatalogTitle: '4. Pełny katalog i dokumentacja',
-      fullCatalogText:
-        'Dokumentacja pokazuje wszystkie 62 komponenty z wariantami, edytorem propsów, gotowym kodem TSX, callbackami oraz treścią ReactNode.',
+      fullCatalogText: `Dokumentacja pokazuje wszystkie ${availableComponents.value.length} komponentów z wariantami, edytorem propsów, gotowym kodem TSX, callbackami oraz treścią ReactNode.`,
       viewReact: 'Zobacz komponenty React',
       registerTitle: '2. Rejestracja elementów',
-      registerText:
-        'Zaimportowanie modułu rejestruje dany element przez customElements.define. Importuj tylko elementy używane w aplikacji. Wszystkie 62 elementy korzystają ze wspólnej warstwy renderującej Vue, deklarowanej przez paczkę jako peer dependency, ale ich publicznym interfejsem pozostaje standard Custom Elements.',
+      registerText: `Zaimportowanie modułu rejestruje dany element przez customElements.define. Importuj tylko elementy używane w aplikacji. Wszystkie ${availableComponents.value.length} elementy korzystają ze wspólnej warstwy renderującej Vue, deklarowanej przez paczkę jako peer dependency, ale ich publicznym interfejsem pozostaje standard Custom Elements.`,
       htmlTitle: '3. Użycie w HTML',
       htmlText:
         'Po rejestracji korzystasz z natywnych znaczników peaui-*. Proste wartości przekazuj jako atrybuty HTML.',

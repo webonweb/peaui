@@ -15,7 +15,10 @@ defineFormDatePicker();
 const meta = {
   title: '5. Form/FormDatePicker',
   component: FormDatePickerElement.tagName,
-  args: createVueCustomElementStoryArgs(FormDatePickerVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormDatePickerVueComponent),
+    value: '2026-08-05',
+  },
   argTypes: createVueCustomElementArgTypes(FormDatePickerVueComponent),
   parameters: {
     name: 'FormDatePicker',

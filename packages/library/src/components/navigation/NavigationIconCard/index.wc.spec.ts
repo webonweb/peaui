@@ -30,5 +30,6 @@ describe('NavigationIconCard (index.wc.ts)', () => {
     await Promise.resolve();
 
     expect(element.childNodes.length).toBeGreaterThan(0);
+    expect(element.getAttribute('role')).toBe('group');
   });
 });

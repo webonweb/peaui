@@ -37,21 +37,19 @@
   overflow-wrap: anywhere;
   background-color: var(--peaui-color-primary-700);
 
-  @include set-param(padding, 1.125rem);
-  //position-try-fallbacks: flip-block, flip-inline;
+  padding: var(--peaui-overlay-padding);
+  position-try-fallbacks: flip-block;
 
   opacity: 0;
   pointer-events: none;
   @include transition(opacity);
 
-  border-radius: 0.75rem;
+  border-radius: var(--peaui-overlay-radius);
 
   corner-shape: squircle;
   user-select: none;
 
-  box-shadow:
-    0 9px 15px 8px rgb(from var(--peaui-color-grey-900) r g b / 0.12),
-    0 9px 10px -7px rgb(from var(--peaui-color-grey-900) r g b / 0.5);
+  box-shadow: var(--peaui-overlay-shadow);
 }
 
 .peaui-info-tooltip__content::before {
@@ -103,7 +101,7 @@
   left: anchor(center);
   bottom: anchor(top);
   translate: -50% 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
 
   --arrow-block: auto;
   --arrow-block2: calc(var(--arrow-size) * -1);
@@ -114,7 +112,7 @@
   left: anchor(right);
   bottom: anchor(top);
   translate: -100% 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
 
   --arrow-block: auto;
   --arrow-block2: calc(var(--arrow-size) * -1);
@@ -125,7 +123,7 @@
   left: anchor(left);
   bottom: anchor(top);
   translate: 0 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
   --arrow-block: auto;
   --arrow-block2: calc(var(--arrow-size) * -1);
   --arrow-inline: 10%;
@@ -135,7 +133,7 @@
   left: anchor(center);
   top: anchor(bottom);
   translate: -50% 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
 
   --arrow-block: calc(var(--arrow-size) * -1);
   --arrow-block2: auto;
@@ -146,7 +144,7 @@
   left: anchor(right);
   top: anchor(bottom);
   translate: -100% 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
 
   --arrow-block: calc(var(--arrow-size) * -1);
   --arrow-block2: auto;
@@ -156,7 +154,7 @@
   left: anchor(left);
   top: anchor(bottom);
   translate: 0 0;
-  margin-block: 0.625rem;
+  margin-block: var(--peaui-overlay-offset);
 
   --arrow-block: calc(var(--arrow-size) * -1);
   --arrow-block2: auto;
@@ -167,7 +165,7 @@
   right: anchor(left);
   top: anchor(center);
   translate: 0 -50%;
-  margin-inline: 0.625rem;
+  margin-inline: var(--peaui-overlay-offset);
 
   --arrow-block: 50%;
   --arrow-block2: auto;
@@ -178,8 +176,15 @@
   left: anchor(right);
   top: anchor(center);
   translate: 0 -50%;
-  margin-inline: 0.625rem;
+  margin-inline: var(--peaui-overlay-offset);
 
   --arrow-block: 50%;
   --arrow-inline: 0%;
+}
+
+@media (forced-colors: active) {
+  .peaui-info-tooltip__content {
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
 }

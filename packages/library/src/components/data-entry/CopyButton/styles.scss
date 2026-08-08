@@ -1,0 +1,131 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-copy-button {
+  display: inline-flex;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  vertical-align: middle;
+}
+
+.peaui-copy-button {
+  display: inline-grid;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  gap: 0.375rem;
+
+  &--content-text,
+  &--content-icon-text {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &__button.peaui-button-action {
+    inline-size: auto;
+    max-inline-size: 100%;
+    min-block-size: 2.75rem;
+    min-inline-size: 0;
+    overflow: hidden;
+  }
+
+  &--content-text &__button.peaui-button-action,
+  &--content-icon-text &__button.peaui-button-action {
+    inline-size: 100%;
+  }
+
+  &--content-icon &__button.peaui-button-action {
+    inline-size: 2.75rem;
+    padding-inline: 0;
+  }
+
+  &__icon,
+  &__spinner {
+    display: inline-grid;
+    flex: 0 0 1.125rem;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+
+  &__icon .peaui-svg-icon {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    color: currentColor;
+    fill: currentColor;
+  }
+
+  &__spinner {
+    border: 2px solid currentColor;
+    border-block-start-color: transparent;
+    border-radius: 50%;
+    opacity: 0.82;
+    animation: peaui-copy-button-spin 700ms linear infinite;
+  }
+
+  &__label {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__status {
+    min-block-size: 1.25rem;
+    max-inline-size: 100%;
+    color: var(--peaui-color-grey-600);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+  }
+
+  &--status-copied &__status {
+    color: var(--peaui-color-success-700);
+  }
+
+  &--status-error &__status,
+  &--status-unsupported &__status {
+    color: var(--peaui-color-danger-700);
+  }
+
+  &__status--sr-only {
+    @include sr-only;
+  }
+}
+
+@keyframes peaui-copy-button-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (max-width: 30rem) {
+  .peaui-copy-button--content-text,
+  .peaui-copy-button--content-icon-text {
+    inline-size: min(100%, 20rem);
+  }
+
+  .peaui-copy-button--content-text .peaui-copy-button__button,
+  .peaui-copy-button--content-icon-text .peaui-copy-button__button {
+    inline-size: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-copy-button__spinner {
+    border-block-start-color: currentColor;
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-copy-button__spinner {
+    border-color: ButtonText;
+    border-block-start-color: transparent;
+  }
+
+  .peaui-copy-button__status {
+    color: CanvasText;
+  }
+}

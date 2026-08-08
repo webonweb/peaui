@@ -1,10 +1,22 @@
 <script setup lang="ts">
+import { useRoute, useRouter } from 'vue-router';
+
 import { useI18n, type Locale } from '../i18n';
+import { getLocalizedRoutePath } from '../router';
 
 const { locale, setLocale, t } = useI18n();
+const route = useRoute();
+const router = useRouter();
 
-function selectLocale(nextLocale: Locale): void {
+async function selectLocale(nextLocale: Locale): Promise<void> {
   setLocale(nextLocale);
+  const query = { ...route.query };
+  delete query.lang;
+  await router.replace({
+    path: getLocalizedRoutePath(route.path, nextLocale),
+    query,
+    hash: route.hash,
+  });
 }
 </script>
 

@@ -1,0 +1,50 @@
+{
+  "seo.home.title": {
+    "en": "PeaUI — accessible components for Vue, React and Web Components",
+    "pl": "PeaUI — dostępne komponenty dla Vue, React i Web Components"
+  },
+  "seo.home.description": {
+    "en": "Accessible, fully typed and customizable components for Vue, React and Web Components, powered by one consistent design system.",
+    "pl": "Dostępne, w pełni typowane i łatwe do dostosowania komponenty dla Vue, React i Web Components, oparte na jednym spójnym systemie projektowym."
+  },
+  "seo.start.title": {
+    "en": "Get started with {framework} | PeaUI",
+    "pl": "Pierwsze kroki z {framework} | PeaUI"
+  },
+  "seo.start.description": {
+    "en": "Install PeaUI for {framework} and learn how to use its typed components, shared styles and accessible interaction patterns.",
+    "pl": "Zainstaluj PeaUI dla {framework} i poznaj typowane komponenty, wspólne style oraz dostępne wzorce interakcji."
+  },
+  "seo.components.title": {
+    "en": "{framework} component catalog | PeaUI",
+    "pl": "Katalog komponentów {framework} | PeaUI"
+  },
+  "seo.components.description": {
+    "en": "Browse the complete PeaUI component catalog for {framework}, including typed APIs, variants and interactive examples.",
+    "pl": "Przeglądaj pełny katalog komponentów PeaUI dla {framework}, wraz z typowanym API, wariantami i interaktywnymi przykładami."
+  },
+  "seo.category.title": {
+    "en": "{category} components for {framework} | PeaUI",
+    "pl": "Komponenty {category} dla {framework} | PeaUI"
+  },
+  "seo.category.description": {
+    "en": "Explore PeaUI {category} components for {framework}, with accessible behavior, typed APIs and live documentation.",
+    "pl": "Poznaj komponenty PeaUI z kategorii {category} dla {framework}, z dostępnym działaniem, typowanym API i dokumentacją na żywo."
+  },
+  "seo.component.title": {
+    "en": "{component} — {framework} component | PeaUI",
+    "pl": "{component} — komponent dla {framework} | PeaUI"
+  },
+  "seo.component.description": {
+    "en": "Accessible and fully typed {component} component for {framework}. Explore its props, variants, events and live examples.",
+    "pl": "Dostępny i w pełni typowany komponent {component} dla {framework}. Poznaj propsy, warianty, zdarzenia i interaktywne przykłady."
+  },
+  "seo.icons.title": {
+    "en": "Icon catalog for {framework} | PeaUI",
+    "pl": "Katalog ikon dla {framework} | PeaUI"
+  },
+  "seo.icons.description": {
+    "en": "Browse the PeaUI SVG icon catalog for {framework}, including names, accessible usage guidance and code examples.",
+    "pl": "Przeglądaj katalog ikon SVG PeaUI dla {framework}, wraz z nazwami, zasadami dostępnego użycia i przykładami kodu."
+  }
+}

@@ -1,0 +1,474 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-popover-overlayer.peaui-form-color-picker {
+  width: min(100%, 25rem);
+  max-width: 100%;
+  anchor-name: none;
+}
+
+.peaui-popover-overlayer.peaui-form-color-picker .peaui-form-field__content {
+  anchor-name: var(--unique-anchor);
+}
+
+.peaui-form-color-picker__trigger-host,
+.peaui-form-color-picker__field-shell {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.peaui-form-color-picker__field-shell {
+  display: flex;
+  align-items: center;
+}
+
+.peaui-form-color-picker__input {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 3.25rem 5.5rem !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.peaui-form-color-picker--inline .peaui-form-color-picker__input {
+  padding-inline-end: 3rem !important;
+}
+
+.peaui-form-color-picker--popover .peaui-form-field__erase-button {
+  @include set-param(right, 3rem);
+}
+
+.peaui-form-color-picker__field-swatch,
+.peaui-form-color-picker__preview,
+.peaui-form-color-picker__swatch {
+  background-color: var(--peaui-color-grey-0);
+  background-image:
+    linear-gradient(45deg, var(--peaui-color-grey-200) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--peaui-color-grey-200) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--peaui-color-grey-200) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--peaui-color-grey-200) 75%);
+  background-position:
+    0 0,
+    0 0.375rem,
+    0.375rem -0.375rem,
+    -0.375rem 0;
+  background-size: 0.75rem 0.75rem;
+}
+
+.peaui-form-color-picker__field-swatch,
+.peaui-form-color-picker__preview {
+  overflow: hidden;
+  border: 1px solid var(--peaui-color-grey-300);
+}
+
+.peaui-form-color-picker__field-swatch::after,
+.peaui-form-color-picker__preview::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: var(--peaui-form-color-picker-color);
+}
+
+.peaui-form-color-picker__field-swatch {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: 0.625rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
+
+.peaui-form-color-picker__toggle {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, color, transform);
+
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: 0;
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  color: var(--peaui-color-grey-500);
+  cursor: pointer;
+}
+
+.peaui-form-color-picker__toggle-icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  transform-box: fill-box;
+  transform-origin: center;
+
+  @include transition(transform);
+}
+
+.peaui-form-color-picker--open .peaui-form-color-picker__toggle {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-color-picker--open .peaui-form-color-picker__toggle-icon {
+  transform: rotate(180deg);
+}
+
+.peaui-form-color-picker__toggle:hover:not(:disabled),
+.peaui-form-color-picker__toggle:focus-visible {
+  background: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-popover-overlayer__content.peaui-form-color-picker__popover-content[popover] {
+  z-index: 1000;
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+}
+
+.peaui-form-color-picker__panel {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  max-height: min(40rem, var(--peaui-form-color-picker-available-height, calc(100vh - 1rem)));
+  gap: 1rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  padding: var(--peaui-overlay-padding);
+  border: 0;
+  border-radius: 0;
+  color: var(--peaui-color-grey-800);
+  background: var(--peaui-overlay-background);
+  box-shadow: none;
+}
+
+.peaui-form-color-picker__panel--group {
+  margin-top: 0.75rem;
+  border: var(--peaui-overlay-border-width) solid var(--peaui-overlay-border-color);
+  border-radius: var(--peaui-overlay-radius);
+  box-shadow: none;
+}
+
+.peaui-form-color-picker__panel--compact {
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.peaui-form-color-picker__preview-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.peaui-form-color-picker__preview {
+  position: relative;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.625rem;
+}
+
+.peaui-form-color-picker__current-label,
+.peaui-form-color-picker__current-value {
+  margin: 0;
+}
+
+.peaui-form-color-picker__current-label {
+  color: var(--peaui-color-grey-600);
+  font-weight: 600;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-color-picker__current-value {
+  display: block;
+  max-width: 17rem;
+  overflow-wrap: anywhere;
+  color: var(--peaui-color-grey-800);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-color-picker__saturation {
+  position: relative;
+  min-width: 12rem;
+  min-height: 11rem;
+  overflow: hidden;
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.625rem;
+  background:
+    linear-gradient(to top, var(--peaui-color-grey-900), transparent),
+    linear-gradient(to right, var(--peaui-color-grey-0), transparent),
+    var(--peaui-form-color-picker-hue);
+  cursor: crosshair;
+  touch-action: none;
+
+  @include outline(var(--peaui-color-primary-700));
+}
+
+.peaui-form-color-picker__panel--compact .peaui-form-color-picker__saturation {
+  min-height: 8rem;
+}
+
+.peaui-form-color-picker__saturation-indicator {
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--peaui-form-color-picker-indicator);
+  border-radius: 9999px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--peaui-form-color-picker-indicator), transparent 55%);
+}
+
+.peaui-form-color-picker__sliders {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.peaui-form-color-picker__slider-row {
+  display: grid;
+  min-width: 0;
+  min-height: 2.75rem;
+  grid-template-columns: 4rem minmax(0, 1fr) 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--peaui-color-grey-700);
+  font-weight: 600;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-color-picker__slider-row output {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.peaui-form-color-picker__range {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  margin: 0;
+  appearance: none;
+  border-radius: 9999px;
+  cursor: pointer;
+
+  @include outline(var(--peaui-color-primary-700));
+}
+
+.peaui-form-color-picker__range--hue {
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+
+.peaui-form-color-picker__range--alpha {
+  background:
+    linear-gradient(to right, transparent, var(--peaui-form-color-picker-opaque)),
+    repeating-conic-gradient(var(--peaui-color-grey-200) 0 25%, var(--peaui-color-grey-0) 0 50%) 0 /
+      0.75rem 0.75rem;
+}
+
+.peaui-form-color-picker__range::-webkit-slider-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  appearance: none;
+  border: 2px solid var(--peaui-color-grey-0);
+  border-radius: 9999px;
+  background: var(--peaui-color-grey-800);
+  box-shadow: 0 0 0 1px var(--peaui-color-grey-500);
+}
+
+.peaui-form-color-picker__range::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--peaui-color-grey-0);
+  border-radius: 9999px;
+  background: var(--peaui-color-grey-800);
+  box-shadow: 0 0 0 1px var(--peaui-color-grey-500);
+}
+
+.peaui-form-color-picker__palette-section {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.peaui-form-color-picker__palette-section h3 {
+  margin: 0;
+  color: var(--peaui-color-grey-700);
+  font-weight: 600;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-color-picker__swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+  gap: 0.5rem;
+}
+
+.peaui-form-color-picker__swatch {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(border-color, box-shadow, transform);
+
+  position: relative;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  overflow: hidden;
+  border: 2px solid var(--peaui-color-grey-300);
+  border-radius: 0.625rem;
+  cursor: pointer;
+}
+
+.peaui-form-color-picker__swatch::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: var(--peaui-form-color-picker-swatch);
+}
+
+.peaui-form-color-picker__swatch:hover:not(:disabled),
+.peaui-form-color-picker__swatch:focus-visible {
+  border-color: var(--peaui-color-primary-700);
+  box-shadow: 0 0 0 2px rgb(from var(--peaui-color-primary-400) r g b / 0.35);
+  transform: translateY(-1px);
+}
+
+.peaui-form-color-picker__panel-footer {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--peaui-color-grey-200);
+}
+
+.peaui-form-color-picker__eyedropper {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, border-color, color, box-shadow);
+
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.5rem;
+  color: var(--peaui-color-grey-800);
+  background: var(--peaui-color-grey-0);
+  font-weight: 600;
+  cursor: pointer;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-color-picker__eyedropper:hover:not(:disabled),
+.peaui-form-color-picker__eyedropper:focus-visible {
+  border-color: var(--peaui-color-primary-600);
+  background: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-900);
+}
+
+.peaui-form-color-picker__unavailable {
+  flex: 1 1 12rem;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-color-picker__toggle:disabled,
+.peaui-form-color-picker__range:disabled,
+.peaui-form-color-picker__swatch:disabled,
+.peaui-form-color-picker__eyedropper:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.peaui-form-color-picker__loading-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-color-picker__spinner {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--peaui-color-grey-300);
+  border-top-color: var(--peaui-color-primary-700);
+  border-radius: 9999px;
+  animation: peaui-form-color-picker-spin 0.8s linear infinite;
+}
+
+.peaui-form-color-picker__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes peaui-form-color-picker-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 30rem) {
+  .peaui-form-color-picker__panel {
+    padding: 0.75rem;
+  }
+
+  .peaui-form-color-picker__saturation {
+    min-width: 0;
+    min-height: 9rem;
+  }
+
+  .peaui-form-color-picker__slider-row {
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .peaui-form-color-picker__range {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-form-color-picker__spinner {
+    animation-duration: 1.6s;
+  }
+
+  .peaui-form-color-picker__swatch,
+  .peaui-form-color-picker__toggle {
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-color-picker__saturation,
+  .peaui-form-color-picker__field-swatch,
+  .peaui-form-color-picker__preview,
+  .peaui-form-color-picker__swatch {
+    border: 2px solid CanvasText;
+  }
+
+  .peaui-form-color-picker__saturation-indicator {
+    border-color: Highlight;
+    outline: 2px solid Canvas;
+  }
+}

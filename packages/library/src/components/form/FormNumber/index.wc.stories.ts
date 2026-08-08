@@ -17,6 +17,7 @@ const meta = {
   component: FormNumberElement.tagName,
   args: {
     ...createVueCustomElementStoryArgs(FormNumberVueComponent),
+    canErase: true,
     value: 42,
   },
   argTypes: createVueCustomElementArgTypes(FormNumberVueComponent),

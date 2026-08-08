@@ -1,7 +1,7 @@
 {
   "name": "@peaui/ui",
   "type": "module",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Dostępna biblioteka komponentów PEAUI dla Vue, React i Web Components.",
   "license": "MIT",
   "keywords": [
@@ -57,12 +57,6 @@
       "import": "./dist/components/react/*.js",
       "require": "./dist/components/react/*.umd.cjs",
       "default": "./dist/components/react/*.js"
-    },
-    "./react/basic/PhotoEditor": {
-      "types": "./dist/react/basic/PhotoEditior.d.ts",
-      "import": "./dist/components/react/basic/PhotoEditior.js",
-      "require": "./dist/components/react/basic/PhotoEditior.umd.cjs",
-      "default": "./dist/components/react/basic/PhotoEditior.js"
     },
     "./wc/*": {
       "types": "./dist/wc/*.d.ts",
@@ -129,17 +123,21 @@
     "dist",
     "peaui-logo.png",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "npm run build-only && npm run build:verify",
+    "build": "npm run icons:check && npm run build-only && npm run build:verify",
     "build-only": "vite build",
     "build:verify": "node ../../scripts/validate-package.mjs",
     "react:generate": "node ./scripts/generate-react-components.mjs && prettier \"./src/react/generated-*.ts\" \"./src/components/**/index.tsx\" \"./src/components/**/*.react.stories.tsx\" --write",
+    "react:generate:metadata": "node ./scripts/generate-react-components.mjs --metadata-only && prettier \"./src/react/generated-*.ts\" --write",
+    "icons:sync": "node ./scripts/sync-icon-catalog.mjs",
+    "icons:check": "node ./scripts/sync-icon-catalog.mjs --check",
     "watch": "vite build --watch",
     "typecheck": "vue-tsc --noEmit -p tsconfig.build.json",
     "type-gen": "vue-tsc --declaration --emitDeclarationOnly -p tsconfig.build.json",
@@ -152,7 +150,7 @@
     "test:react": "npm run test --framework=react",
     "test:wc": "npm run test --framework=wc",
     "test:all": "npm-run-all -s test:vue test:react test:wc",
-    "check": "npm-run-all -s lint format typecheck test:all",
+    "check": "npm-run-all -s icons:check lint format typecheck test:all",
     "build:css": "tailwindcss -i src/assets/styles.css -o dist/components/assets/styles.css --minify",
     "prepack": "npm run build && npm --prefix ../.. run release:types:check",
     "prepublishOnly": "npm run check"
@@ -207,7 +205,6 @@
   "dependencies": {
     "@vee-validate/yup": "^4.15.1",
     "vee-validate": "^4.15.1",
-    "vue-advanced-cropper": "^2.8.9",
     "yup": "^1.7.1"
   }
 }

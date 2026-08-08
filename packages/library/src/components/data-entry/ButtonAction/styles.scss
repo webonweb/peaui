@@ -78,7 +78,7 @@ $button-variants: (
 .peaui-button-action {
   @include unset-safe;
 
-  @include size-text((xs, s, m, l));
+  @include size-text((xxs, xs, s, m, l));
 
   display: flex;
   align-items: center;

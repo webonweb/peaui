@@ -120,8 +120,8 @@ const PopoverOverlayerStub = defineComponent({
   },
 });
 
-const FieldLabelStub = defineComponent({
-  name: 'FieldLabel',
+const FormFieldLabelStub = defineComponent({
+  name: 'FormFieldLabel',
   props: {
     for: {
       type: String,
@@ -140,7 +140,7 @@ const FieldLabelStub = defineComponent({
 function getGlobal() {
   return {
     stubs: {
-      FieldLabel: FieldLabelStub,
+      FormFieldLabel: FormFieldLabelStub,
       FormContainer: FormContainerStub,
       GridItem: GridItemStub,
       GridSection: GridSectionStub,

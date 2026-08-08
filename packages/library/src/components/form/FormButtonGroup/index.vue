@@ -28,8 +28,8 @@ defineOptions({
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
 const {
-  id,
-  name,
+  id = 'form-button-group',
+  name = 'formButtonGroup',
   label,
   size = 'm',
   isToggle = false,
@@ -37,7 +37,7 @@ const {
   disabled,
   readonly,
   dataTestId,
-  options,
+  options = [],
 } = defineProps<{
   id: string;
   name: string;
@@ -55,7 +55,7 @@ const attrs = useAttrs();
 const slots = useSlots();
 const classNameComponent = `${UIKIT_NAME}-form-button-group`;
 const modelValue = defineModel<string | number | undefined>('value', {
-  required: true,
+  default: undefined,
 });
 
 // COMPUTED PROPERTIES

@@ -64,6 +64,14 @@ const meta: Meta<typeof DisclosurePanelComponent> = {
         defaultValue: { summary: 'false' },
       },
     },
+    alwaysOpen: {
+      control: { type: 'boolean' },
+      description: 'Utrzymuje panel otwarty i blokuje zwijanie.',
+      table: {
+        type: { summary: 'boolean | undefined' },
+        defaultValue: { summary: 'false' },
+      },
+    },
     dataTestId: {
       control: { type: 'text' },
       description: 'Bazowe data-testid dla panelu.',
@@ -102,6 +110,7 @@ export const DisclosurePanel: Story = {
     title: 'Szczegoly',
     ariaLabel: undefined,
     disabled: false,
+    alwaysOpen: false,
     dataTestId: 'disclosure-panel',
   },
 };

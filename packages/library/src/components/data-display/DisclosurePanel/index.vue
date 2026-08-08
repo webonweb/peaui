@@ -21,12 +21,16 @@ const {
   ariaLabel,
   dataTestId,
   disabled = false,
+  alwaysOpen = false,
   allwaysOpen = false,
 } = defineProps<{
   title?: string;
   ariaLabel?: string;
   dataTestId?: string;
   disabled?: boolean;
+  /** Keeps the panel expanded and disables its toggle interaction. */
+  alwaysOpen?: boolean;
+  /** @deprecated Use `alwaysOpen`. */
   allwaysOpen?: boolean;
 }>();
 
@@ -48,8 +52,9 @@ const rootAttrs = computed(() => ({
   ...attrs,
 }));
 
-const isOpen = computed(() => allwaysOpen || Boolean(model.value));
-const isInteractionBlocked = computed(() => disabled || allwaysOpen);
+const resolvedAlwaysOpen = computed(() => alwaysOpen || allwaysOpen);
+const isOpen = computed(() => resolvedAlwaysOpen.value || Boolean(model.value));
+const isInteractionBlocked = computed(() => disabled || resolvedAlwaysOpen.value);
 const hasTitle = computed(() => Boolean(slots.title) || Boolean(title));
 
 const summaryId = computed(() => `${classNameComponent}-summary-${uid}`);
@@ -91,7 +96,7 @@ const updateHeight = () => {
 const onToggle = (event: Event) => {
   const details = event.currentTarget as HTMLDetailsElement | null;
   if (!details) return;
-  if (allwaysOpen) {
+  if (resolvedAlwaysOpen.value) {
     if (!details.open) details.open = true;
     return;
   }
@@ -169,7 +174,7 @@ if (import.meta.env.DEV && !hasTitle.value && !ariaLabel) {
           <slot name="additional" />
         </span>
         <svg
-          v-if="!allwaysOpen"
+          v-if="!resolvedAlwaysOpen"
           :class="`${classNameComponent}__icon`"
           viewBox="0 0 16 16"
           fill="none"

@@ -1,17 +1,10 @@
 import { UIKIT_NAME } from '@/constants';
+import { loadCatalogIcon, type CatalogIconData } from '@/assets/icons/runtime/catalog/load-icon';
+import { hasLegacyIcon, loadLegacyIcon } from '@/assets/icons/runtime/load-icon';
 
 const SVG_ICON_TAG_NAME = `${UIKIT_NAME}-svg-icon`;
 const SVG_ICON_CLASS_NAME = `${UIKIT_NAME}-svg-icon`;
 const NON_FORWARDED_ATTRIBUTES = new Set(['name', 'data-testid', 'id', 'class']);
-
-type IconLoader = () => Promise<string>;
-// Vite transforms only a direct `import.meta.glob` call. The type-aware ESLint
-// parser cannot resolve this compiler macro, although Vite and vue-tsc can.
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-const ICON_LOADERS = import.meta.glob<string>('../../../assets/icons/*.svg', {
-  import: 'default',
-  query: '?raw',
-});
 
 let nextIconId = 0;
 
@@ -42,10 +35,10 @@ function setStringAttribute(element: HTMLElement, name: string, value: string | 
   element.setAttribute(name, normalizedValue);
 }
 
-function getIconLoader(name: string): IconLoader | undefined {
-  const loader = ICON_LOADERS[`../../../assets/icons/${name}.svg`] as unknown;
-
-  return typeof loader === 'function' ? (loader as IconLoader) : undefined;
+function createCatalogSvgElement(icon: CatalogIconData): SVGSVGElement | null {
+  return createSvgElement(
+    `<svg width="${icon.width}" height="${icon.height}" viewBox="${icon.viewBox}" fill="${icon.fill}" stroke="${icon.stroke}" stroke-width="${icon.strokeWidth}" stroke-linecap="${icon.strokeLinecap}" stroke-linejoin="${icon.strokeLinejoin}">${icon.body}</svg>`,
+  );
 }
 
 function createSvgElement(markup: string): SVGSVGElement | null {
@@ -128,12 +121,13 @@ export class SvgIconElement extends HTMLElement {
   }
 
   async #loadIcon(name: string): Promise<void> {
-    const loader = getIconLoader(name);
+    const catalogIcon = name.includes('/');
+    const legacyIcon = !catalogIcon && hasLegacyIcon(name);
 
     this.#renderVersion += 1;
     const renderVersion = this.#renderVersion;
 
-    if (!loader) {
+    if (!catalogIcon && !legacyIcon) {
       if (renderVersion === this.#renderVersion) {
         this.#currentIconName = undefined;
         this.#renderedSvg = null;
@@ -143,10 +137,10 @@ export class SvgIconElement extends HTMLElement {
       return;
     }
 
-    const markup = await loader().catch(() => undefined);
+    const iconSource = catalogIcon ? await loadCatalogIcon(name) : await loadLegacyIcon(name);
 
     if (
-      !markup ||
+      iconSource === undefined ||
       !this.isConnected ||
       renderVersion !== this.#renderVersion ||
       getNormalizedAttributeValue(this.name) !== name
@@ -154,7 +148,10 @@ export class SvgIconElement extends HTMLElement {
       return;
     }
 
-    const svg = createSvgElement(markup);
+    const svg =
+      typeof iconSource === 'string'
+        ? createSvgElement(iconSource)
+        : createCatalogSvgElement(iconSource);
 
     if (!svg) {
       this.#currentIconName = undefined;
@@ -184,8 +181,15 @@ export class SvgIconElement extends HTMLElement {
       forwardedAttributes.set(attribute.name, attribute.value);
     }
 
-    if (!forwardedAttributes.has('aria-hidden')) {
+    const hasAccessibleName =
+      forwardedAttributes.has('aria-label') || forwardedAttributes.has('aria-labelledby');
+
+    if (!forwardedAttributes.has('aria-hidden') && !hasAccessibleName) {
       forwardedAttributes.set('aria-hidden', 'true');
+    }
+
+    if (!forwardedAttributes.has('role') && hasAccessibleName) {
+      forwardedAttributes.set('role', 'img');
     }
 
     if (!forwardedAttributes.has('focusable')) {

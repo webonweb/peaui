@@ -37,6 +37,7 @@ const ButtonActionStub = defineComponent({
   props: {
     dataTestId: String,
     ariaLabel: String,
+    useAriaLabel: Boolean,
   },
   emits: ['click', 'keyup'],
   setup(props, { emit, attrs, slots }) {
@@ -48,6 +49,7 @@ const ButtonActionStub = defineComponent({
           type: 'button',
           'data-testid': props.dataTestId,
           'data-aria-label': props.ariaLabel,
+          'aria-label': props.useAriaLabel ? props.ariaLabel : undefined,
           onClick: (event: Event) => emit('click', event),
           onKeyup: (event: KeyboardEvent) => emit('keyup', event),
         },
@@ -151,8 +153,8 @@ function mountComponent(
     'filters-drawer': ({ open }: { open: boolean }) =>
       h('div', { 'data-testid': 'filters-slot' }, `drawer-${String(open)}`),
     'additional-buttons': () => h('div', { 'data-testid': 'extra-button' }, 'extra'),
-    'addtional-content': () => h('div', { 'data-testid': 'extra-content' }, 'content'),
-    'addtional-description': () => h('div', { 'data-testid': 'extra-description' }, 'description'),
+    'additional-content': () => h('div', { 'data-testid': 'extra-content' }, 'content'),
+    'additional-description': () => h('div', { 'data-testid': 'extra-description' }, 'description'),
     ...slots,
   };
 
@@ -208,6 +210,22 @@ describe('TableListHeader (index.vue)', () => {
     expect(wrapper.get('[data-testid="extra-description"]').exists()).toBe(true);
   });
 
+  it('keeps the legacy misspelled additional slots working', () => {
+    const wrapper = mountComponent(undefined, {
+      'additional-content': undefined,
+      'additional-description': undefined,
+      'addtional-content': () => h('div', { 'data-testid': 'legacy-content' }, 'legacy'),
+      'addtional-description': () =>
+        h('div', { 'data-testid': 'legacy-description' }, 'legacy description'),
+    });
+
+    expect(wrapper.get('[data-testid="legacy-content"]').text()).toBe('legacy');
+    expect(wrapper.get('[data-testid="legacy-description"]').text()).toBe('legacy description');
+    expect(wrapper.get('[data-testid="table-list-header"]').classes()).toContain(
+      'peaui-table-list-header--with-description',
+    );
+  });
+
   it('renders search and filter controls with fixed data test ids', async () => {
     const wrapper = factory();
     const filterButton = wrapper.get('[data-testid="table-list-header-filter-button"]');
@@ -261,6 +279,7 @@ describe('TableListHeader (index.vue)', () => {
     const createButton = wrapper.get('[data-testid="table-list-header-create"]');
 
     expect(createButton.attributes('data-aria-label')).toBe('Dodaj wpis');
+    expect(createButton.attributes('aria-label')).toBe('Dodaj wpis');
     expect(createButton.text()).toContain('Dodaj wpis');
   });
 

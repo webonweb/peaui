@@ -9,8 +9,8 @@ vi.mock('@/constants', () => ({
   UIKIT_NAME: 'peaui',
 }));
 
-const FieldLabelStub = defineComponent({
-  name: 'FieldLabel',
+const FormFieldLabelStub = defineComponent({
+  name: 'FormFieldLabel',
   props: {
     for: { type: String, required: false },
     text: { type: String, required: false },
@@ -92,7 +92,7 @@ const mountComponent = (
     },
     global: {
       stubs: {
-        FieldLabel: FieldLabelStub,
+        FormFieldLabel: FormFieldLabelStub,
         SvgIcon: SvgIconStub,
         MessageText: MessageTextStub,
       },
@@ -198,13 +198,31 @@ describe('FormField (index.vue)', () => {
     });
 
     const button = wrapper.get('[data-testid="form-field-erase-button"]');
+    const input = wrapper.get('[data-testid="field-element"]');
 
     expect(button.attributes('type')).toBe('button');
     expect(button.attributes('style')).toContain('--right: 44px');
+    expect(input.attributes('style')).toContain('--pr: 80px');
 
     await button.trigger('click');
 
     expect(wrapper.emitted('on:remove')).toEqual([[]]);
+  });
+
+  it('reserves a stable action rail when erase and a trailing icon are enabled', () => {
+    const wrapper = mountComponent({
+      value: '2026-08-07',
+      canErase: true,
+      iconAfter: 'calendar',
+      dataTestId: 'form-field',
+    });
+
+    expect(wrapper.get('[data-testid="field-element"]').attributes('style')).toContain(
+      '--pr: 80px',
+    );
+    expect(wrapper.get('[data-testid="form-field-erase-button"]').attributes('style')).toContain(
+      '--right: 44px',
+    );
   });
 
   it('does not emit on:remove on manual Enter keypress for native erase button', async () => {

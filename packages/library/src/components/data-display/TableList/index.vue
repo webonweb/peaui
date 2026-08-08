@@ -168,11 +168,12 @@ const {
   canHideColumns = false,
   canMultiSort = false,
   canSelectRows = true,
-  columns,
+  columns = [],
   editable,
   emptyDescription = true,
   emptyDescriptionInline,
-  records,
+  records = [],
+  isDetails,
   isDetials,
   rowsPerPage = 10,
   selectedRows = [],
@@ -190,6 +191,9 @@ const {
 } = defineProps<{
   id?: string;
   ariaLabel?: string;
+  /** Enables expandable detail rows. */
+  isDetails?: boolean;
+  /** @deprecated Use `isDetails`. */
   isDetials?: boolean;
   additional?: Record<string, any>;
   canCreate?: boolean;
@@ -229,6 +233,7 @@ const rowReferences = ref<Record<number, HTMLTableRowElement | null>>({});
 const horizontalScrollLeft = ref(0);
 const horizontalViewportWidth = ref(0);
 let rootResizeObserver: ResizeObserver | null = null;
+const detailsEnabled = computed(() => isDetails || isDetials);
 
 const emit = defineEmits<{
   (
@@ -293,7 +298,7 @@ const visibleDataColumns = computed(() =>
 const rootClasses = computed(() => [
   classNameComponent,
   {
-    [`${classNameComponent}--details`]: isDetials,
+    [`${classNameComponent}--details`]: detailsEnabled.value,
     [`${classNameComponent}--loading`]: isLoading,
     [`${classNameComponent}--scroll`]: scroll,
   },
@@ -309,7 +314,7 @@ const headClasses = computed(() => [
 const headRowClasses = computed(() => [
   `${classNameComponent}__head-row`,
   {
-    [`${classNameComponent}__head-row--details`]: isDetials,
+    [`${classNameComponent}__head-row--details`]: detailsEnabled.value,
   },
 ]);
 
@@ -1340,7 +1345,8 @@ watch(
               :class="`${classNameComponent}__expanded-row`"
             >
               <td :class="`${classNameComponent}__expanded-cell`" :colspan="tableColumnSpan">
-                <slot :record name="detials-record" />
+                <slot v-if="slots['details-record']" :record name="details-record" />
+                <slot v-else :record name="detials-record" />
               </td>
             </tr>
           </Transition>

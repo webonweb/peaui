@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ProgressIndicator from '@/components/feedback/ProgressIndicator/index.vue';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
-import { slugify } from '@/helpers/string.helepr';
+import { slugify } from '@/helpers/string.helper';
 import type { TableColumn, TableManageColumn, TableStepperStep } from '../index.vue';
 import { TABLE_LIST_CLASS } from '../shared';
 

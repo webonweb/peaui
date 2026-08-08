@@ -46,6 +46,21 @@ describe('DisclosurePanel (index.vue)', () => {
     expect(wrapper.get('details').attributes('open')).toBeDefined();
   });
 
+  it.each(['alwaysOpen', 'allwaysOpen'] as const)(
+    'keeps the panel open with the %s compatibility prop',
+    async (propName) => {
+      const wrapper = mount(DisclosurePanel, {
+        props: { title: 'Title', [propName]: true },
+      });
+
+      expect(wrapper.get('details').attributes('open')).toBeDefined();
+      expect(wrapper.find('.peaui-disclosure-panel__icon').exists()).toBe(false);
+
+      await wrapper.get('summary').trigger('click');
+      expect(wrapper.emitted('update:open')).toBeUndefined();
+    },
+  );
+
   it('renders title from slot when provided', () => {
     const wrapper = mount(DisclosurePanel, {
       props: { title: 'Prop Title', dataTestId: 'disc' },

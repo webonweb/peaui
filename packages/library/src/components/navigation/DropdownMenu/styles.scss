@@ -1,0 +1,258 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-dropdown-menu {
+  position: relative;
+  display: inline-flex;
+  max-inline-size: 100%;
+  color: var(--peaui-color-grey-900);
+  font-family: inherit;
+  vertical-align: middle;
+}
+
+.peaui-dropdown-menu__trigger-host {
+  display: inline-flex;
+  max-inline-size: 100%;
+}
+
+.peaui-dropdown-menu__trigger-proxy {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.peaui-dropdown-menu__trigger-host[role='button'] {
+  cursor: pointer;
+
+  @include outline(var(--peaui-color-primary-600));
+}
+
+.peaui-dropdown-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-block-size: 2.5rem;
+  padding: 0.5625rem 0.875rem;
+  color: var(--peaui-color-grey-900);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: center;
+  appearance: none;
+  cursor: pointer;
+  background: var(--peaui-color-grey-0);
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.625rem;
+  box-shadow: 0 1px 2px rgb(from var(--peaui-color-grey-900) r g b / 0.06);
+
+  @include outline(var(--peaui-color-primary-600));
+}
+
+.peaui-dropdown-menu__trigger:hover:not(:disabled),
+.peaui-dropdown-menu__trigger[aria-expanded='true'] {
+  background: var(--peaui-color-grey-100);
+  border-color: var(--peaui-color-grey-400);
+}
+
+.peaui-dropdown-menu__trigger:disabled,
+.peaui-dropdown-menu__trigger-host[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.peaui-dropdown-menu__surface {
+  position: fixed;
+  inset: auto;
+  z-index: 1100;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.375rem;
+  margin: 0;
+  color: var(--peaui-color-grey-900);
+  background: var(--peaui-overlay-background);
+  border: var(--peaui-overlay-border-width) solid var(--peaui-overlay-border-color);
+  border-radius: var(--peaui-overlay-radius);
+  box-shadow: var(--peaui-overlay-shadow);
+  inline-size: max-content;
+  min-inline-size: min(13rem, calc(100vw - var(--peaui-overlay-viewport-inset)));
+  max-inline-size: min(22rem, calc(100vw - var(--peaui-overlay-viewport-inset)));
+  max-block-size: calc(100dvh - var(--peaui-overlay-viewport-inset));
+  overscroll-behavior: contain;
+}
+
+.peaui-dropdown-menu__surface[hidden] {
+  display: none;
+}
+
+.peaui-dropdown-menu__surface:focus {
+  outline: none;
+}
+
+.peaui-dropdown-menu__list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.peaui-dropdown-menu__row,
+.peaui-dropdown-menu__group-row {
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.peaui-dropdown-menu__item {
+  display: grid;
+  grid-template-columns: 1rem auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-block-size: 2.5rem;
+  padding: 0.5rem 0.625rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-align: start;
+  appearance: none;
+  cursor: default;
+  background: transparent;
+  border: 0;
+  border-radius: 0.5rem;
+  gap: 0.5rem;
+
+  @include outline(var(--peaui-color-primary-600));
+}
+
+.peaui-dropdown-menu--density-compact .peaui-dropdown-menu__item {
+  min-block-size: 2rem;
+  padding-block: 0.3125rem;
+}
+
+.peaui-dropdown-menu__item:hover:not([aria-disabled='true']),
+.peaui-dropdown-menu__item:focus-visible:not([aria-disabled='true']),
+.peaui-dropdown-menu__item[aria-expanded='true'] {
+  color: var(--peaui-color-grey-950, var(--peaui-color-grey-900));
+  background: var(--peaui-color-grey-100);
+}
+
+.peaui-dropdown-menu__item--danger {
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-dropdown-menu__item--danger:hover:not([aria-disabled='true']),
+.peaui-dropdown-menu__item--danger:focus-visible:not([aria-disabled='true']) {
+  color: var(--peaui-color-danger-800);
+  background: var(--peaui-color-danger-50);
+}
+
+.peaui-dropdown-menu__item[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.peaui-dropdown-menu__indicator,
+.peaui-dropdown-menu__icon,
+.peaui-dropdown-menu__submenu-arrow {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.peaui-dropdown-menu__indicator .peaui-svg-icon,
+.peaui-dropdown-menu__icon .peaui-svg-icon,
+.peaui-dropdown-menu__submenu-arrow.peaui-svg-icon {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+
+.peaui-dropdown-menu__label {
+  overflow: hidden;
+  min-inline-size: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peaui-dropdown-menu__shortcut {
+  color: var(--peaui-color-grey-600);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.peaui-dropdown-menu__submenu-arrow {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-dropdown-menu__separator {
+  block-size: 1px;
+  margin: 0.375rem 0.5rem;
+  background: var(--peaui-color-grey-200);
+}
+
+.peaui-dropdown-menu__group + .peaui-dropdown-menu__group,
+.peaui-dropdown-menu__group-row + .peaui-dropdown-menu__group-row {
+  margin-block-start: 0.25rem;
+}
+
+.peaui-dropdown-menu__group-label {
+  overflow: hidden;
+  padding: 0.5rem 0.625rem 0.25rem;
+  color: var(--peaui-color-grey-600);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.peaui-dropdown-menu__submenu {
+  z-index: 1101;
+}
+
+.peaui-dropdown-menu__status {
+  box-sizing: border-box;
+  padding: 0.75rem 0.875rem;
+  color: var(--peaui-color-grey-600);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .peaui-dropdown-menu__surface {
+    animation: peaui-dropdown-menu-enter 120ms ease-out;
+  }
+}
+
+@keyframes peaui-dropdown-menu-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-dropdown-menu__trigger,
+  .peaui-dropdown-menu__surface,
+  .peaui-dropdown-menu__item {
+    border: 1px solid ButtonText;
+  }
+
+  .peaui-dropdown-menu__item[aria-disabled='true'] {
+    color: GrayText;
+  }
+
+  .peaui-dropdown-menu__separator {
+    background: CanvasText;
+  }
+}

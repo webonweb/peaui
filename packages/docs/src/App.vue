@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
 import BrandMark from './components/BrandMark.vue';
@@ -7,36 +7,137 @@ import LocaleSwitcher from './components/LocaleSwitcher.vue';
 import SearchPalette from './components/SearchPalette.vue';
 import ThemeToggle from './components/ThemeToggle.vue';
 import { getFrameworkCategories, getFrameworkComponents } from './data/catalog';
-import { frameworkOrder, getFrameworkDefinition, normalizeFramework } from './data/frameworks';
+import { frameworkOrder, getFrameworkDefinition } from './data/frameworks';
 import { icons } from './data/icons';
 import { getCategoryLabel } from './data/localized-content';
 import { useI18n } from './i18n';
+import { useRouteSeo } from './seo';
+import { getPreferredFramework, isFrameworkId } from './utils/preferred-framework';
 
+const GITHUB_URL = 'https://github.com/webonweb/peaui';
+const NPM_URL = 'https://www.npmjs.com/package/@peaui/ui';
+const ISSUES_URL = 'https://github.com/webonweb/peaui/issues';
 const route = useRoute();
 const { t } = useI18n();
 const searchOpen = ref(false);
 const menuOpen = ref(false);
-const framework = computed(() => normalizeFramework(route.params.framework));
+const isMobile = ref(false);
+const menuToggle = ref<HTMLButtonElement>();
+const sidebar = ref<HTMLElement>();
+const mainContent = ref<HTMLElement>();
+const framework = computed(() => {
+  if (isFrameworkId(route.params.framework)) return route.params.framework;
+  return getPreferredFramework() ?? 'vue';
+});
 const frameworkDefinition = computed(() => getFrameworkDefinition(framework.value));
 const components = computed(() => getFrameworkComponents(framework.value));
 const categories = computed(() => getFrameworkCategories(framework.value));
 const startPath = computed(() => `/${framework.value}/start`);
 const componentsPath = computed(() => `/${framework.value}/components`);
 const iconsPath = computed(() => `/${framework.value}/icons`);
+let mobileQuery: MediaQueryList | undefined;
 
-function handleKeydown(event: KeyboardEvent) {
+useRouteSeo();
+
+function syncMobileState(event?: MediaQueryListEvent): void {
+  isMobile.value = event?.matches ?? mobileQuery?.matches ?? false;
+  if (!isMobile.value && menuOpen.value) closeMenu(false);
+}
+
+function getSidebarFocusables(): HTMLElement[] {
+  if (!sidebar.value) return [];
+  return Array.from(
+    sidebar.value.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  );
+}
+
+async function openMenu(): Promise<void> {
+  menuOpen.value = true;
+  await nextTick();
+  getSidebarFocusables()[0]?.focus();
+}
+
+async function closeMenu(restoreToggle = true): Promise<void> {
+  if (!menuOpen.value) return;
+  menuOpen.value = false;
+  await nextTick();
+  if (restoreToggle) menuToggle.value?.focus();
+}
+
+async function handleNavigationClick(): Promise<void> {
+  if (!menuOpen.value) return;
+  await closeMenu(false);
+  mainContent.value?.focus();
+}
+
+async function toggleMenu(): Promise<void> {
+  if (menuOpen.value) await closeMenu();
+  else await openMenu();
+}
+
+function focusMainContent(): void {
+  nextTick(() => mainContent.value?.focus());
+}
+
+function trapSidebarFocus(event: KeyboardEvent): void {
+  if (!isMobile.value || !menuOpen.value || event.key !== 'Tab') return;
+  const focusables = getSidebarFocusables();
+  const first = focusables[0];
+  const last = focusables.at(-1);
+  if (!first || !last) return;
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function handleKeydown(event: KeyboardEvent): void {
+  if (event.key === 'Escape' && menuOpen.value) {
+    event.preventDefault();
+    void closeMenu();
+    return;
+  }
+
   if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 'k') {
     event.preventDefault();
     searchOpen.value = true;
   }
 }
 
-onMounted(() => window.addEventListener('keydown', handleKeydown));
-onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
+watch(menuOpen, (open) => {
+  document.body.classList.toggle('docs-mobile-nav-open', open && isMobile.value);
+});
+
+watch(isMobile, (mobile) => {
+  document.body.classList.toggle('docs-mobile-nav-open', mobile && menuOpen.value);
+});
+
+onMounted(() => {
+  mobileQuery = window.matchMedia('(max-width: 900px)');
+  syncMobileState();
+  mobileQuery.addEventListener('change', syncMobileState);
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.body.classList.remove('docs-mobile-nav-open');
+  mobileQuery?.removeEventListener('change', syncMobileState);
+  window.removeEventListener('keydown', handleKeydown);
+});
 </script>
 
 <template>
   <div class="docs-shell">
+    <a class="skip-link" href="#main-content" @click.prevent="focusMainContent">{{
+      t('nav.skip')
+    }}</a>
+
     <header class="docs-header">
       <RouterLink class="brand" to="/" :aria-label="t('nav.homeLabel')">
         <BrandMark variant="full" />
@@ -72,55 +173,73 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
         <LocaleSwitcher />
         <ThemeToggle />
         <button
+          ref="menuToggle"
           class="icon-button menu-toggle"
           type="button"
-          :aria-label="t('nav.openMenu')"
-          @click="menuOpen = !menuOpen"
+          :aria-label="menuOpen ? t('nav.closeMenu') : t('nav.openMenu')"
+          :aria-expanded="menuOpen"
+          aria-controls="documentation-sidebar"
+          @click="toggleMenu"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path v-if="!menuOpen" d="M4 7h16M4 12h16M4 17h16" />
+            <path v-else d="m6 6 12 12M18 6 6 18" />
+          </svg>
         </button>
       </div>
     </header>
 
-    <aside class="docs-sidebar" :class="{ 'docs-sidebar--open': menuOpen }">
+    <aside
+      id="documentation-sidebar"
+      ref="sidebar"
+      class="docs-sidebar"
+      :class="{ 'docs-sidebar--open': menuOpen }"
+      :aria-hidden="isMobile && !menuOpen ? 'true' : undefined"
+      :inert="isMobile && !menuOpen"
+      @keydown="trapSidebarFocus"
+    >
       <div class="sidebar-scroll">
         <div class="sidebar-framework">
           <span>{{ t('nav.technology') }}</span>
           <strong>{{ frameworkDefinition.label }}</strong>
-          <small
-            >{{ components.length }} {{ t('nav.componentCount') }} ·
-            {{ frameworkDefinition.availability }}</small
-          >
+          <small>
+            {{ components.length }} {{ t('nav.componentCount') }} ·
+            {{ frameworkDefinition.availability }}
+          </small>
           <div class="sidebar-framework__links">
             <RouterLink
               v-for="frameworkId in frameworkOrder"
               :key="frameworkId"
               :to="`/${frameworkId}/start`"
               :class="{ active: framework === frameworkId }"
-              @click="menuOpen = false"
+              @click="handleNavigationClick"
             >
               {{ getFrameworkDefinition(frameworkId).compactLabel }}
             </RouterLink>
           </div>
         </div>
 
-        <RouterLink class="sidebar-intro" :to="startPath" @click="menuOpen = false">
-          <span class="sidebar-icon">✦</span>
-          <span
-            ><strong>{{ t('nav.gettingStarted') }}</strong
-            ><small>{{ t('nav.installation') }}</small></span
-          >
+        <RouterLink class="sidebar-intro" :to="startPath" @click="handleNavigationClick">
+          <span class="sidebar-icon" aria-hidden="true">✦</span>
+          <span>
+            <strong>{{ t('nav.gettingStarted') }}</strong>
+            <small>{{ t('nav.installation') }}</small>
+          </span>
         </RouterLink>
 
         <RouterLink
           class="sidebar-components-link sidebar-icons-link"
           :to="iconsPath"
-          @click="menuOpen = false"
+          @click="handleNavigationClick"
         >
           {{ t('nav.iconCatalog') }} <span>{{ icons.length }}</span>
         </RouterLink>
 
-        <RouterLink class="sidebar-components-link" :to="componentsPath" @click="menuOpen = false">
+        <RouterLink
+          class="sidebar-components-link"
+          :to="componentsPath"
+          @click="handleNavigationClick"
+        >
           {{ t('nav.allComponents') }} <span>{{ components.length }}</span>
         </RouterLink>
 
@@ -131,7 +250,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
               v-for="component in category.components"
               :key="component.slug"
               :to="`/${framework}/components/${category.slug}/${component.slug}`"
-              @click="menuOpen = false"
+              @click="handleNavigationClick"
             >
               {{ component.name }}
             </RouterLink>
@@ -140,8 +259,42 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
       </div>
     </aside>
 
-    <main class="docs-main" @click="menuOpen = false">
+    <main id="main-content" ref="mainContent" class="docs-main" tabindex="-1">
       <RouterView :key="route.fullPath" />
+      <footer class="docs-footer">
+        <BrandMark variant="mark" />
+        <nav :aria-label="t('footer.navigation')">
+          <RouterLink :to="componentsPath">{{ t('footer.documentation') }}</RouterLink>
+          <a
+            :href="GITHUB_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('footer.externalLabel', { name: 'GitHub' })"
+            >GitHub</a
+          >
+          <a
+            :href="NPM_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('footer.externalLabel', { name: 'npm' })"
+            >npm</a
+          >
+          <a
+            :href="ISSUES_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('footer.externalLabel', { name: t('footer.issues') })"
+            >{{ t('footer.issues') }}</a
+          >
+          <a
+            :href="`${GITHUB_URL}/blob/main/LICENSE`"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('footer.externalLabel', { name: t('footer.license') })"
+            >{{ t('footer.license') }}</a
+          >
+        </nav>
+      </footer>
     </main>
 
     <button
@@ -149,7 +302,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
       class="mobile-backdrop"
       type="button"
       :aria-label="t('nav.closeMenu')"
-      @click="menuOpen = false"
+      @click="closeMenu()"
     />
     <SearchPalette :open="searchOpen" :framework="framework" @close="searchOpen = false" />
   </div>

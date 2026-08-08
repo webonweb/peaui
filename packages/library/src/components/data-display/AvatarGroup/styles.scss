@@ -115,7 +115,9 @@
     inset 0 0 0 1px var(--peaui-color-grey-200);
 }
 
-.peaui-avatar-group__avatar-button:not(:disabled):hover > .peaui-avatar-group__visual > .peaui-avatar {
+.peaui-avatar-group__avatar-button:not(:disabled):hover
+  > .peaui-avatar-group__visual
+  > .peaui-avatar {
   box-shadow:
     0 0 0 2px var(--peaui-color-grey-0),
     inset 0 0 0 1px var(--peaui-color-grey-400),
@@ -159,15 +161,15 @@
 .peaui-avatar-group__popover {
   position: absolute;
   z-index: 1002;
-  inset-block-start: calc(100% + 0.625rem);
+  inset-block-start: calc(100% + var(--peaui-overlay-offset));
   box-sizing: border-box;
   overflow: auto;
   padding: 0.5rem;
   color: var(--peaui-color-grey-900);
-  background: var(--peaui-color-grey-0);
-  border: 1px solid var(--peaui-color-grey-200);
-  border-radius: 0.75rem;
-  box-shadow: 0 12px 32px rgb(from var(--peaui-color-grey-900) r g b / 0.18);
+  background: var(--peaui-overlay-background);
+  border: var(--peaui-overlay-border-width) solid var(--peaui-overlay-border-color);
+  border-radius: var(--peaui-overlay-radius);
+  box-shadow: var(--peaui-overlay-shadow);
   inline-size: max-content;
   min-inline-size: min(15rem, calc(100vw - 2rem));
   max-inline-size: min(20rem, calc(100vw - 2rem));

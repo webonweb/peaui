@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gzipSync } from "node:zlib";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageRoot = join(repositoryRoot, "packages", "library");
@@ -12,6 +13,56 @@ const manifest = JSON.parse(
 const packageIndex = readFileSync(join(packageRoot, "src", "index.ts"), "utf8");
 const errors = [];
 const checkedEntries = { react: 0, vue: 0, wc: 0 };
+
+function validateArtifactNames(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const artifactPath = join(directory, entry.name);
+
+    if (entry.name.toLowerCase().includes("undefined")) {
+      errors.push(
+        `Artefakt paczki zawiera niepoprawny segment "undefined": ${relative(repositoryRoot, artifactPath)}`,
+      );
+    }
+
+    if (entry.isDirectory()) validateArtifactNames(artifactPath);
+  }
+}
+
+function getStaticEsmClosure(entryFile) {
+  const files = new Set();
+
+  function visit(file) {
+    const resolvedFile = resolve(file);
+    if (files.has(resolvedFile) || !existsSync(resolvedFile)) return;
+    files.add(resolvedFile);
+
+    const source = readFileSync(resolvedFile, "utf8");
+    for (const match of source.matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)) {
+      if (!match[1].startsWith(".")) continue;
+      visit(resolve(dirname(resolvedFile), match[1]));
+    }
+  }
+
+  visit(entryFile);
+  return files;
+}
+
+function validateGzipBudget(relativeEntry, maximumBytes) {
+  const entryFile = join(distRoot, relativeEntry);
+  if (!existsSync(entryFile)) return;
+
+  const closure = getStaticEsmClosure(entryFile);
+  const gzipBytes = [...closure].reduce(
+    (total, file) => total + gzipSync(readFileSync(file)).byteLength,
+    0,
+  );
+
+  if (gzipBytes > maximumBytes) {
+    errors.push(
+      `Przekroczony budżet ESM ${relativeEntry}: ${gzipBytes} B gzip > ${maximumBytes} B`,
+    );
+  }
+}
 
 function assertFile(path, description) {
   if (!existsSync(path)) {
@@ -113,6 +164,11 @@ for (const [path, description] of [
 }
 
 validateComponent(sourceRoot);
+validateArtifactNames(distRoot);
+validateGzipBudget("components/react/basic/ImageView.js", 75 * 1024);
+validateGzipBudget("components/react/form/FormTimePicker.js", 50 * 1024);
+validateGzipBudget("components/react/form/FormDateTimePicker.js", 50 * 1024);
+validateGzipBudget("components/react/data-entry/TransferList.js", 50 * 1024);
 
 if (errors.length > 0) {
   console.error("Walidacja paczki npm nie powiodła się:");

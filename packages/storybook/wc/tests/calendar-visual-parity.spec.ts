@@ -1,0 +1,86 @@
+import { expect, test, type Locator, type Page } from '@playwright/test';
+
+type CalendarCellStyle = {
+  backgroundColor: string;
+  borderRadius: string;
+  borderTopWidth: string;
+  boxShadow: string;
+  color: string;
+  fontSize: string;
+  fontWeight: string;
+  minHeight: string;
+};
+
+async function openPicker(page: Page, storyId: string, rootClass: string): Promise<void> {
+  await page.goto(`/iframe.html?id=${storyId}&viewMode=story`);
+  const root = page.locator(`.${rootClass}`).first();
+  await expect(root).toBeVisible();
+  await root.locator('[aria-haspopup="dialog"]').click();
+  await expect(page.locator(`.${rootClass}__popover-content:visible`)).toBeVisible();
+}
+
+async function readCellStyle(cell: Locator): Promise<CalendarCellStyle> {
+  return cell.evaluate((element) => {
+    const style = getComputedStyle(element);
+
+    return {
+      backgroundColor: style.backgroundColor,
+      borderRadius: style.borderRadius,
+      borderTopWidth: style.borderTopWidth,
+      boxShadow: style.boxShadow,
+      color: style.color,
+      fontSize: style.fontSize,
+      fontWeight: style.fontWeight,
+      minHeight: style.minHeight,
+    };
+  });
+}
+
+test('FormDatePicker Web Component uses the same states as FormDateTimePicker', async ({
+  page,
+}) => {
+  await openPicker(page, '5-form-formdatepicker--default', 'peaui-form-date-picker');
+  const availableDateCells = page.locator(
+    '.peaui-form-date-picker__grid--day .peaui-form-date-picker-button--variant-ghost:not(.peaui-form-date-picker__picker-button--outside-month)',
+  );
+  await expect(availableDateCells.first()).toBeVisible();
+  await availableDateCells.first().evaluate((element) => {
+    (element as HTMLElement).style.transition = 'none';
+    element.setAttribute('data-calendar-test-state', 'selected');
+    element.classList.remove('peaui-form-date-picker-button--variant-ghost');
+    element.classList.add('peaui-form-date-picker-button--variant-primary');
+  });
+  const dateSelected = page.locator('[data-calendar-test-state="selected"]');
+  const dateToday = availableDateCells.first();
+  await dateToday.evaluate((element) => {
+    (element as HTMLElement).style.transition = 'none';
+    element.setAttribute('aria-current', 'date');
+  });
+  const dateSelectedStyle = await readCellStyle(dateSelected);
+  const dateTodayStyle = await readCellStyle(dateToday);
+
+  await page.keyboard.press('Escape');
+  await openPicker(
+    page,
+    '5-form-formdatetimepicker-wc--default',
+    'peaui-form-date-time-picker',
+  );
+  const dateTimeSelected = page.locator('.peaui-form-date-time-picker__day--selected').first();
+  const dateTimeToday = page
+    .locator(
+      '.peaui-form-date-time-picker__day:not(.peaui-form-date-time-picker__day--selected):not(.peaui-form-date-time-picker__day--outside)',
+    )
+    .first();
+  await expect(dateTimeSelected).toBeVisible();
+  await dateTimeToday.evaluate((element) => {
+    (element as HTMLElement).style.transition = 'none';
+    element.classList.add('peaui-form-date-time-picker__day--today');
+  });
+
+  expect(dateSelectedStyle).toEqual(await readCellStyle(dateTimeSelected));
+  expect(dateTodayStyle).toEqual(await readCellStyle(dateTimeToday));
+  expect(dateSelectedStyle.borderRadius).toBe('8px');
+  expect(dateSelectedStyle.minHeight).toBe('44px');
+  expect(dateSelectedStyle.borderTopWidth).toBe('0px');
+  expect(dateTodayStyle.boxShadow).not.toBe('none');
+});

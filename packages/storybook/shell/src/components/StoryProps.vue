@@ -174,16 +174,16 @@ function getControlLabel(item: StoryPropItem): string {
   line-height: 1.6;
 }
 
-:global(body.dark-mode) .story-props__table th {
+:global(body.dark-mode .story-props__table th) {
   background: #172033;
   color: #aeb9c8;
 }
 
-:global(body.dark-mode) .story-props__table td {
+:global(body.dark-mode .story-props__table td) {
   color: #dce5f2;
 }
 
-:global(body.dark-mode) .story-props__table code {
+:global(body.dark-mode .story-props__table code) {
   background: #21304a;
   color: #d0ef8b;
 }

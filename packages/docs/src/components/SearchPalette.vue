@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, type Component } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+
+import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 
 import { getFrameworkComponents } from '../data/catalog';
 import { icons } from '../data/icons';
@@ -9,7 +11,7 @@ import { useI18n } from '../i18n';
 import type { FrameworkId } from '../types';
 
 type SearchResult = {
-  icon?: Component;
+  iconName?: string;
   name: string;
   path: string;
   subtitle: string;
@@ -58,7 +60,7 @@ const results = computed(() => {
       name: icon.name,
       subtitle: `${t('search.icon')} · ${icon.label}`,
       path: `/${props.framework}/icons?search=${encodeURIComponent(icon.name)}`,
-      icon: icon.component,
+      iconName: icon.name,
       terms: [icon.name, icon.label, icon.description, ...icon.keywords],
     }));
 
@@ -115,12 +117,7 @@ watch(
             @click="goTo(component.path)"
           >
             <span class="search-result__icon">
-              <component
-                :is="component.icon"
-                v-if="component.icon"
-                class="peaui-svg-icon"
-                aria-hidden="true"
-              />
+              <SvgIcon v-if="component.iconName" :name="component.iconName" aria-hidden="true" />
               <template v-else>{{ component.name.slice(0, 1) }}</template>
             </span>
             <span>

@@ -9,6 +9,14 @@ export type PeauiVueElementConstructor = VueElementConstructor<Record<string, un
   readonly tagName: string;
 };
 
+type PeauiVueElementOptions = {
+  /**
+   * Optional semantic role for the custom-element host. It is only used when
+   * the consumer did not provide a role explicitly.
+   */
+  hostRole?: string;
+};
+
 /**
  * Exposes an existing Vue component through the Custom Elements platform.
  *
@@ -20,6 +28,7 @@ export type PeauiVueElementConstructor = VueElementConstructor<Record<string, un
 export function createVueCustomElement(
   component: unknown,
   tagName: string,
+  options: PeauiVueElementOptions = {},
 ): PeauiVueElementConstructor {
   const createElement = defineCustomElement as unknown as (
     component: Component,
@@ -30,6 +39,14 @@ export function createVueCustomElement(
   });
 
   class PeauiVueElement extends vueElementConstructor {
+    connectedCallback(): void {
+      if (options.hostRole && !this.hasAttribute('role')) {
+        this.setAttribute('role', options.hostRole);
+      }
+
+      super.connectedCallback();
+    }
+
     override dispatchEvent(event: Event): boolean {
       if (event instanceof CustomEvent && Array.isArray(event.detail)) {
         const normalizedDetail = event.detail.length === 1 ? event.detail[0] : event.detail;

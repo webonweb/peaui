@@ -225,7 +225,7 @@ export const FormNumber: Story = {
     after: undefined,
     iconBefore: undefined,
     iconAfter: undefined,
-    canErase: false,
+    canErase: true,
     min: 0,
     max: 100,
     step: 1,

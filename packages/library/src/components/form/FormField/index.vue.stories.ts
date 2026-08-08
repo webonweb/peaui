@@ -174,6 +174,9 @@ export const FormField: Story = {
             <template #hint>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ullamcorper finibus augue ut feugiat.
             </template>
+            <template #default="{ props }">
+              <input v-bind="props" data-testid="form-field-element" />
+            </template>
           </FormFieldComponent>
         </div>
       </StoryContent>
@@ -182,9 +185,9 @@ export const FormField: Story = {
   args: {
     after: undefined,
     before: undefined,
-    canErase: false,
+    canErase: true,
     disabled: false,
-    iconAfter: undefined,
+    iconAfter: 'calendar',
     iconBefore: undefined,
     id: 'first-name',
     label: 'Lorem ipsum',
@@ -194,6 +197,6 @@ export const FormField: Story = {
     readonly: false,
     required: true,
     dataTestId: 'form-field',
-    value: undefined,
+    value: 'PEAUI',
   },
 };

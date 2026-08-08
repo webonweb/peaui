@@ -3,16 +3,8 @@
 .peaui-svg-icon {
   @include set-param(width, 1rem);
   @include set-param(height, 1rem);
-
-  path {
-    fill: light-dark(currentColor, var(--peaui-color-grey-900));
-  }
-}
-
-body.dark-mode {
-  .peaui-svg-icon {
-    path {
-      fill: var(--peaui-color-grey-900);
-    }
-  }
+  display: inline-block;
+  flex: 0 0 auto;
+  color: inherit;
+  vertical-align: -0.125em;
 }

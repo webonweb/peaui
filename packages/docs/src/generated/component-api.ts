@@ -5,4574 +5,8628 @@ import type { ComponentApi } from '../types';
 
 export const generatedComponentApi = [
   {
-    "name": "ImageView",
-    "category": "basic",
-    "categoryLabel": "Podstawowe",
-    "importPath": "@peaui/ui/basic/ImageView",
-    "props": [
+    name: 'ImageView',
+    category: 'basic',
+    categoryLabel: 'Podstawowe',
+    importPath: '@peaui/ui/basic/ImageView',
+    props: [
       {
-        "name": "alt",
-        "type": "string",
-        "required": false,
-        "description": "Alternatywny opis obrazu używany przez technologie asystujące."
+        name: 'alt',
+        type: 'string',
+        required: false,
+        description: 'Alternatywny opis obrazu używany przez technologie asystujące.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "max",
-        "type": "string",
-        "required": false,
-        "description": "Maksymalna dozwolona wartość albo szerokość."
+        name: 'max',
+        type: 'string',
+        required: false,
+        description: 'Maksymalna dozwolona wartość albo szerokość.',
       },
       {
-        "name": "size",
-        "type": "'auto' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'full'",
-        "required": false,
-        "default": "auto",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'size',
+        type: "'auto' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'full'",
+        required: false,
+        default: 'auto',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "src",
-        "type": "string",
-        "required": false,
-        "description": "Adres źródłowy obrazu albo innego zasobu."
-      }
+        name: 'src',
+        type: 'string',
+        required: false,
+        description: 'Adres źródłowy obrazu albo innego zasobu.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "PhotoEditior",
-    "category": "basic",
-    "categoryLabel": "Podstawowe",
-    "importPath": "@peaui/ui/basic/PhotoEditior",
-    "props": [
+    name: 'SvgIcon',
+    category: 'basic',
+    categoryLabel: 'Podstawowe',
+    importPath: '@peaui/ui/basic/SvgIcon',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Edytor zdjęcia",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
     ],
-    "models": [
-      {
-        "name": "image",
-        "type": "PhotoType | undefined",
-        "required": false,
-        "description": "Edytowany obraz kontrolowany przez v-model:image."
-      }
-    ],
-    "events": [
-      {
-        "name": "on:cancel",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”."
-      }
-    ],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "SvgIcon",
-    "category": "basic",
-    "categoryLabel": "Podstawowe",
-    "importPath": "@peaui/ui/basic/SvgIcon",
-    "props": [
+    name: 'Avatar',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/Avatar',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'src',
+        type: 'string',
+        required: false,
+        description: 'Adres obrazu prezentowanego w awatarze.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
-      }
+        name: 'alt',
+        type: 'string',
+        required: false,
+        description: 'Alternatywny opis obrazu. Pusty tekst oznacza obraz dekoracyjny.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: false,
+        description: 'Nazwa używana do wyliczenia inicjałów i nazwy dostępnej fallbacku.',
+      },
+      {
+        name: 'initials',
+        type: 'string',
+        required: false,
+        description: 'Jawne inicjały mają pierwszeństwo przed inicjałami wyliczonymi z name.',
+      },
+      {
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l' | 'xl'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru awatara.',
+      },
+      {
+        name: 'shape',
+        type: "'circle' | 'rounded'",
+        required: false,
+        default: 'circle',
+        description: 'Kształt awatara.',
+      },
+      {
+        name: 'status',
+        type: "'online' | 'offline' | 'away' | 'busy' | 'none'",
+        required: false,
+        default: 'none',
+        description: 'Status obecności prezentowany wizualnie i tekstowo.',
+      },
+      {
+        name: 'statusLabel',
+        type: 'string',
+        required: false,
+        description: 'Własna dostępna etykieta statusu.',
+      },
+      {
+        name: 'loading',
+        type: "'eager' | 'lazy'",
+        required: false,
+        default: 'lazy',
+        description: 'Strategia ładowania natywnego obrazu.',
+      },
+      {
+        name: 'fallbackIcon',
+        type: 'string',
+        required: false,
+        default: 'users',
+        description: 'Nazwa ikony używanej, gdy obraz i inicjały nie są dostępne.',
+      },
+      {
+        name: 'interactive',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Renderuje semantyczny przycisk zamiast prezentacyjnego awatara.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza interaktywny awatar.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa awatara lub przycisku.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [
+      {
+        name: 'load',
+        description: 'Emitowane po poprawnym załadowaniu obrazu.',
+      },
+      {
+        name: 'error',
+        description: 'Emitowane, gdy operacja komponentu kończy się błędem.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'status',
+        description: 'Treść osadzana w nazwanym slocie „status”.',
+      },
+    ],
   },
   {
-    "name": "Avatar",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/Avatar",
-    "props": [
+    name: 'AvatarGroup',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/AvatarGroup',
+    props: [
       {
-        "name": "src",
-        "type": "string",
-        "required": false,
-        "description": "Adres obrazu prezentowanego w awatarze."
+        name: 'items',
+        type: 'AvatarGroupItem[]',
+        required: false,
+        default: '[]',
+        description: 'Osoby prezentowane w stabilnej kolejności wejściowej.',
       },
       {
-        "name": "alt",
-        "type": "string",
-        "required": false,
-        "description": "Alternatywny opis obrazu. Pusty tekst oznacza obraz dekoracyjny."
+        name: 'maxVisible',
+        type: 'number',
+        required: false,
+        default: '3',
+        description: 'Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa używana do wyliczenia inicjałów i nazwy dostępnej fallbacku."
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l' | 'xl'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar awatarów i licznika.',
       },
       {
-        "name": "initials",
-        "type": "string",
-        "required": false,
-        "description": "Jawne inicjały mają pierwszeństwo przed inicjałami wyliczonymi z name."
+        name: 'shape',
+        type: "'circle' | 'rounded'",
+        required: false,
+        default: 'circle',
+        description: 'Kształt awatarów i licznika.',
       },
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru awatara."
+        name: 'overlap',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Włącza kompaktowy układ z nachodzącymi na siebie elementami.',
       },
       {
-        "name": "shape",
-        "type": "'circle' | 'rounded'",
-        "required": false,
-        "default": "circle",
-        "description": "Kształt awatara."
+        name: 'direction',
+        type: "'start' | 'end'",
+        required: false,
+        default: 'end',
+        description: 'Określa, która krawędź stosu znajduje się wizualnie na wierzchu.',
       },
       {
-        "name": "status",
-        "type": "'online' | 'offline' | 'away' | 'busy' | 'none'",
-        "required": false,
-        "default": "none",
-        "description": "Status obecności prezentowany wizualnie i tekstowo."
+        name: 'overflowMode',
+        type: "'count' | 'popover' | 'none'",
+        required: false,
+        default: 'count',
+        description: 'Sposób prezentacji pozycji poza limitem.',
       },
       {
-        "name": "statusLabel",
-        "type": "string",
-        "required": false,
-        "description": "Własna dostępna etykieta statusu."
+        name: 'itemKey',
+        type: 'keyof AvatarGroupItem | ((item: AvatarGroupItem, index: number) => string | number)',
+        required: false,
+        default: 'id',
+        description: 'Pole lub funkcja zwracająca stabilny klucz elementu.',
       },
       {
-        "name": "loading",
-        "type": "'eager' | 'lazy'",
-        "required": false,
-        "default": "lazy",
-        "description": "Strategia ładowania natywnego obrazu."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Członkowie grupy',
+        description: 'Dostępna nazwa listy widocznych osób.',
       },
       {
-        "name": "fallbackIcon",
-        "type": "string",
-        "required": false,
-        "default": "users",
-        "description": "Nazwa ikony używanej, gdy obraz i inicjały nie są dostępne."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza wszystkie akcje grupy.',
       },
       {
-        "name": "interactive",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Renderuje semantyczny przycisk zamiast prezentacyjnego awatara."
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Sygnalizuje ładowanie szczegółowej listy w popoverze.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza interaktywny awatar."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
       },
-      {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa awatara lub przycisku."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator używany w testach automatycznych."
-      }
     ],
-    "models": [],
-    "events": [
+    models: [
       {
-        "name": "load",
-        "description": "Emitowane po poprawnym załadowaniu obrazu."
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
       },
-      {
-        "name": "error",
-        "description": "Emitowane, gdy nie udało się załadować obrazu."
-      }
     ],
-    "slots": [
+    events: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
+        name: 'select',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
       },
       {
-        "name": "status",
-        "description": "Treść osadzana w nazwanym slocie „status”."
-      }
-    ]
+        name: 'overflowClick',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'overflow',
+        description: 'Treść osadzana w nazwanym slocie „overflow”.',
+      },
+      {
+        name: 'popover-header',
+        description: 'Treść osadzana w nazwanym slocie „popover-header”.',
+      },
+      {
+        name: 'popover-item',
+        description: 'Treść osadzana w nazwanym slocie „popover-item”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+    ],
   },
   {
-    "name": "AvatarGroup",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/AvatarGroup",
-    "props": [
+    name: 'CalculationResults',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/CalculationResults',
+    props: [
       {
-        "name": "items",
-        "type": "AvatarGroupItem[]",
-        "required": false,
-        "default": "[]",
-        "description": "Osoby prezentowane w stabilnej kolejności wejściowej."
+        name: 'isLoading',
+        type: 'boolean',
+        required: false,
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
-        "name": "maxVisible",
-        "type": "number",
-        "required": false,
-        "default": "3",
-        "description": "Maksymalna liczba awatarów widocznych przed licznikiem nadmiaru."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l' | 'xl'",
-        "required": false,
-        "default": "m",
-        "description": "Rozmiar awatarów i licznika."
+        name: 'result',
+        type: 'string',
+        required: false,
+        default: '-/-',
+        description: 'Konfiguruje właściwość „result” komponentu.',
       },
       {
-        "name": "shape",
-        "type": "'circle' | 'rounded'",
-        "required": false,
-        "default": "circle",
-        "description": "Kształt awatarów i licznika."
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "overlap",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Włącza kompaktowy układ z nachodzącymi na siebie elementami."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "direction",
-        "type": "'start' | 'end'",
-        "required": false,
-        "default": "end",
-        "description": "Określa, która krawędź stosu znajduje się wizualnie na wierzchu."
+        name: 'isSimple',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is simple” komponentu.',
       },
       {
-        "name": "overflowMode",
-        "type": "'count' | 'popover' | 'none'",
-        "required": false,
-        "default": "count",
-        "description": "Sposób prezentacji pozycji poza limitem."
+        name: 'showCalculateButton',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „show calculate button” komponentu.',
       },
-      {
-        "name": "itemKey",
-        "type": "keyof AvatarGroupItem | ((item: AvatarGroupItem, index: number) => string | number)",
-        "required": false,
-        "default": "id",
-        "description": "Pole lub funkcja zwracająca stabilny klucz elementu."
-      },
-      {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Członkowie grupy",
-        "description": "Dostępna nazwa listy widocznych osób."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza wszystkie akcje grupy."
-      },
-      {
-        "name": "loading",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Sygnalizuje ładowanie szczegółowej listy w popoverze."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator używany w testach automatycznych."
-      }
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "open",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Stan otwarcia kontrolowany przez v-model:open."
-      }
+        name: 'on:simulate',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:simulate”.',
+      },
     ],
-    "events": [
+    slots: [
       {
-        "name": "select",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „select”."
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
       },
       {
-        "name": "overflowClick",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”."
-      }
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
     ],
-    "slots": [
-      {
-        "name": "item",
-        "description": "Treść osadzana w nazwanym slocie „item”."
-      },
-      {
-        "name": "overflow",
-        "description": "Treść osadzana w nazwanym slocie „overflow”."
-      },
-      {
-        "name": "popover-header",
-        "description": "Treść osadzana w nazwanym slocie „popover-header”."
-      },
-      {
-        "name": "popover-item",
-        "description": "Treść osadzana w nazwanym slocie „popover-item”."
-      },
-      {
-        "name": "empty",
-        "description": "Treść osadzana w nazwanym slocie „empty”."
-      }
-    ]
   },
   {
-    "name": "CalculationResults",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/CalculationResults",
-    "props": [
+    name: 'CardCarousel',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/CardCarousel',
+    props: [
       {
-        "name": "isLoading",
-        "type": "boolean",
-        "required": false,
-        "description": "Włącza stan ładowania i informuje o trwającej operacji."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'animationDelay',
+        type: 'number',
+        required: false,
+        default: '2000',
+        description: 'Konfiguruje właściwość „animation delay” komponentu.',
       },
       {
-        "name": "result",
-        "type": "string",
-        "required": false,
-        "default": "-/-",
-        "description": "Konfiguruje właściwość „result” komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'defaultVisibleSlides',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „default visible slides” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'defualtVisibleSlides',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „defualt visible slides” komponentu.',
       },
       {
-        "name": "isSimple",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is simple” komponentu."
+        name: 'isNavigationDotsVisible',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is navigation dots visible” komponentu.',
       },
       {
-        "name": "showCalculateButton",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „show calculate button” komponentu."
-      }
+        name: 'isNavigationVisible',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is navigation visible” komponentu.',
+      },
+      {
+        name: 'withAnimation',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „with animation” komponentu.',
+      },
     ],
-    "models": [],
-    "events": [
-      {
-        "name": "on:simulate",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:simulate”."
-      }
-    ],
-    "slots": [
-      {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
-      },
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      }
-    ]
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "CardCarousel",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/CardCarousel",
-    "props": [
+    name: 'CounterBadge',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/CounterBadge',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'value',
+        type: 'number',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model.',
       },
       {
-        "name": "animationDelay",
-        "type": "number",
-        "required": false,
-        "default": "2000",
-        "description": "Konfiguruje właściwość „animation delay” komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'variant',
+        type: "'info' | 'error' | 'success' | 'danger'",
+        required: false,
+        default: 'info',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "defaultVisibleSlides",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „default visible slides” komponentu."
+        name: 'size',
+        type: "'s' | 'm' | 'l'",
+        required: false,
+        default: 's',
+        description: 'Wariant rozmiaru komponentu.',
       },
-      {
-        "name": "defualtVisibleSlides",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „defualt visible slides” komponentu."
-      },
-      {
-        "name": "isNavigationDotsVisible",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is navigation dots visible” komponentu."
-      },
-      {
-        "name": "isNavigationVisible",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is navigation visible” komponentu."
-      },
-      {
-        "name": "withAnimation",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „with animation” komponentu."
-      }
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "CounterBadge",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/CounterBadge",
-    "props": [
+    name: 'DescriptionField',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/DescriptionField',
+    props: [
       {
-        "name": "value",
-        "type": "number",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model."
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "variant",
-        "type": "'info' | 'error' | 'success' | 'danger'",
-        "required": false,
-        "default": "info",
-        "description": "Wariant wizualny komponentu."
-      },
-      {
-        "name": "size",
-        "type": "'s' | 'm' | 'l'",
-        "required": false,
-        "default": "s",
-        "description": "Wariant rozmiaru komponentu."
-      }
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'additional-before',
+        description: 'Treść osadzana w nazwanym slocie „additional-before”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'additional-after',
+        description: 'Treść osadzana w nazwanym slocie „additional-after”.',
+      },
+    ],
   },
   {
-    "name": "DescriptionField",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/DescriptionField",
-    "props": [
+    name: 'DisclosurePanel',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/DisclosurePanel',
+    props: [
       {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'Główny tytuł prezentowany w komponencie.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'alwaysOpen',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Keeps the panel expanded and disables its toggle interaction.',
+      },
+      {
+        name: 'allwaysOpen',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: '@deprecated Use `alwaysOpen`.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "additional-before",
-        "description": "Treść osadzana w nazwanym slocie „additional-before”."
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'title',
+        description: 'Treść osadzana w nazwanym slocie „title”.',
       },
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
       },
-      {
-        "name": "additional-after",
-        "description": "Treść osadzana w nazwanym slocie „additional-after”."
-      }
-    ]
+    ],
   },
   {
-    "name": "DisclosurePanel",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/DisclosurePanel",
-    "props": [
+    name: 'KeyboardKey',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/KeyboardKey',
+    props: [
       {
-        "name": "title",
-        "type": "string",
-        "required": false,
-        "description": "Główny tytuł prezentowany w komponencie."
+        name: 'keys',
+        type: 'string | readonly string[]',
+        required: true,
+        description:
+          'Klawisz albo uporządkowana kombinacja tokenów. String rozdziela tokeny znakiem plus.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'platform',
+        type: 'KeyboardKeyPlatform',
+        required: false,
+        default: 'auto',
+        description:
+          'Platforma używana do mapowania przenośnego tokenu Mod i symboli modyfikatorów.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'format',
+        type: 'KeyboardKeyFormat',
+        required: false,
+        default: 'symbol',
+        description: 'Symbole skracają zapis wizualny; pełne nazwy pozostają dostępne dla AT.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'size',
+        type: 'KeyboardKeySize',
+        required: false,
+        default: 's',
+        description: 'Rozmiar keycapów zgodny ze skalą kompaktowych komponentów PeaUI.',
       },
       {
-        "name": "allwaysOpen",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „allways open” komponentu."
-      }
+        name: 'inline',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description:
+          'Wariant inline dopasowuje komponent do wiersza tekstu; false tworzy osobny blok.',
+      },
+      {
+        name: 'separator',
+        type: 'string',
+        required: false,
+        default: '+',
+        description: 'Wyłącznie wizualny separator kolejnych klawiszy.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Pełna dostępna nazwa zastępująca automatycznie złożoną frazę.',
+      },
+      {
+        name: 'muted',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Ogranicza kontrast nieaktywnej wizualnie wskazówki bez dodawania semantyki disabled.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny selektor testowy elementu głównego.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "open",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Stan otwarcia kontrolowany przez v-model:open."
-      }
+        name: 'key',
+        description: 'Treść osadzana w nazwanym slocie „key”.',
+      },
+      {
+        name: 'separator',
+        description: 'Treść osadzana w nazwanym slocie „separator”.',
+      },
     ],
-    "events": [],
-    "slots": [
-      {
-        "name": "title",
-        "description": "Treść osadzana w nazwanym slocie „title”."
-      },
-      {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
-      },
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
   },
   {
-    "name": "SectionHeading",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/SectionHeading",
-    "props": [
+    name: 'SectionHeading',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/SectionHeading',
+    props: [
       {
-        "name": "size",
-        "type": "'heading-l' | 'heading-m' | 'heading-s' | 'heading-xs' | 'xl' | 'l' | 'm' | 's'",
-        "required": false,
-        "default": "l",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'size',
+        type: "'heading-l' | 'heading-m' | 'heading-s' | 'heading-xs' | 'xl' | 'l' | 'm' | 's'",
+        required: false,
+        default: 'l',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "as",
-        "type": "'section' | 'div' | 'header'",
-        "required": false,
-        "default": "div",
-        "description": "Konfiguruje właściwość „as” komponentu."
+        name: 'as',
+        type: "'section' | 'div' | 'header'",
+        required: false,
+        default: 'div',
+        description: 'Konfiguruje właściwość „as” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "variant",
-        "type": "'default' | 'primary' | 'secondary'",
-        "required": false,
-        "default": "default",
-        "description": "Wariant wizualny komponentu."
-      }
+        name: 'variant',
+        type: "'default' | 'primary' | 'secondary'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny komponentu.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "title",
-        "description": "Treść osadzana w nazwanym slocie „title”."
+        name: 'title',
+        description: 'Treść osadzana w nazwanym slocie „title”.',
       },
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      }
-    ]
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+    ],
   },
   {
-    "name": "TableList",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/TableList",
-    "props": [
+    name: 'TableList',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/TableList',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": false,
-        "default": "list",
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        default: 'list',
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Tabela danych",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Tabela danych',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "isDetials",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „is detials” komponentu."
+        name: 'isDetails',
+        type: 'boolean',
+        required: false,
+        description: 'Enables expandable detail rows.',
       },
       {
-        "name": "additional",
-        "type": "Record<string, any>",
-        "required": false,
-        "description": "Konfiguruje właściwość „additional” komponentu."
+        name: 'isDetials',
+        type: 'boolean',
+        required: false,
+        description: '@deprecated Use `isDetails`.',
       },
       {
-        "name": "canCreate",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Włącza możliwość dodawania nowych rekordów."
+        name: 'additional',
+        type: 'Record<string, any>',
+        required: false,
+        description: 'Konfiguruje właściwość „additional” komponentu.',
       },
       {
-        "name": "canSelectRows",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Włącza możliwość zaznaczania wierszy."
+        name: 'canCreate',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Włącza możliwość dodawania nowych rekordów.',
       },
       {
-        "name": "canCheckRows",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „can check rows” komponentu."
+        name: 'canSelectRows',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Włącza możliwość zaznaczania wierszy.',
       },
       {
-        "name": "canHideColumns",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Pozwala użytkownikowi sterować widocznością kolumn."
+        name: 'canCheckRows',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „can check rows” komponentu.',
       },
       {
-        "name": "canMultiSort",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „can multi sort” komponentu."
+        name: 'canHideColumns',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala użytkownikowi sterować widocznością kolumn.',
       },
       {
-        "name": "columns",
-        "type": "TableColumn[] | any[]",
-        "required": true,
-        "description": "Definicje kolumn określające ich etykiety, klucze i sposób renderowania."
+        name: 'canMultiSort',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „can multi sort” komponentu.',
       },
       {
-        "name": "editable",
-        "type": "boolean",
-        "required": false,
-        "description": "Włącza tryb edycji danych."
+        name: 'columns',
+        type: 'TableColumn[] | any[]',
+        required: false,
+        default: '[]',
+        description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
       },
       {
-        "name": "emptyDescription",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „empty description” komponentu."
+        name: 'editable',
+        type: 'boolean',
+        required: false,
+        description: 'Włącza tryb edycji danych.',
       },
       {
-        "name": "emptyDescriptionInline",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „empty description inline” komponentu."
+        name: 'emptyDescription',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „empty description” komponentu.',
       },
       {
-        "name": "records",
-        "type": "any[]",
-        "required": true,
-        "description": "Kolekcja rekordów prezentowanych przez komponent."
+        name: 'emptyDescriptionInline',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „empty description inline” komponentu.',
       },
       {
-        "name": "rowsPerPage",
-        "type": "number",
-        "required": false,
-        "default": "10",
-        "description": "Liczba rekordów wyświetlanych na jednej stronie."
+        name: 'records',
+        type: 'any[]',
+        required: false,
+        default: '[]',
+        description: 'Kolekcja rekordów prezentowanych przez komponent.',
       },
       {
-        "name": "currentCheckedRow",
-        "type": "number | string",
-        "required": false,
-        "description": "Konfiguruje właściwość „current checked row” komponentu."
+        name: 'rowsPerPage',
+        type: 'number',
+        required: false,
+        default: '10',
+        description: 'Liczba rekordów wyświetlanych na jednej stronie.',
       },
       {
-        "name": "rowsTotal",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „rows total” komponentu."
+        name: 'currentCheckedRow',
+        type: 'number | string',
+        required: false,
+        description: 'Konfiguruje właściwość „current checked row” komponentu.',
       },
       {
-        "name": "selectedRows",
-        "type": "string[]",
-        "required": false,
-        "default": "[]",
-        "description": "Identyfikatory aktualnie zaznaczonych wierszy."
+        name: 'rowsTotal',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „rows total” komponentu.',
       },
       {
-        "name": "sortColumn",
-        "type": "string",
-        "required": false,
-        "default": "updatedAt",
-        "description": "Konfiguruje właściwość „sort column” komponentu."
+        name: 'selectedRows',
+        type: 'string[]',
+        required: false,
+        default: '[]',
+        description: 'Identyfikatory aktualnie zaznaczonych wierszy.',
       },
       {
-        "name": "sortColumns",
-        "type": "TableSortState[]",
-        "required": false,
-        "default": "[]",
-        "description": "Konfiguruje właściwość „sort columns” komponentu."
+        name: 'sortColumn',
+        type: 'string',
+        required: false,
+        default: 'updatedAt',
+        description: 'Konfiguruje właściwość „sort column” komponentu.',
       },
       {
-        "name": "sortType",
-        "type": "TableSortDirection",
-        "required": false,
-        "default": "DESC",
-        "description": "Konfiguruje właściwość „sort type” komponentu."
+        name: 'sortColumns',
+        type: 'TableSortState[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „sort columns” komponentu.',
       },
       {
-        "name": "buttonEditableCreateText",
-        "type": "string",
-        "required": false,
-        "default": "Dodaj",
-        "description": "Konfiguruje właściwość „button editable create text” komponentu."
+        name: 'sortType',
+        type: 'TableSortDirection',
+        required: false,
+        default: 'DESC',
+        description: 'Konfiguruje właściwość „sort type” komponentu.',
       },
       {
-        "name": "titleRemoveLabel",
-        "type": "string",
-        "required": false,
-        "default": "Czy na pewno chcesz usunąć wybrany rekord?",
-        "description": "Konfiguruje właściwość „title remove label” komponentu."
+        name: 'buttonEditableCreateText',
+        type: 'string',
+        required: false,
+        default: 'Dodaj',
+        description: 'Konfiguruje właściwość „button editable create text” komponentu.',
       },
       {
-        "name": "descriptionRemoveLabel",
-        "type": "string",
-        "required": false,
-        "default": "Usunięcie spowoduje trwałe usunięcie rekordu.",
-        "description": "Konfiguruje właściwość „description remove label” komponentu."
+        name: 'titleRemoveLabel',
+        type: 'string',
+        required: false,
+        default: 'Czy na pewno chcesz usunąć wybrany rekord?',
+        description: 'Konfiguruje właściwość „title remove label” komponentu.',
       },
       {
-        "name": "isLoading",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Włącza stan ładowania i informuje o trwającej operacji."
+        name: 'descriptionRemoveLabel',
+        type: 'string',
+        required: false,
+        default: 'Usunięcie spowoduje trwałe usunięcie rekordu.',
+        description: 'Konfiguruje właściwość „description remove label” komponentu.',
       },
       {
-        "name": "scroll",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „scroll” komponentu."
+        name: 'isLoading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'scroll',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „scroll” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [
+    models: [],
+    events: [
       {
-        "name": "on:action",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:action”."
+        name: 'on:action',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:action”.',
       },
       {
-        "name": "on:createRecord",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”."
+        name: 'on:createRecord',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”.',
       },
       {
-        "name": "on:dblclick",
-        "description": "Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord."
+        name: 'on:dblclick',
+        description:
+          'Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord.',
       },
       {
-        "name": "on:dbclick",
-        "description": "Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”."
+        name: 'on:dbclick',
+        description: 'Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”.',
       },
       {
-        "name": "on:select:row",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”."
+        name: 'on:select:row',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”.',
       },
       {
-        "name": "on:sort",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:sort”."
+        name: 'on:sort',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:sort”.',
       },
       {
-        "name": "on:cancel",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”."
+        name: 'on:cancel',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”.',
       },
       {
-        "name": "on:check:row",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:check:row”."
+        name: 'on:check:row',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:check:row”.',
       },
       {
-        "name": "on:submit",
-        "description": "Emitowane po zatwierdzeniu danych."
+        name: 'on:submit',
+        description: 'Emitowane po zatwierdzeniu danych.',
       },
       {
-        "name": "on:changeValue",
-        "description": "Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość."
-      }
+        name: 'on:changeValue',
+        description:
+          'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
+      },
     ],
-    "slots": [
+    slots: [
       {
-        "name": "[`hint.${column.key}`]",
-        "description": "Treść osadzana w nazwanym slocie „[`hint.${column.key}`]”."
+        name: '[`hint.${column.key}`]',
+        description: 'Treść osadzana w nazwanym slocie „[`hint.${column.key}`]”.',
       },
       {
-        "name": "detials-record",
-        "description": "Treść osadzana w nazwanym slocie „detials-record”."
+        name: 'details-record',
+        description: 'Treść osadzana w nazwanym slocie „details-record”.',
       },
       {
-        "name": "additionalRow",
-        "description": "Treść osadzana w nazwanym slocie „additionalRow”."
-      }
-    ]
+        name: 'detials-record',
+        description: 'Treść osadzana w nazwanym slocie „detials-record”.',
+      },
+      {
+        name: 'additionalRow',
+        description: 'Treść osadzana w nazwanym slocie „additionalRow”.',
+      },
+    ],
   },
   {
-    "name": "TableListFooter",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/TableListFooter",
-    "props": [
+    name: 'TableListFooter',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/TableListFooter',
+    props: [
       {
-        "name": "rowsNumber",
-        "type": "number",
-        "required": true,
-        "description": "Konfiguruje właściwość „rows number” komponentu."
+        name: 'rowsNumber',
+        type: 'number',
+        required: true,
+        description: 'Konfiguruje właściwość „rows number” komponentu.',
       },
       {
-        "name": "rowsPerPage",
-        "type": "number",
-        "required": true,
-        "description": "Liczba rekordów wyświetlanych na jednej stronie."
+        name: 'rowsPerPage',
+        type: 'number',
+        required: true,
+        description: 'Liczba rekordów wyświetlanych na jednej stronie.',
       },
       {
-        "name": "page",
-        "type": "number",
-        "required": true,
-        "description": "Numer aktualnie wybranej strony."
+        name: 'page',
+        type: 'number',
+        required: true,
+        description: 'Numer aktualnie wybranej strony.',
       },
       {
-        "name": "total",
-        "type": "number",
-        "required": true,
-        "description": "Łączna liczba elementów."
+        name: 'total',
+        type: 'number',
+        required: true,
+        description: 'Łączna liczba elementów.',
       },
       {
-        "name": "under",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „under” komponentu."
+        name: 'under',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „under” komponentu.',
       },
       {
-        "name": "isFlex",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is flex” komponentu."
+        name: 'isFlex',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is flex” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [
+    models: [],
+    events: [
       {
-        "name": "on:change:page",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:change:page”."
+        name: 'on:change:page',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:change:page”.',
       },
       {
-        "name": "on:change:limit",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:change:limit”."
-      }
+        name: 'on:change:limit',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:change:limit”.',
+      },
     ],
-    "slots": []
+    slots: [],
   },
   {
-    "name": "TableListHeader",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/TableListHeader",
-    "props": [
+    name: 'TableListHeader',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/TableListHeader',
+    props: [
       {
-        "name": "buttonCreateLabel",
-        "type": "string",
-        "required": false,
-        "default": "Dodaj rekord",
-        "description": "Konfiguruje właściwość „button create label” komponentu."
+        name: 'buttonCreateLabel',
+        type: 'string',
+        required: false,
+        default: 'Dodaj rekord',
+        description: 'Konfiguruje właściwość „button create label” komponentu.',
       },
       {
-        "name": "canCreate",
-        "type": "boolean",
-        "required": false,
-        "description": "Włącza możliwość dodawania nowych rekordów."
+        name: 'canCreate',
+        type: 'boolean',
+        required: false,
+        description: 'Włącza możliwość dodawania nowych rekordów.',
       },
       {
-        "name": "canExport",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „can export” komponentu."
+        name: 'canExport',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „can export” komponentu.',
       },
       {
-        "name": "canFilter",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „can filter” komponentu."
+        name: 'canFilter',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „can filter” komponentu.',
       },
       {
-        "name": "canSearch",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „can search” komponentu."
+        name: 'canSearch',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „can search” komponentu.',
       },
       {
-        "name": "countFilters",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „count filters” komponentu."
+        name: 'countFilters',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „count filters” komponentu.',
       },
       {
-        "name": "countSelectedRecords",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „count selected records” komponentu."
+        name: 'countSelectedRecords',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „count selected records” komponentu.',
       },
       {
-        "name": "searchPlaceholder",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „search placeholder” komponentu."
+        name: 'searchPlaceholder',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „search placeholder” komponentu.',
       },
       {
-        "name": "totalRecords",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „total records” komponentu."
+        name: 'totalRecords',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „total records” komponentu.',
       },
       {
-        "name": "userId",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „user id” komponentu."
+        name: 'userId',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „user id” komponentu.',
       },
       {
-        "name": "forceExport",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „force export” komponentu."
-      }
+        name: 'forceExport',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „force export” komponentu.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "filters-open",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wartość kontrolowana przez v-model:filters-open."
-      }
+        name: 'filters-open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wartość kontrolowana przez v-model:filters-open.',
+      },
     ],
-    "events": [
+    events: [
       {
-        "name": "on:search",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:search”."
+        name: 'on:search',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:search”.',
       },
       {
-        "name": "on:reset-filters",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:reset-filters”."
+        name: 'on:reset-filters',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:reset-filters”.',
       },
       {
-        "name": "on:create",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:create”."
+        name: 'on:create',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:create”.',
       },
       {
-        "name": "on:export",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:export”."
-      }
+        name: 'on:export',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:export”.',
+      },
     ],
-    "slots": [
+    slots: [
       {
-        "name": "filters-drawer",
-        "description": "Treść osadzana w nazwanym slocie „filters-drawer”."
+        name: 'filters-drawer',
+        description: 'Treść osadzana w nazwanym slocie „filters-drawer”.',
       },
       {
-        "name": "additional-buttons",
-        "description": "Treść osadzana w nazwanym slocie „additional-buttons”."
+        name: 'additional-buttons',
+        description: 'Treść osadzana w nazwanym slocie „additional-buttons”.',
       },
       {
-        "name": "addtional-content",
-        "description": "Treść osadzana w nazwanym slocie „addtional-content”."
+        name: 'additional-content',
+        description: 'Treść osadzana w nazwanym slocie „additional-content”.',
       },
       {
-        "name": "addtional-description",
-        "description": "Treść osadzana w nazwanym slocie „addtional-description”."
-      }
-    ]
+        name: 'addtional-content',
+        description: 'Treść osadzana w nazwanym slocie „addtional-content”.',
+      },
+      {
+        name: 'additional-description',
+        description: 'Treść osadzana w nazwanym slocie „additional-description”.',
+      },
+      {
+        name: 'addtional-description',
+        description: 'Treść osadzana w nazwanym slocie „addtional-description”.',
+      },
+    ],
   },
   {
-    "name": "TagChip",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/TagChip",
-    "props": [
+    name: 'TagChip',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/TagChip',
+    props: [
       {
-        "name": "size",
-        "type": "'xxs' | 'xs' | 's'",
-        "required": false,
-        "default": "xs",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'size',
+        type: "'xxs' | 'xs' | 's'",
+        required: false,
+        default: 'xs',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'blue' | 'green' | 'red' | 'orange' | 'grey' | 'violet' | 'outline'",
-        "required": false,
-        "default": "outline",
-        "description": "Wariant wizualny komponentu."
+        name: 'variant',
+        type: "'blue' | 'green' | 'red' | 'orange' | 'grey' | 'violet' | 'outline'",
+        required: false,
+        default: 'outline',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "active",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Określa aktywny element albo aktywny krok."
+        name: 'active',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Określa aktywny element albo aktywny krok.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "as",
-        "type": "'span' | 'button'",
-        "required": false,
-        "default": "button",
-        "description": "Konfiguruje właściwość „as” komponentu."
-      }
+        name: 'as',
+        type: "'span' | 'button'",
+        required: false,
+        default: 'button',
+        description: 'Konfiguruje właściwość „as” komponentu.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "TreeList",
-    "category": "data-display",
-    "categoryLabel": "Prezentacja danych",
-    "importPath": "@peaui/ui/data-display/TreeList",
-    "props": [
+    name: 'TreeList',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/TreeList',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": false,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "level",
-        "type": "number",
-        "required": false,
-        "default": "1",
-        "description": "Konfiguruje właściwość „level” komponentu."
+        name: 'level',
+        type: 'number',
+        required: false,
+        default: '1',
+        description: 'Konfiguruje właściwość „level” komponentu.',
       },
       {
-        "name": "isLast",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is last” komponentu."
+        name: 'isLast',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is last” komponentu.',
       },
       {
-        "name": "canRemove",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „can remove” komponentu."
+        name: 'canRemove',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „can remove” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "tree",
-        "type": "TreeListType",
-        "required": true,
-        "description": "Dane drzewa kontrolowane przez v-model:tree."
-      }
+        name: 'tree',
+        type: 'TreeListType',
+        required: false,
+        default: "({ children: {}, label: '' })",
+        description: 'Dane drzewa kontrolowane przez v-model:tree.',
+      },
     ],
-    "events": [
+    events: [
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
     ],
-    "slots": [
+    slots: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
   },
   {
-    "name": "ButtonAction",
-    "category": "data-entry",
-    "categoryLabel": "Wprowadzanie danych",
-    "importPath": "@peaui/ui/data-entry/ButtonAction",
-    "props": [
+    name: 'VirtualList',
+    category: 'data-display',
+    categoryLabel: 'Prezentacja danych',
+    importPath: '@peaui/ui/data-display/VirtualList',
+    props: [
       {
-        "name": "size",
-        "type": "'xxs' | 'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'items',
+        type: 'readonly VirtualListItem[]',
+        required: false,
+        default: '[]',
+        description: 'Kolekcja danych. W DOM pozostaje wyłącznie widoczny zakres z overscanem.',
       },
       {
-        "name": "variant",
-        "type": "'primary' | 'secondary' | 'ghost' | 'danger'",
-        "required": false,
-        "default": "primary",
-        "description": "Wariant wizualny komponentu."
+        name: 'itemSize',
+        type: 'number',
+        required: false,
+        default: '64',
+        description: 'Stała wysokość pojedynczego elementu w pikselach.',
       },
       {
-        "name": "type",
-        "type": "'button' | 'submit' | 'reset'",
-        "required": false,
-        "default": "button",
-        "description": "Wariant funkcjonalny lub wizualny komponentu."
+        name: 'overscan',
+        type: 'number',
+        required: false,
+        default: '4',
+        description: 'Liczba dodatkowych elementów renderowanych przed i za viewportem.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'height',
+        type: 'number | string',
+        required: false,
+        default: '320',
+        description: 'Wysokość viewportu jako liczba pikseli albo poprawna wartość CSS.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'itemKey',
+        type: 'VirtualListItemKeyResolver',
+        required: false,
+        default: 'id',
+        description: 'Pole lub funkcja zwracająca stabilny klucz string/number.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'itemLabel',
+        type: 'VirtualListItemLabelResolver',
+        required: false,
+        default: 'label',
+        description: 'Pole lub funkcja zwracająca domyślną widoczną etykietę.',
       },
       {
-        "name": "useAriaLabel",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „use aria label” komponentu."
-      }
+        name: 'semanticRole',
+        type: 'VirtualListRole',
+        required: false,
+        default: 'list',
+        description: 'Semantyka neutralnej listy albo interaktywnego listboxa.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Lista wirtualna',
+        description: 'Dostępna nazwa viewportu i listboxa.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pokazuje początkowy albo przyrostowy stan ładowania.',
+      },
+      {
+        name: 'hasMore',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Informuje, że aplikacja może dołączyć kolejne elementy po zdarzeniu reachEnd.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Jawny komunikat błędu prezentowany zamiast pustego stanu.',
+      },
+      {
+        name: 'emptyTitle',
+        type: 'string',
+        required: false,
+        default: 'Brak elementów',
+        description: 'Tytuł domyślnego pustego stanu.',
+      },
+      {
+        name: 'emptyDescription',
+        type: 'string',
+        required: false,
+        default: 'Lista nie zawiera jeszcze żadnych elementów.',
+        description: 'Opis domyślnego pustego stanu.',
+      },
+      {
+        name: 'endLabel',
+        type: 'string',
+        required: false,
+        default: 'Koniec listy',
+        description: 'Tekst wyświetlany po osiągnięciu kompletnego końca listy.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny selektor testowy elementu głównego.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'activeIndex',
+        type: 'number | null',
+        required: false,
+        default: 'null',
+        description: 'Indeks aktywnego elementu kontrolowany przez v-model:activeIndex.',
+      },
+    ],
+    events: [
+      {
+        name: 'visibleRangeChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „visibleRangeChange”.',
+      },
+      {
+        name: 'reachEnd',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachEnd”.',
+      },
+      {
+        name: 'scroll',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „scroll”.',
+      },
+      {
+        name: 'itemFocus',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „itemFocus”.',
+      },
+      {
+        name: 'measureError',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „measureError”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+      {
+        name: 'before',
+        description: 'Treść osadzana w nazwanym slocie „before”.',
+      },
+      {
+        name: 'after',
+        description: 'Treść osadzana w nazwanym slocie „after”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+    ],
   },
   {
-    "name": "ButtonExport",
-    "category": "data-entry",
-    "categoryLabel": "Wprowadzanie danych",
-    "importPath": "@peaui/ui/data-entry/ButtonExport",
-    "props": [
+    name: 'ButtonAction',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/ButtonAction',
+    props: [
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'primary' | 'secondary' | 'ghost' | 'danger'",
-        "required": false,
-        "default": "secondary",
-        "description": "Wariant wizualny komponentu."
+        name: 'variant',
+        type: "'primary' | 'secondary' | 'ghost' | 'danger'",
+        required: false,
+        default: 'primary',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "type",
-        "type": "'button' | 'submit' | 'reset'",
-        "required": false,
-        "description": "Wariant funkcjonalny lub wizualny komponentu."
+        name: 'type',
+        type: "'button' | 'submit' | 'reset'",
+        required: false,
+        default: 'button',
+        description: 'Wariant funkcjonalny lub wizualny komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "placement",
-        "type": "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
-        "required": false,
-        "default": "bottom",
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'useAriaLabel',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „use aria label” komponentu.',
       },
-      {
-        "name": "selectedItemsCount",
-        "type": "number",
-        "required": false,
-        "default": "0",
-        "description": "Konfiguruje właściwość „selected items count” komponentu."
-      },
-      {
-        "name": "forceExport",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „force export” komponentu."
-      },
-      {
-        "name": "useAriaLabel",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „use aria label” komponentu."
-      }
     ],
-    "models": [],
-    "events": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "on:export",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:export”."
-      }
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
     ],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
   },
   {
-    "name": "InputSlider",
-    "category": "data-entry",
-    "categoryLabel": "Wprowadzanie danych",
-    "importPath": "@peaui/ui/data-entry/InputSlider",
-    "props": [
+    name: 'ButtonExport',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/ButtonExport',
+    props: [
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'variant',
+        type: "'primary' | 'secondary' | 'ghost' | 'danger'",
+        required: false,
+        default: 'secondary',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'type',
+        type: "'button' | 'submit' | 'reset'",
+        required: false,
+        description: 'Wariant funkcjonalny lub wizualny komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'placement',
+        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        required: false,
+        default: 'bottom',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'selectedItemsCount',
+        type: 'number',
+        required: false,
+        default: '0',
+        description: 'Konfiguruje właściwość „selected items count” komponentu.',
+      },
+      {
+        name: 'forceExport',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „force export” komponentu.',
+      },
+      {
+        name: 'useAriaLabel',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „use aria label” komponentu.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "value",
-        "type": "number",
-        "required": false,
-        "default": "0",
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'on:export',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:export”.',
+      },
     ],
-    "events": [],
-    "slots": []
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
   },
   {
-    "name": "SearchInput",
-    "category": "data-entry",
-    "categoryLabel": "Wprowadzanie danych",
-    "importPath": "@peaui/ui/data-entry/SearchInput",
-    "props": [
+    name: 'CopyButton',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/CopyButton',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Pole wyszukiwania",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'text',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dokładna wartość tekstowa kopiowana, gdy getText nie został przekazany.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "Wpisz czego szukasz",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'getText',
+        type: '() => string | Promise<string>',
+        required: false,
+        description: 'Pobiera wartość w chwili aktywacji; obsługuje również źródła asynchroniczne.',
       },
       {
-        "name": "debounceTime",
-        "type": "number",
-        "required": false,
-        "default": "1000",
-        "description": "Konfiguruje właściwość „debounce time” komponentu."
+        name: 'resetDelay',
+        type: 'number',
+        required: false,
+        default: '2000',
+        description: 'Czas powrotu ukończonej operacji do stanu początkowego; zero zachowuje stan.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: 'Kopiuj',
+        description: 'Stała dostępna nazwa akcji i domyślna widoczna etykieta.',
+      },
+      {
+        name: 'copiedLabel',
+        type: 'string',
+        required: false,
+        default: 'Skopiowano',
+        description: 'Widoczny i ogłaszany komunikat powodzenia.',
+      },
+      {
+        name: 'errorLabel',
+        type: 'string',
+        required: false,
+        default: 'Nie udało się skopiować',
+        description: 'Widoczny i ogłaszany komunikat błędu.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Kopiowanie',
+        description: 'Widoczny tekst podczas trwającej operacji asynchronicznej.',
+      },
+      {
+        name: 'content',
+        type: "'icon' | 'text' | 'icon-text'",
+        required: false,
+        default: 'icon-text',
+        description: 'Określa, czy przycisk wyświetla ikonę, tekst, czy oba elementy.',
+      },
+      {
+        name: 'variant',
+        type: "'primary' | 'secondary' | 'ghost' | 'danger'",
+        required: false,
+        default: 'secondary',
+        description: 'Wariant wizualny zgodny z ButtonAction.',
+      },
+      {
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar zgodny ze skalą ButtonAction.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan zajętości kontrolowany z zewnątrz.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje aktywację.',
+      },
+      {
+        name: 'showStatus',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyświetla komunikat stanu obok akcji zamiast wyłącznie dla czytnika ekranu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Opcjonalna stała dostępna nazwa zastępująca label.',
+      },
+      {
+        name: 'type',
+        type: "'button' | 'submit' | 'reset'",
+        required: false,
+        default: 'button',
+        description: 'Natywny typ przycisku.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stały identyfikator używany w testach automatycznych.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "value",
-        "type": "string | undefined",
-        "required": false,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
-    ],
-    "events": [
-      {
-        "name": "on:search",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:search”."
+        name: 'copy',
+        description: 'Emitowane po rozwiązaniu dokładnego tekstu i przed próbą zapisu do schowka.',
       },
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'success',
+        description: 'Emitowane po poprawnym zakończeniu operacji komponentu.',
+      },
+      {
+        name: 'error',
+        description: 'Emitowane, gdy operacja komponentu kończy się błędem.',
+      },
+      {
+        name: 'statusChange',
+        description: 'Emitowane po każdej wewnętrznej zmianie statusu operacji.',
+      },
     ],
-    "slots": []
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'icon',
+        description: 'Treść osadzana w nazwanym slocie „icon”.',
+      },
+      {
+        name: 'copied-icon',
+        description: 'Treść osadzana w nazwanym slocie „copied-icon”.',
+      },
+      {
+        name: 'status',
+        description: 'Treść osadzana w nazwanym slocie „status”.',
+      },
+    ],
   },
   {
-    "name": "SelectableCard",
-    "category": "data-entry",
-    "categoryLabel": "Wprowadzanie danych",
-    "importPath": "@peaui/ui/data-entry/SelectableCard",
-    "props": [
+    name: 'InlineEdit',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/InlineEdit',
+    props: [
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'editor',
+        type: 'InlineEditEditor',
+        required: false,
+        default: 'text',
+        description: 'Rodzaj wbudowanego edytora albo własna kontrolka ze slotu editor.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'editorProps',
+        type: 'Record<string, unknown>',
+        required: false,
+        default: '{}',
+        description: 'Właściwości przekazywane do istniejącego komponentu formularza.',
       },
       {
-        "name": "active",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Określa aktywny element albo aktywny krok."
+        name: 'activation',
+        type: 'InlineEditActivation',
+        required: false,
+        default: 'button',
+        description: 'Dodatkowy sposób rozpoczęcia edycji; przycisk pozostaje zawsze dostępny.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'actions',
+        type: 'InlineEditActions',
+        required: false,
+        default: 'both',
+        description: 'Widoczne przyciski, skróty klawiaturowe albo oba mechanizmy zapisu.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      }
+        name: 'display',
+        type: 'InlineEditDisplay',
+        required: false,
+        default: 'inline',
+        description: 'Układ dopasowany do tekstu lub zajmujący pełną szerokość.',
+      },
+      {
+        name: 'tabBehavior',
+        type: 'InlineEditTabBehavior',
+        required: false,
+        default: 'commit',
+        description: 'Zachowanie klawisza Tab podczas edycji.',
+      },
+      {
+        name: 'saveMode',
+        type: 'InlineEditSaveMode',
+        required: false,
+        default: 'sync',
+        description: 'Zapis lokalny albo asynchroniczny sterowany przez aplikację.',
+      },
+      {
+        name: 'validate',
+        type: 'InlineEditValidate',
+        required: false,
+        description: 'Synchroniczna walidacja szkicu przed zapisem.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Oczekiwanie na zewnętrzny zapis.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        description: 'Błąd zwrócony przez zewnętrzny zapis.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'emptyText',
+        type: 'string',
+        required: false,
+        default: 'Brak wartości',
+        description: 'Konfiguruje właściwość „empty text” komponentu.',
+      },
+      {
+        name: 'editAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Edytuj wartość',
+        description: 'Konfiguruje właściwość „edit aria label” komponentu.',
+      },
+      {
+        name: 'saveLabel',
+        type: 'string',
+        required: false,
+        default: 'Zapisz',
+        description: 'Konfiguruje właściwość „save label” komponentu.',
+      },
+      {
+        name: 'cancelLabel',
+        type: 'string',
+        required: false,
+        default: 'Anuluj',
+        description: 'Konfiguruje właściwość „cancel label” komponentu.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Zapisywanie zmian',
+        description: 'Dostępny komunikat opisujący trwającą operację.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "title",
-        "description": "Treść osadzana w nazwanym slocie „title”."
+        name: 'value',
+        type: 'InlineEditValue',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
+        name: 'editing',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wartość kontrolowana przez v-model:editing.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'display',
+        description: 'Treść osadzana w nazwanym slocie „display”.',
       },
       {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
       },
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      }
-    ]
+        name: 'editor',
+        description: 'Treść osadzana w nazwanym slocie „editor”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'actions',
+        description: 'Treść osadzana w nazwanym slocie „actions”.',
+      },
+    ],
   },
   {
-    "name": "EmptyState",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/EmptyState",
-    "props": [
+    name: 'InputSlider',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/InputSlider',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "title",
-        "type": "string",
-        "required": false,
-        "description": "Główny tytuł prezentowany w komponencie."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "description",
-        "type": "string",
-        "required": false,
-        "description": "Dodatkowy opis objaśniający zawartość albo stan komponentu."
-      }
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
-      }
-    ]
+        name: 'value',
+        type: 'number',
+        required: false,
+        default: '0',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [],
+    slots: [],
   },
   {
-    "name": "MessageText",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/MessageText",
-    "props": [
+    name: 'SearchInput',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/SearchInput',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Pole wyszukiwania',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'Wpisz czego szukasz',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
       },
       {
-        "name": "size",
-        "type": "| 'xxs'\n    | 'xs'\n    | 's'\n    | 'm'\n    | 'l'\n    | 'xl'\n    | 'heading-xs'\n    | ' heading-s'\n    | 'heading-m'\n    | 'heading-l'",
-        "required": false,
-        "default": "s",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'debounceTime',
+        type: 'number',
+        required: false,
+        default: '1000',
+        description: 'Konfiguruje właściwość „debounce time” komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'info' | 'error' | 'success' | 'danger' | 'default' | 'white'",
-        "required": false,
-        "default": "default",
-        "description": "Wariant wizualny komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "withIcon",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „with icon” komponentu."
-      },
-      {
-        "name": "ownIcon",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „own icon” komponentu."
-      }
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'value',
+        type: 'string | undefined',
+        required: false,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:search',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:search”.',
+      },
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [],
   },
   {
-    "name": "ProgressIndicator",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/ProgressIndicator",
-    "props": [
+    name: 'SegmentedControl',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/SegmentedControl',
+    props: [
       {
-        "name": "steps",
-        "type": "number",
-        "required": true,
-        "description": "Konfiguruje właściwość „steps” komponentu."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator grupy radio.',
       },
       {
-        "name": "active",
-        "type": "number",
-        "required": false,
-        "description": "Określa aktywny element albo aktywny krok."
+        name: 'name',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Nazwa ukrytego pola wysyłanego z formularzem.',
       },
       {
-        "name": "size",
-        "type": "number",
-        "required": false,
-        "description": "Wariant rozmiaru komponentu."
+        name: 'items',
+        type: 'SegmentedControlItem[]',
+        required: false,
+        default: '[]',
+        description: 'Niewielki zestaw wzajemnie wykluczających się pozycji.',
       },
       {
-        "name": "strokeWidth",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „stroke width” komponentu."
+        name: 'size',
+        type: "'s' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar wszystkich segmentów.',
       },
       {
-        "name": "removeActive",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „remove active” komponentu."
+        name: 'distribution',
+        type: "'equal' | 'auto'",
+        required: false,
+        default: 'equal',
+        description: 'Równy albo naturalny rozkład szerokości segmentów.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'fullWidth',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Rozciąga kontrolkę do szerokości kontenera.',
+      },
+      {
+        name: 'content',
+        type: "'text' | 'icon' | 'icon-text'",
+        required: false,
+        default: 'text',
+        description: 'Prezentuje tekst, ikonę albo oba elementy.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza całą kontrolkę i usuwa ją z kolejności tabulatora.',
+      },
+      {
+        name: 'orientation',
+        type: "'horizontal' | 'vertical'",
+        required: false,
+        default: 'horizontal',
+        description: 'Kierunek układu oraz nawigacji klawiaturą.',
+      },
+      {
+        name: 'activation',
+        type: "'automatic' | 'manual'",
+        required: false,
+        default: 'automatic',
+        description: 'Określa, czy nawigacja od razu wybiera segment, czy tylko przenosi fokus.',
+      },
+      {
+        name: 'loop',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zapętla nawigację pomiędzy skrajnymi dostępnymi segmentami.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Wybór opcji',
+        description: 'Dostępna nazwa grupy radio.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Stabilny selektor do testów integracyjnych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'SegmentedControlValue | null',
+        required: false,
+        default: 'null',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'focusChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'item-icon',
+        description: 'Treść osadzana w nazwanym slocie „item-icon”.',
+      },
+      {
+        name: 'indicator',
+        description: 'Treść osadzana w nazwanym slocie „indicator”.',
+      },
+    ],
   },
   {
-    "name": "SkeletonLoading",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/SkeletonLoading",
-    "props": [
+    name: 'SelectableCard',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/SelectableCard',
+    props: [
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "rounded",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „rounded” komponentu."
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Trwa ladowanie tresci.",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'active',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Określa aktywny element albo aktywny krok.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'title',
+        description: 'Treść osadzana w nazwanym slocie „title”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+    ],
   },
   {
-    "name": "SpinnerLoader",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/SpinnerLoader",
-    "props": [
+    name: 'SplitButton',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/SplitButton',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta oraz awaryjna dostępna nazwa głównej akcji.',
+      },
+      {
+        name: 'items',
+        type: 'DropdownMenuItem[]',
+        required: false,
+        default: '[]',
+        description: 'Akcje alternatywne renderowane przez DropdownMenu.',
+      },
+      {
+        name: 'icon',
+        type: 'string',
+        required: false,
+        description: 'Opcjonalna nazwa ikony PeaUI poprzedzającej etykietę.',
+      },
+      {
+        name: 'variant',
+        type: "'primary' | 'secondary' | 'danger'",
+        required: false,
+        default: 'primary',
+        description: 'Wariant kolorystyczny obu części kontrolki.',
+      },
+      {
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar zgodny z ButtonAction.',
+      },
+      {
+        name: 'type',
+        type: "'button' | 'submit' | 'reset'",
+        required: false,
+        default: 'button',
+        description: 'Natywny typ przycisku głównej akcji.',
+      },
+      {
+        name: 'menuAlign',
+        type: "'start' | 'end'",
+        required: false,
+        default: 'end',
+        description: 'Wyrównanie powierzchni menu do początku lub końca kontrolki.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza obie części kontrolki.',
+      },
+      {
+        name: 'primaryDisabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza wyłącznie główną akcję.',
+      },
+      {
+        name: 'menuDisabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza wyłącznie trigger menu i zamyka otwarte menu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Blokuje główną akcję i pokazuje jej stan zajętości; menu pozostaje niezależne.',
+      },
+      {
+        name: 'menuLoading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pokazuje dostępny stan ładowania wewnątrz otwartego menu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa grupy dwóch przycisków.',
+      },
+      {
+        name: 'menuAriaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa przycisku otwierającego menu.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Trwa wykonywanie głównej akcji',
+        description: 'Tekst statusu głównej akcji przekazywany technologiom asystującym.',
+      },
+      {
+        name: 'menuLoadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie menu…',
+        description: 'Tekst dostępnego stanu ładowania menu.',
+      },
+      {
+        name: 'emptyLabel',
+        type: 'string',
+        required: false,
+        default: 'Brak dostępnych akcji',
+        description: 'Tekst pustego stanu menu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [
+      {
+        name: 'primaryClick',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „primaryClick”.',
+      },
+      {
+        name: 'select',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'icon',
+        description: 'Treść osadzana w nazwanym slocie „icon”.',
+      },
+      {
+        name: 'menu-trigger-icon',
+        description: 'Treść osadzana w nazwanym slocie „menu-trigger-icon”.',
+      },
+      {
+        name: 'menu-item',
+        description: 'Treść osadzana w nazwanym slocie „menu-item”.',
+      },
+      {
+        name: 'menu-item-icon',
+        description: 'Treść osadzana w nazwanym slocie „menu-item-icon”.',
+      },
+      {
+        name: 'menu-item-shortcut',
+        description: 'Treść osadzana w nazwanym slocie „menu-item-shortcut”.',
+      },
+      {
+        name: 'group-label',
+        description: 'Treść osadzana w nazwanym slocie „group-label”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'menu-loading',
+        description: 'Treść osadzana w nazwanym slocie „menu-loading”.',
+      },
+    ],
   },
   {
-    "name": "ToastAlert",
-    "category": "feedback",
-    "categoryLabel": "Informacje zwrotne",
-    "importPath": "@peaui/ui/feedback/ToastAlert",
-    "props": [
+    name: 'ToggleButton',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/ToggleButton',
+    props: [
       {
-        "name": "variant",
-        "type": "'info' | 'error' | 'success' | 'danger'",
-        "required": false,
-        "default": "info",
-        "description": "Wariant wizualny komponentu."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator natywnego przycisku.',
       },
       {
-        "name": "title",
-        "type": "string",
-        "required": false,
-        "description": "Główny tytuł prezentowany w komponencie."
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: 'Przełącz',
+        description: 'Stała etykieta widoczna w stanie nieaktywnym i używana jako dostępna nazwa.',
       },
       {
-        "name": "description",
-        "type": "string",
-        "required": false,
-        "description": "Dodatkowy opis objaśniający zawartość albo stan komponentu."
+        name: 'pressedLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Opcjonalna etykieta widoczna po włączeniu; nie zmienia dostępnej nazwy.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'icon',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Nazwa dekoracyjnej ikony SvgIcon.',
       },
       {
-        "name": "size",
-        "type": "'s' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'pressedIcon',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Opcjonalna ikona dekoracyjna widoczna po włączeniu.',
       },
       {
-        "name": "withShadow",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „with shadow” komponentu."
+        name: 'content',
+        type: "'text' | 'icon' | 'icon-text'",
+        required: false,
+        default: 'icon-text',
+        description: 'Określa, czy przycisk pokazuje tekst, ikonę czy oba elementy.',
       },
       {
-        "name": "withBorder",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „with border” komponentu."
+        name: 'variant',
+        type: "'default' | 'outline' | 'ghost'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny powierzchni.',
       },
       {
-        "name": "canClose",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „can close” komponentu."
-      }
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar zgodny ze skalą ButtonAction; cel dotykowy zachowuje minimum 44 px.',
+      },
+      {
+        name: 'type',
+        type: "'button' | 'submit' | 'reset'",
+        required: false,
+        default: 'button',
+        description: 'Typ natywnego przycisku.',
+      },
+      {
+        name: 'allowWrap',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala jawnie zawijać długi tekst zamiast utrzymywać go w jednym wierszu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza kontrolkę i usuwa ją z kolejności fokusu.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje zmianę, ale pozostawia kontrolkę w kolejności fokusu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje zmianę i eksponuje stan zajętości.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Stała dostępna nazwa, wymagana dla przycisku wyłącznie ikonowego bez label.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Trwa aktualizowanie ustawienia',
+        description: 'Dostępny komunikat stanu ładowania.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [
+    models: [
       {
-        "name": "on:close",
-        "description": "Emitowane podczas zamykania komponentu."
-      }
+        name: 'value',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "slots": []
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'click',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „click”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'icon',
+        description: 'Treść osadzana w nazwanym slocie „icon”.',
+      },
+      {
+        name: 'pressed-icon',
+        description: 'Treść osadzana w nazwanym slocie „pressed-icon”.',
+      },
+    ],
   },
   {
-    "name": "FieldLabel",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FieldLabel",
-    "props": [
+    name: 'ToggleGroup',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/ToggleGroup',
+    props: [
       {
-        "name": "for",
-        "type": "string",
-        "required": true,
-        "description": "Konfiguruje właściwość „for” komponentu."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator grupy i powiązanych opisów.',
       },
       {
-        "name": "text",
-        "type": "string",
-        "required": true,
-        "description": "Konfiguruje właściwość „text” komponentu."
+        name: 'name',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Nazwa ukrytych pól przekazywanych z formularzem.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'items',
+        type: 'ToggleGroupItem[]',
+        required: false,
+        default: '[]',
+        description: 'Pozycje zarządzane przez komponent.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'type',
+        type: "'single' | 'multiple'",
+        required: false,
+        default: 'single',
+        description: 'Tryb pojedynczego albo wielokrotnego wyboru.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'orientation',
+        type: "'horizontal' | 'vertical'",
+        required: false,
+        default: 'horizontal',
+        description: 'Kierunek układu i nawigacji klawiaturą.',
+      },
+      {
+        name: 'appearance',
+        type: "'separate' | 'attached'",
+        required: false,
+        default: 'separate',
+        description: 'Oddzielny albo połączony wygląd przycisków.',
+      },
+      {
+        name: 'semanticRole',
+        type: "'toolbar' | 'group'",
+        required: false,
+        default: 'toolbar',
+        description: 'Semantyka dostępności grupy.',
+      },
+      {
+        name: 'overflow',
+        type: "'wrap' | 'scroll'",
+        required: false,
+        default: 'wrap',
+        description: 'Zachowanie grupy przy braku miejsca.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wymaga co najmniej jednej wybranej pozycji.',
+      },
+      {
+        name: 'allowEmpty',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala wyłączyć ostatnią aktywną pozycję, gdy grupa nie jest wymagana.',
+      },
+      {
+        name: 'loop',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zapętla nawigację strzałkami pomiędzy skrajnymi pozycjami.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza całą grupę i usuwa ją z kolejności tabulatora.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje zmianę wartości, zachowując możliwość odczytu i fokusu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Widoczna etykieta grupy.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Zewnętrzny komunikat błędu.',
+      },
+      {
+        name: 'requiredMessage',
+        type: 'string',
+        required: false,
+        default: 'Wybierz co najmniej jedną opcję.',
+        description: 'Komunikat używany dla pustej wymaganej grupy.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dostępna nazwa, gdy widoczna etykieta nie jest potrzebna.',
+      },
+      {
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar wszystkich przycisków.',
+      },
+      {
+        name: 'variant',
+        type: "'default' | 'outline' | 'ghost'",
+        required: false,
+        default: 'outline',
+        description: 'Wariant wizualny wszystkich przycisków.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Stabilny selektor do testów integracyjnych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      }
-    ]
+        name: 'value',
+        type: 'ToggleGroupModelValue',
+        required: false,
+        default: 'null',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'focusChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+    ],
   },
   {
-    "name": "FormButtonCheckbox",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormButtonCheckbox",
-    "props": [
+    name: 'TransferList',
+    category: 'data-entry',
+    categoryLabel: 'Wprowadzanie danych',
+    importPath: '@peaui/ui/data-entry/TransferList',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator komponentu i jego relacji ARIA.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'items',
+        type: 'readonly TransferListItem[]',
+        required: false,
+        default: '[]',
+        description: 'Pełny katalog elementów. Pierwszy element o danym kluczu wygrywa.',
       },
       {
-        "name": "isValid",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is valid” komponentu."
+        name: 'itemKey',
+        type: 'TransferListKeyResolver',
+        required: false,
+        default: 'key',
+        description: 'Pole lub funkcja zwracająca stabilny klucz string/number.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'itemLabel',
+        type: 'TransferListLabelResolver',
+        required: false,
+        default: 'label',
+        description: 'Pole lub funkcja zwracająca widoczną etykietę.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'searchable',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje niezależny filtr w obu panelach.',
       },
       {
-        "name": "size",
-        "type": "'xxs' | 'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'sort',
+        type: 'TransferListSort',
+        required: false,
+        default: 'false',
+        description: 'Sortowanie widoku; false zachowuje kolejność źródłową.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'preserveOrder',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zachowuje kolejność tablicy value w panelu docelowym.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'disabledKeys',
+        type: 'readonly TransferListKey[]',
+        required: false,
+        default: '[]',
+        description: 'Klucze blokowane niezależnie od pola disabled elementu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean | TransferListLoadingState',
+        required: false,
+        default: 'false',
+        description: 'Stan ładowania całego komponentu albo wybranego panelu.',
+      },
+      {
+        name: 'labels',
+        type: 'Partial<TransferListLabels>',
+        required: false,
+        default: '({})',
+        description: 'Lokalizowane teksty interfejsu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza wszystkie operacje i usuwa listy z kolejności Tab.',
+      },
+      {
+        name: 'orientation',
+        type: 'TransferListOrientation',
+        required: false,
+        default: 'horizontal',
+        description: 'Preferowany układ; horizontal automatycznie składa się na mobile.',
+      },
+      {
+        name: 'size',
+        type: 'TransferListSize',
+        required: false,
+        default: 'standard',
+        description: 'Standardowa lub kompaktowa gęstość wierszy.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'pl-PL',
+        description: 'Locale filtrowania i sortowania.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Przenoszenie elementów między listami',
+        description: 'Dostępna nazwa całego przepływu.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Opcjonalny błąd wspólny dla obu list.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny selektor testowy.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "boolean | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'TransferListKey[]',
+        required: false,
+        default: '[]',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'sourceSelected',
+        type: 'TransferListKey[]',
+        required: false,
+        default: '[]',
+        description: 'Wartość kontrolowana przez v-model:sourceSelected.',
+      },
+      {
+        name: 'targetSelected',
+        type: 'TransferListKey[]',
+        required: false,
+        default: '[]',
+        description: 'Wartość kontrolowana przez v-model:targetSelected.',
+      },
     ],
-    "events": [],
-    "slots": [
+    events: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'move',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „move”.',
+      },
+      {
+        name: 'search',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „search”.',
+      },
+      {
+        name: 'selectionChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „selectionChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'source-header',
+        description: 'Treść osadzana w nazwanym slocie „source-header”.',
+      },
+      {
+        name: 'target-header',
+        description: 'Treść osadzana w nazwanym slocie „target-header”.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'source-empty',
+        description: 'Treść osadzana w nazwanym slocie „source-empty”.',
+      },
+      {
+        name: 'target-empty',
+        description: 'Treść osadzana w nazwanym slocie „target-empty”.',
+      },
+      {
+        name: 'controls',
+        description: 'Treść osadzana w nazwanym slocie „controls”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+    ],
   },
   {
-    "name": "FormButtonGroup",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormButtonGroup",
-    "props": [
+    name: 'EmptyState',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/EmptyState',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'Główny tytuł prezentowany w komponencie.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
       },
-      {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
-      },
-      {
-        "name": "isToggle",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is toggle” komponentu."
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      },
-      {
-        "name": "options",
-        "type": "ButtonGroupOption[]",
-        "required": true,
-        "description": "Lista opcji dostępnych do wyświetlenia lub wyboru."
-      }
     ],
-    "models": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "value",
-        "type": "string | number | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
+      },
     ],
-    "events": [],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "additionalHint",
-        "description": "Treść osadzana w nazwanym slocie „additionalHint”."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
   },
   {
-    "name": "FormCheckbox",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormCheckbox",
-    "props": [
+    name: 'MessageText',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/MessageText',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "isValid",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is valid” komponentu."
+        name: 'size',
+        type: "| 'xxs'\n    | 'xs'\n    | 's'\n    | 'm'\n    | 'l'\n    | 'xl'\n    | 'heading-xs'\n    | ' heading-s'\n    | 'heading-m'\n    | 'heading-l'",
+        required: false,
+        default: 's',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'variant',
+        type: "'info' | 'error' | 'success' | 'danger' | 'default' | 'white'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'withIcon',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „with icon” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'ownIcon',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „own icon” komponentu.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "value",
-        "type": "boolean | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
     ],
-    "events": [],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
   },
   {
-    "name": "FormContainer",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormContainer",
-    "props": [
+    name: 'ProgressIndicator',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/ProgressIndicator',
+    props: [
       {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'steps',
+        type: 'number',
+        required: true,
+        description: 'Konfiguruje właściwość „steps” komponentu.',
       },
       {
-        "name": "submitButtonLabel",
-        "type": "string",
-        "required": false,
-        "default": "Zapisz",
-        "description": "Konfiguruje właściwość „submit button label” komponentu."
+        name: 'active',
+        type: 'number',
+        required: false,
+        description: 'Określa aktywny element albo aktywny krok.',
       },
       {
-        "name": "isLoading",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Włącza stan ładowania i informuje o trwającej operacji."
+        name: 'size',
+        type: 'number',
+        required: false,
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "showActions",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „show actions” komponentu."
+        name: 'strokeWidth',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „stroke width” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'removeActive',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „remove active” komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "cancelButtonLabel",
-        "type": "string",
-        "required": false,
-        "default": "Anuluj",
-        "description": "Konfiguruje właściwość „cancel button label” komponentu."
-      },
-      {
-        "name": "actionsPosition",
-        "type": "'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
-        "required": false,
-        "default": "bottom-left",
-        "description": "Konfiguruje właściwość „actions position” komponentu."
-      },
-      {
-        "name": "showCancelButton",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „show cancel button” komponentu."
-      },
-      {
-        "name": "sizeButton",
-        "type": "'xxs' | 'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "xs",
-        "description": "Konfiguruje właściwość „size button” komponentu."
-      },
-      {
-        "name": "useAriaLabelledby",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „use aria labelledby” komponentu."
-      }
     ],
-    "models": [],
-    "events": [
-      {
-        "name": "on:cancel",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”."
-      },
-      {
-        "name": "on:submit",
-        "description": "Emitowane po zatwierdzeniu danych."
-      }
-    ],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      },
-      {
-        "name": "additional-before",
-        "description": "Treść osadzana w nazwanym slocie „additional-before”."
-      },
-      {
-        "name": "additional-after",
-        "description": "Treść osadzana w nazwanym slocie „additional-after”."
-      }
-    ]
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "FormDatePicker",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormDatePicker",
-    "props": [
+    name: 'SkeletonLoading',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/SkeletonLoading',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'rounded',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „rounded” komponentu.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Trwa ladowanie tresci.',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
-      },
-      {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
-      },
-      {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wybierz date",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
-      },
-      {
-        "name": "range",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „range” komponentu."
-      },
-      {
-        "name": "minDate",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „min date” komponentu."
-      },
-      {
-        "name": "maxDate",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „max date” komponentu."
-      },
-      {
-        "name": "min",
-        "type": "string",
-        "required": false,
-        "description": "Minimalna dozwolona wartość."
-      },
-      {
-        "name": "max",
-        "type": "string",
-        "required": false,
-        "description": "Maksymalna dozwolona wartość albo szerokość."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
     ],
-    "models": [
-      {
-        "name": "value",
-        "type": "string | DatePickerRangeValue | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
-    ],
-    "events": [
-      {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
-    ],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "FormField",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormField",
-    "props": [
+    name: 'SpinnerLoader',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/SpinnerLoader',
+    props: [
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
-      },
-      {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "iconAfter",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej za treścią pola."
-      },
-      {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
-      },
-      {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
-      },
-      {
-        "name": "maxLength",
-        "type": "number",
-        "required": false,
-        "description": "Maksymalna liczba znaków możliwa do wprowadzenia."
-      },
-      {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
-      },
-      {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
-      },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      },
-      {
-        "name": "rightErasePosition",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „right erase position” komponentu."
-      },
-      {
-        "name": "value",
-        "type": "string | number | string[] | null",
-        "required": false,
-        "description": "Bieżąca wartość kontrolowana przez v-model."
-      }
     ],
-    "models": [],
-    "events": [
-      {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
-    ],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
-      },
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+    models: [],
+    events: [],
+    slots: [],
   },
   {
-    "name": "FormFileUpload",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormFileUpload",
-    "props": [
+    name: 'ToastAlert',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/feedback/ToastAlert',
+    props: [
       {
-        "name": "allowedTypes",
-        "type": "string[]",
-        "required": false,
-        "default": "['image/jpeg', 'image/png', 'image/jpg']",
-        "description": "Konfiguruje właściwość „allowed types” komponentu."
+        name: 'variant',
+        type: "'info' | 'error' | 'success' | 'danger'",
+        required: false,
+        default: 'info',
+        description: 'Wariant wizualny komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'title',
+        type: 'string',
+        required: false,
+        description: 'Główny tytuł prezentowany w komponencie.',
       },
       {
-        "name": "maxFileSize",
-        "type": "number",
-        "required": false,
-        "default": "5 * 1024 * 1024",
-        "description": "Konfiguruje właściwość „max file size” komponentu."
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'primary' | 'danger'",
-        "required": false,
-        "default": "primary",
-        "description": "Wariant wizualny komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "default": "undefined",
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'size',
+        type: "'s' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'withShadow',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „with shadow” komponentu.',
+      },
+      {
+        name: 'withBorder',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „with border” komponentu.',
+      },
+      {
+        name: 'canClose',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „can close” komponentu.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "file",
-        "type": "FormFileUploadValue | undefined",
-        "required": false,
-        "description": "Wybrany plik kontrolowany przez v-model:file."
-      }
+        name: 'on:close',
+        description: 'Emitowane podczas zamykania komponentu.',
+      },
     ],
-    "events": [
-      {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
-    ],
-    "slots": []
+    slots: [],
   },
   {
-    "name": "FormFileUploadSimple",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormFileUploadSimple",
-    "props": [
+    name: 'FormButtonCheckbox',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormButtonCheckbox',
+    props: [
       {
-        "name": "allowedTypes",
-        "type": "string[]",
-        "required": false,
-        "default": "[\n      'application/msword',\n      'application/pdf',\n      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n      'image/jpeg',\n      'image/jpg',\n      'image/png',\n    ]",
-        "description": "Konfiguruje właściwość „allowed types” komponentu."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "context",
-        "type": "string",
-        "required": false,
-        "default": "undefined",
-        "description": "Konfiguruje właściwość „context” komponentu."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'isValid',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is valid” komponentu.',
       },
       {
-        "name": "maxFileSize",
-        "type": "number",
-        "required": false,
-        "default": "5 * 1024 * 1024",
-        "description": "Konfiguruje właściwość „max file size” komponentu."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "maxFiles",
-        "type": "number",
-        "required": false,
-        "default": "4",
-        "description": "Konfiguruje właściwość „max files” komponentu."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "default": "undefined",
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'size',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "files",
-        "type": "File[]",
-        "required": true,
-        "description": "Lista wybranych plików kontrolowana przez v-model:files."
-      }
+        name: 'value',
+        type: 'boolean | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "events": [],
-    "slots": []
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
   },
   {
-    "name": "FormInput",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormInput",
-    "props": [
+    name: 'FormButtonGroup',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormButtonGroup',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        default: 'form-button-group',
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'name',
+        type: 'string',
+        required: false,
+        default: 'formButtonGroup',
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'isToggle',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is toggle” komponentu.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "iconAfter",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej za treścią pola."
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
       },
       {
-        "name": "maxLength",
-        "type": "number",
-        "required": false,
-        "description": "Maksymalna liczba znaków możliwa do wprowadzenia."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'options',
+        type: 'ButtonGroupOption[]',
+        required: false,
+        default: '[]',
+        description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
       },
-      {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wpisz",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "string | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'string | number | undefined',
+        required: false,
+        default: 'undefined',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "events": [
+    events: [],
+    slots: [
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'additionalHint',
+        description: 'Treść osadzana w nazwanym slocie „additionalHint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
     ],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
   },
   {
-    "name": "FormMultiSelect",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormMultiSelect",
-    "props": [
+    name: 'FormCheckbox',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormCheckbox',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'isValid',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is valid” komponentu.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
-      },
-      {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wybierz/wyszukaj",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "searchable",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „searchable” komponentu."
-      },
-      {
-        "name": "withSelectAll",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „with select all” komponentu."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      },
-      {
-        "name": "options",
-        "type": "MultiSelectFieldOption[]",
-        "required": true,
-        "description": "Lista opcji dostępnych do wyświetlenia lub wyboru."
-      },
-      {
-        "name": "placement",
-        "type": "'top' | 'bottom'",
-        "required": false,
-        "description": "Konfiguruje właściwość „placement” komponentu."
-      }
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "unknown[] | null | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'boolean | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "events": [
+    events: [],
+    slots: [
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
     ],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
   },
   {
-    "name": "FormNumber",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormNumber",
-    "props": [
+    name: 'FormColorPicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormColorPicker',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'alpha',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „alpha” komponentu.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'density',
+        type: 'FormColorPickerDensity',
+        required: false,
+        default: 'full',
+        description: 'Konfiguruje właściwość „density” komponentu.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
       },
       {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "iconAfter",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej za treścią pola."
+        name: 'error',
+        type: 'string',
+        required: false,
+        description: 'Komunikat błędu powiązany z polem lub operacją.',
       },
       {
-        "name": "max",
-        "type": "number",
-        "required": false,
-        "description": "Maksymalna dozwolona wartość albo szerokość."
+        name: 'format',
+        type: 'FormColorPickerFormat',
+        required: false,
+        default: 'hex',
+        description: 'Konfiguruje właściwość „format” komponentu.',
       },
       {
-        "name": "min",
-        "type": "number",
-        "required": false,
-        "description": "Minimalna dozwolona wartość."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "step",
-        "type": "number",
-        "required": false,
-        "description": "Krok zmiany wartości liczbowej."
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wybiera natywną strategię ładowania obrazu.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wpisz",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie wyboru koloru',
+        description: 'Dostępny komunikat opisujący trwającą operację.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'panelAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Wybierz kolor',
+        description: 'Konfiguruje właściwość „panel aria label” komponentu.',
       },
       {
-        "name": "isRangeVisible",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is range visible” komponentu."
+        name: 'placement',
+        type: 'FormColorPickerPlacement',
+        required: false,
+        default: 'bottom',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'recentColors',
+        type: 'ReadonlyArray<string | FormColorPickerSwatch>',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „recent colors” komponentu.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'savedColors',
+        type: 'ReadonlyArray<string | FormColorPickerSwatch>',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „saved colors” komponentu.',
+      },
+      {
+        name: 'showEyedropper',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „show eyedropper” komponentu.',
+      },
+      {
+        name: 'variant',
+        type: 'FormColorPickerVariant',
+        required: false,
+        default: 'popover',
+        description: 'Wariant wizualny komponentu.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "number | undefined | string",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'string',
+        required: false,
+        default: '#4C9A2A',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
     ],
-    "events": [],
-    "slots": [
+    events: [
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
+        name: 'close',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
       },
       {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
+        name: 'commit',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „commit”.',
       },
       {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+        name: 'eyedropperError',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „eyedropperError”.',
+      },
+      {
+        name: 'eyedropperStart',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „eyedropperStart”.',
+      },
+      {
+        name: 'invalid',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+      },
+      {
+        name: 'open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'recent-color',
+        description: 'Treść osadzana w nazwanym slocie „recent-color”.',
+      },
+      {
+        name: 'saved-color',
+        description: 'Treść osadzana w nazwanym slocie „saved-color”.',
+      },
+      {
+        name: 'swatch',
+        description: 'Treść osadzana w nazwanym slocie „swatch”.',
+      },
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+    ],
   },
   {
-    "name": "FormPassword",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormPassword",
-    "props": [
+    name: 'FormContainer',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormContainer',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'submitButtonLabel',
+        type: 'string',
+        required: false,
+        default: 'Zapisz',
+        description: 'Konfiguruje właściwość „submit button label” komponentu.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'isLoading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'showActions',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „show actions” komponentu.',
       },
       {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "maxLength",
-        "type": "number",
-        "required": false,
-        "description": "Maksymalna liczba znaków możliwa do wprowadzenia."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "canCopy",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „can copy” komponentu."
+        name: 'cancelButtonLabel',
+        type: 'string',
+        required: false,
+        default: 'Anuluj',
+        description: 'Konfiguruje właściwość „cancel button label” komponentu.',
       },
       {
-        "name": "canVisible",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „can visible” komponentu."
+        name: 'actionsPosition',
+        type: "'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
+        required: false,
+        default: 'bottom-left',
+        description: 'Konfiguruje właściwość „actions position” komponentu.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'showCancelButton',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „show cancel button” komponentu.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wpisz",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'sizeButton',
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'xs',
+        description: 'Konfiguruje właściwość „size button” komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'useAriaLabelledby',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „use aria labelledby” komponentu.',
       },
-      {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
-      },
-      {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      },
-      {
-        "name": "showPasswordAriaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Pokaz haslo",
-        "description": "Konfiguruje właściwość „show password aria label” komponentu."
-      },
-      {
-        "name": "hidePasswordAriaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Ukryj haslo",
-        "description": "Konfiguruje właściwość „hide password aria label” komponentu."
-      },
-      {
-        "name": "copyPasswordAriaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Kopiuj haslo",
-        "description": "Konfiguruje właściwość „copy password aria label” komponentu."
-      },
-      {
-        "name": "copySuccessMessage",
-        "type": "string",
-        "required": false,
-        "default": "Haslo skopiowano do schowka.",
-        "description": "Konfiguruje właściwość „copy success message” komponentu."
-      },
-      {
-        "name": "copyErrorMessage",
-        "type": "string",
-        "required": false,
-        "default": "Nie udalo sie skopiowac hasla.",
-        "description": "Konfiguruje właściwość „copy error message” komponentu."
-      },
-      {
-        "name": "enablePasswordStrengthMeter",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „enable password strength meter” komponentu."
-      }
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "value",
-        "type": "string | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'on:cancel',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”.',
+      },
+      {
+        name: 'on:submit',
+        description: 'Emitowane po zatwierdzeniu danych.',
+      },
     ],
-    "events": [],
-    "slots": [
+    slots: [
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
+        name: 'additional-before',
+        description: 'Treść osadzana w nazwanym slocie „additional-before”.',
       },
       {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
+        name: 'additional-after',
+        description: 'Treść osadzana w nazwanym slocie „additional-after”.',
       },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+    ],
   },
   {
-    "name": "FormRadio",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormRadio",
-    "props": [
+    name: 'FormDatePicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormDatePicker',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "optionValue",
-        "type": "string | number | boolean",
-        "required": true,
-        "description": "Konfiguruje właściwość „option value” komponentu."
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
       },
       {
-        "name": "isValid",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is valid” komponentu."
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wybierz date',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'range',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „range” komponentu.',
+      },
+      {
+        name: 'minDate',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „min date” komponentu.',
+      },
+      {
+        name: 'maxDate',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „max date” komponentu.',
+      },
+      {
+        name: 'min',
+        type: 'string',
+        required: false,
+        description: 'Minimalna dozwolona wartość.',
+      },
+      {
+        name: 'max',
+        type: 'string',
+        required: false,
+        description: 'Maksymalna dozwolona wartość albo szerokość.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "string | number | boolean | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'string | DatePickerRangeValue | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "events": [],
-    "slots": [
+    events: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "FormSelect",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormSelect",
-    "props": [
+    name: 'FormDateRangePicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormDateRangePicker',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'calendars',
+        type: 'FormDateRangePickerCalendars',
+        required: false,
+        default: '2',
+        description: 'Konfiguruje właściwość „calendars” komponentu.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'confirm',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „confirm” komponentu.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'dateFormat',
+        type: 'FormDateRangePickerDateFormat',
+        required: false,
+        default: 'locale',
+        description: 'Konfiguruje właściwość „date format” komponentu.',
       },
       {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "placement",
-        "type": "'top' | 'bottom'",
-        "required": false,
-        "description": "Preferred list placement. The list flips when the preferred side has insufficient space."
+        name: 'endLabel',
+        type: 'string',
+        required: false,
+        default: 'Data końcowa',
+        description: 'Konfiguruje właściwość „end label” komponentu.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wybierz/wyszukaj",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'endPlaceholder',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Konfiguruje właściwość „end placeholder” komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'error',
+        type: 'string',
+        required: false,
+        description: 'Komunikat błędu powiązany z polem lub operacją.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'format',
+        type: 'DateRangeFormatter',
+        required: false,
+        description: 'Konfiguruje właściwość „format” komponentu.',
       },
       {
-        "name": "canWrite",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „can write” komponentu."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "searchable",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „searchable” komponentu."
+        name: 'isDateDisabled',
+        type: '(date: string) => boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „is date disabled” komponentu.',
       },
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wybiera natywną strategię ładowania obrazu.',
       },
       {
-        "name": "options",
-        "type": "SelectFieldOption[]",
-        "required": true,
-        "description": "Lista opcji dostępnych do wyświetlenia lub wyboru."
-      }
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie wyboru zakresu dat',
+        description: 'Dostępny komunikat opisujący trwającą operację.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'pl-PL',
+        description: 'Konfiguruje właściwość „locale” komponentu.',
+      },
+      {
+        name: 'maxDate',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „max date” komponentu.',
+      },
+      {
+        name: 'minDate',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „min date” komponentu.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'panelAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Wybierz zakres dat',
+        description: 'Konfiguruje właściwość „panel aria label” komponentu.',
+      },
+      {
+        name: 'parse',
+        type: 'DateRangeParser',
+        required: false,
+        description: 'Konfiguruje właściwość „parse” komponentu.',
+      },
+      {
+        name: 'placement',
+        type: 'FormDateRangePickerPlacement',
+        required: false,
+        default: 'bottom',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'presets',
+        type: 'DateRangePreset[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „presets” komponentu.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'selectionOrder',
+        type: 'FormDateRangePickerSelectionOrder',
+        required: false,
+        default: 'swap',
+        description: 'Konfiguruje właściwość „selection order” komponentu.',
+      },
+      {
+        name: 'showPresets',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „show presets” komponentu.',
+      },
+      {
+        name: 'startLabel',
+        type: 'string',
+        required: false,
+        default: 'Data początkowa',
+        description: 'Konfiguruje właściwość „start label” komponentu.',
+      },
+      {
+        name: 'startPlaceholder',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Konfiguruje właściwość „start placeholder” komponentu.',
+      },
+      {
+        name: 'variant',
+        type: 'FormDateRangePickerVariant',
+        required: false,
+        default: 'two-inputs',
+        description: 'Wariant wizualny komponentu.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "unknown",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'DateRangeValue | undefined',
+        required: false,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
     ],
-    "events": [
+    events: [
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'apply',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „apply”.',
+      },
+      {
+        name: 'cancel',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „cancel”.',
+      },
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'close',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+      },
+      {
+        name: 'endChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „endChange”.',
+      },
+      {
+        name: 'invalid',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+      },
+      {
+        name: 'monthChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „monthChange”.',
+      },
+      {
+        name: 'open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+      {
+        name: 'startChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „startChange”.',
+      },
     ],
-    "slots": [
+    slots: [
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'day',
+        description: 'Treść osadzana w nazwanym slocie „day”.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
       },
       {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
+        name: 'end-label',
+        description: 'Treść osadzana w nazwanym slocie „end-label”.',
       },
       {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'preset',
+        description: 'Treść osadzana w nazwanym slocie „preset”.',
+      },
+      {
+        name: 'start-label',
+        description: 'Treść osadzana w nazwanym slocie „start-label”.',
+      },
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+    ],
   },
   {
-    "name": "FormTextarea",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormTextarea",
-    "props": [
+    name: 'FormDateTimePicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormDateTimePicker',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'allowOffStep',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „allow off step” komponentu.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "rows",
-        "type": "number",
-        "required": false,
-        "default": "5",
-        "description": "Konfiguruje właściwość „rows” komponentu."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'confirm',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „confirm” komponentu.',
       },
       {
-        "name": "maxLength",
-        "type": "number",
-        "required": false,
-        "description": "Maksymalna liczba znaków możliwa do wprowadzenia."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'dateFormat',
+        type: 'FormDateTimePickerDateFormat',
+        required: false,
+        default: 'locale',
+        description: 'Konfiguruje właściwość „date format” komponentu.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wpisz",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'error',
+        type: 'string',
+        required: false,
+        description: 'Komunikat błędu powiązany z polem lub operacją.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'format',
+        type: 'FormTimePickerFormat',
+        required: false,
+        default: '24h',
+        description: 'Konfiguruje właściwość „format” komponentu.',
+      },
+      {
+        name: 'hourStep',
+        type: 'number',
+        required: false,
+        default: '1',
+        description: 'Konfiguruje właściwość „hour step” komponentu.',
+      },
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
+      },
+      {
+        name: 'isDateTimeDisabled',
+        type: '(value: LocalDateTimeValue) => boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „is date time disabled” komponentu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'layout',
+        type: 'FormDateTimePickerLayout',
+        required: false,
+        default: 'side-by-side',
+        description: 'Konfiguruje właściwość „layout” komponentu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wybiera natywną strategię ładowania obrazu.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie wyboru daty i czasu',
+        description: 'Dostępny komunikat opisujący trwającą operację.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'pl-PL',
+        description: 'Konfiguruje właściwość „locale” komponentu.',
+      },
+      {
+        name: 'max',
+        type: 'LocalDateTimeValue',
+        required: false,
+        description: 'Maksymalna dozwolona wartość albo szerokość.',
+      },
+      {
+        name: 'min',
+        type: 'LocalDateTimeValue',
+        required: false,
+        description: 'Minimalna dozwolona wartość.',
+      },
+      {
+        name: 'minuteStep',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Konfiguruje właściwość „minute step” komponentu.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'panelAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Wybierz datę i czas',
+        description: 'Konfiguruje właściwość „panel aria label” komponentu.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'placement',
+        type: 'FormDateTimePickerPlacement',
+        required: false,
+        default: 'bottom',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'secondStep',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Konfiguruje właściwość „second step” komponentu.',
+      },
+      {
+        name: 'showSeconds',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „show seconds” komponentu.',
+      },
+      {
+        name: 'showTimeZone',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „show time zone” komponentu.',
+      },
+      {
+        name: 'timeZone',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „time zone” komponentu.',
+      },
+      {
+        name: 'variant',
+        type: 'FormDateTimePickerVariant',
+        required: false,
+        default: 'single-input',
+        description: 'Wariant wizualny komponentu.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "value",
-        "type": "string | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'value',
+        type: 'LocalDateTimeValue | undefined',
+        required: false,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
     ],
-    "events": [],
-    "slots": [
+    events: [
       {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
+        name: 'apply',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „apply”.',
       },
       {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
+        name: 'cancel',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „cancel”.',
       },
       {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
+        name: 'close',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+      },
+      {
+        name: 'dateChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „dateChange”.',
+      },
+      {
+        name: 'invalid',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+      },
+      {
+        name: 'open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+      {
+        name: 'timeChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „timeChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'date',
+        description: 'Treść osadzana w nazwanym slocie „date”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'time',
+        description: 'Treść osadzana w nazwanym slocie „time”.',
+      },
+      {
+        name: 'time-zone',
+        description: 'Treść osadzana w nazwanym slocie „time-zone”.',
+      },
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+    ],
   },
   {
-    "name": "FormYearPicker",
-    "category": "form",
-    "categoryLabel": "Formularze",
-    "importPath": "@peaui/ui/form/FormYearPicker",
-    "props": [
+    name: 'FormField',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormField',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
       },
       {
-        "name": "canErase",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Pokazuje akcję pozwalającą wyczyścić bieżącą wartość."
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
       },
       {
-        "name": "after",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana za właściwą wartością pola."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "before",
-        "type": "string",
-        "required": false,
-        "description": "Treść wyświetlana przed właściwą wartością pola."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa pola używana przez formularz lub nazwa zasobu."
+        name: 'iconAfter',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej za treścią pola.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
       },
       {
-        "name": "iconBefore",
-        "type": "string",
-        "required": false,
-        "description": "Nazwa ikony wyświetlanej przed treścią pola."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "description": "Oznacza wartość jako wymaganą."
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
       },
       {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "wybierz rok",
-        "description": "Tekst pomocniczy widoczny przed wprowadzeniem wartości."
+        name: 'maxLength',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna liczba znaków możliwa do wprowadzenia.',
       },
       {
-        "name": "range",
-        "type": "boolean",
-        "required": false,
-        "description": "Konfiguruje właściwość „range” komponentu."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "minYear",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „min year” komponentu."
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
       },
       {
-        "name": "maxYear",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „max year” komponentu."
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "description": "Wyłącza komponent i blokuje jego interakcje."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "readonly",
-        "type": "boolean",
-        "required": false,
-        "description": "Ustawia komponent w trybie tylko do odczytu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'rightErasePosition',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „right erase position” komponentu.',
+      },
+      {
+        name: 'value',
+        type: 'string | number | string[] | null',
+        required: false,
+        description: 'Bieżąca wartość kontrolowana przez v-model.',
+      },
     ],
-    "models": [
+    models: [],
+    events: [
       {
-        "name": "value",
-        "type": "number | YearPickerRangeValue | undefined",
-        "required": true,
-        "description": "Bieżąca wartość kontrolowana przez v-model:value."
-      }
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
     ],
-    "events": [
+    slots: [
       {
-        "name": "on:remove",
-        "description": "Emitowane po wybraniu akcji usunięcia."
-      }
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
     ],
-    "slots": [
-      {
-        "name": "hint",
-        "description": "Treść osadzana w nazwanym slocie „hint”."
-      },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      },
-      {
-        "name": "error",
-        "description": "Treść osadzana w nazwanym slocie „error”."
-      },
-      {
-        "name": "success",
-        "description": "Treść osadzana w nazwanym slocie „success”."
-      }
-    ]
   },
   {
-    "name": "CardPanel",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/CardPanel",
-    "props": [
+    name: 'FormFieldLabel',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormFieldLabel',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'for',
+        type: 'string',
+        required: true,
+        description: 'Konfiguruje właściwość „for” komponentu.',
       },
       {
-        "name": "isShadowEnabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is shadow enabled” komponentu."
+        name: 'text',
+        type: 'string',
+        required: true,
+        description: 'Konfiguruje właściwość „text” komponentu.',
       },
       {
-        "name": "isHoverEnabled",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „is hover enabled” komponentu."
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "as",
-        "type": "'div' | 'section' | 'article' | 'a' | Component",
-        "required": false,
-        "default": "div",
-        "description": "Konfiguruje właściwość „as” komponentu."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
-      {
-        "name": "backgroundColor",
-        "type": "'default' | 'primary' | 'grey'",
-        "required": false,
-        "default": "default",
-        "description": "Konfiguruje właściwość „background color” komponentu."
-      },
-      {
-        "name": "borderColor",
-        "type": "'default' | 'primary' | 'grey'",
-        "required": false,
-        "default": "default",
-        "description": "Konfiguruje właściwość „border color” komponentu."
-      },
-      {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
-      }
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "header",
-        "description": "Treść osadzana w nazwanym slocie „header”."
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+    ],
   },
   {
-    "name": "FullscreenContainer",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/FullscreenContainer",
-    "props": [
+    name: 'FormFileUpload',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormFileUpload',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'allowedTypes',
+        type: 'string[]',
+        required: false,
+        default: "['image/jpeg', 'image/png', 'image/jpg']",
+        description: 'Konfiguruje właściwość „allowed types” komponentu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "openLabel",
-        "type": "string",
-        "required": false,
-        "default": "Otwórz tryb pełnoekranowy",
-        "description": "Konfiguruje właściwość „open label” komponentu."
+        name: 'maxFileSize',
+        type: 'number',
+        required: false,
+        default: '5 * 1024 * 1024',
+        description: 'Konfiguruje właściwość „max file size” komponentu.',
       },
       {
-        "name": "closeLabel",
-        "type": "string",
-        "required": false,
-        "default": "Zamknij tryb pełnoekranowy",
-        "description": "Konfiguruje właściwość „close label” komponentu."
-      }
+        name: 'variant',
+        type: "'primary' | 'danger'",
+        required: false,
+        default: 'primary',
+        description: 'Wariant wizualny komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        default: 'undefined',
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'file',
+        type: 'FormFileUploadValue | undefined',
+        required: false,
+        description: 'Wybrany plik kontrolowany przez v-model:file.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [],
   },
   {
-    "name": "GridItem",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/GridItem",
-    "props": [
+    name: 'FormFileUploadSimple',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormFileUploadSimple',
+    props: [
       {
-        "name": "colspan",
-        "type": "number",
-        "required": false,
-        "description": "Konfiguruje właściwość „colspan” komponentu."
+        name: 'allowedTypes',
+        type: 'string[]',
+        required: false,
+        default:
+          "[\n      'application/msword',\n      'application/pdf',\n      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n      'image/jpeg',\n      'image/jpg',\n      'image/png',\n    ]",
+        description: 'Konfiguruje właściwość „allowed types” komponentu.',
       },
       {
-        "name": "columns",
-        "type": "number",
-        "required": false,
-        "default": "2",
-        "description": "Definicje kolumn określające ich etykiety, klucze i sposób renderowania."
+        name: 'context',
+        type: 'string',
+        required: false,
+        default: 'undefined',
+        description: 'Konfiguruje właściwość „context” komponentu.',
       },
       {
-        "name": "gap",
-        "type": "number",
-        "required": false,
-        "default": "6",
-        "description": "Odstęp pomiędzy elementami układu."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "grid",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „grid” komponentu."
-      }
+        name: 'maxFileSize',
+        type: 'number',
+        required: false,
+        default: '5 * 1024 * 1024',
+        description: 'Konfiguruje właściwość „max file size” komponentu.',
+      },
+      {
+        name: 'maxFiles',
+        type: 'number',
+        required: false,
+        default: '4',
+        description: 'Konfiguruje właściwość „max files” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        default: 'undefined',
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'files',
+        type: 'File[]',
+        required: true,
+        description: 'Lista wybranych plików kontrolowana przez v-model:files.',
+      },
+    ],
+    events: [],
+    slots: [],
   },
   {
-    "name": "GridSection",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/GridSection",
-    "props": [
+    name: 'FormInput',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormInput',
+    props: [
       {
-        "name": "columns",
-        "type": "number",
-        "required": false,
-        "default": "4",
-        "description": "Definicje kolumn określające ich etykiety, klucze i sposób renderowania."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "gap",
-        "type": "number",
-        "required": false,
-        "default": "6",
-        "description": "Odstęp pomiędzy elementami układu."
-      }
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
+      },
+      {
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
+      },
+      {
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'iconAfter',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej za treścią pola.',
+      },
+      {
+        name: 'maxLength',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna liczba znaków możliwa do wprowadzenia.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wpisz',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
+        name: 'value',
+        type: 'string | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "PageLayout",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/PageLayout",
-    "props": [
+    name: 'FormMultiSelect',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormMultiSelect',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "isHeaderSticky",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „is header sticky” komponentu."
-      }
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
+      },
+      {
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wybierz/wyszukaj',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'searchable',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „searchable” komponentu.',
+      },
+      {
+        name: 'withSelectAll',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „with select all” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'options',
+        type: 'MultiSelectFieldOption[]',
+        required: true,
+        description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
+      },
+      {
+        name: 'placement',
+        type: "'top' | 'bottom'",
+        required: false,
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "top",
-        "description": "Treść osadzana w nazwanym slocie „top”."
+        name: 'value',
+        type: 'unknown[] | null | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
       },
       {
-        "name": "additional",
-        "description": "Treść osadzana w nazwanym slocie „additional”."
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
       },
       {
-        "name": "footer",
-        "description": "Treść osadzana w nazwanym slocie „footer”."
-      }
-    ]
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "SectionDivider",
-    "category": "layout",
-    "categoryLabel": "Układ",
-    "importPath": "@peaui/ui/layout/SectionDivider",
-    "props": [
+    name: 'FormNumber',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormNumber',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "direction",
-        "type": "'horizontal' | 'vertical'",
-        "required": false,
-        "default": "horizontal",
-        "description": "Konfiguruje właściwość „direction” komponentu."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "size",
-        "type": "'s' | 'm' | 'l' | 'xl'",
-        "required": false,
-        "default": "s",
-        "description": "Wariant rozmiaru komponentu."
-      }
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
+      },
+      {
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'iconAfter',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej za treścią pola.',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna dozwolona wartość albo szerokość.',
+      },
+      {
+        name: 'min',
+        type: 'number',
+        required: false,
+        description: 'Minimalna dozwolona wartość.',
+      },
+      {
+        name: 'step',
+        type: 'number',
+        required: false,
+        description: 'Krok zmiany wartości liczbowej.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wpisz',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'isRangeVisible',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is range visible” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'number | undefined | string',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "Breadcrumbs",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/Breadcrumbs",
-    "props": [
+    name: 'FormPassword',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormPassword',
+    props: [
       {
-        "name": "items",
-        "type": "BreadcrumbItem[]",
-        "required": true,
-        "description": "Konfiguruje właściwość „items” komponentu."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "separator",
-        "type": "string",
-        "required": false,
-        "default": "/",
-        "description": "Konfiguruje właściwość „separator” komponentu."
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Ścieżka nawigacji",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'maxLength',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna liczba znaków możliwa do wprowadzenia.',
+      },
+      {
+        name: 'canCopy',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „can copy” komponentu.',
+      },
+      {
+        name: 'canVisible',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „can visible” komponentu.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wpisz',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'showPasswordAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Pokaz haslo',
+        description: 'Konfiguruje właściwość „show password aria label” komponentu.',
+      },
+      {
+        name: 'hidePasswordAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Ukryj haslo',
+        description: 'Konfiguruje właściwość „hide password aria label” komponentu.',
+      },
+      {
+        name: 'copyPasswordAriaLabel',
+        type: 'string',
+        required: false,
+        default: 'Kopiuj haslo',
+        description: 'Konfiguruje właściwość „copy password aria label” komponentu.',
+      },
+      {
+        name: 'copySuccessMessage',
+        type: 'string',
+        required: false,
+        default: 'Haslo skopiowano do schowka.',
+        description: 'Konfiguruje właściwość „copy success message” komponentu.',
+      },
+      {
+        name: 'copyErrorMessage',
+        type: 'string',
+        required: false,
+        default: 'Nie udalo sie skopiowac hasla.',
+        description: 'Konfiguruje właściwość „copy error message” komponentu.',
+      },
+      {
+        name: 'enablePasswordStrengthMeter',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „enable password strength meter” komponentu.',
+      },
     ],
-    "models": [],
-    "events": [
+    models: [
       {
-        "name": "on:navigate",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „on:navigate”."
-      }
+        name: 'value',
+        type: 'string | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "slots": []
+    events: [],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "ListLimitControl",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/ListLimitControl",
-    "props": [
+    name: 'FormPinInput',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormPinInput',
+    props: [
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Unikalny identyfikator grupy.',
       },
       {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Widoczna etykieta opisująca element lub pole formularza."
+        name: 'name',
+        type: 'string',
+        required: false,
+        description: 'Nazwa wartości wysyłanej z natywnym formularzem.',
       },
       {
-        "name": "limitList",
-        "type": "number[]",
-        "required": false,
-        "default": "[5, 10, 25, 50]",
-        "description": "Konfiguruje właściwość „limit list” komponentu."
+        name: 'form',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator formularza właściciela.',
       },
       {
-        "name": "position",
-        "type": "'top' | 'bottom'",
-        "required": false,
-        "default": "bottom",
-        "description": "Preferred list placement; it flips automatically when the selected side has insufficient space."
+        name: 'length',
+        type: 'number',
+        required: false,
+        default: '6',
+        description: 'Liczba komórek kodu od 1 do 32.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'type',
+        type: 'FormPinInputType',
+        required: false,
+        default: 'numeric',
+        description: 'Zbiór znaków akceptowanych przez komponent.',
+      },
+      {
+        name: 'mask',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Maskuje wizualnie wpisane znaki.',
+      },
+      {
+        name: 'size',
+        type: 'FormPinInputSize',
+        required: false,
+        default: 'm',
+        description: 'Rozmiar wizualny komórek; cel dotykowy zawsze ma minimum 44 px.',
+      },
+      {
+        name: 'pattern',
+        type: 'string',
+        required: false,
+        description: 'Dodatkowy wzorzec wyrażenia regularnego sprawdzany dla każdego znaku.',
+      },
+      {
+        name: 'transform',
+        type: 'FormPinInputTransform',
+        required: false,
+        default: 'none',
+        description: 'Transformacja wykonywana przed walidacją znaku.',
+      },
+      {
+        name: 'separatorEvery',
+        type: 'number',
+        required: false,
+        default: '0',
+        description: 'Co ile komórek renderowany jest separator; 0 wyłącza grupowanie.',
+      },
+      {
+        name: 'autocomplete',
+        type: 'string',
+        required: false,
+        default: 'one-time-code',
+        description: 'Wartość autocomplete pierwszej komórki.',
+      },
+      {
+        name: 'inputmode',
+        type: 'FormPinInputInputMode',
+        required: false,
+        description: 'Podpowiedź klawiatury ekranowej. Domyślnie wynika z typu.',
+      },
+      {
+        name: 'autoFocus',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Ustawia początkowy fokus na pierwszej nieuzupełnionej komórce.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza kontrolkę.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje edycję bez usuwania kontrolki z kolejności fokusu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje edycję i udostępnia stan zajętości.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Oznacza każdą komórkę jako wymaganą.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Widoczna etykieta całej grupy.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst instrukcji powiązany z grupą i komórkami.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Komunikat błędu powiązany przez aria-describedby.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dostępna nazwa używana, gdy nie ma widocznej etykiety.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Trwa przygotowywanie pola kodu',
+        description: 'Tekst stanu ładowania dla technologii asystujących.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach.',
+      },
     ],
-    "models": [
+    models: [
       {
-        "name": "limit",
-        "type": "number",
-        "required": true,
-        "description": "Wybrany limit elementów kontrolowany przez v-model:limit."
-      }
+        name: 'value',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "events": [],
-    "slots": [
+    events: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'complete',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „complete”.',
+      },
+      {
+        name: 'invalidInput',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalidInput”.',
+      },
+      {
+        name: 'focus',
+        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+      },
+      {
+        name: 'blur',
+        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+      },
+    ],
+    slots: [
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'separator',
+        description: 'Treść osadzana w nazwanym slocie „separator”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+    ],
   },
   {
-    "name": "NavigationCard",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationCard",
-    "props": [
+    name: 'FormRadio',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormRadio',
+    props: [
       {
-        "name": "title",
-        "type": "string",
-        "required": true,
-        "description": "Główny tytuł prezentowany w komponencie."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "path",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „path” komponentu."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "description",
-        "type": "string",
-        "required": true,
-        "description": "Dodatkowy opis objaśniający zawartość albo stan komponentu."
+        name: 'optionValue',
+        type: 'string | number | boolean',
+        required: true,
+        description: 'Konfiguruje właściwość „option value” komponentu.',
       },
       {
-        "name": "size",
-        "type": "'s' | 'm' | 'l'",
-        "required": false,
-        "default": "s",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'isValid',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is valid” komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'default' | 'complete' | 'during' | 'disabled' | 'hidden'",
-        "required": false,
-        "default": "default",
-        "description": "Wariant wizualny komponentu."
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'string | number | boolean | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
   },
   {
-    "name": "NavigationDisclosureCard",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationDisclosureCard",
-    "props": [
+    name: 'FormRatingInput',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormRatingInput',
+    props: [
       {
-        "name": "title",
-        "type": "string",
-        "required": true,
-        "description": "Główny tytuł prezentowany w komponencie."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Unikalny identyfikator kontrolki.',
       },
       {
-        "name": "description",
-        "type": "string",
-        "required": true,
-        "description": "Dodatkowy opis objaśniający zawartość albo stan komponentu."
+        name: 'name',
+        type: 'string',
+        required: false,
+        description: 'Nazwa wartości wysyłanej z formularzem.',
       },
       {
-        "name": "id",
-        "type": "string",
-        "required": true,
-        "description": "Unikalny identyfikator elementu w dokumencie."
+        name: 'form',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator formularza właściciela.',
       },
       {
-        "name": "path",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „path” komponentu."
+        name: 'max',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Najwyższa ocena; wartości są normalizowane do zakresu 1–100.',
       },
       {
-        "name": "open",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Steruje widocznością rozwijanego elementu albo warstwy."
+        name: 'step',
+        type: 'FormRatingInputStep',
+        required: false,
+        default: '1',
+        description: 'Precyzja pełnej lub połówkowej oceny.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'allowClear',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala wyczyścić ocenę klawiszem Delete/Backspace lub ponownym kliknięciem.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      }
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyświetla nietabowalny odczyt zamiast kontrolki.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza kontrolkę.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Oznacza ocenę jako wymaganą.',
+      },
+      {
+        name: 'labels',
+        type: 'RatingLabels',
+        required: false,
+        default: '({})',
+        description: "Mapa tekstowych opisów indeksowana wartością, np. `{ '4': 'Dobra' }`.",
+      },
+      {
+        name: 'getLabel',
+        type: 'RatingLabelGetter',
+        required: false,
+        description: 'Funkcja tworząca tekstowy opis wartości.',
+      },
+      {
+        name: 'icon',
+        type: 'string',
+        required: false,
+        default: 'core/star',
+        description: 'Nazwa ikony z katalogu PeaUI.',
+      },
+      {
+        name: 'size',
+        type: 'FormRatingInputSize',
+        required: false,
+        default: 'm',
+        description: 'Rozmiar wizualny ikon; cel dotykowy zachowuje co najmniej 44 px.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Widoczna etykieta pola.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy powiązany przez aria-describedby.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Komunikat błędu powiązany przez aria-describedby i aria-invalid.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dostępna nazwa, gdy nie ma widocznej etykiety.',
+      },
+      {
+        name: 'emptyLabel',
+        type: 'string',
+        required: false,
+        default: 'Brak oceny',
+        description: 'Lokalizowany tekst używany dla pustej oceny.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'pl-PL',
+        description: 'Locale używane do formatowania wartości połówkowych.',
+      },
+      {
+        name: 'showValueLabel',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje widoczny tekst bieżącej wartości.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "title-additional",
-        "description": "Treść osadzana w nazwanym slocie „title-additional”."
+        name: 'value',
+        type: 'number | null',
+        required: false,
+        default: 'null',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
-        "name": "description-additional",
-        "description": "Treść osadzana w nazwanym slocie „description-additional”."
+        name: 'previewChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „previewChange”.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'clear',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „clear”.',
+      },
+      {
+        name: 'focus',
+        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+      },
+      {
+        name: 'blur',
+        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+      },
+    ],
+    slots: [
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'icon',
+        description: 'Treść osadzana w nazwanym slocie „icon”.',
+      },
+      {
+        name: 'value-label',
+        description: 'Treść osadzana w nazwanym slocie „value-label”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+    ],
   },
   {
-    "name": "NavigationIconCard",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationIconCard",
-    "props": [
+    name: 'FormSelect',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormSelect',
+    props: [
       {
-        "name": "icon",
-        "type": "string",
-        "required": true,
-        "description": "Nazwa ikony prezentowanej przez komponent."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "text",
-        "type": "string",
-        "required": true,
-        "description": "Konfiguruje właściwość „text” komponentu."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "path",
-        "type": "string",
-        "required": true,
-        "description": "Konfiguruje właściwość „path” komponentu."
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placement',
+        type: "'top' | 'bottom'",
+        required: false,
+        description:
+          'Preferred list placement. The list flips when the preferred side has insufficient space.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wybierz/wyszukaj',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'canWrite',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „can write” komponentu.',
+      },
+      {
+        name: 'searchable',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „searchable” komponentu.',
+      },
+      {
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'options',
+        type: 'SelectFieldOption[]',
+        required: true,
+        description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'unknown',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "NavigationLink",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationLink",
-    "props": [
+    name: 'FormSwitchToggle',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormSwitchToggle',
+    props: [
       {
-        "name": "path",
-        "type": "string",
-        "required": true,
-        "description": "Konfiguruje właściwość „path” komponentu."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description:
+          'Unikalny identyfikator kontrolki. Generowany automatycznie, jeśli nie zostanie podany.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'name',
+        type: 'string',
+        required: false,
+        description: 'Nazwa pola używana podczas natywnego wysyłania formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'form',
+        type: 'string',
+        required: false,
+        description:
+          'Identyfikator formularza właściciela, również gdy kontrolka znajduje się poza formularzem.',
       },
       {
-        "name": "size",
-        "type": "'m' | 's' | 'xs'",
-        "required": false,
-        "default": "s",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Widoczna etykieta przełącznika.',
       },
       {
-        "name": "variant",
-        "type": "'default' | 'primary'",
-        "required": false,
-        "default": "default",
-        "description": "Wariant wizualny komponentu."
-      }
+        name: 'description',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy powiązany z kontrolką przez aria-describedby.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Komunikat błędu powiązany z kontrolką i aria-invalid.',
+      },
+      {
+        name: 'trueValue',
+        type: 'Value',
+        required: false,
+        description: 'Wartość modelu reprezentująca stan włączony.',
+      },
+      {
+        name: 'falseValue',
+        type: 'Value',
+        required: false,
+        description: 'Wartość modelu reprezentująca stan wyłączony.',
+      },
+      {
+        name: 'size',
+        type: "'s' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Rozmiar wizualny szyny; obszar dotykowy zawsze ma co najmniej 44 px.',
+      },
+      {
+        name: 'labelPosition',
+        type: "'start' | 'end'",
+        required: false,
+        default: 'end',
+        description: 'Pozycja etykiety względem szyny.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza kontrolkę i usuwa ją z kolejności fokusu.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje zmianę, zachowując kontrolkę w kolejności fokusu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje zmianę i udostępnia stan zajętości technologiom asystującym.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Oznacza pole jako wymagane dla formularza i technologii asystujących.',
+      },
+      {
+        name: 'showStateLabel',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pokazuje tekstowy stan obok szyny bez polegania wyłącznie na kolorze.',
+      },
+      {
+        name: 'onLabel',
+        type: 'string',
+        required: false,
+        default: 'Włączone',
+        description: 'Tekst widoczny dla stanu włączonego.',
+      },
+      {
+        name: 'offLabel',
+        type: 'string',
+        required: false,
+        default: 'Wyłączone',
+        description: 'Tekst widoczny dla stanu wyłączonego.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dostępna nazwa używana, gdy nie ma widocznej etykiety.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Trwa aktualizowanie ustawienia',
+        description: 'Dostępny komunikat stanu ładowania.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'value',
+        type: 'Value',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'focus',
+        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+      },
+      {
+        name: 'blur',
+        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+      },
+    ],
+    slots: [
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'thumb',
+        description: 'Treść osadzana w nazwanym slocie „thumb”.',
+      },
+      {
+        name: 'on-label',
+        description: 'Treść osadzana w nazwanym slocie „on-label”.',
+      },
+      {
+        name: 'off-label',
+        description: 'Treść osadzana w nazwanym slocie „off-label”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+    ],
   },
   {
-    "name": "NavigationStepper",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationStepper",
-    "props": [
+    name: 'FormTagsInput',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormTagsInput',
+    props: [
       {
-        "name": "options",
-        "type": "NavStepper[]",
-        "required": false,
-        "default": "[]",
-        "description": "Lista opcji dostępnych do wyświetlenia lub wyboru."
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Unikalny identyfikator pola.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "default": "Nawigacja kroków",
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'name',
+        type: 'string',
+        required: false,
+        description: 'Nazwa używana przez natywny formularz; każdy tag tworzy osobną wartość.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
-    ],
-    "models": [],
-    "events": [
+        name: 'form',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator formularza właściciela.',
+      },
       {
-        "name": "on:select",
-        "description": "Emitowane po wybraniu elementu."
-      }
+        name: 'label',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Widoczna etykieta pola.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Tekst pomocniczy powiązany z polem.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Komunikat błędu powiązany przez aria-describedby.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'Dodaj tag',
+        description: 'Placeholder edytora.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Dostępna nazwa, gdy nie podano widocznej etykiety.',
+      },
+      {
+        name: 'layout',
+        type: 'FormTagsInputLayout',
+        required: false,
+        default: 'inline',
+        description: 'Układ tagów i edytora.',
+      },
+      {
+        name: 'mode',
+        type: 'FormTagsInputMode',
+        required: false,
+        default: 'freeform',
+        description: 'Tryb swobodny albo ograniczony do sugestii.',
+      },
+      {
+        name: 'allowCreate',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala utworzyć tag spoza listy sugestii.',
+      },
+      {
+        name: 'allowDuplicates',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala dodać tag o tym samym kluczu więcej niż raz.',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna liczba tagów.',
+      },
+      {
+        name: 'separators',
+        type: 'readonly string[]',
+        required: false,
+        default: "[',', ';', '\\n']",
+        description: 'Separatory używane podczas wpisywania i wklejania.',
+      },
+      {
+        name: 'suggestions',
+        type: 'readonly FormTagsInputTag[]',
+        required: false,
+        default: '[]',
+        description: 'Kontrolowana lista sugestii.',
+      },
+      {
+        name: 'suggestionProvider',
+        type: 'FormTagsInputSuggestionProvider',
+        required: false,
+        description: 'Opcjonalny dostawca sugestii z anulowaniem nieaktualnych zapytań.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Zewnętrzny stan ładowania sugestii.',
+      },
+      {
+        name: 'placement',
+        type: 'FormTagsInputPlacement',
+        required: false,
+        default: 'auto',
+        description: 'Położenie panelu sugestii.',
+      },
+      {
+        name: 'normalizeTag',
+        type: 'FormTagsInputNormalizer',
+        required: false,
+        description: 'Normalizuje tekst przed walidacją.',
+      },
+      {
+        name: 'validateTag',
+        type: 'FormTagsInputValidator',
+        required: false,
+        description: 'Waliduje pojedynczy tag przed zmianą modelu.',
+      },
+      {
+        name: 'getTagKey',
+        type: 'FormTagsInputKeyGetter',
+        required: false,
+        description: 'Wyznacza stabilny klucz i regułę duplikatów.',
+      },
+      {
+        name: 'serializeTag',
+        type: 'FormTagsInputSerializer',
+        required: false,
+        description: 'Serializuje wartości do natywnych pól formularza.',
+      },
+      {
+        name: 'disabledTags',
+        type: 'readonly (string | number)[]',
+        required: false,
+        default: '[]',
+        description: 'Klucze lub etykiety tagów, których nie można edytować ani usunąć.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza całą kontrolkę.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala odczytać i kopiować zawartość bez jej zmiany.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Oznacza pole jako wymagane.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie sugestii',
+        description: 'Tekst prezentowany podczas ładowania sugestii.',
+      },
+      {
+        name: 'emptyLabel',
+        type: 'string',
+        required: false,
+        default: 'Brak pasujących sugestii',
+        description: 'Tekst pustego wyniku wyszukiwania.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach.',
+      },
     ],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'FormTagsInputTag[]',
+        required: false,
+        default: '[]',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'inputValue',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Wartość kontrolowana przez v-model:inputValue.',
+      },
+    ],
+    events: [
+      {
+        name: 'add',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „add”.',
+      },
+      {
+        name: 'remove',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „remove”.',
+      },
+      {
+        name: 'edit',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „edit”.',
+      },
+      {
+        name: 'invalidTag',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalidTag”.',
+      },
+      {
+        name: 'search',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „search”.',
+      },
+      {
+        name: 'maxReached',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „maxReached”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'label',
+        description: 'Treść osadzana w nazwanym slocie „label”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'tag',
+        description: 'Treść osadzana w nazwanym slocie „tag”.',
+      },
+      {
+        name: 'tag-content',
+        description: 'Treść osadzana w nazwanym slocie „tag-content”.',
+      },
+      {
+        name: 'suggestion',
+        description: 'Treść osadzana w nazwanym slocie „suggestion”.',
+      },
+      {
+        name: 'empty-suggestions',
+        description: 'Treść osadzana w nazwanym slocie „empty-suggestions”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+      {
+        name: 'prefix',
+        description: 'Treść osadzana w nazwanym slocie „prefix”.',
+      },
+      {
+        name: 'suffix',
+        description: 'Treść osadzana w nazwanym slocie „suffix”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+    ],
   },
   {
-    "name": "NavigationTabs",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/NavigationTabs",
-    "props": [
+    name: 'FormTextarea',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormTextarea',
+    props: [
       {
-        "name": "tabs",
-        "type": "Tab[]",
-        "required": false,
-        "default": "[]",
-        "description": "Konfiguruje właściwość „tabs” komponentu."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": true,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'rows',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Konfiguruje właściwość „rows” komponentu.',
       },
       {
-        "name": "withBackround",
-        "type": "boolean",
-        "required": false,
-        "default": "true",
-        "description": "Konfiguruje właściwość „with backround” komponentu."
-      }
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'maxLength',
+        type: 'number',
+        required: false,
+        description: 'Maksymalna liczba znaków możliwa do wprowadzenia.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wpisz',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
     ],
-    "models": [],
-    "events": [
+    models: [
       {
-        "name": "on:select",
-        "description": "Emitowane po wybraniu elementu."
-      }
+        name: 'value',
+        type: 'string | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
     ],
-    "slots": [
+    events: [],
+    slots: [
       {
-        "name": "getSlotName(tab.key, ",
-        "description": "Treść osadzana w nazwanym slocie „getSlotName(tab.key, ”."
-      }
-    ]
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "PaginationControl",
-    "category": "navigation",
-    "categoryLabel": "Nawigacja",
-    "importPath": "@peaui/ui/navigation/PaginationControl",
-    "props": [
+    name: 'FormTimePicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormTimePicker',
+    props: [
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": true,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Stabilny identyfikator pola i powiązanych elementów ARIA.',
       },
       {
-        "name": "totalPages",
-        "type": "number",
-        "required": true,
-        "description": "Łączna liczba stron dostępnych w paginacji."
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przy wysyłaniu formularza.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
-      }
-    ],
-    "models": [
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta pola.',
+      },
       {
-        "name": "page",
-        "type": "number",
-        "required": true,
-        "default": "1",
-        "description": "Aktualna strona kontrolowana przez v-model:page."
-      }
+        name: 'description',
+        type: 'string',
+        required: false,
+        description: 'Tekst pomocy wyświetlany pod polem.',
+      },
+      {
+        name: 'error',
+        type: 'string',
+        required: false,
+        description: 'Zewnętrzny komunikat błędu; ma pierwszeństwo przed walidacją wewnętrzną.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'undefined',
+        description: 'Placeholder opisujący oczekiwany format.',
+      },
+      {
+        name: 'variant',
+        type: 'FormTimePickerVariant',
+        required: false,
+        default: 'input',
+        description: 'Edytowalne pole tekstowe albo zestaw dostępnych segmentów.',
+      },
+      {
+        name: 'panelMode',
+        type: 'FormTimePickerPanelMode',
+        required: false,
+        default: 'dropdown',
+        description: 'Lista opcji albo kompaktowe kontrolki spinbutton w panelu.',
+      },
+      {
+        name: 'placement',
+        type: 'FormTimePickerPlacement',
+        required: false,
+        default: 'bottom',
+        description:
+          'Preferowane położenie panelu; komponent może odwrócić je przy krawędzi viewportu.',
+      },
+      {
+        name: 'format',
+        type: 'FormTimePickerFormat',
+        required: false,
+        default: '24h',
+        description: 'Format prezentacji. Model zawsze pozostaje wartością 24-godzinną.',
+      },
+      {
+        name: 'showSeconds',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Dodaje segment sekund do pola, modelu i panelu.',
+      },
+      {
+        name: 'hourStep',
+        type: 'number',
+        required: false,
+        default: '1',
+        description: 'Krok godzin wykorzystywany przez opcje i klawiaturę.',
+      },
+      {
+        name: 'minuteStep',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Krok minut wykorzystywany przez opcje i klawiaturę.',
+      },
+      {
+        name: 'secondStep',
+        type: 'number',
+        required: false,
+        default: '5',
+        description: 'Krok sekund wykorzystywany przez opcje i klawiaturę.',
+      },
+      {
+        name: 'min',
+        type: 'string',
+        required: false,
+        description: 'Najwcześniejsza dozwolona wartość w formacie HH:mm[:ss].',
+      },
+      {
+        name: 'max',
+        type: 'string',
+        required: false,
+        description: 'Najpóźniejsza dozwolona wartość w formacie HH:mm[:ss].',
+      },
+      {
+        name: 'allowOffStep',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Pozwala zatwierdzić ręcznie wpisaną wartość, która nie leży na siatce kroków.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'pl-PL',
+        description: 'Locale używany do prezentacji okresu dnia w formacie 12h.',
+      },
+      {
+        name: 'parse',
+        type: 'TimePickerParser',
+        required: false,
+        description: 'Opcjonalny parser tekstu zastępujący parser wbudowany.',
+      },
+      {
+        name: 'formatValue',
+        type: 'TimePickerFormatter',
+        required: false,
+        description: 'Opcjonalny formatter prezentacji zastępujący formatter wbudowany.',
+      },
+      {
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala usunąć bieżącą wartość przyciskiem pola.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pole musi zawierać poprawną wartość.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Całkowicie blokuje kontrolkę.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pozwala odczytać wartość bez jej zmiany.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Blokuje interakcje i udostępnia stan oczekiwania technologiom asystującym.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa pola, gdy nie ma widocznej etykiety.',
+      },
+      {
+        name: 'panelAriaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa panelu wyboru czasu.',
+      },
+      {
+        name: 'triggerAriaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa przycisku panelu w wariancie segmented.',
+      },
+      {
+        name: 'loadingLabel',
+        type: 'string',
+        required: false,
+        default: 'Ładowanie wyboru czasu',
+        description: 'Tekst ogłaszany podczas ładowania.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
     ],
-    "events": [],
-    "slots": []
+    models: [
+      {
+        name: 'value',
+        type: 'string | undefined',
+        required: false,
+        default: 'undefined',
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [
+      {
+        name: 'change',
+        description: 'Emitowane po zmianie wartości przez użytkownika.',
+      },
+      {
+        name: 'invalid',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+      },
+      {
+        name: 'open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+      {
+        name: 'close',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+      {
+        name: 'hour-option',
+        description: 'Treść osadzana w nazwanym slocie „hour-option”.',
+      },
+      {
+        name: 'minute-option',
+        description: 'Treść osadzana w nazwanym slocie „minute-option”.',
+      },
+      {
+        name: 'second-option',
+        description: 'Treść osadzana w nazwanym slocie „second-option”.',
+      },
+      {
+        name: 'period-option',
+        description: 'Treść osadzana w nazwanym slocie „period-option”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+    ],
   },
   {
-    "name": "DrawerPanel",
-    "category": "overlayer",
-    "categoryLabel": "Warstwy i okna",
-    "importPath": "@peaui/ui/overlayer/DrawerPanel",
-    "props": [
+    name: 'FormYearPicker',
+    category: 'form',
+    categoryLabel: 'Formularze',
+    importPath: '@peaui/ui/form/FormYearPicker',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": true,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      }
-    ],
-    "models": [
-      {
-        "name": "open",
-        "type": "boolean",
-        "required": true,
-        "description": "Stan otwarcia kontrolowany przez v-model:open."
-      }
-    ],
-    "events": [],
-    "slots": [
-      {
-        "name": "header",
-        "description": "Treść osadzana w nazwanym slocie „header”."
+        name: 'canErase',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'after',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana za właściwą wartością pola.',
+      },
+      {
+        name: 'before',
+        type: 'string',
+        required: false,
+        description: 'Treść wyświetlana przed właściwą wartością pola.',
+      },
+      {
+        name: 'name',
+        type: 'string',
+        required: true,
+        description: 'Nazwa pola używana przez formularz lub nazwa zasobu.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: false,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'iconBefore',
+        type: 'string',
+        required: false,
+        description: 'Nazwa ikony wyświetlanej przed treścią pola.',
+      },
+      {
+        name: 'required',
+        type: 'boolean',
+        required: false,
+        description: 'Oznacza wartość jako wymaganą.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'wybierz rok',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'range',
+        type: 'boolean',
+        required: false,
+        description: 'Konfiguruje właściwość „range” komponentu.',
+      },
+      {
+        name: 'minYear',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „min year” komponentu.',
+      },
+      {
+        name: 'maxYear',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „max year” komponentu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'value',
+        type: 'number | YearPickerRangeValue | undefined',
+        required: true,
+        description: 'Bieżąca wartość kontrolowana przez v-model:value.',
+      },
+    ],
+    events: [
+      {
+        name: 'on:remove',
+        description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+    ],
+    slots: [
+      {
+        name: 'hint',
+        description: 'Treść osadzana w nazwanym slocie „hint”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'success',
+        description: 'Treść osadzana w nazwanym slocie „success”.',
+      },
+    ],
   },
   {
-    "name": "InfoTooltip",
-    "category": "overlayer",
-    "categoryLabel": "Warstwy i okna",
-    "importPath": "@peaui/ui/overlayer/InfoTooltip",
-    "props": [
+    name: 'CardPanel',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/CardPanel',
+    props: [
       {
-        "name": "placement",
-        "type": "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
-        "required": false,
-        "default": "top",
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'isShadowEnabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is shadow enabled” komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'default' | 'disabled'",
-        "required": false,
-        "default": "default",
-        "description": "Wariant wizualny komponentu."
+        name: 'isHoverEnabled',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „is hover enabled” komponentu.',
       },
       {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      }
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'as',
+        type: "'div' | 'section' | 'article' | 'a' | Component",
+        required: false,
+        default: 'div',
+        description: 'Konfiguruje właściwość „as” komponentu.',
+      },
+      {
+        name: 'backgroundColor',
+        type: "'default' | 'primary' | 'grey'",
+        required: false,
+        default: 'default',
+        description: 'Konfiguruje właściwość „background color” komponentu.',
+      },
+      {
+        name: 'borderColor',
+        type: "'default' | 'primary' | 'grey'",
+        required: false,
+        default: 'default',
+        description: 'Konfiguruje właściwość „border color” komponentu.',
+      },
+      {
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
+      },
     ],
-    "models": [],
-    "events": [],
-    "slots": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
+        name: 'header',
+        description: 'Treść osadzana w nazwanym slocie „header”.',
       },
       {
-        "name": "title",
-        "description": "Treść osadzana w nazwanym slocie „title”."
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
       },
-      {
-        "name": "description",
-        "description": "Treść osadzana w nazwanym slocie „description”."
-      }
-    ]
+    ],
   },
   {
-    "name": "ModalDialog",
-    "category": "overlayer",
-    "categoryLabel": "Warstwy i okna",
-    "importPath": "@peaui/ui/overlayer/ModalDialog",
-    "props": [
+    name: 'FullscreenContainer',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/FullscreenContainer',
+    props: [
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
       {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": true,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      }
-    ],
-    "models": [
-      {
-        "name": "open",
-        "type": "boolean",
-        "required": true,
-        "description": "Stan otwarcia kontrolowany przez v-model:open."
-      }
-    ],
-    "events": [],
-    "slots": [
-      {
-        "name": "header",
-        "description": "Treść osadzana w nazwanym slocie „header”."
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
       {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      }
-    ]
+        name: 'openLabel',
+        type: 'string',
+        required: false,
+        default: 'Otwórz tryb pełnoekranowy',
+        description: 'Konfiguruje właściwość „open label” komponentu.',
+      },
+      {
+        name: 'closeLabel',
+        type: 'string',
+        required: false,
+        default: 'Zamknij tryb pełnoekranowy',
+        description: 'Konfiguruje właściwość „close label” komponentu.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
   },
   {
-    "name": "PopoverButton",
-    "category": "overlayer",
-    "categoryLabel": "Warstwy i okna",
-    "importPath": "@peaui/ui/overlayer/PopoverButton",
-    "props": [
+    name: 'GridItem',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/GridItem',
+    props: [
       {
-        "name": "size",
-        "type": "'xs' | 's' | 'm' | 'l'",
-        "required": false,
-        "default": "m",
-        "description": "Wariant rozmiaru komponentu."
+        name: 'colspan',
+        type: 'number',
+        required: false,
+        description: 'Konfiguruje właściwość „colspan” komponentu.',
       },
       {
-        "name": "variant",
-        "type": "'primary' | 'secondary' | 'ghost' | 'danger'",
-        "required": false,
-        "default": "primary",
-        "description": "Wariant wizualny komponentu."
+        name: 'columns',
+        type: 'number',
+        required: false,
+        default: '2',
+        description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
       },
       {
-        "name": "placement",
-        "type": "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
-        "required": false,
-        "default": "top",
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        name: 'gap',
+        type: 'number',
+        required: false,
+        default: '6',
+        description: 'Odstęp pomiędzy elementami układu.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'grid',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „grid” komponentu.',
       },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      },
-      {
-        "name": "matchTriggerWidth",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „match trigger width” komponentu."
-      },
-      {
-        "name": "popupType",
-        "type": "'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | 'true'",
-        "required": false,
-        "description": "Konfiguruje właściwość „popup type” komponentu."
-      },
-      {
-        "name": "useAriaLabel",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „use aria label” komponentu."
-      }
     ],
-    "models": [],
-    "events": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "keydown",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „keydown”."
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
       },
-      {
-        "name": "pointerdown",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „pointerdown”."
-      }
     ],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
-      },
-      {
-        "name": "content",
-        "description": "Treść osadzana w nazwanym slocie „content”."
-      }
-    ]
   },
   {
-    "name": "PopoverOverlayer",
-    "category": "overlayer",
-    "categoryLabel": "Warstwy i okna",
-    "importPath": "@peaui/ui/overlayer/PopoverOverlayer",
-    "props": [
+    name: 'GridSection',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/GridSection',
+    props: [
       {
-        "name": "placement",
-        "type": "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
-        "required": false,
-        "default": "top",
-        "description": "Konfiguruje właściwość „placement” komponentu."
+        name: 'columns',
+        type: 'number',
+        required: false,
+        default: '4',
+        description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
       },
       {
-        "name": "dataTestId",
-        "type": "string",
-        "required": false,
-        "description": "Stabilny identyfikator data-testid przeznaczony dla testów automatycznych."
+        name: 'gap',
+        type: 'number',
+        required: false,
+        default: '6',
+        description: 'Odstęp pomiędzy elementami układu.',
       },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Wyłącza komponent i blokuje jego interakcje."
-      },
-      {
-        "name": "ariaLabel",
-        "type": "string",
-        "required": false,
-        "description": "Dostępna nazwa elementu przekazywana przez aria-label."
-      },
-      {
-        "name": "contentClass",
-        "type": "string",
-        "required": false,
-        "description": "Konfiguruje właściwość „content class” komponentu."
-      },
-      {
-        "name": "matchTriggerWidth",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Konfiguruje właściwość „match trigger width” komponentu."
-      },
-      {
-        "name": "popupType",
-        "type": "'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'",
-        "required": false,
-        "description": "Konfiguruje właściwość „popup type” komponentu."
-      }
     ],
-    "models": [],
-    "events": [
+    models: [],
+    events: [],
+    slots: [
       {
-        "name": "update:open",
-        "description": "Emitowane, gdy komponent zgłasza zdarzenie „update:open”."
-      }
-    ],
-    "slots": [
-      {
-        "name": "default",
-        "description": "Główna treść przekazywana do komponentu."
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
       },
       {
-        "name": "content",
-        "description": "Treść osadzana w nazwanym slocie „content”."
-      }
-    ]
-  }
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'PageLayout',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/PageLayout',
+    props: [
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'isHeaderSticky',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „is header sticky” komponentu.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'top',
+        description: 'Treść osadzana w nazwanym slocie „top”.',
+      },
+      {
+        name: 'additional',
+        description: 'Treść osadzana w nazwanym slocie „additional”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+    ],
+  },
+  {
+    name: 'ScrollArea',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/ScrollArea',
+    props: [
+      {
+        name: 'id',
+        type: 'string',
+        required: false,
+        description:
+          'Stabilny identyfikator komponentu, relacji ARIA i opcjonalnie zapisanej pozycji.',
+      },
+      {
+        name: 'type',
+        type: 'ScrollAreaType',
+        required: false,
+        default: 'styled',
+        description: 'Natywne paski systemowe albo dostępne paski stylowane przez PeaUI.',
+      },
+      {
+        name: 'orientation',
+        type: 'ScrollAreaOrientation',
+        required: false,
+        default: 'vertical',
+        description: 'Osie, na których zawartość może być przewijana.',
+      },
+      {
+        name: 'scrollbarVisibility',
+        type: 'ScrollAreaScrollbarVisibility',
+        required: false,
+        default: 'auto',
+        description: 'Sposób widoczności stylowanych pasków przewijania.',
+      },
+      {
+        name: 'scrollbarSize',
+        type: 'number',
+        required: false,
+        default: '10',
+        description: 'Grubość paska w pikselach, ograniczona do zakresu 6–20.',
+      },
+      {
+        name: 'autoHideDelay',
+        type: 'number',
+        required: false,
+        default: '700',
+        description: 'Opóźnienie ukrycia automatycznego paska w milisekundach, maksymalnie 10000.',
+      },
+      {
+        name: 'tabindex',
+        type: 'number',
+        required: false,
+        description:
+          'Opcjonalny tabindex natywnego viewportu; bez niego komponent nie dodaje przystanku Tab.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa przewijanego regionu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Blokuje publiczne metody i sterowanie stylowanymi paskami, zachowując natywny scroll.',
+      },
+      {
+        name: 'restorePosition',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Przywraca pozycję po ponownym montażu, gdy przekazano stabilne id.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny selektor testowy elementu głównego.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'scroll',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „scroll”.',
+      },
+      {
+        name: 'scrollStart',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „scrollStart”.',
+      },
+      {
+        name: 'scrollEnd',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „scrollEnd”.',
+      },
+      {
+        name: 'reachStart',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachStart”.',
+      },
+      {
+        name: 'reachEnd',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachEnd”.',
+      },
+      {
+        name: 'resize',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „resize”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'scrollbar',
+        description: 'Treść osadzana w nazwanym slocie „scrollbar”.',
+      },
+      {
+        name: 'start-indicator',
+        description: 'Treść osadzana w nazwanym slocie „start-indicator”.',
+      },
+      {
+        name: 'end-indicator',
+        description: 'Treść osadzana w nazwanym slocie „end-indicator”.',
+      },
+    ],
+  },
+  {
+    name: 'SectionDivider',
+    category: 'layout',
+    categoryLabel: 'Układ',
+    importPath: '@peaui/ui/layout/SectionDivider',
+    props: [
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'direction',
+        type: "'horizontal' | 'vertical'",
+        required: false,
+        default: 'horizontal',
+        description: 'Konfiguruje właściwość „direction” komponentu.',
+      },
+      {
+        name: 'size',
+        type: "'s' | 'm' | 'l' | 'xl'",
+        required: false,
+        default: 's',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [],
+  },
+  {
+    name: 'Breadcrumbs',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/Breadcrumbs',
+    props: [
+      {
+        name: 'items',
+        type: 'BreadcrumbItem[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „items” komponentu.',
+      },
+      {
+        name: 'separator',
+        type: 'string',
+        required: false,
+        default: '/',
+        description: 'Konfiguruje właściwość „separator” komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Ścieżka nawigacji',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'on:navigate',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:navigate”.',
+      },
+    ],
+    slots: [],
+  },
+  {
+    name: 'ContextMenu',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/ContextMenu',
+    props: [
+      {
+        name: 'items',
+        type: 'DropdownMenuItem[]',
+        required: false,
+        default: '[]',
+        description: 'Pozycje współdzielące pełny kontrakt semantyczny z DropdownMenu.',
+      },
+      {
+        name: 'context',
+        type: 'unknown',
+        required: false,
+        description: 'Dane domenowe bieżącego celu przekazywane w zdarzeniach akcji.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza wyłącznie menu kontekstowe, bez blokowania podstawowej funkcji celu.',
+      },
+      {
+        name: 'trigger',
+        type: "'pointer' | 'keyboard' | 'both'",
+        required: false,
+        default: 'both',
+        description: 'Dozwolony sposób otwierania menu.',
+      },
+      {
+        name: 'position',
+        type: "'cursor' | 'target'",
+        required: false,
+        default: 'cursor',
+        description: 'Pozycjonuje menu przy kursorze albo przy prostokącie aktywnego celu.',
+      },
+      {
+        name: 'longPress',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Włącza otwieranie dotykiem po bezruchowym przytrzymaniu.',
+      },
+      {
+        name: 'longPressDelay',
+        type: 'number',
+        required: false,
+        default: '550',
+        description:
+          'Czas przytrzymania w milisekundach; wartości są ograniczane do bezpiecznego zakresu.',
+      },
+      {
+        name: 'longPressMoveThreshold',
+        type: 'number',
+        required: false,
+        default: '10',
+        description: 'Maksymalny ruch wskaźnika w pikselach przed anulowaniem long press.',
+      },
+      {
+        name: 'closeOnScroll',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zamyka otwarte menu po przewinięciu dokumentu lub kontenera celu.',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        required: false,
+        default: '4',
+        description: 'Odstęp powierzchni menu od punktu albo celu w pikselach.',
+      },
+      {
+        name: 'closeOnSelect',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zamyka menu po zwykłej akcji.',
+      },
+      {
+        name: 'loop',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala zapętlać nawigację strzałkami.',
+      },
+      {
+        name: 'density',
+        type: 'DropdownMenuDensity',
+        required: false,
+        default: 'comfortable',
+        description: 'Gęstość pionowa pozycji menu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Menu kontekstowe',
+        description: 'Dostępna nazwa powierzchni menu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pokazuje stan ładowania zamiast pozycji.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [
+      {
+        name: 'open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+      {
+        name: 'close',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+      },
+      {
+        name: 'select',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+      {
+        name: 'checkedChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+      },
+      {
+        name: 'valueChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+      },
+      {
+        name: 'contextChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „contextChange”.',
+      },
+      {
+        name: 'longPressCancel',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „longPressCancel”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'item-icon',
+        description: 'Treść osadzana w nazwanym slocie „item-icon”.',
+      },
+      {
+        name: 'item-shortcut',
+        description: 'Treść osadzana w nazwanym slocie „item-shortcut”.',
+      },
+      {
+        name: 'group-label',
+        description: 'Treść osadzana w nazwanym slocie „group-label”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+    ],
+  },
+  {
+    name: 'DropdownMenu',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/DropdownMenu',
+    props: [
+      {
+        name: 'items',
+        type: 'DropdownMenuItem[]',
+        required: false,
+        default: '[]',
+        description: 'Deklaratywna kolekcja akcji, grup, separatorów i podmenu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza trigger i wszystkie akcje menu.',
+      },
+      {
+        name: 'placement',
+        type: "'top' | 'right' | 'bottom' | 'left'",
+        required: false,
+        default: 'bottom',
+        description:
+          'Strona triggera zachowywana także przy kolizji; powierzchnia jest ograniczana do viewportu.',
+      },
+      {
+        name: 'align',
+        type: "'start' | 'center' | 'end'",
+        required: false,
+        default: 'start',
+        description: 'Wyrównanie menu na osi poprzecznej.',
+      },
+      {
+        name: 'offset',
+        type: 'number',
+        required: false,
+        default: '8',
+        description: 'Odstęp menu od triggera w pikselach.',
+      },
+      {
+        name: 'closeOnSelect',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Zamyka menu po zwykłej akcji; checkbox i radio pozostają domyślnie otwarte.',
+      },
+      {
+        name: 'loop',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala zapętlać nawigację strzałkami między skrajnymi pozycjami.',
+      },
+      {
+        name: 'density',
+        type: "'compact' | 'comfortable'",
+        required: false,
+        default: 'comfortable',
+        description: 'Gęstość pionowa pozycji menu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Menu akcji',
+        description: 'Dostępna nazwa powierzchni menu.',
+      },
+      {
+        name: 'triggerLabel',
+        type: 'string',
+        required: false,
+        default: 'Otwórz menu',
+        description: 'Widoczna i dostępna etykieta domyślnego triggera.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Pokazuje stan ładowania zamiast pozycji.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [
+      {
+        name: 'select',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+      {
+        name: 'checkedChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+      },
+      {
+        name: 'valueChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+      },
+      {
+        name: 'openChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „openChange”.',
+      },
+      {
+        name: 'escape',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „escape”.',
+      },
+      {
+        name: 'outsideClick',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „outsideClick”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'item-icon',
+        description: 'Treść osadzana w nazwanym slocie „item-icon”.',
+      },
+      {
+        name: 'item-shortcut',
+        description: 'Treść osadzana w nazwanym slocie „item-shortcut”.',
+      },
+      {
+        name: 'group-label',
+        description: 'Treść osadzana w nazwanym slocie „group-label”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+    ],
+  },
+  {
+    name: 'ListLimitControl',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/ListLimitControl',
+    props: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
+      },
+      {
+        name: 'label',
+        type: 'string',
+        required: true,
+        description: 'Widoczna etykieta opisująca element lub pole formularza.',
+      },
+      {
+        name: 'limitList',
+        type: 'number[]',
+        required: false,
+        default: '[5, 10, 25, 50]',
+        description: 'Konfiguruje właściwość „limit list” komponentu.',
+      },
+      {
+        name: 'position',
+        type: "'top' | 'bottom'",
+        required: false,
+        default: 'bottom',
+        description:
+          'Preferred list placement; it flips automatically when the selected side has insufficient space.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'limit',
+        type: 'number',
+        required: true,
+        description: 'Wybrany limit elementów kontrolowany przez v-model:limit.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'MenuBar',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/MenuBar',
+    props: [
+      {
+        name: 'menus',
+        type: 'MenuBarMenu[]',
+        required: false,
+        default: '[]',
+        description: 'Uporządkowane sekcje poziomego menu aplikacyjnego.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza cały pasek i zamyka aktywną sekcję.',
+      },
+      {
+        name: 'loop',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Pozwala zapętlać fokus między pierwszym i ostatnim dostępnym triggerem.',
+      },
+      {
+        name: 'variant',
+        type: "'default' | 'compact'",
+        required: false,
+        default: 'default',
+        description: 'Gęstość wizualna triggerów i pozycji menu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Menu aplikacji',
+        description: 'Dostępna nazwa elementu z rolą menubar.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator używany w testach automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'openMenu',
+        type: 'string | number | null',
+        required: false,
+        default: 'null',
+        description: 'Wartość kontrolowana przez v-model:openMenu.',
+      },
+    ],
+    events: [
+      {
+        name: 'select',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+      {
+        name: 'focusChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+      },
+      {
+        name: 'checkedChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+      },
+      {
+        name: 'valueChange',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'menu-trigger',
+        description: 'Treść osadzana w nazwanym slocie „menu-trigger”.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'group-label',
+        description: 'Treść osadzana w nazwanym slocie „group-label”.',
+      },
+      {
+        name: 'shortcut',
+        description: 'Treść osadzana w nazwanym slocie „shortcut”.',
+      },
+    ],
+  },
+  {
+    name: 'NavigationCard',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationCard',
+    props: [
+      {
+        name: 'title',
+        type: 'string',
+        required: true,
+        description: 'Główny tytuł prezentowany w komponencie.',
+      },
+      {
+        name: 'path',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „path” komponentu.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: true,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
+      },
+      {
+        name: 'size',
+        type: "'s' | 'm' | 'l'",
+        required: false,
+        default: 's',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'variant',
+        type: "'default' | 'complete' | 'during' | 'disabled' | 'hidden'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [],
+  },
+  {
+    name: 'NavigationDisclosureCard',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationDisclosureCard',
+    props: [
+      {
+        name: 'title',
+        type: 'string',
+        required: true,
+        description: 'Główny tytuł prezentowany w komponencie.',
+      },
+      {
+        name: 'description',
+        type: 'string',
+        required: true,
+        description: 'Dodatkowy opis objaśniający zawartość albo stan komponentu.',
+      },
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
+      },
+      {
+        name: 'path',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „path” komponentu.',
+      },
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Steruje widocznością rozwijanego elementu albo warstwy.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'title-additional',
+        description: 'Treść osadzana w nazwanym slocie „title-additional”.',
+      },
+      {
+        name: 'description-additional',
+        description: 'Treść osadzana w nazwanym slocie „description-additional”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'NavigationIconCard',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationIconCard',
+    props: [
+      {
+        name: 'icon',
+        type: 'string',
+        required: false,
+        default: 'info',
+        description: 'Nazwa ikony prezentowanej przez komponent.',
+      },
+      {
+        name: 'text',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Konfiguruje właściwość „text” komponentu.',
+      },
+      {
+        name: 'path',
+        type: 'string',
+        required: false,
+        default: '',
+        description: 'Konfiguruje właściwość „path” komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [],
+  },
+  {
+    name: 'NavigationLink',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationLink',
+    props: [
+      {
+        name: 'path',
+        type: 'string',
+        required: true,
+        description: 'Konfiguruje właściwość „path” komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'size',
+        type: "'m' | 's' | 'xs'",
+        required: false,
+        default: 's',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'variant',
+        type: "'default' | 'primary'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny komponentu.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'NavigationStepper',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationStepper',
+    props: [
+      {
+        name: 'options',
+        type: 'NavStepper[]',
+        required: false,
+        default: '[]',
+        description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Nawigacja kroków',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'on:select',
+        description: 'Emitowane po wybraniu elementu.',
+      },
+    ],
+    slots: [],
+  },
+  {
+    name: 'NavigationTabs',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/NavigationTabs',
+    props: [
+      {
+        name: 'tabs',
+        type: 'Tab[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „tabs” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: true,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'withBackround',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „with backround” komponentu.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'on:select',
+        description: 'Emitowane po wybraniu elementu.',
+      },
+    ],
+    slots: [
+      {
+        name: 'getSlotName(tab.key, ',
+        description: 'Treść osadzana w nazwanym slocie „getSlotName(tab.key, ”.',
+      },
+    ],
+  },
+  {
+    name: 'PaginationControl',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/navigation/PaginationControl',
+    props: [
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: true,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'totalPages',
+        type: 'number',
+        required: true,
+        description: 'Łączna liczba stron dostępnych w paginacji.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'page',
+        type: 'number',
+        required: true,
+        default: '1',
+        description: 'Aktualna strona kontrolowana przez v-model:page.',
+      },
+    ],
+    events: [],
+    slots: [],
+  },
+  {
+    name: 'DrawerPanel',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/overlayer/DrawerPanel',
+    props: [
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: true,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: true,
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'header',
+        description: 'Treść osadzana w nazwanym slocie „header”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'InfoTooltip',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/overlayer/InfoTooltip',
+    props: [
+      {
+        name: 'placement',
+        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        required: false,
+        default: 'top',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'variant',
+        type: "'default' | 'disabled'",
+        required: false,
+        default: 'default',
+        description: 'Wariant wizualny komponentu.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+    ],
+    models: [],
+    events: [],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'title',
+        description: 'Treść osadzana w nazwanym slocie „title”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+    ],
+  },
+  {
+    name: 'ModalDialog',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/overlayer/ModalDialog',
+    props: [
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: true,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: true,
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+    ],
+    events: [],
+    slots: [
+      {
+        name: 'header',
+        description: 'Treść osadzana w nazwanym slocie „header”.',
+      },
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+    ],
+  },
+  {
+    name: 'PopoverButton',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/overlayer/PopoverButton',
+    props: [
+      {
+        name: 'size',
+        type: "'xs' | 's' | 'm' | 'l'",
+        required: false,
+        default: 'm',
+        description: 'Wariant rozmiaru komponentu.',
+      },
+      {
+        name: 'variant',
+        type: "'primary' | 'secondary' | 'ghost' | 'danger'",
+        required: false,
+        default: 'primary',
+        description: 'Wariant wizualny komponentu.',
+      },
+      {
+        name: 'placement',
+        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        required: false,
+        default: 'top',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'matchTriggerWidth',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „match trigger width” komponentu.',
+      },
+      {
+        name: 'popupType',
+        type: "'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | 'true'",
+        required: false,
+        description: 'Konfiguruje właściwość „popup type” komponentu.',
+      },
+      {
+        name: 'useAriaLabel',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „use aria label” komponentu.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'keydown',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „keydown”.',
+      },
+      {
+        name: 'pointerdown',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „pointerdown”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'content',
+        description: 'Treść osadzana w nazwanym slocie „content”.',
+      },
+    ],
+  },
+  {
+    name: 'PopoverOverlayer',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/overlayer/PopoverOverlayer',
+    props: [
+      {
+        name: 'placement',
+        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        required: false,
+        default: 'top',
+        description: 'Konfiguruje właściwość „placement” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'contentClass',
+        type: 'string',
+        required: false,
+        description: 'Konfiguruje właściwość „content class” komponentu.',
+      },
+      {
+        name: 'manageTriggerAccessibility',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „manage trigger accessibility” komponentu.',
+      },
+      {
+        name: 'matchTriggerWidth',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „match trigger width” komponentu.',
+      },
+      {
+        name: 'popupType',
+        type: "'menu' | 'listbox' | 'tree' | 'grid' | 'dialog'",
+        required: false,
+        description: 'Konfiguruje właściwość „popup type” komponentu.',
+      },
+    ],
+    models: [],
+    events: [
+      {
+        name: 'update:open',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:open”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'default',
+        description: 'Główna treść przekazywana do komponentu.',
+      },
+      {
+        name: 'content',
+        description: 'Treść osadzana w nazwanym slocie „content”.',
+      },
+    ],
+  },
 ] as const satisfies readonly ComponentApi[];

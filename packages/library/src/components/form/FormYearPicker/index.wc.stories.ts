@@ -15,7 +15,10 @@ defineFormYearPicker();
 const meta = {
   title: '5. Form/FormYearPicker',
   component: FormYearPickerElement.tagName,
-  args: createVueCustomElementStoryArgs(FormYearPickerVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormYearPickerVueComponent),
+    value: 2026,
+  },
   argTypes: createVueCustomElementArgTypes(FormYearPickerVueComponent),
   parameters: {
     name: 'FormYearPicker',

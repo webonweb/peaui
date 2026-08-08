@@ -1,0 +1,309 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-form-switch-toggle {
+  display: block;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.peaui-form-switch-toggle {
+  --peaui-switch-track-width: 2.5rem;
+  --peaui-switch-track-height: 1.375rem;
+  --peaui-switch-thumb-size: 1rem;
+  --peaui-switch-thumb-offset: 0.125rem;
+
+  display: grid;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  color: var(--peaui-color-grey-900);
+  font-family: inherit;
+  row-gap: 0.25rem;
+}
+
+.peaui-form-switch-toggle--size-s {
+  --peaui-switch-track-width: 2rem;
+  --peaui-switch-track-height: 1.125rem;
+  --peaui-switch-thumb-size: 0.75rem;
+  --peaui-switch-thumb-offset: 0.125rem;
+}
+
+.peaui-form-switch-toggle--size-l {
+  --peaui-switch-track-width: 3rem;
+  --peaui-switch-track-height: 1.625rem;
+  --peaui-switch-thumb-size: 1.25rem;
+  --peaui-switch-thumb-offset: 0.125rem;
+}
+
+.peaui-form-switch-toggle__interaction {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-block-size: 2.75rem;
+  min-inline-size: 0;
+  color: inherit;
+  cursor: pointer;
+  gap: 0.625rem;
+}
+
+.peaui-form-switch-toggle__label {
+  min-inline-size: 0;
+  color: var(--peaui-color-grey-900);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.peaui-form-switch-toggle__required {
+  margin-inline-start: 0.1875rem;
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-switch-toggle__control {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 var(--peaui-switch-track-width);
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.75rem;
+  inline-size: var(--peaui-switch-track-width);
+}
+
+.peaui-form-switch-toggle__input {
+  @include sr-only;
+}
+
+.peaui-form-switch-toggle__track {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  inline-size: var(--peaui-switch-track-width);
+  block-size: var(--peaui-switch-track-height);
+  background: var(--peaui-color-grey-300);
+  border: 1px solid var(--peaui-color-grey-500);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px rgb(from var(--peaui-color-grey-900) r g b / 0.08);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.peaui-form-switch-toggle__thumb {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--peaui-switch-thumb-offset);
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  inline-size: var(--peaui-switch-thumb-size);
+  block-size: var(--peaui-switch-thumb-size);
+  color: var(--peaui-color-primary-700);
+  background: var(--peaui-color-grey-0);
+  border: 1px solid rgb(from var(--peaui-color-grey-900) r g b / 0.12);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(from var(--peaui-color-grey-900) r g b / 0.2);
+  transform: translateY(-50%);
+  transition: transform 160ms ease;
+}
+
+.peaui-form-switch-toggle--checked .peaui-form-switch-toggle__track {
+  background: color-mix(in srgb, var(--peaui-color-primary-600) 30%, var(--peaui-color-grey-0));
+  border-color: var(--peaui-color-primary-600);
+}
+
+.peaui-form-switch-toggle--checked .peaui-form-switch-toggle__thumb {
+  transform: translate(
+    calc(
+      var(--peaui-switch-track-width) - var(--peaui-switch-thumb-size) -
+        (2 * var(--peaui-switch-thumb-offset)) - 2px
+    ),
+    -50%
+  );
+}
+
+.peaui-form-switch-toggle--checked:dir(rtl) .peaui-form-switch-toggle__thumb {
+  transform: translate(
+    calc(
+      -1 *
+        (
+          var(--peaui-switch-track-width) - var(--peaui-switch-thumb-size) -
+            (2 * var(--peaui-switch-thumb-offset)) - 2px
+        )
+    ),
+    -50%
+  );
+}
+
+.peaui-form-switch-toggle__input:focus-visible + .peaui-form-switch-toggle__track {
+  outline: 3px solid var(--peaui-color-primary-600);
+  outline-offset: 3px;
+}
+
+.peaui-form-switch-toggle:not(.peaui-form-switch-toggle--disabled):not(
+    .peaui-form-switch-toggle--loading
+  ):not(.peaui-form-switch-toggle--readonly)
+  .peaui-form-switch-toggle__interaction:hover
+  .peaui-form-switch-toggle__track {
+  border-color: var(--peaui-color-primary-700);
+  box-shadow:
+    inset 0 1px 2px rgb(from var(--peaui-color-grey-900) r g b / 0.08),
+    0 0 0 3px rgb(from var(--peaui-color-primary-500) r g b / 0.12);
+}
+
+.peaui-form-switch-toggle--checked:not(.peaui-form-switch-toggle--disabled):not(
+    .peaui-form-switch-toggle--loading
+  ):not(.peaui-form-switch-toggle--readonly)
+  .peaui-form-switch-toggle__interaction:hover
+  .peaui-form-switch-toggle__track {
+  background: color-mix(in srgb, var(--peaui-color-primary-600) 42%, var(--peaui-color-grey-0));
+  border-color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-switch-toggle__state {
+  flex: 0 0 auto;
+  color: var(--peaui-color-grey-700);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.peaui-form-switch-toggle__description,
+.peaui-form-switch-toggle__error {
+  max-inline-size: 40rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.peaui-form-switch-toggle__description {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-form-switch-toggle__error {
+  color: var(--peaui-color-danger-700);
+  font-weight: 600;
+}
+
+.peaui-form-switch-toggle--invalid .peaui-form-switch-toggle__track {
+  border-color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-switch-toggle--invalid
+  .peaui-form-switch-toggle__input:focus-visible
+  + .peaui-form-switch-toggle__track {
+  outline-color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-switch-toggle--readonly .peaui-form-switch-toggle__interaction {
+  cursor: default;
+}
+
+.peaui-form-switch-toggle--readonly .peaui-form-switch-toggle__track {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 3px,
+    rgb(from var(--peaui-color-grey-900) r g b / 0.08) 3px,
+    rgb(from var(--peaui-color-grey-900) r g b / 0.08) 5px
+  );
+}
+
+.peaui-form-switch-toggle--disabled,
+.peaui-form-switch-toggle--loading {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-switch-toggle--disabled .peaui-form-switch-toggle__interaction,
+.peaui-form-switch-toggle--loading .peaui-form-switch-toggle__interaction {
+  cursor: not-allowed;
+}
+
+.peaui-form-switch-toggle--disabled .peaui-form-switch-toggle__track,
+.peaui-form-switch-toggle--loading .peaui-form-switch-toggle__track {
+  background-color: var(--peaui-color-grey-200);
+  border-color: var(--peaui-color-grey-400);
+  box-shadow: none;
+  opacity: 0.72;
+}
+
+.peaui-form-switch-toggle--disabled .peaui-form-switch-toggle__label,
+.peaui-form-switch-toggle--disabled .peaui-form-switch-toggle__state,
+.peaui-form-switch-toggle--disabled .peaui-form-switch-toggle__description,
+.peaui-form-switch-toggle--loading .peaui-form-switch-toggle__label,
+.peaui-form-switch-toggle--loading .peaui-form-switch-toggle__state,
+.peaui-form-switch-toggle--loading .peaui-form-switch-toggle__description {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-switch-toggle__spinner {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 65%;
+  block-size: 65%;
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: 50%;
+  animation: peaui-form-switch-toggle-spin 700ms linear infinite;
+}
+
+.peaui-form-switch-toggle__loading-status {
+  @include sr-only;
+}
+
+@keyframes peaui-form-switch-toggle-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (max-width: 30rem) {
+  .peaui-form-switch-toggle__interaction {
+    inline-size: 100%;
+  }
+
+  .peaui-form-switch-toggle__label {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-form-switch-toggle__track,
+  .peaui-form-switch-toggle__thumb {
+    transition: none;
+  }
+
+  .peaui-form-switch-toggle__spinner {
+    border-block-start-color: currentColor;
+    opacity: 0.65;
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-switch-toggle__track {
+    background: Canvas;
+    border-color: ButtonText;
+  }
+
+  .peaui-form-switch-toggle__thumb {
+    color: HighlightText;
+    background: ButtonText;
+    border-color: ButtonText;
+  }
+
+  .peaui-form-switch-toggle--checked .peaui-form-switch-toggle__track {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .peaui-form-switch-toggle__input:focus-visible + .peaui-form-switch-toggle__track {
+    outline-color: Highlight;
+  }
+}

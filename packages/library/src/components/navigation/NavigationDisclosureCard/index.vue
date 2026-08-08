@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------------------------//
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import { UIKIT_NAME } from '@/constants';
-import { sanitizeToSlug } from '@/helpers/string.helepr';
+import { sanitizeToSlug } from '@/helpers/string.helper';
 import { computed, getCurrentInstance, onMounted, ref, useId, useSlots } from 'vue';
 
 // VARIABLES

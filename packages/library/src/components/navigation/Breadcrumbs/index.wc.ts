@@ -9,6 +9,7 @@ import BreadcrumbsVueComponent from './index.ce.vue';
 export const BreadcrumbsElement = createVueCustomElement(
   BreadcrumbsVueComponent,
   `${UIKIT_NAME}-breadcrumbs`,
+  { hostRole: 'group' },
 );
 
 export function defineBreadcrumbs(): void {

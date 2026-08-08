@@ -25,14 +25,6 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     ['Presents images in consistent sizes.', 'Provides a safe alternative-text fallback.'],
     'An image URL, alternative text and an optional size variant.',
   ),
-  PhotoEditor: enCopy(
-    'An image editor for selecting, cropping and preparing a picture before saving it.',
-    [
-      'Guides users through basic image editing.',
-      'Returns the prepared image through the image model.',
-    ],
-    'An image object passed through the image model; the editor can also start empty.',
-  ),
   SvgIcon: enCopy(
     'A lightweight renderer for SVG icons included with PEAUI.',
     ['Loads an icon by name.', 'Keeps decorative graphics hidden from screen readers.'],
@@ -57,6 +49,162 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Uses the same classes, tokens and behavior in Vue, React and Web Components.',
     ],
     'An array of people with identifiers and names, plus an optional limit, size, shape, direction, overflow mode and controlled open state.',
+  ),
+  ContextMenu: enCopy(
+    'An accessible context menu positioned at the pointer or active target, with safe long press and a complete keyboard alternative.',
+    [
+      'Opens actions with right click, the Menu key, Shift+F10 or a configurable touch hold.',
+      'Suppresses the native menu only after successful activation and never blocks scrolling or system zoom.',
+      'Shares ARIA roles, typeahead, groups, checkboxes, radio items and two-level submenus with DropdownMenu.',
+      'Keeps the surface inside the viewport and uses the same appearance in Vue, React and Web Components.',
+    ],
+    'An item array and target content, plus optional context data, trigger mode, positioning, long press, scroll policy and controlled open state.',
+  ),
+  DropdownMenu: enCopy(
+    'An accessible action menu with groups, separators, checkboxes, radio items, shortcut hints and two-level submenus.',
+    [
+      'Implements the ARIA menu pattern with correct roles, complete keyboard navigation and typeahead.',
+      'Skips disabled items, restores focus after dismissal and never traps Tab navigation.',
+      'Keeps the requested top/right/bottom/left side and constrains the surface to the available viewport.',
+      'Keeps the same appearance, class names and behavior in Vue, React and Web Components.',
+    ],
+    'An item array with stable identifiers and types, plus optional placement, alignment, density, close policy and controlled open state.',
+  ),
+  SplitButton: enCopy(
+    'A compound button with an independent primary action and a menu of alternative actions.',
+    [
+      'Keeps primary activation separate from menu opening, including loading and partially disabled states.',
+      'Exposes two native controls in a named group and the complete ARIA menu pattern with focus restoration.',
+      'Supports Enter, Space, ArrowDown and Escape while leaving Tab to the page navigation flow.',
+      'Provides a progressive xxs–l type scale, 44px touch targets, safe long-label truncation and a menu constrained to the viewport.',
+      'Uses identical class names, tokens, dimensions and behavior in Vue, React and Web Components.',
+    ],
+    'A primary-action label and DropdownMenu item array, plus optional icon, variant, size, alignment, controlled open state and independent disabled and loading states.',
+  ),
+  TransferList: enCopy(
+    'Two connected multi-selection lists for safely assigning and removing items.',
+    [
+      'Moves selected or all visible items without changing stable keys or deterministic ordering.',
+      'Provides independent search, sorting, counts, per-panel loading and disabled-item enforcement.',
+      'Implements the ARIA multiselectable listbox pattern with arrows, Home, End, Shift and Ctrl/Cmd+A.',
+      'Stacks in narrow containers, keeps internal scrolling and looks identical in Vue, React and Web Components.',
+    ],
+    'An object array with stable keys and labels plus a target-key array, with optional panel selections, filters, sorting, disabled keys, loading and localized labels.',
+  ),
+  InlineEdit: enCopy(
+    'Accessible in-place value editing with a controlled draft, explicit saving and safe cancellation.',
+    [
+      'Composes the existing FormInput, FormNumber, FormSelect, FormTextarea and ButtonAction instead of duplicating fields and buttons.',
+      'Supports validation, controlled asynchronous saving, server errors and aria-busy without committing the value by itself.',
+      'Provides Enter or Ctrl/Cmd+Enter, Escape, F2 and configurable Tab behavior with deterministic focus restoration.',
+      'Keeps a visible edit button even when click or double-click activation is enabled.',
+      'Wraps actions in narrow containers and preserves identical appearance, class names and behavior across Vue, React and Web Components.',
+    ],
+    'A value and optional controlled editing state, plus editor type, editorProps, validation, save mode, activation, actions, Tab behavior and disabled/readonly/loading/error states.',
+  ),
+  CopyButton: enCopy(
+    'An accessible plain-text clipboard action with a safe fallback and unambiguous result feedback.',
+    [
+      'Composes the existing ButtonAction and SvgIcon while preserving the size scale, variants and a minimum 44px touch target.',
+      'Resolves the exact value from text or synchronous/asynchronous getText only when the action is activated.',
+      'Distinguishes success, write failure and unsupported clipboard environments while cleaning fallback DOM and reset timers.',
+      'Keeps focus on the native button, uses a stable action name and announces the result through an atomic live region.',
+      'Provides icon, text and icon-text presentations with identical appearance and behavior in Vue, React and Web Components.',
+    ],
+    'Text or a getText resolver, with optional reset delay, labels, content presentation, ButtonAction variant and size, status visibility, loading and disabled states.',
+  ),
+  KeyboardKey: enCopy(
+    'A semantic presentation of one key or an ordered shortcut combination with platform-aware mapping.',
+    [
+      'Renders every key as native kbd markup while preserving order and allowing wrapping only between keycaps.',
+      'Maps the portable Mod token and modifiers for Windows, macOS, Linux and generic platforms.',
+      'Keeps compact visual symbols separate from the complete assistive phrase, including with custom renderers.',
+      'Remains static, never enters the Tab order and does not claim aria-keyshortcuts without active shortcut registration.',
+      'Uses the same contract, SSR behavior, appearance and responsive layout in Vue, React and Web Components.',
+    ],
+    'A key or ordered token combination, plus optional platform, symbol/text format, size, inline/block presentation, separator, muted appearance and custom accessible label.',
+  ),
+  ScrollArea: enCopy(
+    'A responsive native-overflow scrolling region with optional PeaUI scrollbars and a consistent programmatic API.',
+    [
+      'Preserves native wheel, touch, keyboard and momentum scrolling without intercepting gestures.',
+      'Provides vertical, horizontal and two-axis viewports in native or styled mode.',
+      'Styled bars implement the ARIA scrollbar pattern, complete keyboard control, dragging and logical RTL coordinates.',
+      'Deduplicates edge events, batches measurements by animation frame and removes observers on unmount.',
+      'Uses identical markup, appearance, events and public methods in Vue, React and Web Components.',
+    ],
+    'Slot content or React children, with optional axes, scrollbar type and visibility, an accessible name and a stable id for position restoration.',
+  ),
+  VirtualList: enCopy(
+    'A high-performance fixed-height list that renders only the visible range of a large collection plus controlled overscan.',
+    [
+      'Handles 10,000 or more records without creating the same number of DOM nodes.',
+      'Composes the existing ScrollArea, EmptyState and SpinnerLoader with shared PeaUI tokens.',
+      'Provides list and listbox semantics, complete aria-setsize/aria-posinset metadata and Arrow, Home, End, PageUp and PageDown navigation.',
+      'Keeps the focused row mounted, deduplicates reachEnd and preserves position when data is appended or prepended.',
+      'Uses the same range, markup, appearance, events and scrolling methods in Vue, React and Web Components.',
+    ],
+    'An item array, fixed itemSize and viewport height, with optional overscan, key and label resolvers, listbox semanticRole, loading, hasMore and controlled activeIndex.',
+  ),
+  MenuBar: enCopy(
+    'A responsive application menubar that composes several accessible DropdownMenu sections into one keyboard workflow.',
+    [
+      'Implements the ARIA menubar pattern with roving tabindex, arrow navigation, Home, End and typeahead.',
+      'Switches open parent menus without leaving menu mode and preserves the established submenu behavior.',
+      'Scrolls horizontally on narrow screens, keeps the focused trigger visible and never silently changes into a hamburger.',
+      'Uses the same markup, tokens and behavior in Vue, React and Web Components.',
+    ],
+    'An ordered menu-section array with identifiers, labels and DropdownMenu items, plus optional density, loop and controlled open-menu state.',
+  ),
+  FormSwitchToggle: enCopy(
+    'An accessible boolean or domain-value setting switch built on a native checkbox with the switch role.',
+    [
+      'Participates in native forms, supports required validation and maps trueValue and falseValue without losing type safety.',
+      'Connects its label, description, error and loading status through correct ARIA relationships.',
+      'Distinguishes disabled, focusable read-only and loading states and never changes while blocked.',
+      'Provides a minimum 44px activation target, wraps long content and looks identical in Vue, React and Web Components.',
+    ],
+    'A controlled value through the Vue value model or React value/onValueChange, plus optional domain values, label, description, error, size and form states.',
+  ),
+  FormRatingInput: enCopy(
+    'An accessible control for selecting or presenting a rating on a discrete full-step or half-step scale.',
+    [
+      'Exposes one native slider with unambiguous aria-valuetext instead of several unnamed buttons.',
+      'Keeps pointer preview separate from the committed model and supports explicit clearing.',
+      'Supports arrows, Home, End, Delete and Backspace, plus a non-tabbable read-only presentation.',
+      'Provides 44px minimum touch targets, wraps large scales and looks identical in Vue, React and Web Components.',
+    ],
+    'A number or null value, positive max, step 1 or 0.5, and optional value labels, custom icon, field label, description, error and form states.',
+  ),
+  ToggleButton: enCopy(
+    'An accessible toggle button for persistent on/off settings, built on a native button with aria-pressed.',
+    [
+      'Supports Enter and Space natively and exposes a controlled boolean model without an extra icon tab stop.',
+      'Keeps a stable accessible name when the visible label or icon changes with the pressed state.',
+      'Distinguishes disabled, focusable read-only and loading states, and uses the shared form-button surface and border without an extra selection icon.',
+      'Provides a minimum 44px target, opt-in text wrapping and the same appearance in Vue, React and Web Components.',
+    ],
+    'A controlled boolean value through the Vue value model or React value/onValueChange, plus labels, icons, content mode, variant, size and blocking states.',
+  ),
+  ToggleGroup: enCopy(
+    'An accessible group of related toggle buttons with single or multiple selection.',
+    [
+      'Maintains at most one tab stop and supports arrow, Home and End navigation.',
+      'Enforces required and allowEmpty rules without mixing aria-pressed with radio semantics.',
+      'Supports horizontal and vertical orientation, RTL, disabled items and deterministic focus after data changes.',
+      'Provides separate or attached layouts, five sizes, centered content without empty icon spacing, mobile wrapping or scrolling, and the same appearance in Vue, React and Web Components.',
+    ],
+    'An item array with unique string or number values and a scalar/null single model or array multiple model, plus optional label, validation, orientation, appearance, variant and xxs–l size.',
+  ),
+  SegmentedControl: enCopy(
+    'A compact control for choosing exactly one option from a small mutually exclusive set.',
+    [
+      'Uses radiogroup/radio semantics and one roving tab stop without duplicating NavigationTabs.',
+      'Supports automatic or manual activation, Home/End, vertical and horizontal orientation, RTL and disabled-item skipping.',
+      'Updates its indicator after value, size and font changes without layout shift, and disables animation under reduced motion.',
+      'Provides equal or natural distribution, text and icons, full width and mobile overflow that keeps the active option visible.',
+    ],
+    'An item array with a unique string or number value, label and optional icon, plus a single value model and distribution, content, size, orientation and activation settings.',
   ),
   CalculationResults: enCopy(
     'A calculation result panel with an optional recalculate action.',
@@ -178,7 +326,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     ],
     'A title, description, variant and optional size, border, shadow and close settings.',
   ),
-  FieldLabel: enCopy(
+  FormFieldLabel: enCopy(
     'An accessible form label with required and read-only indicators.',
     ['Connects label text to a control.', 'Communicates whether the field is required.'],
     'A target control ID, label text and optional required and read-only flags.',
@@ -208,6 +356,10 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Selects dates without manual formatting.',
       'Restricts selection with minimum and maximum dates.',
+      'Provides a keyboard-operated calendar grid, month and year views, and reliable focus restoration.',
+      'Uses the same 44px cell height, radius, hover, subtle today outline and selected fill as FormDateTimePicker.',
+      'Keeps a readable minimum 320px overlay for fields as narrow as 200px when the viewport allows it, so the grid and navigation are never compressed.',
+      'Uses the shared picker surface with Vue, React and Web Component parity.',
     ],
     'ID, name, controlled value, range mode, limits, label and field states.',
   ),
@@ -236,7 +388,11 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormMultiSelect: enCopy(
     'A multiple-choice field with search and select-all behavior.',
-    ['Collects multiple values in one field.', 'Filters long option lists.'],
+    [
+      'Collects multiple values in one field.',
+      'Filters long option lists.',
+      'Keeps its panel inside the viewport on the shared PEAUI overlay surface.',
+    ],
     'An options list, controlled value array and standard field data.',
   ),
   FormNumber: enCopy(
@@ -259,6 +415,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Selects one option.',
       'Supports searchable lists, custom entries and viewport-safe placement.',
+      'Shares radius, border, shadow, spacing and responsive limits with the other pickers.',
     ],
     'An options list, ID, name and controlled selected value.',
   ),
@@ -269,8 +426,83 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormYearPicker: enCopy(
     'A field for selecting a year or year range.',
-    ['Selects a year without a full calendar.', 'Restricts values with minimum and maximum years.'],
+    [
+      'Selects a year without a full calendar.',
+      'Restricts values with minimum and maximum years.',
+      'Provides keyboard navigation for the decade grid with correct roles, names and selected state.',
+      'Uses the same visual cell states as the other calendar and date pickers.',
+      'Keeps a readable minimum 320px overlay for fields as narrow as 200px and safely shifts it at viewport edges.',
+      'Uses the shared picker surface in all three frameworks.',
+    ],
     'ID, name, controlled value, range mode, year limits and field states.',
+  ),
+  FormTimePicker: enCopy(
+    'An accessible time field with manual entry, editable segments and an option panel.',
+    [
+      'Synchronizes text and selection with a locale-independent HH:mm[:ss] model.',
+      'Supports 12/24-hour formats, seconds, explicit steps, min/max limits and an off-step policy.',
+      'Implements combobox, listbox and spinbutton patterns with complete keyboard and focus behavior.',
+      'Keeps a readable minimum 320px panel for fields as narrow as 200px without compressed or overlapping controls.',
+      'Keeps the panel inside the viewport, provides 44px touch targets and preserves Vue, React and Web Component parity.',
+    ],
+    'ID, name, controlled value and open state, plus optional format, variant, panel mode, steps, limits, parser, formatter and field states.',
+  ),
+  FormDateTimePicker: enCopy(
+    'An accessible local date and time field with one responsive selection panel.',
+    [
+      'Keeps date and time in one explicit model without implicit time-zone conversion.',
+      'Supports single or split input, horizontal or stacked layout, and immediate or confirmed updates.',
+      'Validates partial values, whole date-time bounds, disabled moments, and time steps.',
+      'Provides a keyboard-operable calendar grid and spinbuttons with clear accessible names, a 44px height and a minimum 24 × 24px target even in the narrowest panel.',
+      'Defines the shared picker day states for hover, today, selection and disabled dates.',
+      'Keeps a minimum 320px panel, readable day grid and viewport-safe placement for fields as narrow as 200px.',
+      'Automatically stacks or separates sections according to available space.',
+    ],
+    'Provide id, name, and the controlled { date, time } value; optionally configure bounds, locale, informational time zone, formats, layout, confirmation, and form states.',
+  ),
+  FormDateRangePicker: enCopy(
+    'An accessible complete date-range field with manual entry, presets, and one or two calendars.',
+    [
+      'Synchronizes two inputs or one text input with the visual range preview and a canonical [start, end] model.',
+      'Supports swap, reject and resetEnd ordering policies plus immediate or confirmed updates.',
+      'Validates minDate, maxDate, disabled dates, partial values and endpoint order without implicit time-zone conversion.',
+      'Provides a calendar grid with roving tabindex, complete keyboard support, a named dialog, live status and explicit start/end announcements.',
+      'Stacks two calendars in narrow panels, avoids compressed cells for 200px triggers and keeps the overlay inside the viewport.',
+      'Extends the simple FormDatePicker range use case with manual fields, presets, ordering validation and transactional apply/cancel while preserving FormDatePicker compatibility.',
+      'Uses the same model, class names, appearance and behavior in Vue, React and Web Components.',
+    ],
+    'Provide id, name and controlled [start, end] value; optionally configure calendar count, input variant, presets, bounds, disabled dates, locale, parser, formatter, ordering policy, confirmation and form states.',
+  ),
+  FormColorPicker: enCopy(
+    'An accessible color field with manual entry, a two-dimensional picker and optional transparency.',
+    [
+      'Keeps one canonical color model and presents it as HEX, RGB or HSL without conversion drift.',
+      'Supports popover and inline panels, saved and recent colors, alpha, and progressive EyeDropper enhancement.',
+      'Provides named sliders, keyboard support for saturation and brightness, non-color-only messaging, and 44 px touch targets.',
+      'Fits narrow viewports and preserves one visual and behavioral contract across Vue, React and Web Components.',
+    ],
+    'Provide id, name and the controlled color value; optionally configure format, variant, density, alpha, palettes, EyeDropper, placement and form states.',
+  ),
+  FormPinInput: enCopy(
+    'An accessible group of fields for entering a short PIN, OTP or identifier.',
+    [
+      'Keeps the value as a string, including leading zeroes, and emits complete only for a new full value.',
+      'Supports numeric or alphanumeric input, masking, transformation, visual grouping and native one-time-code autocomplete.',
+      'Distributes pasted text, rejects invalid characters and safely supports editing in the middle of the code.',
+      'Provides one Tab entry point, arrow-key navigation, unambiguous cell labels and 44 px touch targets.',
+    ],
+    'Provide id, name and the controlled string; optionally configure length, type, masking, pattern, transformation, grouping, autocomplete and form states.',
+  ),
+  FormTagsInput: enCopy(
+    'An accessible field for adding, editing and removing multiple short values as tags.',
+    [
+      'Validates normalization, duplicates and limits before every model update, including paste and edits.',
+      'Supports freeform and suggestions-only modes, object values and cancellable asynchronous suggestions.',
+      'Provides combobox/listbox semantics, named remove buttons, stable focus with a subtle two-pixel ring and complete keyboard support.',
+      'Uses the shared PEAUI popover layer for light dismiss, placement and trigger-width matching.',
+      'Wraps long values without overflow and preserves identical behavior and appearance across Vue, React and Web Components.',
+    ],
+    'Provide id, name and controlled value/inputValue; optionally configure suggestions, provider, separators, normalization, validation, keys, serialization, limits and field states.',
   ),
   CardPanel: enCopy(
     'A general-purpose card panel for grouping related content.',
@@ -381,7 +613,11 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   PopoverOverlayer: enCopy(
     'A low-level popover layer positioned relative to its trigger.',
-    ['Builds menus, tips and small contextual panels.', 'Controls content position and width.'],
+    [
+      'Builds menus, tips and small contextual panels.',
+      'Controls content position, width and vertical fallback at viewport edges.',
+      'Provides one shared surface, offset and forced-colors treatment for the pickers built on it.',
+    ],
     'Trigger and popover content plus placement, popup type and optional classes.',
   ),
 };
@@ -555,7 +791,62 @@ export function localizeApiEntries(
 }
 
 const iconCategoryEnglish: Record<IconCategoryId, { description: string; label: string }> = {
+  core: {
+    label: 'Core',
+    description: 'Core PeaUI symbols and their ring, tile and badge variants.',
+  },
+  extended: {
+    label: 'Extended',
+    description: 'Additional semantic symbols that complement the core catalog.',
+  },
+  ring: {
+    label: 'Ring variants',
+    description: 'Symbols placed inside a light circular outline.',
+  },
+  tile: {
+    label: 'Tile variants',
+    description: 'Symbols placed inside a rounded square outline.',
+  },
   actions: { label: 'Actions', description: 'User operations and interface tools.' },
+  accessibility: {
+    label: 'Accessibility',
+    description: 'Assistive technology, captions and accessibility symbols.',
+  },
+  animals: { label: 'Animals', description: 'Animals and related symbols.' },
+  arrows: { label: 'Arrows', description: 'Directions, undo and element movement.' },
+  brands: { label: 'Brands', description: 'Services, platforms and system marks.' },
+  buildings: { label: 'Buildings', description: 'Buildings, institutions and places.' },
+  charts: { label: 'Charts', description: 'Data visualization, trends and statistics.' },
+  communication: {
+    label: 'Communication',
+    description: 'Conversations, calls, messages and contacts.',
+  },
+  connectivity: { label: 'Connectivity', description: 'Networks, signals and connections.' },
+  design: { label: 'Design', description: 'Graphics tools, color and editing.' },
+  development: { label: 'Development', description: 'Code, data, servers and integrations.' },
+  devices: { label: 'Devices', description: 'Computers, displays and electronic devices.' },
+  finance: { label: 'Finance', description: 'Payments, currencies, wallets and billing.' },
+  food: { label: 'Food and drink', description: 'Food products, meals and drinks.' },
+  gaming: { label: 'Gaming', description: 'Games, controllers and entertainment.' },
+  home: { label: 'Home', description: 'Home furnishings and everyday appliances.' },
+  layout: { label: 'Layout', description: 'Grids, panels, alignment and distribution.' },
+  mail: { label: 'Mail', description: 'Email, inboxes and sending.' },
+  maps: { label: 'Maps and location', description: 'Location, routes, maps and navigation.' },
+  math: { label: 'Math', description: 'Operations, symbols and mathematical tools.' },
+  media: { label: 'Media', description: 'Audio, video, playback and recording.' },
+  medical: { label: 'Medical', description: 'Health, care and medical equipment.' },
+  nature: { label: 'Nature', description: 'Plants, landscapes and the environment.' },
+  people: { label: 'People', description: 'Users, groups and profiles.' },
+  photography: { label: 'Photography', description: 'Cameras, images and photo editing.' },
+  science: { label: 'Science', description: 'Research, laboratories and science symbols.' },
+  shapes: { label: 'Shapes', description: 'Basic figures and geometric symbols.' },
+  shopping: { label: 'Shopping', description: 'Stores, products, packages and discounts.' },
+  sports: { label: 'Sports', description: 'Activities, disciplines and sports equipment.' },
+  text: { label: 'Text', description: 'Typography, formatting and content editing.' },
+  time: { label: 'Time and calendar', description: 'Dates, time, alarms and schedules.' },
+  tools: { label: 'Tools', description: 'Settings, repairs and technical tools.' },
+  transportation: { label: 'Transportation', description: 'Vehicles, travel and infrastructure.' },
+  weather: { label: 'Weather', description: 'Weather conditions and temperature.' },
   navigation: {
     label: 'Navigation',
     description: 'Directions, view transitions and position controls.',
@@ -564,16 +855,10 @@ const iconCategoryEnglish: Record<IconCategoryId, { description: string; label: 
     label: 'Status and messages',
     description: 'Confirmations, help, hints and process states.',
   },
-  files: {
-    label: 'Files and media',
-    description: 'Documents, images and file-related operations.',
-  },
+  files: { label: 'Files and documents', description: 'Documents, folders and file operations.' },
   security: { label: 'Security', description: 'Locks, access and security states.' },
   users: { label: 'Users', description: 'People, groups and audiences.' },
-  interface: {
-    label: 'Interface and objects',
-    description: 'Application objects, modules and settings.',
-  },
+  interface: { label: 'Interface', description: 'General application elements and objects.' },
 };
 
 const iconEnglish: Record<string, { description: string; label: string; keywords: string[] }> = {
@@ -838,7 +1123,13 @@ export function getIconCategory(category: {
 }
 
 export function getIcon(icon: IconDefinition): IconDefinition {
-  return locale.value === 'en' && iconEnglish[icon.name]
-    ? { ...icon, ...iconEnglish[icon.name] }
-    : icon;
+  if (locale.value !== 'en') return icon;
+
+  if (iconEnglish[icon.name]) return { ...icon, ...iconEnglish[icon.name] };
+
+  if (icon.name.includes('/')) {
+    return { ...icon, description: `PEAUI icon: ${icon.label}.` };
+  }
+
+  return icon;
 }

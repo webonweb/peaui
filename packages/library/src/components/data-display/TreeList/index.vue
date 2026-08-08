@@ -14,7 +14,7 @@ export interface AreaTreeListType {
 //-----------------------------------------------------------------------------------------------//
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import { UIKIT_NAME } from '@/constants';
-import { capitalizeFirstLetter } from '@/helpers/string.helepr';
+import { capitalizeFirstLetter } from '@/helpers/string.helper';
 import { computed, ref, useAttrs, useId } from 'vue';
 
 defineOptions({
@@ -40,7 +40,9 @@ const {
   dataTestId?: string;
 }>();
 
-const treeModel = defineModel<TreeListType>('tree', { required: true });
+const treeModel = defineModel<TreeListType>('tree', {
+  default: () => ({ children: {}, label: '' }),
+});
 
 const emit = defineEmits<{
   (e: 'on:remove', id: string): void;

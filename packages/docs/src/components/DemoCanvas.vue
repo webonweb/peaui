@@ -43,6 +43,10 @@ const renderedBindings = computed(() => {
 
   for (const event of props.definition.events) {
     const eventBinding = `on${event.name.charAt(0).toUpperCase()}${event.name.slice(1)}`;
+    // Model listeners own the controlled value. Generated event metadata may
+    // contain the same update event, but replacing it would freeze the preview.
+    if (bindings[eventBinding]) continue;
+
     bindings[eventBinding] = (...values: unknown[]) => {
       if (props.definition.name === 'TableList') {
         if (event.name === 'on:select:row' && Array.isArray(values[0])) {

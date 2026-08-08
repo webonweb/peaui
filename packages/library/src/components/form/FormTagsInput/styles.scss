@@ -1,0 +1,376 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-form-tags-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.peaui-form-tags-input {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  color: var(--peaui-color-grey-900);
+
+  @include set-param(row-gap, 0.125rem);
+}
+
+.peaui-form-tags-input__label {
+  width: 100%;
+}
+
+.peaui-form-tags-input__overlayer,
+.peaui-popover-overlayer.peaui-form-tags-input__overlayer {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  anchor-name: none;
+}
+
+.peaui-form-tags-input__control {
+  anchor-name: var(--unique-anchor);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  box-sizing: border-box;
+  cursor: text;
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.5rem;
+  background-color: var(--peaui-color-grey-0);
+
+  @include set-param(gap, 0.375rem);
+  @include set-param(padding-block, 0.5rem);
+  @include set-param(padding-inline, 0.625rem);
+  @include transition(border-color, box-shadow, background-color);
+}
+
+.peaui-form-tags-input__control:hover {
+  border-color: var(--peaui-color-primary-600);
+}
+
+.peaui-form-tags-input--focused .peaui-form-tags-input__control {
+  border-color: var(--peaui-color-primary-600);
+  box-shadow: 0 0 0 2px var(--peaui-color-primary-100);
+}
+
+.peaui-form-tags-input--invalid .peaui-form-tags-input__control {
+  border-color: var(--peaui-color-danger-500);
+}
+
+.peaui-form-tags-input--invalid.peaui-form-tags-input--focused .peaui-form-tags-input__control {
+  box-shadow: 0 0 0 2px var(--peaui-color-danger-100);
+}
+
+.peaui-form-tags-input__tags {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include set-param(gap, 0.375rem);
+}
+
+.peaui-form-tags-input__tag {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-width: 0;
+  max-width: min(100%, 22rem);
+  min-height: 2.25rem;
+  overflow: hidden;
+  border: 1px solid var(--peaui-color-primary-200);
+  border-radius: 999px;
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-700);
+
+  @include transition(border-color, background-color, color, box-shadow);
+}
+
+.peaui-form-tags-input__tag--selected,
+.peaui-form-tags-input__tag--editing {
+  border-color: var(--peaui-color-primary-700);
+  background-color: var(--peaui-color-primary-100);
+}
+
+.peaui-form-tags-input__tag--editing {
+  color: var(--peaui-color-primary-800);
+}
+
+.peaui-form-tags-input__tag--disabled {
+  border-color: var(--peaui-color-grey-300);
+  background-color: var(--peaui-color-grey-100);
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-tags-input__tag-main,
+.peaui-form-tags-input__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+
+  @include transition(background-color, color, box-shadow);
+}
+
+.peaui-form-tags-input__tag-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  cursor: text;
+  font-weight: 500;
+
+  @include set-size-text(xs);
+  @include set-param(padding-block, 0.375rem);
+  @include set-param(padding-inline-end, 0.5rem);
+  @include set-param(padding-inline-start, 0.75rem);
+}
+
+.peaui-form-tags-input__tag-main:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.peaui-form-tags-input__tag-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.peaui-form-tags-input__remove {
+  flex: 0 0 2.25rem;
+  min-width: 2.25rem;
+  cursor: pointer;
+  border-inline-start: 0;
+  border-start-end-radius: 999px;
+  border-end-end-radius: 999px;
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-tags-input__remove-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.peaui-form-tags-input__tag-main:hover:not(:disabled) {
+  background-color: var(--peaui-color-primary-100);
+}
+
+.peaui-form-tags-input__remove:hover:not(:disabled) {
+  background-color: var(--peaui-color-primary-100);
+  color: var(--peaui-color-primary-900);
+}
+
+.peaui-form-tags-input__tag-main:focus-visible,
+.peaui-form-tags-input__remove:focus-visible {
+  outline: none;
+}
+
+.peaui-form-tags-input__tag:focus-within {
+  border-color: var(--peaui-color-primary-700);
+  box-shadow: 0 0 0 2px var(--peaui-color-primary-100);
+}
+
+.peaui-form-tags-input__input {
+  flex: 1 1 8rem;
+  min-width: 7rem;
+  min-height: 2rem;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 0.25rem;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--peaui-color-grey-900);
+
+  @include set-size-text(s);
+}
+
+.peaui-form-tags-input__input::placeholder {
+  color: var(--peaui-color-grey-500);
+  opacity: 1;
+}
+
+.peaui-form-tags-input__input:read-only {
+  cursor: default;
+}
+
+.peaui-form-tags-input--stacked .peaui-form-tags-input__input {
+  flex-basis: 100%;
+}
+
+.peaui-form-tags-input__spinner {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  box-sizing: border-box;
+  border: 0.125rem solid var(--peaui-color-grey-300);
+  border-top-color: var(--peaui-color-primary-700);
+  border-radius: 50%;
+  animation: peaui-form-tags-input-spin 0.8s linear infinite;
+}
+
+.peaui-popover-overlayer__content.peaui-form-tags-input__popover-content[popover] {
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+}
+
+.peaui-form-tags-input__panel {
+  width: 100%;
+  min-width: 0;
+  max-height: min(15rem, calc(100dvh - 2rem));
+  overflow: hidden auto;
+  box-sizing: border-box;
+}
+
+.peaui-form-tags-input__listbox {
+  display: grid;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+
+  @include set-param(gap, 0.125rem);
+  @include scrollbar(var(--peaui-color-primary-700));
+}
+
+.peaui-form-tags-input__option,
+.peaui-form-tags-input__panel-state {
+  min-width: 0;
+  color: var(--peaui-color-grey-800);
+
+  @include set-size-text(s);
+  @include set-param(padding, 0.75rem);
+}
+
+.peaui-form-tags-input__option {
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+
+  @include transition(background-color, color);
+}
+
+.peaui-form-tags-input__option:hover,
+.peaui-form-tags-input__option--active {
+  background-color: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-900);
+}
+
+.peaui-form-tags-input__option--disabled {
+  cursor: not-allowed;
+  background-color: var(--peaui-color-grey-50);
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-tags-input__panel-state {
+  text-align: center;
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-tags-input__description,
+.peaui-form-tags-input__error {
+  margin: 0;
+  overflow-wrap: anywhere;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-tags-input__description {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-tags-input__error {
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-tags-input__live {
+  @include sr-only;
+}
+
+.peaui-form-tags-input--disabled,
+.peaui-form-tags-input--loading {
+  cursor: not-allowed;
+}
+
+.peaui-form-tags-input--disabled .peaui-form-tags-input__control,
+.peaui-form-tags-input--loading .peaui-form-tags-input__control {
+  cursor: not-allowed;
+  border-color: var(--peaui-color-grey-300);
+  background-color: var(--peaui-color-grey-50);
+}
+
+.peaui-form-tags-input--readonly .peaui-form-tags-input__control {
+  cursor: default;
+  background-color: var(--peaui-color-grey-50);
+}
+
+@keyframes peaui-form-tags-input-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 30rem) {
+  .peaui-form-tags-input__tag {
+    max-width: 100%;
+  }
+
+  .peaui-form-tags-input__input {
+    min-width: 4rem;
+  }
+
+  .peaui-form-tags-input__panel {
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-form-tags-input__spinner {
+    animation-duration: 1.8s;
+  }
+
+  .peaui-form-tags-input__control,
+  .peaui-form-tags-input__tag,
+  .peaui-form-tags-input__tag-main,
+  .peaui-form-tags-input__remove,
+  .peaui-form-tags-input__option {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-tags-input__control,
+  .peaui-form-tags-input__tag,
+  .peaui-form-tags-input__panel {
+    border-color: CanvasText;
+  }
+
+  .peaui-form-tags-input--focused .peaui-form-tags-input__control,
+  .peaui-form-tags-input__tag--selected {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  .peaui-form-tags-input__tag:focus-within {
+    box-shadow: none;
+  }
+}

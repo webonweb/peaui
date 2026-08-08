@@ -1,7 +1,6 @@
 import { FormFieldElement, defineFormField } from '@/components/form/FormField/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
-import { getPaddingRight } from '@/helpers/functions.helper';
 
 const FORM_INPUT_TAG_NAME = `${UIKIT_NAME}-form-input`;
 const FORM_INPUT_CLASS_NAME = `${UIKIT_NAME}-form-field-input`;
@@ -314,7 +313,6 @@ export class FormInputElement extends HTMLElement {
       this.#syncField();
       this.#syncFieldChildren();
       this.#fieldElement.render();
-      this.#syncRightErasePosition();
     });
   }
 
@@ -512,17 +510,6 @@ export class FormInputElement extends HTMLElement {
       ...this.#errorNodes,
       ...this.#successNodes,
     ]);
-  }
-
-  #syncRightErasePosition(): void {
-    const rightErasePosition = getPaddingRight(this.#inputElement);
-
-    if (this.#fieldElement.rightErasePosition === rightErasePosition) {
-      return;
-    }
-
-    this.#fieldElement.rightErasePosition = rightErasePosition;
-    this.#fieldElement.render();
   }
 
   #handleInput = (event: Event): void => {

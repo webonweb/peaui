@@ -697,7 +697,7 @@ function factoryWithExpandableBodyColumn(
       ...props,
     } as never,
     slots: {
-      'detials-record': ({ record }: { record: Record<string, any> }) =>
+      'details-record': ({ record }: { record: Record<string, any> }) =>
         h('div', { 'data-testid': 'expanded-content' }, record.name),
     },
     global: {
@@ -985,6 +985,18 @@ describe('TableList (index.vue)', () => {
 
     expect(wrapper.find('[data-testid="expanded-content"]').exists()).toBe(false);
   });
+
+  it.each(['isDetails', 'isDetials'] as const)(
+    'applies the details layout with the %s compatibility prop',
+    (propName) => {
+      const wrapper = factoryWithExpandableBodyColumn({ [propName]: true });
+
+      expect(wrapper.get('.peaui-table-list').classes()).toContain('peaui-table-list--details');
+      expect(wrapper.get('.peaui-table-list__head-row').classes()).toContain(
+        'peaui-table-list__head-row--details',
+      );
+    },
+  );
 
   it('emits edit-inline action when edit action column button is clicked', async () => {
     const record = {

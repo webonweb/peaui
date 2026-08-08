@@ -12,13 +12,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: var(--peaui-calendar-cell-radius);
   color: var(--peaui-color-grey-700);
   background-color: var(--peaui-color-grey-0);
   cursor: pointer;
 
-  @include set-param(width, 2rem);
-  @include set-param(height, 2rem);
+  @include set-param(width, var(--peaui-calendar-cell-min-height));
+  @include set-param(height, var(--peaui-calendar-cell-min-height));
   @include outline(var(--peaui-color-primary-700));
   @include transition(background-color, color, box-shadow);
 }

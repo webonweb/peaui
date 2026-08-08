@@ -1,8 +1,12 @@
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
 import { MessageTextElement, defineMessageText } from '@/components/feedback/MessageText/index.wc';
-import { FieldLabelElement, defineFieldLabel } from '@/components/form/FieldLabel/index.wc';
+import {
+  FormFieldLabelElement,
+  defineFormFieldLabel,
+} from '@/components/form/FormFieldLabel/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { renderCustomElement, syncNodeChildren } from '@/helpers/dom.helper';
+import { getFormFieldEraseOffset, getFormFieldPaddingRight } from './form-field-layout.shared';
 
 const FORM_FIELD_TAG_NAME = `${UIKIT_NAME}-form-field`;
 const FORM_FIELD_CLASS_NAME = `${UIKIT_NAME}-form-field`;
@@ -115,7 +119,7 @@ function getNodesTextContent(nodes: Node[]): string | undefined {
 
 defineSvgIcon();
 defineMessageText();
-defineFieldLabel();
+defineFormFieldLabel();
 
 export class FormFieldElement extends HTMLElement {
   static readonly tagName = FORM_FIELD_TAG_NAME;
@@ -159,7 +163,9 @@ export class FormFieldElement extends HTMLElement {
   #eraseIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
   #errorMessageElement = document.createElement(MessageTextElement.tagName) as MessageTextElement;
   #errorNodes: Node[] = [];
-  #fieldLabelElement = document.createElement(FieldLabelElement.tagName) as FieldLabelElement;
+  #formFieldLabelElement = document.createElement(
+    FormFieldLabelElement.tagName,
+  ) as FormFieldLabelElement;
   #hintNodes: Node[] = [];
   #iconAfterElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
   #iconBeforeElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
@@ -422,7 +428,7 @@ export class FormFieldElement extends HTMLElement {
   #isManagedNode(node: Node): boolean {
     return (
       node === this.#rootElement ||
-      node === this.#fieldLabelElement ||
+      node === this.#formFieldLabelElement ||
       node === this.#contentElement ||
       node === this.#iconBeforeElement ||
       node === this.#iconAfterElement ||
@@ -527,17 +533,17 @@ export class FormFieldElement extends HTMLElement {
 
   #syncLabel(): void {
     if (!this.label) {
-      this.#fieldLabelElement.remove();
+      this.#formFieldLabelElement.remove();
       return;
     }
 
-    this.#fieldLabelElement.setAttribute('for', this.#resolvedFieldId);
-    this.#fieldLabelElement.text = this.label;
-    this.#fieldLabelElement.readonly = this.readonly;
-    this.#fieldLabelElement.required = this.required;
-    this.#fieldLabelElement.dataTestId = this.dataTestId;
-    syncNodeChildren(this.#fieldLabelElement, this.#hintNodes);
-    renderCustomElement(this.#fieldLabelElement);
+    this.#formFieldLabelElement.setAttribute('for', this.#resolvedFieldId);
+    this.#formFieldLabelElement.text = this.label;
+    this.#formFieldLabelElement.readonly = this.readonly;
+    this.#formFieldLabelElement.required = this.required;
+    this.#formFieldLabelElement.dataTestId = this.dataTestId;
+    syncNodeChildren(this.#formFieldLabelElement, this.#hintNodes);
+    renderCustomElement(this.#formFieldLabelElement);
   }
 
   #syncFieldElement(): void {
@@ -864,9 +870,9 @@ export class FormFieldElement extends HTMLElement {
     const children: Node[] = [];
 
     if (this.label) {
-      children.push(this.#fieldLabelElement);
+      children.push(this.#formFieldLabelElement);
     } else {
-      this.#fieldLabelElement.remove();
+      this.#formFieldLabelElement.remove();
     }
 
     children.push(this.#contentElement);
@@ -988,13 +994,13 @@ export class FormFieldElement extends HTMLElement {
   }
 
   get #paddingRightValue(): string {
-    const after = this.afterText;
-
-    if (after) {
-      return `${this.iconAfter ? after.length * 7.5 + 12 + (this.canErase ? 16 : 0) + 24 : after.length * 7.5 + 12 + (this.canErase ? 16 : 0)}px`;
-    }
-
-    return this.iconAfter ? '32px' : '12px';
+    return `${getFormFieldPaddingRight({
+      after: this.afterText,
+      canErase: this.canErase,
+      hasAdditional: this.#additionalNodes.length > 0,
+      iconAfter: this.iconAfter,
+      minimumEraseOffset: this.rightErasePosition,
+    })}px`;
   }
 
   get #paddingLeftValue(): string {
@@ -1105,15 +1111,12 @@ export class FormFieldElement extends HTMLElement {
   }
 
   get #eraseButtonRightValue(): string {
-    if (this.afterText) {
-      return `${this.rightErasePosition}px`;
-    }
-
-    if (this.#additionalNodes.length > 0) {
-      return '40px';
-    }
-
-    return `${this.iconAfter ? 30 : 12}px`;
+    return `${getFormFieldEraseOffset({
+      after: this.afterText,
+      hasAdditional: this.#additionalNodes.length > 0,
+      iconAfter: this.iconAfter,
+      minimumEraseOffset: this.rightErasePosition,
+    })}px`;
   }
 
   #handleEraseClick = (event: MouseEvent): void => {

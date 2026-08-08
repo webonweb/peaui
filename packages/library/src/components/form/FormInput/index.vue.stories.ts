@@ -198,7 +198,7 @@ export const FormInput: Story = {
     after: undefined,
     iconBefore: undefined,
     iconAfter: undefined,
-    canErase: false,
+    canErase: true,
     maxLength: undefined,
   },
 };

@@ -15,7 +15,16 @@ defineFormMultiSelect();
 const meta = {
   title: '5. Form/FormMultiSelect',
   component: FormMultiSelectElement.tagName,
-  args: createVueCustomElementStoryArgs(FormMultiSelectVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormMultiSelectVueComponent),
+    canErase: true,
+    options: [
+      { label: 'Vue', value: 'vue' },
+      { label: 'React', value: 'react' },
+      { label: 'Web Components', value: 'wc' },
+    ],
+    value: ['vue', 'react'],
+  },
   argTypes: createVueCustomElementArgTypes(FormMultiSelectVueComponent),
   parameters: {
     name: 'FormMultiSelect',

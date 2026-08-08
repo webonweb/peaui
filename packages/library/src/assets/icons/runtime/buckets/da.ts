@@ -1,0 +1,6 @@
+// Ten plik jest generowany przez scripts/sync-icon-catalog.mjs.
+const icons: Readonly<Record<string, string>> = {
+  "dark": "<svg viewBox=\"0 0 25 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n\n<path d=\"M11.0072 0.0472861C17.8451 -0.547036 23.3704 4.54062 23.9908 10.8234C24.657 17.5504 19.6869 23.363 13.1167 23.9508C6.52036 24.5386 0.760014 19.797 0.0677277 13.2595C-0.624559 6.72197 4.05817 0.648139 11.0072 0.0472861ZM12.0521 20.9857C17.499 20.8812 21.1106 16.6099 21.0061 11.7574C20.9016 6.90484 16.9634 2.9993 12.0195 3.03849L12.0521 20.9792V20.9857Z\" fill=\"currentColor\"/>\n\n</svg>\n",
+};
+
+export default icons;

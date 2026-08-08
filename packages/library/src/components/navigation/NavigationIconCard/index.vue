@@ -2,7 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { sanitizeToSlug } from '@/helpers/string.helepr';
+import { sanitizeToSlug } from '@/helpers/string.helper';
 import { computed, getCurrentInstance, useAttrs, useId } from 'vue';
 
 defineOptions({
@@ -15,7 +15,13 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
-const { icon, text, path, ariaLabel, dataTestId } = defineProps<{
+const {
+  icon = 'info',
+  text = '',
+  path = '',
+  ariaLabel,
+  dataTestId,
+} = defineProps<{
   icon: string;
   text: string;
   path: string;

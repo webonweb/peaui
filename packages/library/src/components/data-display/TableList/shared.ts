@@ -1,6 +1,6 @@
 import { UIKIT_NAME } from '@/constants';
 import { getDeepValue } from '@/helpers/object.helper';
-import { sanitizeToSlug } from '@/helpers/string.helepr';
+import { sanitizeToSlug } from '@/helpers/string.helper';
 
 export const TABLE_LIST_CLASS = `${UIKIT_NAME}-table-list`;
 export const TABLE_LIST_DEFAULT_COLUMN_WIDTH = 170;

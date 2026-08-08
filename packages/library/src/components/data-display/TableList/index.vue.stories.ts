@@ -841,7 +841,7 @@ const meta: Meta<typeof TableListComponent> = {
       description: 'Pokazuje overlay ze SpinnerLoader na calosci tabeli.',
       table: { type: { summary: 'boolean | undefined' } },
     },
-    isDetials: {
+    isDetails: {
       control: { type: 'boolean' },
       description: 'Wlacza wariant tabeli z rozwijanymi detalami.',
       table: { type: { summary: 'boolean | undefined' } },
@@ -1049,7 +1049,7 @@ function createRender(options: RenderOptions = {}) {
               Podpowiedz dla kolumny tekstowej.
             </template>
 
-            <template v-if="withDetails" #detials-record="{ record }">
+            <template v-if="withDetails" #details-record="{ record }">
               <div>
                 <strong>{{ record.name }}</strong>
                 <p>{{ record.note }}</p>
@@ -1502,7 +1502,7 @@ export const ExpandableRows: Story = {
     ariaLabel: 'Tabela z rozwijanymi szczegolami',
     columns: expandableColumns,
     dataTestId: 'table-list-expandable',
-    isDetials: true,
+    isDetails: true,
     records: demoRecords,
   },
 };
@@ -1513,7 +1513,7 @@ export const ExpandableColumnType: Story = {
     ariaLabel: 'Tabela z kolumna expandable',
     columns: expandableTypeColumns,
     dataTestId: 'table-list-expandable-column',
-    isDetials: true,
+    isDetails: true,
     records: demoRecords,
   },
 };

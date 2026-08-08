@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-base-to-string, no-nested-ternary */
 import {
   Children,
+  cloneElement,
   createElement,
   forwardRef,
   isValidElement,
@@ -14,6 +15,7 @@ import {
   type CSSProperties,
   type ElementType,
   type FocusEvent as ReactFocusEvent,
+  type FocusEventHandler,
   type ForwardedRef,
   type KeyboardEventHandler,
   type MouseEventHandler,
@@ -27,12 +29,40 @@ import {
   getAvatarInitials,
   normalizeAvatarInitials,
 } from '../components/data-display/Avatar/avatar.helper';
-import { reactIconData } from './generated-icon-data';
+import {
+  findNextToggleGroupIndex,
+  findToggleGroupEdgeIndex,
+  findToggleGroupReplacementIndex,
+  isToggleGroupItemAvailable,
+  normalizeToggleGroupSelection,
+  type ToggleGroupValue,
+} from '../components/data-entry/ToggleGroup/toggle-group.shared';
+import {
+  calculateRootMenuPosition,
+  calculateSubmenuPosition,
+  edgeEnabledMenuIndex,
+  nextEnabledMenuIndex,
+  typeaheadMenuIndex,
+  type MenuViewport,
+  type MenuNavigableItem,
+} from '../components/navigation/DropdownMenu/menu.shared';
+import { essentialReactIconData } from './generated-essential-icon-data';
+import type { ReactIconData } from './generated-icon-data';
 import type { PeauiReactProps, ReactComponentName } from './generated-react-props';
 import {
   evaluatePasswordStrength,
   PASSWORD_STRENGTH_SEGMENTS,
 } from '../components/form/FormPassword/strength.helper';
+import {
+  getFormFieldEraseOffset,
+  getFormFieldPaddingRight,
+} from '../components/form/FormField/form-field-layout.shared';
+import legacyIconBucketLoaders, {
+  iconNames as legacyIconNames,
+} from '../assets/icons/runtime/bucket-loaders';
+import { InlineEditRenderer, type InlineEditRuntimeProps } from './inline-edit.renderer';
+import { CopyButtonRenderer, type CopyButtonRuntimeProps } from './copy-button.renderer';
+import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -111,6 +141,11 @@ const dataTest = (props: RuntimeProps): string | undefined => {
   return typeof camel === 'string' ? camel : undefined;
 };
 
+const ariaBoolean = (value: unknown): boolean | 'true' | 'false' | undefined => {
+  if (value === true || value === false || value === 'true' || value === 'false') return value;
+  return undefined;
+};
+
 const common = (props: RuntimeProps) => ({
   className: props.className,
   style: props.style,
@@ -120,6 +155,8 @@ const common = (props: RuntimeProps) => ({
   'aria-label': text(props, 'ariaLabel') || text(props, 'aria-label') || undefined,
   'aria-describedby': text(props, 'aria-describedby') || undefined,
   'aria-labelledby': text(props, 'aria-labelledby') || undefined,
+  'aria-busy': ariaBoolean(props['aria-busy']),
+  'aria-disabled': ariaBoolean(props['aria-disabled']),
   onClick:
     typeof props.onClick === 'function'
       ? (props.onClick as MouseEventHandler<HTMLElement>)
@@ -133,16 +170,6 @@ const common = (props: RuntimeProps) => ({
       ? (props.onPointerDown as PointerEventHandler<HTMLElement>)
       : undefined,
 });
-
-type NativePopoverElement = HTMLDivElement & {
-  hidePopover?: () => void;
-  showPopover?: () => void;
-};
-
-const nativePopoverValue = (): 'auto' | undefined =>
-  typeof HTMLElement !== 'undefined' && typeof HTMLElement.prototype.showPopover === 'function'
-    ? 'auto'
-    : undefined;
 
 function isInteractiveTarget(target: EventTarget | null): boolean {
   return (
@@ -261,32 +288,6 @@ function getNextReactTableSortDescriptors(
   return next.slice(0, 2);
 }
 
-function useNativePopover(open: boolean): React.RefObject<NativePopoverElement | null> {
-  const popoverRef = useRef<NativePopoverElement | null>(null);
-
-  useEffect(() => {
-    const element = popoverRef.current;
-    if (!element) return;
-
-    if (typeof element.showPopover !== 'function' || typeof element.hidePopover !== 'function') {
-      element.hidden = !open;
-      return;
-    }
-
-    element.hidden = false;
-
-    try {
-      const isOpen = element.matches(':popover-open');
-      if (open && !isOpen) element.showPopover();
-      if (!open && isOpen) element.hidePopover();
-    } catch {
-      element.hidden = !open;
-    }
-  }, [open]);
-
-  return popoverRef;
-}
-
 function asOptions(value: unknown): Option[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((entry): Option[] => {
@@ -331,27 +332,160 @@ function useModel<T>(
   return [value, setValue] as const;
 }
 
+const CATALOG_ICON_NAME_PATTERN = /^[a-z][a-z0-9-]*\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const reactCatalogIconCache = new Map<string, ReactIconData>();
+const reactCatalogIconRequests = new Map<string, Promise<ReactIconData | undefined>>();
+const reactCatalogIconMisses = new Set<string>();
+
+function parseLegacySvgIcon(source: string | undefined): ReactIconData | undefined {
+  if (!source) return undefined;
+
+  const root = source.match(/<svg\b([^>]*)>/i)?.[1] ?? '';
+  const readAttribute = (attribute: string): string | undefined =>
+    root.match(new RegExp(`(?:^|\\s)${attribute}=["']([^"']+)["']`, 'i'))?.[1];
+  const body = source.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)?.[1]?.trim();
+
+  if (!body) return undefined;
+
+  return {
+    body,
+    fill: readAttribute('fill'),
+    stroke: readAttribute('stroke'),
+    strokeLinecap: readAttribute('stroke-linecap') as ReactIconData['strokeLinecap'],
+    strokeLinejoin: readAttribute('stroke-linejoin') as ReactIconData['strokeLinejoin'],
+    strokeWidth: readAttribute('stroke-width'),
+    viewBox: readAttribute('viewBox') ?? '0 0 24 24',
+  };
+}
+
+function loadReactIcon(name: string): Promise<ReactIconData | undefined> {
+  const cached = reactCatalogIconCache.get(name);
+
+  if (cached) return Promise.resolve(cached);
+  if (reactCatalogIconMisses.has(name)) return Promise.resolve(undefined);
+
+  const activeRequest = reactCatalogIconRequests.get(name);
+
+  if (activeRequest) return activeRequest;
+
+  // Both bucket maps stay behind dynamic imports. A component downloads only
+  // the two-letter icon bucket needed by the requested public name.
+  const loader = CATALOG_ICON_NAME_PATTERN.test(name)
+    ? import('../assets/icons/runtime/catalog/load-icon').then(({ loadCatalogIcon }) =>
+        loadCatalogIcon(name),
+      )
+    : Promise.resolve().then(async () => {
+        if (!legacyIconNames.has(name)) return undefined;
+        const bucketName = name
+          .replace(/[^a-z0-9]/gi, '')
+          .slice(0, 2)
+          .toLowerCase();
+        const bucket = await legacyIconBucketLoaders[bucketName]?.();
+        return parseLegacySvgIcon(bucket?.[name]);
+      });
+  const request = loader
+    .then((icon) => {
+      if (icon) reactCatalogIconCache.set(name, icon);
+      else reactCatalogIconMisses.add(name);
+
+      return icon;
+    })
+    .catch(() => undefined)
+    .finally(() => {
+      reactCatalogIconRequests.delete(name);
+    });
+
+  reactCatalogIconRequests.set(name, request);
+
+  return request;
+}
+
+function useReactIcon(name: string): {
+  icon?: ReactIconData;
+  supported: boolean;
+} {
+  const bundledIcon = essentialReactIconData[name];
+  const isLoadableIcon = CATALOG_ICON_NAME_PATTERN.test(name) || legacyIconNames.has(name);
+  const cachedIcon = reactCatalogIconCache.get(name);
+  const knownMissing = reactCatalogIconMisses.has(name);
+  const [loadedIcon, setLoadedIcon] = useState<{
+    icon?: ReactIconData;
+    name: string;
+    settled: boolean;
+  }>(() => ({ icon: cachedIcon, name, settled: cachedIcon !== undefined }));
+
+  useEffect(() => {
+    if (bundledIcon || !isLoadableIcon || cachedIcon || knownMissing) return;
+
+    let active = true;
+
+    void loadReactIcon(name).then((icon) => {
+      if (active) setLoadedIcon({ icon, name, settled: true });
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [bundledIcon, cachedIcon, isLoadableIcon, knownMissing, name]);
+
+  const resolvedLoadedIcon = loadedIcon.name === name ? loadedIcon.icon : undefined;
+  const settledWithoutIcon =
+    loadedIcon.name === name && loadedIcon.settled && loadedIcon.icon === undefined;
+
+  return {
+    icon: bundledIcon ?? cachedIcon ?? resolvedLoadedIcon,
+    supported: Boolean(bundledIcon || (isLoadableIcon && !knownMissing && !settledWithoutIcon)),
+  };
+}
+
 function Svg({
   name,
   className,
   dataTestId,
   label,
+  labelledBy,
+  describedBy,
+  ariaHidden,
+  role,
+  style,
+  tabIndex,
 }: {
   name: string;
   className?: string;
   dataTestId?: string;
   label?: string;
-}): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  labelledBy?: string;
+  describedBy?: string;
+  ariaHidden?: boolean | 'false' | 'true';
+  role?: string;
+  style?: CSSProperties;
+  tabIndex?: number;
+}): ReactElement | null {
+  const { icon, supported } = useReactIcon(name);
+
+  if (!supported) return null;
+
+  const hasAccessibleName = Boolean(label || labelledBy);
+  const isExplicitlyHidden = ariaHidden === true || ariaHidden === 'true';
+
   return (
     <svg
-      aria-hidden={label ? undefined : true}
+      aria-describedby={describedBy}
+      aria-hidden={ariaHidden ?? (hasAccessibleName ? undefined : true)}
       aria-label={label}
+      aria-labelledby={labelledBy}
       className={cx('peaui-svg-icon', className)}
       data-testid={dataTestId}
       dangerouslySetInnerHTML={{ __html: icon?.body ?? '' }}
+      fill={icon?.fill}
       focusable="false"
-      role={label ? 'img' : undefined}
+      role={role ?? (hasAccessibleName && !isExplicitlyHidden ? 'img' : undefined)}
+      stroke={icon?.stroke}
+      strokeLinecap={icon?.strokeLinecap}
+      strokeLinejoin={icon?.strokeLinejoin}
+      strokeWidth={icon?.strokeWidth}
+      style={style}
+      tabIndex={tabIndex}
       viewBox={icon?.viewBox ?? '0 0 24 24'}
     />
   );
@@ -540,6 +674,1363 @@ function AvatarRenderer({
         </span>
       ) : null}
     </Root>
+  );
+}
+
+type ReactDropdownMenuItem = {
+  checked?: boolean;
+  children?: ReactDropdownMenuItem[];
+  closeOnSelect?: boolean;
+  disabled?: boolean;
+  group?: string;
+  icon?: string;
+  id: string | number;
+  label?: string;
+  metadata?: unknown;
+  shortcut?: string;
+  type?: 'item' | 'checkbox' | 'radio' | 'separator' | 'group' | 'submenu';
+  value?: unknown;
+  variant?: 'default' | 'danger';
+};
+
+function asDropdownMenuItems(value: unknown): ReactDropdownMenuItem[] {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((entry): ReactDropdownMenuItem[] => {
+    if (typeof entry !== 'object' || entry === null) return [];
+    const item = entry as ReactDropdownMenuItem;
+    if (typeof item.id !== 'string' && typeof item.id !== 'number') return [];
+
+    return Array.isArray(item.children)
+      ? [{ ...item, children: asDropdownMenuItems(item.children) }]
+      : [item];
+  });
+}
+
+function DropdownMenuRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const items = asDropdownMenuItems(props.items);
+  const [open, setOpen] = useModel<boolean>(props, 'open', false);
+  const disabled = bool(props, 'disabled');
+  const placement = text(props, 'placement', 'bottom') as 'top' | 'right' | 'bottom' | 'left';
+  const align = text(props, 'align', 'start');
+  const offset = Math.max(0, num(props, 'offset', 8));
+  const loop = bool(props, 'loop', true);
+  const closeOnSelect = bool(props, 'closeOnSelect', true);
+  const density = text(props, 'density', 'comfortable');
+  const triggerLabel = text(props, 'triggerLabel', 'Otwórz menu');
+  const ariaLabel = text(props, 'ariaLabel') || text(props, 'aria-label', 'Menu akcji');
+  const baseTestId = dataTest(props);
+  const generatedMenuId = `peaui-dropdown-menu-${useId().replace(/:/g, '')}`;
+  const menuId = text(props, '__menuId') || generatedMenuId;
+  const anchorVersion = num(props, '__anchorVersion');
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+  const triggerHostRef = useRef<HTMLSpanElement | null>(null);
+  const defaultTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useNativePopover(open);
+  const pendingFocus = useRef<'first' | 'last'>('first');
+  const typeaheadValue = useRef('');
+  const typeaheadTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const submenuTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const positionFrame = useRef<number | undefined>(undefined);
+  const [submenuKey, setSubmenuKey] = useState('');
+  const [resolvedPlacement, setResolvedPlacement] = useState(placement);
+  const [menuPosition, setMenuPosition] = useState<CSSProperties>({});
+  const [submenuPosition, setSubmenuPosition] = useState<CSSProperties>({});
+  const renderTrigger = props.renderTrigger as
+    | ((state: { open: boolean; disabled: boolean }) => ReactNode)
+    | undefined;
+  const renderItem = props.renderItem as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderItemIcon = props.renderItemIcon as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderItemShortcut = props.renderItemShortcut as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderGroupLabel = props.renderGroupLabel as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+
+  const setRootRef = (element: HTMLSpanElement | null): void => {
+    rootRef.current = element;
+    if (typeof forwardedRef === 'function') forwardedRef(element);
+    else if (forwardedRef) forwardedRef.current = element;
+  };
+  const triggerElement = (): HTMLElement | null =>
+    defaultTriggerRef.current ??
+    triggerHostRef.current?.querySelector<HTMLElement>(
+      'button, a[href], input:not([disabled]), [role="button"], [tabindex]:not([tabindex="-1"])',
+    ) ??
+    triggerHostRef.current;
+  const itemType = (item: ReactDropdownMenuItem): NonNullable<ReactDropdownMenuItem['type']> =>
+    item.type ?? (item.children?.length ? 'submenu' : 'item');
+  const pathKey = (path: number[]): string => path.join('-');
+  const navigationItems = (
+    parentKey: string,
+  ): Array<MenuNavigableItem & { button: HTMLButtonElement }> =>
+    Array.from(
+      menuRef.current?.querySelectorAll<HTMLButtonElement>(`[data-menu-parent="${parentKey}"]`) ??
+        [],
+    ).map((button) => ({
+      button,
+      disabled: button.getAttribute('aria-disabled') === 'true',
+      label: button.dataset.menuLabel,
+    }));
+  const focusEdge = (parentKey: string, edge: 'first' | 'last'): void => {
+    const candidates = navigationItems(parentKey);
+    const index = edgeEnabledMenuIndex(candidates, edge);
+    if (index >= 0) candidates[index]?.button.focus();
+    else menuRef.current?.focus();
+  };
+  const requestOpen = (value: boolean, focus: 'first' | 'last' = 'first'): void => {
+    if (value && disabled) return;
+    pendingFocus.current = focus;
+    setOpen(value);
+  };
+  const closeMenu = (restoreFocus = false): void => {
+    setSubmenuKey('');
+    requestOpen(false);
+    if (restoreFocus) queueMicrotask(() => triggerElement()?.focus());
+  };
+  const closeFromEscape = (): void => {
+    closeMenu(true);
+    callback(props, 'onEscape')?.();
+  };
+  const handleTriggerKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
+    if (disabled) return;
+    if (['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(event.key)) {
+      event.preventDefault();
+      requestOpen(true, event.key === 'ArrowUp' ? 'last' : 'first');
+    } else if (event.key === 'Escape' && open) {
+      event.preventDefault();
+      closeFromEscape();
+    } else if (event.key === 'Tab' && open) {
+      closeMenu(false);
+    }
+  };
+  const currentViewport = (): MenuViewport => ({
+    height: window.visualViewport?.height ?? window.innerHeight,
+    left: window.visualViewport?.offsetLeft ?? 0,
+    top: window.visualViewport?.offsetTop ?? 0,
+    width: window.visualViewport?.width ?? window.innerWidth,
+  });
+  const positionRootMenu = (): void => {
+    const trigger = triggerElement();
+    const surface = menuRef.current;
+    if (!trigger || !surface || !open) return;
+    const position = calculateRootMenuPosition({
+      align: align as 'start' | 'center' | 'end',
+      offset,
+      placement,
+      surface: surface.getBoundingClientRect(),
+      trigger: trigger.getBoundingClientRect(),
+      viewport: currentViewport(),
+    });
+    setResolvedPlacement(position.placement);
+    setMenuPosition({
+      left: `${position.left}px`,
+      maxHeight: `${position.maxHeight}px`,
+      maxWidth: `${position.maxWidth}px`,
+      minWidth: `${position.minWidth}px`,
+      top: `${position.top}px`,
+    });
+  };
+  const positionSubmenu = (key: string): void => {
+    const parent = menuRef.current?.querySelector<HTMLElement>(`[data-menu-path="${key}"]`);
+    const surface = menuRef.current?.querySelector<HTMLElement>(`[data-submenu-for="${key}"]`);
+    if (!parent || !surface) return;
+    const position = calculateSubmenuPosition({
+      parent: parent.getBoundingClientRect(),
+      surface: surface.getBoundingClientRect(),
+      viewport: currentViewport(),
+    });
+    setSubmenuPosition({
+      left: `${position.left}px`,
+      maxHeight: `${position.maxHeight}px`,
+      maxWidth: `${position.maxWidth}px`,
+      minWidth: `${position.minWidth}px`,
+      top: `${position.top}px`,
+    });
+  };
+  const schedulePosition = (): void => {
+    if (positionFrame.current !== undefined) cancelAnimationFrame(positionFrame.current);
+    positionFrame.current = requestAnimationFrame(() => {
+      positionFrame.current = undefined;
+      positionRootMenu();
+      if (submenuKey) positionSubmenu(submenuKey);
+    });
+  };
+  const openSubmenu = (item: ReactDropdownMenuItem, path: number[], focusFirst = false): void => {
+    if (item.disabled || !item.children?.length || path.length > 2) return;
+    const key = pathKey(path);
+    setSubmenuKey(key);
+    queueMicrotask(() => {
+      positionSubmenu(key);
+      if (focusFirst) focusEdge(key, 'first');
+    });
+  };
+  const activateItem = (item: ReactDropdownMenuItem, path: number[]): void => {
+    if (disabled || item.disabled) return;
+    const type = itemType(item);
+    if (type === 'submenu') {
+      openSubmenu(item, path, true);
+      return;
+    }
+    if (type === 'group' || type === 'separator') return;
+    callback(props, 'onSelect')?.(item, path);
+    if (type === 'checkbox') callback(props, 'onCheckedChange')?.(item, !item.checked, path);
+    if (type === 'radio') callback(props, 'onCheckedChange')?.(item, true, path);
+    if (item.value !== undefined) callback(props, 'onValueChange')?.(item, item.value, path);
+    const shouldClose =
+      item.closeOnSelect ?? (type === 'checkbox' || type === 'radio' ? false : closeOnSelect);
+    if (shouldClose) closeMenu(true);
+  };
+  const handleItemKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    item: ReactDropdownMenuItem,
+    path: number[],
+    parentKey: string,
+  ): void => {
+    const candidates = navigationItems(parentKey);
+    const currentIndex = candidates.findIndex(({ button }) => button === event.currentTarget);
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const index = nextEnabledMenuIndex(
+        candidates,
+        currentIndex,
+        event.key === 'ArrowDown' ? 1 : -1,
+        loop,
+      );
+      if (index >= 0) candidates[index]?.button.focus();
+      return;
+    }
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      focusEdge(parentKey, event.key === 'Home' ? 'first' : 'last');
+      return;
+    }
+    if (event.key === 'ArrowRight' && itemType(item) === 'submenu') {
+      event.preventDefault();
+      openSubmenu(item, path, true);
+      return;
+    }
+    if (event.key === 'ArrowLeft' && parentKey !== 'root') {
+      event.preventDefault();
+      setSubmenuKey('');
+      menuRef.current?.querySelector<HTMLButtonElement>(`[data-menu-path="${parentKey}"]`)?.focus();
+      return;
+    }
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      if (parentKey !== 'root') {
+        setSubmenuKey('');
+        menuRef.current
+          ?.querySelector<HTMLButtonElement>(`[data-menu-path="${parentKey}"]`)
+          ?.focus();
+      } else closeFromEscape();
+      return;
+    }
+    if (event.key === 'Tab') {
+      closeMenu(false);
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      activateItem(item, path);
+      return;
+    }
+    if (event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) return;
+    typeaheadValue.current += event.key;
+    if (typeaheadTimer.current) clearTimeout(typeaheadTimer.current);
+    typeaheadTimer.current = setTimeout(() => (typeaheadValue.current = ''), 500);
+    const index = typeaheadMenuIndex(candidates, typeaheadValue.current, currentIndex);
+    if (index >= 0) {
+      event.preventDefault();
+      candidates[index]?.button.focus();
+    }
+  };
+
+  useEffect(() => {
+    if (disabled && open) setOpen(false);
+  }, [disabled, open]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handleOutside = (event: PointerEvent): void => {
+      if (
+        rootRef.current?.contains(event.target as Node) ||
+        menuRef.current?.contains(event.target as Node)
+      ) {
+        return;
+      }
+      closeMenu(false);
+      callback(props, 'onOutsideClick')?.();
+    };
+    const handlePosition = (): void => schedulePosition();
+    document.addEventListener('pointerdown', handleOutside, true);
+    window.addEventListener('resize', handlePosition);
+    window.addEventListener('scroll', handlePosition, true);
+    window.visualViewport?.addEventListener('resize', handlePosition);
+    window.visualViewport?.addEventListener('scroll', handlePosition);
+    const observer =
+      typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(handlePosition);
+    const trigger = triggerElement();
+    if (trigger) observer?.observe(trigger);
+    if (menuRef.current) observer?.observe(menuRef.current);
+    schedulePosition();
+    queueMicrotask(() => focusEdge('root', pendingFocus.current));
+
+    return () => {
+      document.removeEventListener('pointerdown', handleOutside, true);
+      window.removeEventListener('resize', handlePosition);
+      window.removeEventListener('scroll', handlePosition, true);
+      window.visualViewport?.removeEventListener('resize', handlePosition);
+      window.visualViewport?.removeEventListener('scroll', handlePosition);
+      observer?.disconnect();
+      if (positionFrame.current !== undefined) cancelAnimationFrame(positionFrame.current);
+    };
+  }, [open, placement, align, offset, anchorVersion]);
+
+  useEffect(
+    () => () => {
+      if (typeaheadTimer.current) clearTimeout(typeaheadTimer.current);
+      if (submenuTimer.current) clearTimeout(submenuTimer.current);
+    },
+    [],
+  );
+
+  const renderRow = (
+    item: ReactDropdownMenuItem,
+    path: number[],
+    parentKey: string,
+    depth = 0,
+  ): ReactNode => {
+    const type = itemType(item);
+    if (type === 'separator') {
+      return <li className="peaui-dropdown-menu__separator" key={item.id} role="separator" />;
+    }
+    const key = pathKey(path);
+    const hasSubmenu = type === 'submenu' && depth === 0 && Boolean(item.children?.length);
+    const itemDisabled = disabled || item.disabled === true || (depth > 0 && type === 'submenu');
+    const role =
+      type === 'checkbox' ? 'menuitemcheckbox' : type === 'radio' ? 'menuitemradio' : 'menuitem';
+    const isCheckable = type === 'checkbox' || type === 'radio';
+
+    return (
+      <li className="peaui-dropdown-menu__row" key={item.id} role="none">
+        <button
+          aria-checked={isCheckable ? Boolean(item.checked) : undefined}
+          aria-controls={hasSubmenu ? `${menuId}-submenu-${key}` : undefined}
+          aria-disabled={itemDisabled || undefined}
+          aria-expanded={hasSubmenu ? submenuKey === key : undefined}
+          aria-haspopup={hasSubmenu ? 'menu' : undefined}
+          className={cx(
+            'peaui-dropdown-menu__item',
+            `peaui-dropdown-menu__item--${item.variant ?? 'default'}`,
+            hasSubmenu && 'peaui-dropdown-menu__item--submenu',
+          )}
+          data-menu-label={item.label ?? ''}
+          data-menu-parent={parentKey}
+          data-menu-path={key}
+          data-testid={baseTestId ? `${baseTestId}-item-${key}` : undefined}
+          role={role}
+          tabIndex={-1}
+          type="button"
+          onClick={() => activateItem(item, path)}
+          onFocus={() => {
+            if (
+              submenuKey &&
+              submenuKey !== key &&
+              !key.startsWith(`${submenuKey}-`) &&
+              type !== 'submenu'
+            ) {
+              setSubmenuKey('');
+            }
+          }}
+          onKeyDown={(event) => handleItemKeyDown(event, item, path, parentKey)}
+          onPointerEnter={() => {
+            if (submenuTimer.current) clearTimeout(submenuTimer.current);
+            if (!hasSubmenu || itemDisabled) return;
+            submenuTimer.current = setTimeout(() => openSubmenu(item, path), 180);
+          }}
+          onPointerLeave={() => {
+            if (submenuKey !== key && submenuTimer.current) clearTimeout(submenuTimer.current);
+          }}
+        >
+          <span aria-hidden="true" className="peaui-dropdown-menu__indicator">
+            {isCheckable && item.checked ? <Svg name="check" /> : null}
+          </span>
+          <span aria-hidden="true" className="peaui-dropdown-menu__icon">
+            {renderItemIcon?.(item, path) ?? (item.icon ? <Svg name={item.icon} /> : null)}
+          </span>
+          <span className="peaui-dropdown-menu__label">
+            {renderItem?.(item, path) ?? item.label}
+          </span>
+          {item.shortcut || renderItemShortcut ? (
+            <span aria-hidden="true" className="peaui-dropdown-menu__shortcut">
+              {renderItemShortcut?.(item, path) ?? item.shortcut}
+            </span>
+          ) : null}
+          {hasSubmenu ? (
+            <Svg
+              aria-hidden="true"
+              className="peaui-dropdown-menu__submenu-arrow"
+              name="arrowRight"
+            />
+          ) : null}
+        </button>
+        {hasSubmenu ? (
+          <div
+            aria-label={item.label}
+            className="peaui-dropdown-menu__surface peaui-dropdown-menu__submenu"
+            data-submenu-for={key}
+            hidden={submenuKey !== key}
+            id={`${menuId}-submenu-${key}`}
+            role="menu"
+            style={submenuPosition}
+          >
+            <ul className="peaui-dropdown-menu__list" role="none">
+              {item.children?.map((child, childIndex) =>
+                renderRow(child, [...path, childIndex], key, depth + 1),
+              )}
+            </ul>
+          </div>
+        ) : null}
+      </li>
+    );
+  };
+
+  const customTrigger = renderTrigger?.({ disabled, open });
+  const renderedTrigger = isValidElement(customTrigger)
+    ? cloneElement(customTrigger as ReactElement<Record<string, unknown>>, {
+        'aria-controls': menuId,
+        'aria-disabled': disabled || undefined,
+        'aria-expanded': open,
+        'aria-haspopup': 'menu',
+        'aria-label':
+          (customTrigger.props as Record<string, unknown>)['aria-label'] ??
+          (hasVisibleReactText(customTrigger) ? undefined : triggerLabel),
+        disabled:
+          typeof customTrigger.type === 'string' && customTrigger.type === 'button'
+            ? disabled
+            : undefined,
+        onClick: (event: React.MouseEvent<HTMLElement>) => {
+          const original = (customTrigger.props as Record<string, unknown>).onClick;
+          if (typeof original === 'function')
+            (original as (event: React.MouseEvent) => void)(event);
+          if (!event.defaultPrevented && !disabled) requestOpen(!open);
+        },
+        onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+          const original = (customTrigger.props as Record<string, unknown>).onKeyDown;
+          if (typeof original === 'function')
+            (original as (event: React.KeyboardEvent) => void)(event);
+          if (!event.defaultPrevented) handleTriggerKeyDown(event);
+        },
+      })
+    : null;
+
+  return (
+    <span
+      className={cx(
+        'peaui-dropdown-menu',
+        `peaui-dropdown-menu--density-${density}`,
+        disabled && 'peaui-dropdown-menu--disabled',
+        open && 'peaui-dropdown-menu--open',
+        props.className,
+      )}
+      data-testid={baseTestId}
+      ref={setRootRef}
+      style={props.style}
+    >
+      {renderedTrigger ? (
+        <span className="peaui-dropdown-menu__trigger-host" ref={triggerHostRef}>
+          {renderedTrigger}
+        </span>
+      ) : (
+        <button
+          aria-controls={menuId}
+          aria-expanded={open}
+          aria-haspopup="menu"
+          className="peaui-dropdown-menu__trigger"
+          disabled={disabled}
+          ref={defaultTriggerRef}
+          type="button"
+          onClick={() => requestOpen(!open)}
+          onKeyDown={handleTriggerKeyDown}
+        >
+          {triggerLabel}
+        </button>
+      )}
+      <div
+        aria-busy={bool(props, 'loading') || undefined}
+        aria-label={ariaLabel}
+        className="peaui-dropdown-menu__surface"
+        data-align={align}
+        data-placement={resolvedPlacement}
+        data-testid={baseTestId ? `${baseTestId}-menu` : undefined}
+        id={menuId}
+        hidden={!open}
+        popover={getNativePopoverValue()}
+        ref={menuRef}
+        role="menu"
+        style={menuPosition}
+        tabIndex={0}
+      >
+        {bool(props, 'loading') ? (
+          <div
+            aria-disabled="true"
+            aria-live="polite"
+            className="peaui-dropdown-menu__status"
+            role="menuitem"
+            tabIndex={-1}
+          >
+            {node(props, 'loadingContent') ?? 'Ładowanie menu…'}
+          </div>
+        ) : items.length === 0 ? (
+          <div
+            aria-disabled="true"
+            className="peaui-dropdown-menu__status"
+            role="menuitem"
+            tabIndex={-1}
+          >
+            {node(props, 'empty') ?? 'Brak dostępnych akcji'}
+          </div>
+        ) : (
+          <ul className="peaui-dropdown-menu__list" role="none">
+            {items.map((item, index) => {
+              if (itemType(item) !== 'group') return renderRow(item, [index], 'root');
+              const groupId = `${menuId}-group-${index}`;
+              return (
+                <li className="peaui-dropdown-menu__group-row" key={item.id} role="none">
+                  <div
+                    aria-labelledby={groupId}
+                    className="peaui-dropdown-menu__group"
+                    role="group"
+                  >
+                    <div className="peaui-dropdown-menu__group-label" id={groupId}>
+                      {renderGroupLabel?.(item, [index]) ?? item.label}
+                    </div>
+                    <ul className="peaui-dropdown-menu__list" role="none">
+                      {item.children?.map((child, childIndex) =>
+                        renderRow(child, [index, childIndex], 'root'),
+                      )}
+                    </ul>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </span>
+  );
+}
+
+function SplitButtonRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const root = 'peaui-split-button';
+  const label = text(props, 'label', 'Akcja');
+  const variant = text(props, 'variant', 'primary');
+  const size = text(props, 'size', 'm');
+  const disabled = bool(props, 'disabled');
+  const loading = bool(props, 'loading');
+  const menuLoading = bool(props, 'menuLoading');
+  const primaryBlocked = disabled || bool(props, 'primaryDisabled') || loading;
+  const menuBlocked = disabled || bool(props, 'menuDisabled');
+  const menuAriaLabel = text(props, 'menuAriaLabel') || `Więcej opcji: ${label}`;
+  const baseTestId = dataTest(props);
+  const renderLabel = node(props, 'labelContent') ?? props.children ?? label;
+  const renderIcon = node(props, 'iconContent');
+  const renderMenuTriggerIcon = node(props, 'menuTriggerIconContent');
+  const renderMenuItem = props.renderMenuItem as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderMenuItemIcon = props.renderMenuItemIcon as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderMenuItemShortcut = props.renderMenuItemShortcut as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderGroupLabel = props.renderGroupLabel as
+    | ((item: ReactDropdownMenuItem, path: number[]) => ReactNode)
+    | undefined;
+  const renderTrigger = (): ReactElement => (
+    <button
+      aria-busy={menuLoading || undefined}
+      aria-label={menuAriaLabel}
+      className={cx(
+        'peaui-button-action',
+        'peaui-split-button__trigger',
+        `peaui-button-action--size-${size}`,
+        `peaui-button-action--variant-${variant}`,
+        menuBlocked && 'peaui-button-action--is-disabled',
+      )}
+      data-testid={baseTestId ? `${baseTestId}-trigger` : undefined}
+      disabled={menuBlocked}
+      type="button"
+    >
+      <span aria-hidden="true" className="peaui-split-button__trigger-icon">
+        {renderMenuTriggerIcon ?? <Svg name="arrowRounded" />}
+      </span>
+    </button>
+  );
+
+  return (
+    <div
+      aria-label={text(props, 'ariaLabel') || label}
+      className={cx(
+        root,
+        `${root}--variant-${variant}`,
+        `${root}--size-${size}`,
+        disabled && `${root}--disabled`,
+        primaryBlocked && `${root}--primary-disabled`,
+        menuBlocked && `${root}--menu-disabled`,
+        loading && `${root}--loading`,
+        menuLoading && `${root}--menu-loading`,
+        props.open === true && `${root}--open`,
+        props.className,
+      )}
+      data-testid={baseTestId}
+      ref={forwardedRef as ForwardedRef<HTMLDivElement>}
+      role="group"
+      style={props.style}
+    >
+      <button
+        aria-busy={loading || undefined}
+        aria-label={label}
+        className={cx(
+          'peaui-button-action',
+          'peaui-split-button__primary',
+          `peaui-button-action--size-${size}`,
+          `peaui-button-action--variant-${variant}`,
+          primaryBlocked && 'peaui-button-action--is-disabled',
+        )}
+        data-testid={baseTestId ? `${baseTestId}-primary` : undefined}
+        disabled={primaryBlocked}
+        type={text(props, 'type', 'button') as 'button' | 'submit' | 'reset'}
+        onClick={(event) => callback(props, 'onPrimaryClick')?.(event)}
+      >
+        {loading ? (
+          <span aria-hidden="true" className="peaui-split-button__spinner" />
+        ) : (
+          (renderIcon ??
+          (text(props, 'icon') ? (
+            <Svg className="peaui-split-button__primary-icon" name={text(props, 'icon')} />
+          ) : null))
+        )}
+        <span className="peaui-split-button__label">{renderLabel}</span>
+      </button>
+      {loading ? (
+        <span className="peaui-split-button__status" role="status">
+          {text(props, 'loadingLabel', 'Trwa wykonywanie głównej akcji')}
+        </span>
+      ) : null}
+      <DropdownMenuRenderer
+        align={text(props, 'menuAlign', 'end')}
+        ariaLabel={menuAriaLabel}
+        className="peaui-split-button__menu"
+        closeOnSelect={props.closeOnSelect}
+        dataTestId={baseTestId ? `${baseTestId}-dropdown` : undefined}
+        defaultOpen={props.defaultOpen}
+        disabled={menuBlocked}
+        empty={node(props, 'emptyContent') ?? text(props, 'emptyLabel', 'Brak dostępnych akcji')}
+        items={props.items}
+        loading={menuLoading}
+        loadingContent={
+          node(props, 'menuLoadingContent') ?? text(props, 'menuLoadingLabel', 'Ładowanie menu…')
+        }
+        loop={props.loop}
+        open={props.open}
+        placement="bottom"
+        renderGroupLabel={renderGroupLabel}
+        renderItem={renderMenuItem}
+        renderItemIcon={renderMenuItemIcon}
+        renderItemShortcut={renderMenuItemShortcut}
+        renderTrigger={renderTrigger}
+        onOpenChange={(value: boolean) => callback(props, 'onOpenChange')?.(value)}
+        onSelect={(item: ReactDropdownMenuItem, path: number[]) =>
+          callback(props, 'onSelect')?.(item, path)
+        }
+      />
+    </div>
+  );
+}
+
+type ReactMenuBarMenu = {
+  disabled?: boolean;
+  icon?: string;
+  id: string | number;
+  items: ReactDropdownMenuItem[];
+  label: string;
+};
+
+function asMenuBarMenus(value: unknown): ReactMenuBarMenu[] {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((entry): ReactMenuBarMenu[] => {
+    if (typeof entry !== 'object' || entry === null) return [];
+    const menu = entry as Record<string, unknown>;
+    if (
+      (typeof menu.id !== 'string' && typeof menu.id !== 'number') ||
+      typeof menu.label !== 'string'
+    ) {
+      return [];
+    }
+
+    return [entry as ReactMenuBarMenu];
+  });
+}
+
+function MenuBarRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const menus = asMenuBarMenus(props.menus);
+  const disabled = bool(props, 'disabled');
+  const loop = bool(props, 'loop', true);
+  const variant = text(props, 'variant', 'default');
+  const baseTestId = dataTest(props);
+  const [openMenu, setOpenMenu] = useModel<string | number | null>(props, 'openMenu', null);
+  const navigationMenus = menus.map((menu) => ({
+    disabled: disabled || menu.disabled,
+    label: menu.label,
+  }));
+  const firstIndex = edgeEnabledMenuIndex(navigationMenus, 'first');
+  const [activeMenuId, setActiveMenuId] = useState<string | number | null>(
+    firstIndex >= 0 ? (menus[firstIndex]?.id ?? null) : null,
+  );
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const typeaheadValue = useRef('');
+  const typeaheadTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const renderMenuTrigger = props.renderMenuTrigger as
+    | ((menu: ReactMenuBarMenu, state: { disabled: boolean; open: boolean }) => ReactNode)
+    | undefined;
+  const renderItem = props.renderItem as
+    | ((item: ReactDropdownMenuItem, path: number[], menu: ReactMenuBarMenu) => ReactNode)
+    | undefined;
+  const renderGroupLabel = props.renderGroupLabel as
+    | ((item: ReactDropdownMenuItem, path: number[], menu: ReactMenuBarMenu) => ReactNode)
+    | undefined;
+  const renderShortcut = props.renderShortcut as
+    | ((item: ReactDropdownMenuItem, path: number[], menu: ReactMenuBarMenu) => ReactNode)
+    | undefined;
+
+  const setRootRef = (element: HTMLDivElement | null): void => {
+    rootRef.current = element;
+    if (typeof forwardedRef === 'function') forwardedRef(element);
+    else if (forwardedRef) forwardedRef.current = element;
+  };
+  const menuDisabled = (menu: ReactMenuBarMenu): boolean => disabled || menu.disabled === true;
+  const triggerAt = (index: number): HTMLButtonElement | null =>
+    rootRef.current?.querySelector<HTMLButtonElement>(`[data-menubar-index="${index}"]`) ?? null;
+  const keepTriggerVisible = (trigger: HTMLElement): void => {
+    const viewport = viewportRef.current;
+    if (!viewport || viewport.scrollWidth <= viewport.clientWidth) return;
+    if (typeof trigger.scrollIntoView === 'function') {
+      trigger.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+  };
+  const focusMenu = (index: number, preserveMenuMode = false): void => {
+    const menu = menus[index];
+    if (!menu || menuDisabled(menu)) return;
+    const trigger = triggerAt(index);
+    trigger?.focus({ preventScroll: true });
+    if (trigger) keepTriggerVisible(trigger);
+    if (preserveMenuMode) setOpenMenu(menu.id);
+  };
+  const focusRelative = (index: number, direction: 1 | -1, preserveMenuMode: boolean): void => {
+    const nextIndex = nextEnabledMenuIndex(navigationMenus, index, direction, loop);
+    if (nextIndex >= 0) focusMenu(nextIndex, preserveMenuMode);
+  };
+  const focusEdge = (edge: 'first' | 'last', preserveMenuMode: boolean): void => {
+    const index = edgeEnabledMenuIndex(navigationMenus, edge);
+    if (index >= 0) focusMenu(index, preserveMenuMode);
+  };
+  const handleTypeahead = (event: React.KeyboardEvent<HTMLElement>, currentIndex: number): void => {
+    if (event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) return;
+    typeaheadValue.current += event.key;
+    if (typeaheadTimer.current) clearTimeout(typeaheadTimer.current);
+    typeaheadTimer.current = setTimeout(() => (typeaheadValue.current = ''), 500);
+    const index = typeaheadMenuIndex(navigationMenus, typeaheadValue.current, currentIndex);
+    if (index >= 0) {
+      event.preventDefault();
+      focusMenu(index, openMenu !== null);
+    }
+  };
+  const handleKeyDownCapture = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (disabled) return;
+    const target = event.target as HTMLElement;
+    const trigger = target.closest<HTMLElement>('[data-menubar-index]');
+    const rootItem = target.closest<HTMLElement>('[data-menu-parent="root"]');
+    const nestedItem = target.closest<HTMLElement>(
+      '[data-menu-parent]:not([data-menu-parent="root"])',
+    );
+    const menuIndexValue = trigger?.dataset.menubarIndex;
+    const activeIndex = menus.findIndex((menu) => menu.id === activeMenuId);
+    const menuIndex = menuIndexValue === undefined ? activeIndex : Number(menuIndexValue);
+    const preserveMenuMode = openMenu !== null;
+
+    if (trigger) {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        event.stopPropagation();
+        focusRelative(menuIndex, event.key === 'ArrowRight' ? 1 : -1, preserveMenuMode);
+        return;
+      }
+      if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault();
+        event.stopPropagation();
+        focusEdge(event.key === 'Home' ? 'first' : 'last', preserveMenuMode);
+        return;
+      }
+      handleTypeahead(event, menuIndex);
+      return;
+    }
+
+    if (!rootItem || nestedItem) return;
+    if (event.key === 'ArrowRight' && rootItem.getAttribute('aria-haspopup') === 'menu') return;
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    event.preventDefault();
+    event.stopPropagation();
+    focusRelative(activeIndex, event.key === 'ArrowRight' ? 1 : -1, true);
+  };
+
+  useEffect(() => {
+    const activeIndex = menus.findIndex((menu) => menu.id === activeMenuId && !menuDisabled(menu));
+    if (activeIndex < 0) {
+      const nextIndex = edgeEnabledMenuIndex(navigationMenus, 'first');
+      setActiveMenuId(nextIndex >= 0 ? (menus[nextIndex]?.id ?? null) : null);
+    }
+    if (openMenu !== null && !menus.some((menu) => menu.id === openMenu && !menuDisabled(menu))) {
+      setOpenMenu(null);
+    }
+  }, [props.menus, disabled, openMenu]);
+
+  useEffect(
+    () => () => {
+      if (typeaheadTimer.current) clearTimeout(typeaheadTimer.current);
+    },
+    [],
+  );
+
+  return (
+    <div
+      aria-label={text(props, 'ariaLabel') || text(props, 'aria-label', 'Menu aplikacji')}
+      aria-orientation="horizontal"
+      className={cx(
+        'peaui-menu-bar',
+        `peaui-menu-bar--${variant}`,
+        disabled && 'peaui-menu-bar--disabled',
+        openMenu !== null && 'peaui-menu-bar--open',
+        props.className,
+      )}
+      data-testid={baseTestId}
+      ref={setRootRef}
+      role="menubar"
+      style={props.style}
+      onKeyDownCapture={handleKeyDownCapture}
+    >
+      <div className="peaui-menu-bar__viewport" ref={viewportRef}>
+        <div className="peaui-menu-bar__list">
+          {menus.map((menu, index) => {
+            const isDisabled = menuDisabled(menu);
+            const isOpen = !isDisabled && openMenu === menu.id;
+            return (
+              <DropdownMenuRenderer
+                __name="DropdownMenu"
+                align="start"
+                ariaLabel={menu.label}
+                closeOnSelect
+                dataTestId={baseTestId ? `${baseTestId}-menu-${menu.id}` : undefined}
+                density={variant === 'compact' ? 'compact' : 'comfortable'}
+                disabled={isDisabled}
+                items={menu.items}
+                key={menu.id}
+                loop={loop}
+                offset={4}
+                open={isOpen}
+                placement="bottom"
+                renderGroupLabel={(item: ReactDropdownMenuItem, path: number[]) =>
+                  renderGroupLabel?.(item, path, menu) ?? item.label
+                }
+                renderItem={(item: ReactDropdownMenuItem, path: number[]) =>
+                  renderItem?.(item, path, menu) ?? item.label
+                }
+                renderItemShortcut={(item: ReactDropdownMenuItem, path: number[]) =>
+                  renderShortcut?.(item, path, menu) ?? item.shortcut
+                }
+                renderTrigger={({ open }: { disabled: boolean; open: boolean }) => (
+                  <button
+                    aria-disabled={isDisabled || undefined}
+                    className="peaui-menu-bar__trigger"
+                    data-menubar-id={String(menu.id)}
+                    data-menubar-index={index}
+                    disabled={isDisabled}
+                    role="menuitem"
+                    tabIndex={!isDisabled && activeMenuId === menu.id ? 0 : -1}
+                    type="button"
+                    onFocus={() => {
+                      const changed = activeMenuId !== menu.id;
+                      setActiveMenuId(menu.id);
+                      const trigger = triggerAt(index);
+                      if (trigger) keepTriggerVisible(trigger);
+                      if (changed) callback(props, 'onFocusChange')?.(menu, index);
+                    }}
+                    onPointerEnter={() => {
+                      if (openMenu !== null && openMenu !== menu.id && !isDisabled) {
+                        setOpenMenu(menu.id);
+                      }
+                    }}
+                  >
+                    {renderMenuTrigger?.(menu, { disabled: isDisabled, open }) ?? (
+                      <>
+                        {menu.icon ? (
+                          <Svg className="peaui-menu-bar__trigger-icon" name={menu.icon} />
+                        ) : null}
+                        <span className="peaui-menu-bar__trigger-label">{menu.label}</span>
+                      </>
+                    )}
+                  </button>
+                )}
+                onCheckedChange={(item: ReactDropdownMenuItem, checked: boolean, path: number[]) =>
+                  callback(props, 'onCheckedChange')?.(item, checked, path, menu)
+                }
+                onOpenChange={(value: boolean) => {
+                  if (value && !isDisabled) {
+                    setActiveMenuId(menu.id);
+                    setOpenMenu(menu.id);
+                  } else if (!value && openMenu === menu.id) setOpenMenu(null);
+                }}
+                onSelect={(item: ReactDropdownMenuItem, path: number[]) =>
+                  callback(props, 'onSelect')?.(item, path, menu)
+                }
+                onValueChange={(item: ReactDropdownMenuItem, value: unknown, path: number[]) =>
+                  callback(props, 'onValueChange')?.(item, value, path, menu)
+                }
+              />
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type ReactContextMenuHandle = HTMLElement & {
+  close(): void;
+  openAt(point: { context?: unknown; x: number; y: number }): boolean;
+};
+
+type ReactContextAnchor = {
+  align: 'start' | 'end';
+  placement: 'top' | 'bottom';
+  rect: DOMRect;
+  target: HTMLElement | null;
+  version: number;
+};
+
+function contextPointRect(x: number, y: number): DOMRect {
+  return {
+    bottom: y,
+    height: 0,
+    left: x,
+    right: x,
+    top: y,
+    width: 0,
+    x,
+    y,
+    toJSON: () => ({ bottom: y, height: 0, left: x, right: x, top: y, width: 0, x, y }),
+  } as DOMRect;
+}
+
+function ContextMenuRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const disabled = bool(props, 'disabled');
+  const pointerEnabled = ['pointer', 'both'].includes(text(props, 'trigger', 'both'));
+  const keyboardEnabled = ['keyboard', 'both'].includes(text(props, 'trigger', 'both'));
+  const position = text(props, 'position', 'cursor');
+  const longPress = bool(props, 'longPress', true);
+  const longPressDelay = Math.min(1500, Math.max(300, num(props, 'longPressDelay', 550)));
+  const longPressMoveThreshold = Math.max(4, num(props, 'longPressMoveThreshold', 10));
+  const closeOnScroll = bool(props, 'closeOnScroll', true);
+  const baseTestId = dataTest(props);
+  const menuId = `peaui-context-menu-${useId().replace(/:/g, '')}-menu`;
+  const disabledRef = useRef(disabled);
+  disabledRef.current = disabled;
+  const [open, setOpen] = useModel<boolean>(props, 'open', false);
+  const [activeContext, setActiveContext] = useState(props.context);
+  const [targetHasFocusableChild, setTargetHasFocusableChild] = useState(false);
+  const [anchor, setAnchor] = useState<ReactContextAnchor>(() => ({
+    align: 'start',
+    placement: 'bottom',
+    rect: contextPointRect(0, 0),
+    target: null,
+    version: 0,
+  }));
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+  const targetHostRef = useRef<HTMLSpanElement | null>(null);
+  const managedTargetRef = useRef<HTMLElement | null>(null);
+  const activeTargetRef = useRef<HTMLElement | null>(null);
+  const virtualTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const longPressState = useRef<
+    | {
+        pointerId: number;
+        startX: number;
+        startY: number;
+        target: HTMLElement;
+      }
+    | undefined
+  >(undefined);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pendingCloseReason = useRef('dismiss');
+  const renderTarget = props.renderTarget as
+    | ((state: { context: unknown; disabled: boolean; open: boolean }) => ReactNode)
+    | undefined;
+
+  const setContext = (nextContext: unknown): void => {
+    if (Object.is(activeContext, nextContext)) return;
+    setActiveContext(nextContext);
+    callback(props, 'onContextChange')?.(nextContext);
+  };
+  const cancelLongPress = (reason: string, notify = true): void => {
+    if (!longPressState.current && !longPressTimer.current) return;
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    longPressTimer.current = undefined;
+    longPressState.current = undefined;
+    if (notify) callback(props, 'onLongPressCancel')?.(reason);
+  };
+  const close = (reason = 'programmatic'): void => {
+    cancelLongPress(reason === 'disabled' ? 'disabled' : 'release', false);
+    if (!open) return;
+    pendingCloseReason.current = reason;
+    setOpen(false);
+    callback(props, 'onClose')?.(reason);
+  };
+  const requestOpenAt = (
+    rect: DOMRect,
+    target: HTMLElement | null,
+    source: 'pointer' | 'keyboard' | 'long-press' | 'programmatic',
+    nextContext: unknown,
+  ): boolean => {
+    if (disabledRef.current) return false;
+    const resolvedTarget = target?.isConnected ? target : managedTargetRef.current;
+    const viewportLeft = window.visualViewport?.offsetLeft ?? 0;
+    const viewportTop = window.visualViewport?.offsetTop ?? 0;
+    const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    activeTargetRef.current = resolvedTarget;
+    setContext(nextContext);
+    pendingCloseReason.current = 'dismiss';
+    setAnchor((current) => ({
+      align: centerX > viewportLeft + viewportWidth / 2 ? 'end' : 'start',
+      placement: centerY > viewportTop + viewportHeight / 2 ? 'top' : 'bottom',
+      rect,
+      target: resolvedTarget,
+      version: current.version + 1,
+    }));
+    setOpen(true);
+    callback(
+      props,
+      'onOpen',
+    )?.({
+      context: nextContext,
+      source,
+      x: rect.left,
+      y: rect.top,
+    });
+    return true;
+  };
+  const openAt = (point: { context?: unknown; x: number; y: number }): boolean => {
+    if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return false;
+    const nextContext = Object.prototype.hasOwnProperty.call(point, 'context')
+      ? point.context
+      : props.context;
+    return requestOpenAt(
+      contextPointRect(point.x, point.y),
+      managedTargetRef.current,
+      'programmatic',
+      nextContext,
+    );
+  };
+  const setRootRef = (element: HTMLSpanElement | null): void => {
+    rootRef.current = element;
+    if (element) {
+      const handle = element as ReactContextMenuHandle;
+      handle.openAt = openAt;
+      handle.close = () => close();
+    }
+    if (typeof forwardedRef === 'function') forwardedRef(element);
+    else if (forwardedRef) forwardedRef.current = element;
+  };
+  const resolveEventTarget = (target: EventTarget | null): HTMLElement | null => {
+    if (!(target instanceof HTMLElement) || !targetHostRef.current?.contains(target)) {
+      return managedTargetRef.current;
+    }
+    return (
+      target.closest<HTMLElement>(
+        'button, a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]',
+      ) ??
+      managedTargetRef.current ??
+      target
+    );
+  };
+  const openForTarget = (target: HTMLElement | null, source: 'pointer' | 'keyboard'): boolean => {
+    const resolvedTarget = target?.isConnected ? target : managedTargetRef.current;
+    if (!resolvedTarget) return false;
+    return requestOpenAt(
+      resolvedTarget.getBoundingClientRect(),
+      resolvedTarget,
+      source,
+      props.context,
+    );
+  };
+
+  useEffect(() => setActiveContext(props.context), [props.context]);
+
+  useEffect(() => {
+    const host = targetHostRef.current;
+    if (!host) return undefined;
+    let currentTarget: HTMLElement | null = null;
+    let originals: Map<string, string | null> | undefined;
+    const restore = (): void => {
+      if (!currentTarget || currentTarget === host || !originals) return;
+      for (const [name, value] of originals) {
+        if (value === null) currentTarget.removeAttribute(name);
+        else currentTarget.setAttribute(name, value);
+      }
+    };
+    const sync = (): void => {
+      const nextTarget =
+        host.querySelector<HTMLElement>(
+          'button, a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]',
+        ) ?? host;
+      if (currentTarget !== nextTarget) {
+        restore();
+        currentTarget = nextTarget;
+        originals =
+          nextTarget === host
+            ? undefined
+            : new Map(
+                ['aria-haspopup', 'aria-expanded', 'aria-controls'].map((name) => [
+                  name,
+                  nextTarget.getAttribute(name),
+                ]),
+              );
+      }
+      managedTargetRef.current = nextTarget;
+      setTargetHasFocusableChild(nextTarget !== host);
+      if (disabled) {
+        nextTarget.removeAttribute('aria-haspopup');
+        nextTarget.removeAttribute('aria-expanded');
+        nextTarget.removeAttribute('aria-controls');
+      } else {
+        nextTarget.setAttribute('aria-haspopup', 'menu');
+        nextTarget.setAttribute('aria-expanded', String(open));
+        nextTarget.setAttribute('aria-controls', menuId);
+      }
+      if (activeTargetRef.current && !activeTargetRef.current.isConnected) {
+        cancelLongPress('target-removed');
+        close('target-removed');
+      }
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(host, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      restore();
+      if (managedTargetRef.current === currentTarget) managedTargetRef.current = null;
+    };
+  }, [disabled, menuId, open, props.children]);
+
+  useEffect(() => {
+    const trigger = virtualTriggerRef.current;
+    if (!trigger) return;
+    trigger.getBoundingClientRect = () => anchor.rect;
+    trigger.focus = (options?: FocusOptions) => {
+      const target = activeTargetRef.current?.isConnected
+        ? activeTargetRef.current
+        : managedTargetRef.current;
+      target?.focus(options);
+    };
+  }, [anchor]);
+
+  useEffect(() => {
+    if (!disabled) return;
+    cancelLongPress('disabled');
+    close('disabled');
+  }, [disabled]);
+
+  useEffect(() => {
+    if (!open || !closeOnScroll) return undefined;
+    const handleScroll = (event: Event): void => {
+      if (event.target instanceof Node && rootRef.current?.contains(event.target)) return;
+      close('scroll');
+    };
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, [open, closeOnScroll]);
+
+  useEffect(
+    () => () => {
+      if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    },
+    [],
+  );
+
+  const targetContent = renderTarget?.({ context: activeContext, disabled, open }) ??
+    props.children ?? (
+      <span className="peaui-context-menu__placeholder">
+        Kliknij prawym przyciskiem lub naciśnij Shift+F10
+      </span>
+    );
+
+  return (
+    <span
+      {...common(props)}
+      aria-label={undefined}
+      className={cx(
+        'peaui-context-menu',
+        disabled && 'peaui-context-menu--disabled',
+        open && 'peaui-context-menu--open',
+        props.className,
+      )}
+      data-testid={baseTestId}
+      ref={setRootRef}
+    >
+      <span
+        aria-controls={!disabled && !targetHasFocusableChild ? menuId : undefined}
+        aria-expanded={!disabled && !targetHasFocusableChild ? open : undefined}
+        aria-haspopup={!disabled && !targetHasFocusableChild ? 'menu' : undefined}
+        className="peaui-context-menu__target"
+        ref={targetHostRef}
+        tabIndex={!targetHasFocusableChild && !disabled ? 0 : undefined}
+        onContextMenu={(event) => {
+          if (!pointerEnabled || disabled || event.defaultPrevented) return;
+          const target = resolveEventTarget(event.target);
+          const activated =
+            position === 'target'
+              ? openForTarget(target, 'pointer')
+              : requestOpenAt(
+                  contextPointRect(event.clientX, event.clientY),
+                  target,
+                  'pointer',
+                  props.context,
+                );
+          if (activated) event.preventDefault();
+        }}
+        onKeyDown={(event) => {
+          if (!keyboardEnabled || disabled) return;
+          if (
+            !(
+              event.key === 'ContextMenu' ||
+              event.key === 'Apps' ||
+              (event.shiftKey && event.key === 'F10')
+            )
+          )
+            return;
+          if (openForTarget(resolveEventTarget(event.target), 'keyboard')) event.preventDefault();
+        }}
+        onPointerCancel={(event) => {
+          if (longPressState.current?.pointerId === event.pointerId)
+            cancelLongPress('pointer-cancel');
+        }}
+        onPointerDown={(event) => {
+          if (
+            !longPress ||
+            !pointerEnabled ||
+            disabled ||
+            event.pointerType !== 'touch' ||
+            !event.isPrimary ||
+            event.button !== 0
+          )
+            return;
+          cancelLongPress('pointer-cancel', false);
+          const target = resolveEventTarget(event.target);
+          if (!target) return;
+          longPressState.current = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            target,
+          };
+          longPressTimer.current = setTimeout(() => {
+            const state = longPressState.current;
+            longPressState.current = undefined;
+            longPressTimer.current = undefined;
+            if (!state?.target.isConnected || disabledRef.current) return;
+            requestOpenAt(
+              contextPointRect(state.startX, state.startY),
+              state.target,
+              'long-press',
+              props.context,
+            );
+          }, longPressDelay);
+        }}
+        onPointerMove={(event) => {
+          const state = longPressState.current;
+          if (!state || state.pointerId !== event.pointerId) return;
+          const distance = Math.hypot(event.clientX - state.startX, event.clientY - state.startY);
+          if (distance > longPressMoveThreshold) cancelLongPress('move');
+        }}
+        onPointerUp={(event) => {
+          if (longPressState.current?.pointerId === event.pointerId) cancelLongPress('release');
+        }}
+      >
+        {targetContent}
+      </span>
+
+      <DropdownMenuRenderer
+        {...props}
+        __anchorVersion={anchor.version}
+        __menuId={menuId}
+        ariaLabel={text(props, 'ariaLabel') || text(props, 'aria-label', 'Menu kontekstowe')}
+        children={undefined}
+        className="peaui-context-menu__menu"
+        dataTestId={baseTestId ? `${baseTestId}-dropdown` : undefined}
+        density={text(props, 'density', 'comfortable')}
+        offset={Math.max(0, num(props, 'offset', 4))}
+        open={open}
+        align={anchor.align}
+        placement={anchor.placement}
+        renderTrigger={() => (
+          <button
+            aria-hidden="true"
+            className="peaui-context-menu__virtual-trigger"
+            inert
+            ref={virtualTriggerRef}
+            tabIndex={-1}
+            type="button"
+          />
+        )}
+        onCheckedChange={(item: ReactDropdownMenuItem, checked: boolean, path: number[]) =>
+          callback(props, 'onCheckedChange')?.(item, checked, path, activeContext)
+        }
+        onOpenChange={(value: boolean) => {
+          if (value) setOpen(true);
+          else if (open) close(pendingCloseReason.current);
+        }}
+        onSelect={(item: ReactDropdownMenuItem, path: number[]) => {
+          pendingCloseReason.current = 'select';
+          callback(props, 'onSelect')?.(item, path, activeContext);
+        }}
+        onValueChange={(item: ReactDropdownMenuItem, value: unknown, path: number[]) =>
+          callback(props, 'onValueChange')?.(item, value, path, activeContext)
+        }
+      />
+    </span>
   );
 }
 
@@ -904,6 +2395,7 @@ function FormShell({
       {node(props, 'description') && !hasError && !hasSuccess && !maxLength ? (
         <div
           className={`${className}__message peaui-message-text peaui-message-text--variant-default peaui-message-text--size-xs`}
+          id={`${id}-description`}
         >
           <p className="peaui-message-text__content">{node(props, 'description')}</p>
         </div>
@@ -926,6 +2418,7 @@ function FormShell({
       {hasError && !hasSuccess ? (
         <div
           className={`${className}__message peaui-message-text peaui-message-text--variant-error peaui-message-text--size-xs`}
+          id={`${id}-error`}
           role="alert"
         >
           <Svg className="peaui-message-text__icon" name="hint" />
@@ -935,6 +2428,7 @@ function FormShell({
       {hasSuccess && !hasError ? (
         <div
           className={`${className}__message peaui-message-text peaui-message-text--variant-success peaui-message-text--size-xs`}
+          id={`${id}-success`}
         >
           <Svg className="peaui-message-text__icon" name="checkCircle" />
           <p className="peaui-message-text__content">{node(props, 'success')}</p>
@@ -952,100 +2446,38 @@ function BasicRenderer({
   if (kind === 'SvgIcon')
     return (
       <Svg
+        ariaHidden={
+          typeof props['aria-hidden'] === 'boolean' ||
+          props['aria-hidden'] === 'false' ||
+          props['aria-hidden'] === 'true'
+            ? props['aria-hidden']
+            : undefined
+        }
         className={props.className}
-        label={text(props, 'ariaLabel') || undefined}
+        dataTestId={dataTest(props)}
+        describedBy={text(props, 'aria-describedby') || undefined}
+        label={text(props, 'ariaLabel') || text(props, 'aria-label') || undefined}
+        labelledBy={text(props, 'aria-labelledby') || undefined}
         name={text(props, 'name', 'info')}
+        role={text(props, 'role') || undefined}
+        style={props.style}
+        tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
       />
     );
-  if (kind === 'ImageView') {
-    const size = text(props, 'size', 'auto');
-    return (
-      <span
-        {...common(props)}
-        className={cx('peaui-image-view', `peaui-image-view--size-${size}`, props.className)}
-        ref={forwardedRef as ForwardedRef<HTMLSpanElement>}
-      >
-        <img
-          alt={text(props, 'alt')}
-          className="peaui-image-view__image"
-          src={text(props, 'src')}
-          style={{ maxWidth: text(props, 'max') || undefined }}
-        />
-      </span>
-    );
-  }
-  const [image, setImage] = useModel<unknown>(props, 'image', undefined);
-  const source =
-    typeof image === 'string' ? image : image instanceof Blob ? URL.createObjectURL(image) : '';
+  const size = text(props, 'size', 'auto');
   return (
-    <section
+    <span
       {...common(props)}
-      className={cx('peaui-photo-editior', props.className)}
-      ref={forwardedRef as ForwardedRef<HTMLElement>}
+      className={cx('peaui-image-view', `peaui-image-view--size-${size}`, props.className)}
+      ref={forwardedRef as ForwardedRef<HTMLSpanElement>}
     >
-      <div className="peaui-photo-editior__instruction peaui-message-text peaui-message-text--variant-info peaui-message-text--size-s">
-        <p className="peaui-message-text__content">
-          Użyj kontrolek, aby wykadrować, obrócić i dopasować zdjęcie.
-        </p>
-      </div>
-      <div
-        aria-label="Podgląd przycinania zdjęcia"
-        className="peaui-photo-editior__workspace peaui-photo-editior__workspace--fixed-height"
-        role="group"
-        tabIndex={0}
-      >
-        {source ? (
-          <img
-            alt={text(props, 'ariaLabel', 'Edytowany obraz')}
-            className="peaui-photo-editior__cropper"
-            src={source}
-          />
-        ) : (
-          <div className="peaui-photo-editior__cropper">Brak obrazu do edycji</div>
-        )}
-      </div>
-      <div aria-label="Obrót zdjęcia" className="peaui-photo-editior__toolbar" role="group">
-        <button
-          className="peaui-photo-editior__toolbar-button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-secondary"
-          type="button"
-        >
-          Obróć w prawo <Svg name="redo" />
-        </button>
-        <button
-          className="peaui-photo-editior__toolbar-button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-secondary"
-          type="button"
-        >
-          Obróć w lewo <Svg name="undo" />
-        </button>
-      </div>
-      <div className="peaui-photo-editior__settings">
-        {[
-          ['Powiększ', 'scale'],
-          ['Wyrównaj', 'align'],
-        ].map(([label, name]) => (
-          <div key={name} className="peaui-photo-editior__setting">
-            <strong className="peaui-photo-editior__setting-heading">{label}</strong>
-            <input aria-label={label} max="1" min="0" name={name} step="0.1" type="range" />
-          </div>
-        ))}
-      </div>
-      <div aria-label="Akcje edytora zdjęcia" className="peaui-photo-editior__actions" role="group">
-        <button
-          className="peaui-photo-editior__action-button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-primary"
-          type="button"
-          onClick={() => setImage(image)}
-        >
-          Zapisz
-        </button>
-        <button
-          className="peaui-photo-editior__action-button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-secondary"
-          type="button"
-          onClick={() => callback(props, 'onCancel')?.()}
-        >
-          Odrzuć
-        </button>
-      </div>
-    </section>
+      <img
+        alt={text(props, 'alt')}
+        className="peaui-image-view__image"
+        src={text(props, 'src')}
+        style={{ maxWidth: text(props, 'max') || undefined }}
+      />
+    </span>
   );
 }
 
@@ -1246,11 +2678,19 @@ function TextInputRenderer({
   const canCopyPassword = kind === 'FormPassword' && bool(props, 'canCopy', true);
   const canShowPassword = kind === 'FormPassword' && bool(props, 'canVisible', true);
   const passwordActionsCount = Number(canCopyPassword) + Number(canShowPassword);
-  let paddingRight = after
-    ? `${after.length * 7.5 + 12 + (canErase ? 16 : 0) + (iconAfter ? 24 : 0)}px`
-    : iconAfter
-      ? '32px'
-      : '12px';
+  const trailingControlWidth =
+    kind === 'FormNumber' && bool(props, 'isRangeVisible', true) && !readonly && !disabled ? 20 : 0;
+  const eraseButtonRight = getFormFieldEraseOffset({
+    after,
+    iconAfter,
+    trailingControlWidth,
+  });
+  let paddingRight = `${getFormFieldPaddingRight({
+    after,
+    canErase,
+    iconAfter,
+    minimumEraseOffset: eraseButtonRight,
+  })}px`;
   if (kind === 'FormPassword' && passwordActionsCount > 0) {
     paddingRight = passwordActionsCount === 2 ? '5.75rem' : '2.875rem';
   }
@@ -1262,6 +2702,7 @@ function TextInputRenderer({
   const input = (
     <input
       aria-disabled={disabled}
+      aria-invalid={Boolean(node(props, 'error')) || text(props, 'aria-invalid') === 'true'}
       aria-label={
         text(props, 'ariaLabel') || text(props, 'label') || text(props, 'name') || undefined
       }
@@ -1312,9 +2753,15 @@ function TextInputRenderer({
         } as CSSProperties
       }
       aria-describedby={
-        kind === 'FormPassword' && bool(props, 'enablePasswordStrengthMeter')
-          ? `${id}-strength-status`
-          : undefined
+        [
+          text(props, 'aria-describedby'),
+          node(props, 'error') ? `${id}-error` : undefined,
+          kind === 'FormPassword' && bool(props, 'enablePasswordStrengthMeter')
+            ? `${id}-strength-status`
+            : undefined,
+        ]
+          .filter(Boolean)
+          .join(' ') || undefined
       }
       data-type={
         kind === 'FormNumber'
@@ -1519,7 +2966,7 @@ function TextInputRenderer({
         <button
           aria-label="Wyczyść pole"
           className="peaui-form-field__erase-button"
-          style={{ '--right': `${iconAfter ? 30 : 12}px` } as CSSProperties}
+          style={{ '--right': `${eraseButtonRight}px` } as CSSProperties}
           type="button"
           onClick={() => {
             setValue(undefined);
@@ -1745,6 +3192,7 @@ function SelectRenderer({
   const searchable = bool(props, 'searchable');
   const disabled = bool(props, 'disabled');
   const readonly = bool(props, 'readonly');
+  const canErase = bool(props, 'canErase');
   const selectedOptions = options.filter((option) => selected.includes(String(option.value)));
   const filteredOptions = options.filter((option) =>
     option.label.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
@@ -1819,9 +3267,15 @@ function SelectRenderer({
           <input
             aria-autocomplete="list"
             aria-controls={`${id}-listbox`}
+            aria-describedby={
+              [text(props, 'aria-describedby'), node(props, 'error') ? `${id}-error` : undefined]
+                .filter(Boolean)
+                .join(' ') || undefined
+            }
             aria-disabled={disabled}
             aria-expanded={open}
             aria-haspopup="listbox"
+            aria-invalid={Boolean(node(props, 'error')) || text(props, 'aria-invalid') === 'true'}
             aria-label={
               !text(props, 'label') ? text(props, 'ariaLabel') || text(props, 'name') : undefined
             }
@@ -1841,8 +3295,11 @@ function SelectRenderer({
             style={
               {
                 '--pl': '12px',
-                '--pr': '32px',
-                [`--${root}-input-padding-right`]: '2.75rem',
+                '--pr': `${getFormFieldPaddingRight({ canErase, iconAfter: 'arrow' })}px`,
+                [`--${root}-input-padding-right`]: `${getFormFieldPaddingRight({
+                  canErase,
+                  iconAfter: 'arrow',
+                })}px`,
               } as CSSProperties
             }
             value={open && searchable ? query : displayValue}
@@ -1860,11 +3317,11 @@ function SelectRenderer({
               }
             }}
           />
-          {bool(props, 'canErase') && selected.some(Boolean) && !disabled ? (
+          {canErase && selected.some(Boolean) && !disabled ? (
             <button
               aria-label="Wyczyść wybór"
               className="peaui-form-field__erase-button"
-              style={{ '--right': '30px' } as CSSProperties}
+              style={{ '--right': '44px' } as CSSProperties}
               type="button"
               onClick={() => {
                 setValue(multi ? [] : undefined);
@@ -1885,7 +3342,7 @@ function SelectRenderer({
           'peaui-popover-overlayer__content--match-trigger-width',
         )}
         id={`popover-${id}`}
-        popover={nativePopoverValue()}
+        popover={getNativePopoverValue()}
         ref={popoverRef}
         style={
           {
@@ -1972,11 +3429,14 @@ function DateRenderer({
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const kind = text(props, '__name');
   const range = bool(props, 'range');
-  const [value, setValue] = useModel<unknown>(props, 'value', range ? {} : undefined);
+  const [value, setValue] = useModel<unknown>(props, 'value', undefined);
   const root = kind === 'FormYearPicker' ? 'peaui-form-year-picker' : 'peaui-form-date-picker';
   const [open, setOpen] = useState(false);
+  const [calendarView, setCalendarView] = useState<'day' | 'month' | 'year'>('day');
+  const [pendingRangeStart, setPendingRangeStart] = useState<string | number>();
   const disabled = bool(props, 'disabled');
   const readonly = bool(props, 'readonly');
+  const canErase = bool(props, 'canErase', true);
   const [viewDate, setViewDate] = useState(() => {
     if (kind === 'FormYearPicker' && typeof props.value === 'number') {
       return new Date(props.value, 0, 1);
@@ -1987,51 +3447,195 @@ function DateRenderer({
     }
     return new Date();
   });
-  const today = viewDate;
   const selectedRecord =
-    typeof value === 'object' && value !== null ? (value as RuntimeProps) : undefined;
-  const normalized =
-    selectedRecord === undefined
-      ? typeof value === 'string' || typeof value === 'number'
-        ? String(value)
-        : ''
-      : [selectedRecord.from ?? selectedRecord.start, selectedRecord.to ?? selectedRecord.end]
-          .filter((item) => item !== undefined)
-          .join(' – ');
+    !Array.isArray(value) && typeof value === 'object' && value !== null
+      ? (value as RuntimeProps)
+      : undefined;
+  const selectedRange = Array.isArray(value)
+    ? value.slice(0, 2).filter((item) => typeof item === 'string' || typeof item === 'number')
+    : [
+        selectedRecord?.from ?? selectedRecord?.start,
+        selectedRecord?.to ?? selectedRecord?.end,
+      ].filter((item) => typeof item === 'string' || typeof item === 'number');
+  const normalized = range
+    ? pendingRangeStart !== undefined && open
+      ? `${pendingRangeStart} - `
+      : selectedRange.join(' - ')
+    : typeof value === 'string' || typeof value === 'number'
+      ? String(value)
+      : '';
   const selectValue = (next: string | number): void => {
     if (!range) {
       setValue(next);
       setOpen(false);
       return;
     }
-    const current = selectedRecord ?? {};
-    if (current.from === undefined && current.start === undefined) setValue({ from: next });
-    else {
-      setValue({ from: current.from ?? current.start, to: next });
-      setOpen(false);
+    if (pendingRangeStart === undefined) {
+      setPendingRangeStart(next);
+      return;
     }
+    const ordered = [pendingRangeStart, next].sort((left, right) =>
+      String(left).localeCompare(String(right)),
+    );
+    setValue(ordered);
+    setPendingRangeStart(undefined);
+    setOpen(false);
   };
-  const currentYear = today.getFullYear();
-  const firstDayOffset = (new Date(today.getFullYear(), today.getMonth(), 1).getDay() + 6) % 7;
+  const currentYear = viewDate.getFullYear();
+  const decadeStart = Math.floor(currentYear / 10) * 10;
+  const firstDayOffset = (new Date(currentYear, viewDate.getMonth(), 1).getDay() + 6) % 7;
   const calendarDays = Array.from({ length: 42 }, (_, index) => {
-    const date = new Date(today.getFullYear(), today.getMonth(), index - firstDayOffset + 1);
+    const date = new Date(currentYear, viewDate.getMonth(), index - firstDayOffset + 1);
     return {
-      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
+      date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
+        date.getDate(),
+      ).padStart(2, '0')}`,
       day: date.getDate(),
-      outsideMonth: date.getMonth() !== today.getMonth(),
+      outsideMonth: date.getMonth() !== viewDate.getMonth(),
     };
   });
   const popoverRef = useNativePopover(open);
   const overlayerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const focusPanelOnOpen = useRef(false);
   const [triggerWidth, setTriggerWidth] = useState(0);
   const id = text(props, 'id') || useId();
   const anchorName = `--anchor-peaui-${id.replaceAll(':', '')}`;
-  const setOpenWithLayout = (next: boolean): void => {
+  const minYear = Number.isFinite(Number(props.minYear)) ? Number(props.minYear) : undefined;
+  const maxYear = Number.isFinite(Number(props.maxYear)) ? Number(props.maxYear) : undefined;
+  const rawMinDate = text(props, 'minDate') || text(props, 'min');
+  const rawMaxDate = text(props, 'maxDate') || text(props, 'max');
+  const minDate = rawMinDate && /^\d{4}-\d{2}-\d{2}$/.test(rawMinDate) ? rawMinDate : undefined;
+  const maxDate = rawMaxDate && /^\d{4}-\d{2}-\d{2}$/.test(rawMaxDate) ? rawMaxDate : undefined;
+  const isOptionDisabled = (next: string | number): boolean => {
+    if (kind === 'FormYearPicker') {
+      const year = Number(next);
+      return (minYear !== undefined && year < minYear) || (maxYear !== undefined && year > maxYear);
+    }
+    const date = String(next);
+    return (minDate !== undefined && date < minDate) || (maxDate !== undefined && date > maxDate);
+  };
+  const isRangeEndpoint = (next: string | number): boolean =>
+    pendingRangeStart === next || selectedRange.some((entry) => String(entry) === String(next));
+  const isInSelectedRange = (next: string | number): boolean => {
+    const bounds =
+      pendingRangeStart !== undefined
+        ? [pendingRangeStart, next]
+        : selectedRange.length === 2
+          ? selectedRange
+          : [];
+    if (bounds.length !== 2) return false;
+    const ordered = bounds.map(String).sort((left, right) => left.localeCompare(right));
+    const comparable = String(next);
+    return comparable >= (ordered[0] ?? '') && comparable <= (ordered[1] ?? '');
+  };
+  const isToday = (date: string): boolean => {
+    const now = new Date();
+    return (
+      date ===
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+        now.getDate(),
+      ).padStart(2, '0')}`
+    );
+  };
+  const setOpenWithLayout = (next: boolean, focusPanel = false): void => {
     if (next) setTriggerWidth(overlayerRef.current?.getBoundingClientRect().width ?? 0);
+    focusPanelOnOpen.current = next && focusPanel;
+    if (!next) setPendingRangeStart(undefined);
     setOpen(next);
   };
+  const handleGridKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    columns: number,
+  ): void => {
+    const buttons = Array.from(
+      popoverRef.current?.querySelectorAll<HTMLButtonElement>('[data-picker-option]') ?? [],
+    );
+    const currentIndex = buttons.indexOf(event.currentTarget);
+    if (currentIndex < 0) return;
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex += 1;
+    else if (event.key === 'ArrowLeft') nextIndex -= 1;
+    else if (event.key === 'ArrowDown') nextIndex += columns;
+    else if (event.key === 'ArrowUp') nextIndex -= columns;
+    else if (event.key === 'Home') nextIndex -= currentIndex % columns;
+    else if (event.key === 'End') nextIndex += columns - 1 - (currentIndex % columns);
+    else if (event.key === 'Escape') {
+      event.preventDefault();
+      setOpenWithLayout(false);
+      inputRef.current?.focus();
+      return;
+    } else return;
+    event.preventDefault();
+    const direction = nextIndex >= currentIndex ? 1 : -1;
+    nextIndex = Math.max(0, Math.min(buttons.length - 1, nextIndex));
+    while (buttons[nextIndex]?.disabled && nextIndex >= 0 && nextIndex < buttons.length) {
+      nextIndex += direction;
+    }
+    buttons[Math.max(0, Math.min(buttons.length - 1, nextIndex))]?.focus();
+  };
+  useEffect(() => {
+    if (!open || !focusPanelOnOpen.current) return;
+    focusPanelOnOpen.current = false;
+    const options = Array.from(
+      popoverRef.current?.querySelectorAll<HTMLButtonElement>(
+        '[data-picker-option]:not(:disabled)',
+      ) ?? [],
+    );
+    const selected = options.find((option) => option.dataset.selected === 'true');
+    (selected ?? options[0])?.focus();
+  }, [calendarView, open, popoverRef]);
   const pickerButtonRoot = `${root}-button`;
   const navigationRoot = `${root}-navigation`;
+  const monthLabels = [
+    'styczeń',
+    'luty',
+    'marzec',
+    'kwiecień',
+    'maj',
+    'czerwiec',
+    'lipiec',
+    'sierpień',
+    'wrzesień',
+    'październik',
+    'listopad',
+    'grudzień',
+  ];
+  const monthAriaLabels = [
+    'stycznia',
+    'lutego',
+    'marca',
+    'kwietnia',
+    'maja',
+    'czerwca',
+    'lipca',
+    'sierpnia',
+    'września',
+    'października',
+    'listopada',
+    'grudnia',
+  ];
+  const panelLabel =
+    calendarView === 'month'
+      ? `Wybierz miesiąc dla roku ${currentYear}`
+      : calendarView === 'year'
+        ? `Wybierz rok z zakresu ${decadeStart} - ${decadeStart + 9}`
+        : `Wybierz datę w miesiącu ${monthAriaLabels[viewDate.getMonth()]} ${currentYear}`;
+  const navigatePicker = (direction: -1 | 1): void => {
+    setViewDate((current) => {
+      if (calendarView === 'year') {
+        return new Date(current.getFullYear() + direction * 10, current.getMonth(), 1);
+      }
+      if (calendarView === 'month') {
+        return new Date(current.getFullYear() + direction, current.getMonth(), 1);
+      }
+      return new Date(current.getFullYear(), current.getMonth() + direction, 1);
+    });
+  };
+  const showCalendarView = (view: 'day' | 'month' | 'year'): void => {
+    focusPanelOnOpen.current = true;
+    setCalendarView(view);
+  };
   return (
     <>
       <div
@@ -2069,9 +3673,27 @@ function DateRenderer({
           <input
             aria-autocomplete="none"
             aria-controls={`${id}-dialog`}
+            aria-describedby={
+              node(props, 'error')
+                ? `${id}-error`
+                : node(props, 'success')
+                  ? `${id}-success`
+                  : node(props, 'description')
+                    ? `${id}-description`
+                    : text(props, 'aria-describedby') || undefined
+            }
             aria-disabled={disabled}
             aria-expanded={open}
             aria-haspopup="dialog"
+            aria-invalid={Boolean(node(props, 'error')) || undefined}
+            aria-label={
+              text(props, 'ariaLabel') ||
+              text(props, 'aria-label') ||
+              (!text(props, 'label') ? text(props, 'name') : undefined)
+            }
+            aria-labelledby={
+              text(props, 'aria-labelledby') || (text(props, 'label') ? `label-${id}` : undefined)
+            }
             aria-readonly="true"
             className={cx(
               'peaui-form-field__element',
@@ -2096,25 +3718,44 @@ function DateRenderer({
               kind === 'FormYearPicker' ? 'wybierz rok' : 'wybierz date',
             )}
             readOnly
-            ref={forwardedRef as ForwardedRef<HTMLInputElement>}
+            ref={(element) => {
+              inputRef.current = element;
+              if (typeof forwardedRef === 'function') forwardedRef(element);
+              else if (forwardedRef) forwardedRef.current = element;
+            }}
             role="combobox"
-            style={{ '--pl': '12px', '--pr': '32px' } as CSSProperties}
+            style={
+              {
+                '--pl': '12px',
+                '--pr': `${getFormFieldPaddingRight({ canErase, iconAfter: 'calendar' })}px`,
+              } as CSSProperties
+            }
             type="text"
             value={normalized}
-            onClick={() => !readonly && setOpenWithLayout(!open)}
+            onClick={() => {
+              if (readonly) return;
+              setCalendarView('day');
+              setOpenWithLayout(!open);
+            }}
             onKeyDown={(event) => {
-              if (event.key === 'Escape') setOpenWithLayout(false);
+              if (event.key === 'Escape') {
+                setOpenWithLayout(false);
+                inputRef.current?.focus();
+              }
               if (['ArrowDown', 'Enter', ' '].includes(event.key)) {
                 event.preventDefault();
-                if (!readonly) setOpenWithLayout(true);
+                if (!readonly) {
+                  setCalendarView('day');
+                  setOpenWithLayout(true, true);
+                }
               }
             }}
           />
-          {bool(props, 'canErase') && value && !disabled ? (
+          {canErase && value && !disabled ? (
             <button
               aria-label="Usuń wartość pola"
               className="peaui-form-field__erase-button"
-              style={{ '--right': '30px' } as CSSProperties}
+              style={{ '--right': '44px' } as CSSProperties}
               type="button"
               onClick={() => {
                 setValue(undefined);
@@ -2134,7 +3775,7 @@ function DateRenderer({
           'peaui-popover-overlayer__content--match-trigger-width',
         )}
         id={`popover-${id}`}
-        popover={nativePopoverValue()}
+        popover={getNativePopoverValue()}
         ref={popoverRef}
         style={
           {
@@ -2147,7 +3788,7 @@ function DateRenderer({
         }}
       >
         <div
-          aria-labelledby={`${id}-dialog-label`}
+          aria-labelledby={kind === 'FormYearPicker' ? `${id}-range-label` : `${id}-dialog-label`}
           aria-modal="false"
           className={`${root}__panel`}
           id={`${id}-dialog`}
@@ -2156,13 +3797,14 @@ function DateRenderer({
           {kind === 'FormYearPicker' ? (
             <>
               <div className={`${root}__header`}>
-                <p className={`${root}__range`}>
-                  {currentYear - 5}–{currentYear + 6}
+                <p aria-live="polite" className={`${root}__range`} id={`${id}-range-label`}>
+                  {decadeStart} - {decadeStart + 9}
                 </p>
                 <div className={navigationRoot}>
                   <button
                     aria-label="Poprzednie 10 lat"
                     className={`${navigationRoot}__button`}
+                    disabled={minYear !== undefined && decadeStart <= Math.floor(minYear / 10) * 10}
                     type="button"
                     onClick={() =>
                       setViewDate(
@@ -2178,6 +3820,7 @@ function DateRenderer({
                   <button
                     aria-label="Następne 10 lat"
                     className={`${navigationRoot}__button`}
+                    disabled={maxYear !== undefined && decadeStart + 9 >= maxYear}
                     type="button"
                     onClick={() =>
                       setViewDate(
@@ -2192,26 +3835,60 @@ function DateRenderer({
                   </button>
                 </div>
               </div>
-              <div className={`${root}__grid`} role="grid">
+              <div
+                aria-labelledby={`${id}-range-label`}
+                className={`${root}__grid`}
+                id={`${id}-grid`}
+                role="grid"
+              >
                 {Array.from({ length: 4 }, (_, rowIndex) => (
                   <div className={`${root}__row`} key={rowIndex} role="row">
-                    {Array.from(
-                      { length: 3 },
-                      (_, columnIndex) => currentYear - 5 + rowIndex * 3 + columnIndex,
-                    ).map((year) => (
-                      <div className={`${root}__cell`} key={year} role="gridcell">
-                        <button
-                          className={cx(
-                            pickerButtonRoot,
-                            `${pickerButtonRoot}--variant-${Number(value) === year ? 'primary' : 'ghost'}`,
-                          )}
-                          type="button"
-                          onClick={() => selectValue(year)}
-                        >
-                          <span className={`${pickerButtonRoot}__label`}>{year}</span>
-                        </button>
-                      </div>
-                    ))}
+                    {Array.from({ length: 10 }, (_, index) => decadeStart + index)
+                      .slice(rowIndex * 3, rowIndex * 3 + 3)
+                      .map((year) => {
+                        const optionDisabled = isOptionDisabled(year);
+                        const endpoint = isRangeEndpoint(year);
+                        const inRange = range && isInSelectedRange(year);
+                        const selected = range ? endpoint || inRange : Number(value) === year;
+                        const variant =
+                          endpoint || (!range && selected)
+                            ? 'primary'
+                            : inRange || year === new Date().getFullYear()
+                              ? 'outline'
+                              : 'ghost';
+                        return (
+                          <div
+                            aria-disabled={optionDisabled || undefined}
+                            aria-selected={selected}
+                            className={`${root}__cell`}
+                            key={year}
+                            role="gridcell"
+                          >
+                            <button
+                              aria-current={year === new Date().getFullYear() ? 'date' : undefined}
+                              aria-label={`Wybierz rok ${year}`}
+                              className={cx(
+                                pickerButtonRoot,
+                                `${pickerButtonRoot}--variant-${variant}`,
+                                optionDisabled && `${pickerButtonRoot}--disabled`,
+                              )}
+                              data-picker-option=""
+                              data-selected={selected ? 'true' : undefined}
+                              data-testid={
+                                dataTest(props) ? `${dataTest(props)}-year-${year}` : undefined
+                              }
+                              disabled={optionDisabled}
+                              id={`${id}-year-${year}`}
+                              tabIndex={selected || (!value && year === currentYear) ? 0 : -1}
+                              type="button"
+                              onClick={() => selectValue(year)}
+                              onKeyDown={(event) => handleGridKeyDown(event, 3)}
+                            >
+                              <span className={`${pickerButtonRoot}__label`}>{year}</span>
+                            </button>
+                          </div>
+                        );
+                      })}
                   </div>
                 ))}
               </div>
@@ -2219,27 +3896,56 @@ function DateRenderer({
           ) : (
             <>
               <p className={`${root}__sr-only`} id={`${id}-dialog-label`}>
-                Wybierz datę
+                {panelLabel}
               </p>
               <div className={`${root}__header`}>
                 <div className={`${root}__heading`}>
-                  <button className={`${root}__heading-trigger`} type="button">
-                    {today.toLocaleString('pl-PL', { month: 'long' })}
-                  </button>
-                  <button className={`${root}__heading-trigger`} type="button">
-                    {today.getFullYear()}
-                  </button>
+                  {calendarView === 'day' ? (
+                    <>
+                      <button
+                        aria-label={`Wybierz miesiąc, obecnie ${monthLabels[viewDate.getMonth()]}`}
+                        className={`${root}__heading-trigger`}
+                        type="button"
+                        onClick={() => showCalendarView('month')}
+                      >
+                        {monthLabels[viewDate.getMonth()]}
+                      </button>
+                      <button
+                        aria-label={`Wybierz rok, obecnie ${currentYear}`}
+                        className={`${root}__heading-trigger`}
+                        type="button"
+                        onClick={() => showCalendarView('year')}
+                      >
+                        {currentYear}
+                      </button>
+                    </>
+                  ) : calendarView === 'month' ? (
+                    <button
+                      aria-label={`Wybierz rok, obecnie ${currentYear}`}
+                      className={`${root}__heading-trigger`}
+                      type="button"
+                      onClick={() => showCalendarView('year')}
+                    >
+                      {currentYear}
+                    </button>
+                  ) : (
+                    <p className={`${root}__heading-label`}>
+                      {decadeStart} - {decadeStart + 9}
+                    </p>
+                  )}
                 </div>
                 <div className={navigationRoot}>
                   <button
-                    aria-label="Poprzedni miesiąc"
+                    aria-label={
+                      calendarView === 'year'
+                        ? 'Poprzednie 10 lat'
+                        : calendarView === 'month'
+                          ? 'Poprzedni rok'
+                          : 'Poprzedni miesiąc'
+                    }
                     className={`${navigationRoot}__button`}
                     type="button"
-                    onClick={() =>
-                      setViewDate(
-                        (current) => new Date(current.getFullYear(), current.getMonth() - 1, 1),
-                      )
-                    }
+                    onClick={() => navigatePicker(-1)}
                   >
                     <Svg
                       className={`${navigationRoot}__icon ${navigationRoot}__icon--previous`}
@@ -2247,14 +3953,16 @@ function DateRenderer({
                     />
                   </button>
                   <button
-                    aria-label="Następny miesiąc"
+                    aria-label={
+                      calendarView === 'year'
+                        ? 'Następne 10 lat'
+                        : calendarView === 'month'
+                          ? 'Następny rok'
+                          : 'Następny miesiąc'
+                    }
                     className={`${navigationRoot}__button`}
                     type="button"
-                    onClick={() =>
-                      setViewDate(
-                        (current) => new Date(current.getFullYear(), current.getMonth() + 1, 1),
-                      )
-                    }
+                    onClick={() => navigatePicker(1)}
                   >
                     <Svg
                       className={`${navigationRoot}__icon ${navigationRoot}__icon--next`}
@@ -2263,38 +3971,190 @@ function DateRenderer({
                   </button>
                 </div>
               </div>
-              <div className={`${root}__grid ${root}__grid--day`} role="grid">
-                <div className={`${root}__weekday-row`} role="row">
-                  {['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd'].map((weekday) => (
-                    <div className={`${root}__weekday`} key={weekday} role="columnheader">
-                      {weekday}
-                    </div>
-                  ))}
-                </div>
-                {Array.from({ length: 6 }, (_, rowIndex) => (
-                  <div
-                    className={`${root}__row ${root}__row--day`}
-                    key={`day-row-${rowIndex}`}
-                    role="row"
-                  >
-                    {calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7).map((calendarDay) => (
-                      <div className={`${root}__cell`} key={calendarDay.date} role="gridcell">
-                        <button
-                          className={cx(
-                            pickerButtonRoot,
-                            `${pickerButtonRoot}--variant-${String(value) === calendarDay.date ? 'primary' : 'ghost'}`,
-                            calendarDay.outsideMonth && `${root}__picker-button--outside-month`,
-                          )}
-                          type="button"
-                          onClick={() => selectValue(calendarDay.date)}
-                        >
-                          <span className={`${pickerButtonRoot}__label`}>{calendarDay.day}</span>
-                        </button>
+              {calendarView === 'day' ? (
+                <div
+                  aria-labelledby={`${id}-dialog-label`}
+                  className={`${root}__grid ${root}__grid--day`}
+                  id={`${id}-grid`}
+                  role="grid"
+                >
+                  <div className={`${root}__weekday-row`} role="row">
+                    {[
+                      ['Pon', 'Poniedziałek'],
+                      ['Wt', 'Wtorek'],
+                      ['Śr', 'Środa'],
+                      ['Czw', 'Czwartek'],
+                      ['Pt', 'Piątek'],
+                      ['Sob', 'Sobota'],
+                      ['Nd', 'Niedziela'],
+                    ].map(([short, full]) => (
+                      <div
+                        aria-label={full}
+                        className={`${root}__weekday`}
+                        key={short}
+                        role="columnheader"
+                      >
+                        {short}
                       </div>
                     ))}
                   </div>
-                ))}
-              </div>
+                  {Array.from({ length: 6 }, (_, rowIndex) => (
+                    <div
+                      className={`${root}__row ${root}__row--day`}
+                      key={`day-row-${rowIndex}`}
+                      role="row"
+                    >
+                      {calendarDays.slice(rowIndex * 7, rowIndex * 7 + 7).map((calendarDay) => {
+                        const optionDisabled = isOptionDisabled(calendarDay.date);
+                        const endpoint = isRangeEndpoint(calendarDay.date);
+                        const inRange = range && isInSelectedRange(calendarDay.date);
+                        const selected = range
+                          ? endpoint || inRange
+                          : String(value) === calendarDay.date;
+                        const current = isToday(calendarDay.date);
+                        const variant =
+                          endpoint || (!range && selected)
+                            ? 'primary'
+                            : inRange || current
+                              ? 'outline'
+                              : 'ghost';
+                        return (
+                          <div
+                            aria-disabled={optionDisabled || undefined}
+                            aria-selected={selected}
+                            className={`${root}__cell`}
+                            key={calendarDay.date}
+                            role="gridcell"
+                          >
+                            <button
+                              aria-current={current ? 'date' : undefined}
+                              aria-label={`Wybierz date ${calendarDay.day} ${
+                                monthAriaLabels[Number(calendarDay.date.slice(5, 7)) - 1]
+                              } ${calendarDay.date.slice(0, 4)}`}
+                              className={cx(
+                                pickerButtonRoot,
+                                `${pickerButtonRoot}--variant-${variant}`,
+                                optionDisabled && `${pickerButtonRoot}--disabled`,
+                                calendarDay.outsideMonth && `${root}__picker-button--outside-month`,
+                              )}
+                              data-picker-option=""
+                              data-selected={endpoint || (!range && selected) ? 'true' : undefined}
+                              data-testid={
+                                dataTest(props)
+                                  ? `${dataTest(props)}-day-${calendarDay.date}`
+                                  : undefined
+                              }
+                              disabled={optionDisabled}
+                              id={`${id}-day-${calendarDay.date}`}
+                              tabIndex={
+                                endpoint ||
+                                (!range && selected) ||
+                                (!value && !calendarDay.outsideMonth && calendarDay.day === 1)
+                                  ? 0
+                                  : -1
+                              }
+                              type="button"
+                              onClick={() => selectValue(calendarDay.date)}
+                              onKeyDown={(event) => handleGridKeyDown(event, 7)}
+                            >
+                              <span className={`${pickerButtonRoot}__label`}>
+                                {calendarDay.day}
+                              </span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              ) : calendarView === 'month' ? (
+                <div
+                  aria-labelledby={`${id}-dialog-label`}
+                  className={`${root}__grid ${root}__grid--period`}
+                  id={`${id}-grid`}
+                  role="grid"
+                >
+                  {Array.from({ length: 4 }, (_, rowIndex) => (
+                    <div className={`${root}__row ${root}__row--period`} key={rowIndex} role="row">
+                      {monthLabels.slice(rowIndex * 3, rowIndex * 3 + 3).map((month, index) => {
+                        const monthIndex = rowIndex * 3 + index;
+                        const active = monthIndex === viewDate.getMonth();
+                        return (
+                          <div
+                            aria-selected={active}
+                            className={`${root}__cell`}
+                            key={month}
+                            role="gridcell"
+                          >
+                            <button
+                              aria-label={`Wybierz miesiąc ${month}`}
+                              className={cx(
+                                pickerButtonRoot,
+                                `${pickerButtonRoot}--variant-${active ? 'primary' : 'ghost'}`,
+                              )}
+                              data-picker-option=""
+                              data-selected={active ? 'true' : undefined}
+                              tabIndex={active ? 0 : -1}
+                              type="button"
+                              onClick={() => {
+                                setViewDate(new Date(currentYear, monthIndex, 1));
+                                showCalendarView('day');
+                              }}
+                              onKeyDown={(event) => handleGridKeyDown(event, 3)}
+                            >
+                              <span className={`${pickerButtonRoot}__label`}>{month}</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  aria-labelledby={`${id}-dialog-label`}
+                  className={`${root}__grid ${root}__grid--period`}
+                  id={`${id}-grid`}
+                  role="grid"
+                >
+                  {Array.from({ length: 4 }, (_, rowIndex) => (
+                    <div className={`${root}__row ${root}__row--period`} key={rowIndex} role="row">
+                      {Array.from({ length: 10 }, (_, index) => decadeStart + index)
+                        .slice(rowIndex * 3, rowIndex * 3 + 3)
+                        .map((year) => {
+                          const active = year === currentYear;
+                          return (
+                            <div
+                              aria-selected={active}
+                              className={`${root}__cell`}
+                              key={year}
+                              role="gridcell"
+                            >
+                              <button
+                                aria-label={`Wybierz rok ${year}`}
+                                className={cx(
+                                  pickerButtonRoot,
+                                  `${pickerButtonRoot}--variant-${active ? 'primary' : 'ghost'}`,
+                                )}
+                                data-picker-option=""
+                                data-selected={active ? 'true' : undefined}
+                                tabIndex={active ? 0 : -1}
+                                type="button"
+                                onClick={() => {
+                                  setViewDate(new Date(year, viewDate.getMonth(), 1));
+                                  showCalendarView('month');
+                                }}
+                                onKeyDown={(event) => handleGridKeyDown(event, 3)}
+                              >
+                                <span className={`${pickerButtonRoot}__label`}>{year}</span>
+                              </button>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -2540,11 +4400,950 @@ function FileRenderer({
   );
 }
 
+function serializeSwitchFormValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (['number', 'boolean', 'bigint'].includes(typeof value)) return String(value);
+
+  try {
+    const serialized: unknown = JSON.stringify(value);
+    return typeof serialized === 'string' ? serialized : String(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function ToggleButtonRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const generatedId = useId();
+  const id = text(props, 'id') || `peaui-toggle-button-${generatedId}`;
+  const [pressed, setPressed] = useModel<boolean>(props, 'value', false);
+  const disabled = bool(props, 'disabled');
+  const loading = bool(props, 'loading');
+  const readonly = bool(props, 'readonly');
+  const nativelyDisabled = disabled || loading;
+  const blocked = nativelyDisabled || readonly;
+  const content = text(props, 'content', 'icon-text');
+  const label = text(props, 'label', 'Przełącz');
+  const pressedLabel = text(props, 'pressedLabel');
+  const visibleLabel = pressed && pressedLabel ? pressedLabel : label;
+  const icon = text(props, 'icon');
+  const pressedIcon = text(props, 'pressedIcon');
+  const resolvedIcon = pressed && pressedIcon ? pressedIcon : icon;
+  const iconContent = pressed
+    ? (node(props, 'pressedIconContent') ?? node(props, 'iconContent'))
+    : node(props, 'iconContent');
+  const showsText = content !== 'icon';
+  const showsIcon = content !== 'text';
+  const externalAriaLabel = text(props, 'aria-label');
+  const externalAriaLabelledBy = text(props, 'aria-labelledby');
+  const canUseVisibleChildrenName =
+    content !== 'icon' && !pressedLabel && !label && hasVisibleReactText(props.children);
+  const loadingId = `${id}-loading`;
+  const describedBy = new Set(
+    text(props, 'aria-describedby')
+      .split(/\s+/)
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  );
+  if (loading) describedBy.add(loadingId);
+  const dataTestId = dataTest(props);
+
+  return (
+    <button
+      aria-busy={loading || undefined}
+      aria-describedby={describedBy.size > 0 ? [...describedBy].join(' ') : undefined}
+      aria-disabled={blocked || undefined}
+      aria-label={
+        externalAriaLabelledBy
+          ? undefined
+          : externalAriaLabel ||
+            text(props, 'ariaLabel') ||
+            label ||
+            (canUseVisibleChildrenName ? undefined : 'Przełącznik')
+      }
+      aria-labelledby={externalAriaLabelledBy || undefined}
+      aria-pressed={pressed}
+      className={cx(
+        'peaui-toggle-button',
+        `peaui-toggle-button--content-${content}`,
+        `peaui-toggle-button--size-${text(props, 'size', 'm')}`,
+        `peaui-toggle-button--variant-${text(props, 'variant', 'default')}`,
+        pressed && 'peaui-toggle-button--pressed',
+        bool(props, 'allowWrap') && 'peaui-toggle-button--wrap',
+        disabled && 'peaui-toggle-button--disabled',
+        readonly && 'peaui-toggle-button--readonly',
+        loading && 'peaui-toggle-button--loading',
+        props.className,
+      )}
+      data-disabled={disabled || undefined}
+      data-loading={loading || undefined}
+      data-pressed={pressed}
+      data-readonly={readonly || undefined}
+      data-testid={dataTestId}
+      disabled={nativelyDisabled}
+      id={id}
+      ref={forwardedRef as ForwardedRef<HTMLButtonElement>}
+      style={props.style}
+      tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : undefined}
+      type={text(props, 'type', 'button') as 'button' | 'submit' | 'reset'}
+      onClick={(event) => {
+        if (blocked) {
+          event.preventDefault();
+          return;
+        }
+
+        const nextValue = !pressed;
+        setPressed(nextValue);
+        callback(props, 'onChange')?.(nextValue, event);
+        callback(props, 'onClick')?.(event);
+      }}
+      onKeyDown={
+        typeof props.onKeyDown === 'function'
+          ? (props.onKeyDown as KeyboardEventHandler<HTMLButtonElement>)
+          : undefined
+      }
+      onFocus={
+        typeof props.onFocus === 'function'
+          ? (props.onFocus as FocusEventHandler<HTMLButtonElement>)
+          : undefined
+      }
+      onBlur={
+        typeof props.onBlur === 'function'
+          ? (props.onBlur as FocusEventHandler<HTMLButtonElement>)
+          : undefined
+      }
+      onPointerDown={
+        typeof props.onPointerDown === 'function'
+          ? (props.onPointerDown as PointerEventHandler<HTMLButtonElement>)
+          : undefined
+      }
+    >
+      {loading ? (
+        <span aria-hidden="true" className="peaui-toggle-button__spinner" />
+      ) : showsIcon ? (
+        <span aria-hidden="true" className="peaui-toggle-button__icon">
+          {iconContent ?? (resolvedIcon ? <Svg name={resolvedIcon} /> : null)}
+        </span>
+      ) : null}
+      {showsText ? (
+        <span className="peaui-toggle-button__label">{props.children ?? visibleLabel}</span>
+      ) : null}
+      {loading ? (
+        <span
+          aria-atomic="true"
+          aria-live="polite"
+          className="peaui-toggle-button__loading-status"
+          id={loadingId}
+          role="status"
+        >
+          {text(props, 'loadingLabel', 'Trwa aktualizowanie ustawienia')}
+        </span>
+      ) : null}
+    </button>
+  );
+}
+
+type ReactToggleGroupItem = {
+  value: ToggleGroupValue;
+  label: string;
+  ariaLabel?: string;
+  pressedLabel?: string;
+  icon?: string;
+  pressedIcon?: string;
+  content?: string;
+  disabled?: boolean;
+  readonly?: boolean;
+  loading?: boolean;
+  metadata?: unknown;
+};
+
+function asToggleGroupItems(value: unknown): ReactToggleGroupItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry): ReactToggleGroupItem[] => {
+    if (!entry || typeof entry !== 'object') return [];
+    const item = entry as Record<string, unknown>;
+    if (typeof item.value !== 'string' && typeof item.value !== 'number') return [];
+    if (typeof item.label !== 'string') return [];
+    return [
+      {
+        value: item.value,
+        label: item.label,
+        ariaLabel: typeof item.ariaLabel === 'string' ? item.ariaLabel : undefined,
+        pressedLabel: typeof item.pressedLabel === 'string' ? item.pressedLabel : undefined,
+        icon: typeof item.icon === 'string' ? item.icon : undefined,
+        pressedIcon: typeof item.pressedIcon === 'string' ? item.pressedIcon : undefined,
+        content: typeof item.content === 'string' ? item.content : undefined,
+        disabled: item.disabled === true,
+        readonly: item.readonly === true,
+        loading: item.loading === true,
+        metadata: item.metadata,
+      },
+    ];
+  });
+}
+
+function ToggleGroupRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const generatedId = useId();
+  const id = text(props, 'id') || `peaui-toggle-group-${generatedId}`;
+  const items = useMemo(() => asToggleGroupItems(props.items), [props.items]);
+  const type = text(props, 'type', 'single') as 'single' | 'multiple';
+  const orientation = text(props, 'orientation', 'horizontal') as 'horizontal' | 'vertical';
+  const appearance = text(props, 'appearance', 'separate');
+  const size = text(props, 'size', 'm');
+  const variant = text(props, 'variant', 'outline');
+  const overflow = text(props, 'overflow', 'wrap');
+  const semanticRole = text(props, 'semanticRole', 'toolbar') as 'toolbar' | 'group';
+  const disabled = bool(props, 'disabled');
+  const readonly = bool(props, 'readonly');
+  const required = bool(props, 'required');
+  const allowEmpty = props.allowEmpty !== false;
+  const loop = props.loop !== false;
+  const [modelValue, setModelValue] = useModel<unknown>(
+    props,
+    'value',
+    type === 'multiple' ? [] : null,
+  );
+  const selectedValues = normalizeToggleGroupSelection(type, modelValue);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const buttonRefs = useRef<Array<HTMLElement | null>>([]);
+  const lastActiveIndex = useRef(0);
+  const focusWithin = useRef(false);
+  const initialActiveValue = (): ToggleGroupValue | null => {
+    const selectedIndex = items.findIndex(
+      (item) =>
+        selectedValues.some((value) => Object.is(value, item.value)) &&
+        isToggleGroupItemAvailable(item),
+    );
+    const index = selectedIndex >= 0 ? selectedIndex : findToggleGroupEdgeIndex(items, 'first');
+    return items[index]?.value ?? null;
+  };
+  const [activeValue, setActiveValue] = useState<ToggleGroupValue | null>(initialActiveValue);
+  const activeIndex = items.findIndex(
+    (item) => Object.is(item.value, activeValue) && isToggleGroupItemAvailable(item),
+  );
+  const validationMessage =
+    text(props, 'error') ||
+    (required && selectedValues.length === 0
+      ? text(props, 'requiredMessage', 'Wybierz co najmniej jedną opcję.')
+      : '');
+  const label = text(props, 'label');
+  const labelId = `${id}-label`;
+  const errorId = `${id}-error`;
+  const describedBy = new Set(
+    text(props, 'aria-describedby')
+      .split(/\s+/)
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  );
+  if (validationMessage) describedBy.add(errorId);
+  const externalLabelledBy = text(props, 'aria-labelledby');
+  const resolvedAriaLabel = text(props, 'aria-label') || text(props, 'ariaLabel');
+  const resolvedLabelledBy = externalLabelledBy || (!resolvedAriaLabel && label ? labelId : '');
+  const renderItem = props.renderItem as
+    | ((
+        item: ReactToggleGroupItem,
+        state: { pressed: boolean; disabled: boolean; index: number },
+      ) => ReactNode)
+    | undefined;
+
+  useEffect(() => {
+    if (activeIndex >= 0 && !disabled) {
+      lastActiveIndex.current = activeIndex;
+      return;
+    }
+    const replacementIndex = disabled
+      ? -1
+      : findToggleGroupReplacementIndex(items, lastActiveIndex.current);
+    setActiveValue(items[replacementIndex]?.value ?? null);
+    lastActiveIndex.current = Math.max(replacementIndex, 0);
+    if (focusWithin.current && replacementIndex >= 0) {
+      buttonRefs.current[replacementIndex]?.focus();
+    }
+  }, [activeIndex, disabled, items]);
+
+  const isPressed = (item: ReactToggleGroupItem): boolean =>
+    selectedValues.some((value) => Object.is(value, item.value));
+  const isAvailable = (index: number): boolean =>
+    !disabled && isToggleGroupItemAvailable(items[index]);
+  const focusItem = (index: number): void => {
+    if (!isAvailable(index)) return;
+    setActiveValue(items[index]?.value ?? null);
+    lastActiveIndex.current = index;
+    buttonRefs.current[index]?.focus();
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    let nextIndex = -1;
+    if (event.key === 'Home') nextIndex = findToggleGroupEdgeIndex(items, 'first');
+    else if (event.key === 'End') nextIndex = findToggleGroupEdgeIndex(items, 'last');
+    else if (orientation === 'horizontal' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      const rtl = rootRef.current ? getComputedStyle(rootRef.current).direction === 'rtl' : false;
+      const forward = event.key === 'ArrowRight' ? !rtl : rtl;
+      nextIndex = findNextToggleGroupIndex(items, index, forward ? 1 : -1, loop);
+    } else if (orientation === 'vertical' && ['ArrowUp', 'ArrowDown'].includes(event.key)) {
+      nextIndex = findNextToggleGroupIndex(items, index, event.key === 'ArrowDown' ? 1 : -1, loop);
+    } else return;
+
+    event.preventDefault();
+    if (nextIndex >= 0) focusItem(nextIndex);
+  };
+  const handleChange = (
+    item: ReactToggleGroupItem,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ): void => {
+    if (disabled || readonly || item.disabled || item.readonly || item.loading) return;
+    const pressed = isPressed(item);
+    let nextValue: ToggleGroupValue | ToggleGroupValue[] | null;
+    if (type === 'single') {
+      if (pressed && (!allowEmpty || required)) return;
+      nextValue = pressed ? null : item.value;
+    } else if (pressed) {
+      if (selectedValues.length === 1 && (!allowEmpty || required)) return;
+      nextValue = selectedValues.filter((value) => !Object.is(value, item.value));
+    } else nextValue = [...selectedValues, item.value];
+
+    setModelValue(nextValue);
+    callback(props, 'onChange')?.(nextValue, item, event);
+  };
+
+  const setRootRef = (element: HTMLDivElement | null): void => {
+    rootRef.current = element;
+    if (typeof forwardedRef === 'function') forwardedRef(element);
+    else if (forwardedRef) forwardedRef.current = element;
+  };
+
+  return (
+    <div className="peaui-toggle-group__field">
+      {label || node(props, 'labelContent') ? (
+        <div className="peaui-toggle-group__label" id={labelId}>
+          {node(props, 'labelContent') ?? label}
+          {required ? (
+            <span aria-hidden="true" className="peaui-toggle-group__required">
+              *
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+      <div
+        aria-describedby={describedBy.size ? [...describedBy].join(' ') : undefined}
+        aria-disabled={disabled || undefined}
+        aria-invalid={validationMessage ? true : undefined}
+        aria-label={
+          resolvedLabelledBy
+            ? undefined
+            : resolvedAriaLabel || (!label ? 'Grupa przełączników' : undefined)
+        }
+        aria-labelledby={resolvedLabelledBy || undefined}
+        aria-orientation={semanticRole === 'toolbar' ? orientation : undefined}
+        className={cx(
+          'peaui-toggle-group',
+          `peaui-toggle-group--${orientation}`,
+          `peaui-toggle-group--${appearance}`,
+          `peaui-toggle-group--size-${size}`,
+          `peaui-toggle-group--overflow-${overflow}`,
+          disabled && 'peaui-toggle-group--disabled',
+          readonly && 'peaui-toggle-group--readonly',
+          validationMessage && 'peaui-toggle-group--invalid',
+          props.className,
+        )}
+        data-disabled={disabled || undefined}
+        data-readonly={readonly || undefined}
+        data-required={required || undefined}
+        data-testid={dataTest(props)}
+        dir={text(props, 'dir') || undefined}
+        id={id}
+        ref={setRootRef}
+        role={semanticRole}
+        style={props.style}
+        onBlurCapture={() => {
+          queueMicrotask(() => {
+            focusWithin.current = Boolean(rootRef.current?.contains(document.activeElement));
+          });
+        }}
+        onFocusCapture={() => {
+          focusWithin.current = true;
+        }}
+      >
+        {items.map((item, index) => {
+          const pressed = isPressed(item);
+          const itemDisabled = disabled || item.disabled === true;
+          return (
+            <ToggleButtonRenderer
+              ariaLabel={item.ariaLabel || item.label}
+              className="peaui-toggle-group__item"
+              content={
+                item.content ??
+                (item.icon?.trim() || item.pressedIcon?.trim() ? 'icon-text' : 'text')
+              }
+              dataTestId={dataTest(props) ? `${dataTest(props)}-item-${index}` : undefined}
+              disabled={itemDisabled}
+              forwardedRef={(element) => {
+                buttonRefs.current[index] = element;
+              }}
+              icon={item.icon}
+              key={`${typeof item.value}:${String(item.value)}:${index}`}
+              loading={item.loading}
+              pressedIcon={item.pressedIcon}
+              pressedLabel={item.pressedLabel}
+              readonly={readonly || item.readonly}
+              size={size}
+              tabIndex={isAvailable(index) && activeIndex === index ? 0 : -1}
+              value={pressed}
+              variant={variant}
+              onChange={(_next: boolean, event: React.MouseEvent<HTMLButtonElement>) =>
+                handleChange(item, event)
+              }
+              onFocus={() => {
+                setActiveValue(item.value);
+                lastActiveIndex.current = index;
+                callback(props, 'onFocusChange')?.(item, index);
+              }}
+              onKeyDown={(event: React.KeyboardEvent<HTMLButtonElement>) =>
+                handleKeyDown(event, index)
+              }
+            >
+              {renderItem?.(item, { pressed, disabled: itemDisabled, index })}
+            </ToggleButtonRenderer>
+          );
+        })}
+      </div>
+      {text(props, 'name')
+        ? selectedValues.map((value) => (
+            <input
+              disabled={disabled}
+              key={`${typeof value}:${String(value)}`}
+              name={text(props, 'name')}
+              type="hidden"
+              value={value}
+            />
+          ))
+        : null}
+      {validationMessage ? (
+        <div className="peaui-toggle-group__error" id={errorId} role="alert">
+          {node(props, 'errorContent') ?? validationMessage}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+type ReactSegmentedControlItem = {
+  value: ToggleGroupValue;
+  label: string;
+  icon?: string;
+  ariaLabel?: string;
+  disabled?: boolean;
+  metadata?: unknown;
+};
+
+function asSegmentedControlItems(value: unknown): ReactSegmentedControlItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry): ReactSegmentedControlItem[] => {
+    if (!entry || typeof entry !== 'object') return [];
+    const item = entry as Record<string, unknown>;
+    if (typeof item.value !== 'string' && typeof item.value !== 'number') return [];
+    if (typeof item.label !== 'string') return [];
+    return [
+      {
+        value: item.value,
+        label: item.label,
+        icon: typeof item.icon === 'string' ? item.icon : undefined,
+        ariaLabel: typeof item.ariaLabel === 'string' ? item.ariaLabel : undefined,
+        disabled: item.disabled === true,
+        metadata: item.metadata,
+      },
+    ];
+  });
+}
+
+function SegmentedControlRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const generatedId = useId();
+  const id = text(props, 'id') || `peaui-segmented-control-${generatedId}`;
+  const items = useMemo(() => asSegmentedControlItems(props.items), [props.items]);
+  const size = text(props, 'size', 'm');
+  const distribution = text(props, 'distribution', 'equal');
+  const content = text(props, 'content', 'text');
+  const orientation = text(props, 'orientation', 'horizontal') as 'horizontal' | 'vertical';
+  const activation = text(props, 'activation', 'automatic');
+  const fullWidth = bool(props, 'fullWidth');
+  const disabled = bool(props, 'disabled');
+  const loop = props.loop !== false;
+  const [modelValue, setModelValue] = useModel<unknown>(props, 'value', null);
+  const selectedIndex = items.findIndex((item) => Object.is(item.value, modelValue));
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const lastActiveIndex = useRef(0);
+  const focusWithin = useRef(false);
+  const frameId = useRef<number | undefined>(undefined);
+  const selectedIndexRef = useRef(selectedIndex);
+  selectedIndexRef.current = selectedIndex;
+  const initialActiveValue = (): ToggleGroupValue | null => {
+    const index =
+      selectedIndex >= 0 && isToggleGroupItemAvailable(items[selectedIndex])
+        ? selectedIndex
+        : findToggleGroupEdgeIndex(items, 'first');
+    return items[index]?.value ?? null;
+  };
+  const [activeValue, setActiveValue] = useState<ToggleGroupValue | null>(initialActiveValue);
+  const [indicatorReady, setIndicatorReady] = useState(false);
+  const [indicatorStyle, setIndicatorStyle] = useState<CSSProperties>({});
+  const activeIndex = items.findIndex(
+    (item) => Object.is(item.value, activeValue) && isToggleGroupItemAvailable(item),
+  );
+  const baseTestId = dataTest(props);
+  const externalLabelledBy = text(props, 'aria-labelledby');
+  const resolvedAriaLabel = text(props, 'aria-label') || text(props, 'ariaLabel', 'Wybór opcji');
+  const renderItem = props.renderItem as
+    | ((
+        item: ReactSegmentedControlItem,
+        state: { disabled: boolean; index: number; selected: boolean },
+      ) => ReactNode)
+    | undefined;
+  const renderItemIcon = props.renderItemIcon as
+    | ((item: ReactSegmentedControlItem, state: { index: number; selected: boolean }) => ReactNode)
+    | undefined;
+  const renderIndicator = props.renderIndicator as
+    | ((item: ReactSegmentedControlItem | null, index: number) => ReactNode)
+    | undefined;
+  const isAvailable = (index: number): boolean =>
+    !disabled && isToggleGroupItemAvailable(items[index]);
+  const isSelected = (index: number): boolean => index === selectedIndex;
+
+  const updateIndicator = (): void => {
+    const segment = buttonRefs.current[selectedIndexRef.current];
+    if (!segment || !rootRef.current) {
+      setIndicatorStyle({});
+      setIndicatorReady(true);
+      return;
+    }
+    setIndicatorStyle({
+      '--peaui-segmented-control-indicator-x': `${segment.offsetLeft}px`,
+      '--peaui-segmented-control-indicator-y': `${segment.offsetTop}px`,
+      '--peaui-segmented-control-indicator-width': `${segment.offsetWidth}px`,
+      '--peaui-segmented-control-indicator-height': `${segment.offsetHeight}px`,
+    } as CSSProperties);
+    setIndicatorReady(true);
+  };
+  const scheduleIndicatorUpdate = (): void => {
+    if (typeof requestAnimationFrame === 'undefined') {
+      updateIndicator();
+      return;
+    }
+    if (frameId.current !== undefined) cancelAnimationFrame(frameId.current);
+    frameId.current = requestAnimationFrame(() => {
+      frameId.current = undefined;
+      updateIndicator();
+    });
+  };
+  const ensureSelectedVisible = (): void => {
+    const container = rootRef.current;
+    const segment = buttonRefs.current[selectedIndex];
+    if (!container || !segment || typeof container.scrollBy !== 'function') return;
+    const containerRect = container.getBoundingClientRect();
+    const segmentRect = segment.getBoundingClientRect();
+    if (orientation === 'vertical') {
+      const topDelta = segmentRect.top - containerRect.top;
+      const bottomDelta = segmentRect.bottom - containerRect.bottom;
+      if (topDelta < 0) container.scrollBy({ behavior: 'auto', top: topDelta });
+      else if (bottomDelta > 0) container.scrollBy({ behavior: 'auto', top: bottomDelta });
+      return;
+    }
+    const startDelta = segmentRect.left - containerRect.left;
+    const endDelta = segmentRect.right - containerRect.right;
+    if (startDelta < 0) container.scrollBy({ behavior: 'auto', left: startDelta });
+    else if (endDelta > 0) container.scrollBy({ behavior: 'auto', left: endDelta });
+  };
+
+  useEffect(() => {
+    if (activeIndex >= 0 && !disabled) {
+      lastActiveIndex.current = activeIndex;
+      return;
+    }
+    const replacementIndex = disabled
+      ? -1
+      : findToggleGroupReplacementIndex(items, lastActiveIndex.current);
+    setActiveValue(items[replacementIndex]?.value ?? null);
+    lastActiveIndex.current = Math.max(replacementIndex, 0);
+    if (focusWithin.current && replacementIndex >= 0) {
+      buttonRefs.current[replacementIndex]?.focus();
+    }
+  }, [activeIndex, disabled, items]);
+
+  useEffect(() => {
+    if (isAvailable(selectedIndex)) {
+      setActiveValue(items[selectedIndex]?.value ?? null);
+      lastActiveIndex.current = selectedIndex;
+    }
+    updateIndicator();
+    ensureSelectedVisible();
+  }, [distribution, fullWidth, orientation, selectedIndex]);
+
+  useEffect(() => {
+    const observer =
+      typeof ResizeObserver === 'undefined'
+        ? undefined
+        : new ResizeObserver(scheduleIndicatorUpdate);
+    if (rootRef.current) observer?.observe(rootRef.current);
+    if (!observer) window.addEventListener('resize', scheduleIndicatorUpdate, { passive: true });
+    const fontSet = Reflect.get(document, 'fonts') as FontFaceSet | undefined;
+    if (fontSet) void fontSet.ready.then(scheduleIndicatorUpdate);
+    updateIndicator();
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', scheduleIndicatorUpdate);
+      if (frameId.current !== undefined) cancelAnimationFrame(frameId.current);
+    };
+  }, []);
+
+  const focusItem = (index: number): void => {
+    if (!isAvailable(index)) return;
+    setActiveValue(items[index]?.value ?? null);
+    lastActiveIndex.current = index;
+    buttonRefs.current[index]?.focus();
+  };
+  const selectItem = (
+    item: ReactSegmentedControlItem,
+    index: number,
+    event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+  ): void => {
+    if (!isAvailable(index) || isSelected(index)) return;
+    setModelValue(item.value);
+    callback(props, 'onChange')?.(item.value, item, event);
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    let nextIndex = -1;
+    if (event.key === 'Home') nextIndex = findToggleGroupEdgeIndex(items, 'first');
+    else if (event.key === 'End') nextIndex = findToggleGroupEdgeIndex(items, 'last');
+    else if (orientation === 'horizontal' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+      const rtl = rootRef.current ? getComputedStyle(rootRef.current).direction === 'rtl' : false;
+      const forward = event.key === 'ArrowRight' ? !rtl : rtl;
+      nextIndex = findNextToggleGroupIndex(items, index, forward ? 1 : -1, loop);
+    } else if (orientation === 'vertical' && ['ArrowUp', 'ArrowDown'].includes(event.key)) {
+      nextIndex = findNextToggleGroupIndex(items, index, event.key === 'ArrowDown' ? 1 : -1, loop);
+    } else return;
+    event.preventDefault();
+    if (nextIndex < 0) return;
+    focusItem(nextIndex);
+    const item = items[nextIndex];
+    if (item && activation === 'automatic') selectItem(item, nextIndex, event);
+  };
+  const setRootRef = (element: HTMLDivElement | null): void => {
+    rootRef.current = element;
+    if (typeof forwardedRef === 'function') forwardedRef(element);
+    else if (forwardedRef) forwardedRef.current = element;
+  };
+
+  return (
+    <>
+      <div
+        aria-disabled={disabled || undefined}
+        aria-label={externalLabelledBy ? undefined : resolvedAriaLabel || 'Wybór opcji'}
+        aria-labelledby={externalLabelledBy || undefined}
+        aria-orientation={orientation}
+        className={cx(
+          'peaui-segmented-control',
+          `peaui-segmented-control--size-${size}`,
+          `peaui-segmented-control--distribution-${distribution}`,
+          `peaui-segmented-control--content-${content}`,
+          `peaui-segmented-control--${orientation}`,
+          fullWidth && 'peaui-segmented-control--full-width',
+          disabled && 'peaui-segmented-control--disabled',
+          indicatorReady && 'peaui-segmented-control--indicator-ready',
+          props.className,
+        )}
+        data-activation={activation}
+        data-disabled={disabled || undefined}
+        data-has-selection={selectedIndex >= 0 || undefined}
+        data-testid={baseTestId}
+        dir={text(props, 'dir') || undefined}
+        id={id}
+        ref={setRootRef}
+        role="radiogroup"
+        style={{ ...props.style, ...indicatorStyle }}
+        onBlurCapture={() => {
+          queueMicrotask(() => {
+            focusWithin.current = Boolean(rootRef.current?.contains(document.activeElement));
+          });
+        }}
+        onFocusCapture={() => {
+          focusWithin.current = true;
+        }}
+      >
+        <span
+          aria-hidden="true"
+          className="peaui-segmented-control__indicator"
+          data-visible={selectedIndex >= 0 || undefined}
+        >
+          {renderIndicator?.(items[selectedIndex] ?? null, selectedIndex)}
+        </span>
+        {items.map((item, index) => {
+          const selected = isSelected(index);
+          const itemDisabled = disabled || item.disabled === true;
+          const customContent = renderItem?.(item, { disabled: itemDisabled, index, selected });
+          return (
+            <button
+              aria-checked={selected}
+              aria-label={item.ariaLabel || item.label}
+              className={cx(
+                'peaui-segmented-control__item',
+                selected && 'peaui-segmented-control__item--selected',
+                itemDisabled && 'peaui-segmented-control__item--disabled',
+              )}
+              data-segmented-control-index={index}
+              data-selected={selected || undefined}
+              data-testid={baseTestId ? `${baseTestId}-item-${index}` : undefined}
+              disabled={itemDisabled}
+              id={`${id}-item-${index}`}
+              key={`${typeof item.value}:${String(item.value)}:${index}`}
+              ref={(element) => {
+                buttonRefs.current[index] = element;
+              }}
+              role="radio"
+              tabIndex={isAvailable(index) && activeIndex === index ? 0 : -1}
+              type="button"
+              onClick={(event) => selectItem(item, index, event)}
+              onFocus={() => {
+                setActiveValue(item.value);
+                lastActiveIndex.current = index;
+                callback(props, 'onFocusChange')?.(item, index);
+              }}
+              onKeyDown={(event) => handleKeyDown(event, index)}
+            >
+              {customContent ?? (
+                <>
+                  {content !== 'text' && (item.icon || renderItemIcon) ? (
+                    <span aria-hidden="true" className="peaui-segmented-control__icon">
+                      {renderItemIcon?.(item, { index, selected }) ??
+                        (item.icon ? <Svg name={item.icon} /> : null)}
+                    </span>
+                  ) : null}
+                  {content !== 'icon' ? (
+                    <span className="peaui-segmented-control__label">{item.label}</span>
+                  ) : null}
+                </>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {text(props, 'name') && selectedIndex >= 0 ? (
+        <input
+          disabled={disabled}
+          name={text(props, 'name')}
+          type="hidden"
+          value={items[selectedIndex]?.value}
+        />
+      ) : null}
+    </>
+  );
+}
+
+function FormSwitchToggleRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  const generatedId = useId();
+  const id = text(props, 'id') || `peaui-form-switch-toggle-${generatedId}`;
+  const trueValue = props.trueValue === undefined ? true : props.trueValue;
+  const falseValue = props.falseValue === undefined ? false : props.falseValue;
+  const [value, setValue] = useModel<unknown>(props, 'value', falseValue);
+  const checked = Object.is(value, trueValue);
+  const disabled = bool(props, 'disabled');
+  const loading = bool(props, 'loading');
+  const readonly = bool(props, 'readonly');
+  const blocked = disabled || loading;
+  const required = bool(props, 'required');
+  const descriptionContent = node(props, 'descriptionContent') ?? text(props, 'description');
+  const errorContent = node(props, 'errorContent') ?? text(props, 'error');
+  const labelContent = node(props, 'labelContent') ?? text(props, 'label');
+  const hasLabel = hasVisibleReactText(labelContent);
+  const hasDescription = hasVisibleReactText(descriptionContent);
+  const hasError = hasVisibleReactText(errorContent);
+  const labelId = `${id}-label`;
+  const descriptionId = `${id}-description`;
+  const errorId = `${id}-error`;
+  const loadingId = `${id}-loading`;
+  const describedBy = new Set(
+    text(props, 'aria-describedby')
+      .split(/\s+/)
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  );
+  if (hasDescription) describedBy.add(descriptionId);
+  if (hasError) describedBy.add(errorId);
+  if (loading) describedBy.add(loadingId);
+  const dataTestId = dataTest(props);
+  const size = text(props, 'size', 'm');
+  const labelPosition = text(props, 'labelPosition', 'end');
+  const showStateLabel = bool(props, 'showStateLabel');
+  const externalLabelledBy = text(props, 'aria-labelledby');
+  const explicitAriaLabel = text(props, 'aria-label');
+  const labelledBy = externalLabelledBy || (hasLabel && !explicitAriaLabel ? labelId : undefined);
+  const renderThumb =
+    typeof props.renderThumb === 'function'
+      ? (props.renderThumb as (state: { checked: boolean; loading: boolean }) => ReactNode)
+      : undefined;
+  const labelNode = hasLabel ? (
+    <span className="peaui-form-switch-toggle__label" id={labelId}>
+      {labelContent}
+      {required ? (
+        <span aria-hidden="true" className="peaui-form-switch-toggle__required">
+          *
+        </span>
+      ) : null}
+    </span>
+  ) : null;
+  const stateContent = checked
+    ? (node(props, 'onLabelContent') ?? text(props, 'onLabel', 'Włączone'))
+    : (node(props, 'offLabelContent') ?? text(props, 'offLabel', 'Wyłączone'));
+
+  return (
+    <div
+      className={cx(
+        'peaui-form-switch-toggle',
+        `peaui-form-switch-toggle--size-${size}`,
+        `peaui-form-switch-toggle--label-${labelPosition}`,
+        checked && 'peaui-form-switch-toggle--checked',
+        disabled && 'peaui-form-switch-toggle--disabled',
+        readonly && 'peaui-form-switch-toggle--readonly',
+        loading && 'peaui-form-switch-toggle--loading',
+        hasError && 'peaui-form-switch-toggle--invalid',
+        props.className,
+      )}
+      data-checked={checked}
+      data-disabled={disabled || undefined}
+      data-invalid={hasError || undefined}
+      data-loading={loading || undefined}
+      data-readonly={readonly || undefined}
+      data-testid={dataTestId}
+      style={props.style}
+    >
+      <label
+        className="peaui-form-switch-toggle__interaction"
+        data-testid={dataTestId ? `${dataTestId}-label` : undefined}
+        htmlFor={id}
+      >
+        {labelPosition === 'start' ? labelNode : null}
+        <span className="peaui-form-switch-toggle__control">
+          <input
+            aria-busy={loading || undefined}
+            aria-checked={checked}
+            aria-describedby={describedBy.size > 0 ? [...describedBy].join(' ') : undefined}
+            aria-disabled={blocked || undefined}
+            aria-invalid={hasError || undefined}
+            aria-label={
+              labelledBy
+                ? undefined
+                : explicitAriaLabel ||
+                  (hasLabel
+                    ? undefined
+                    : text(props, 'ariaLabel') || text(props, 'name') || 'Przełącznik')
+            }
+            aria-labelledby={labelledBy}
+            aria-readonly={readonly || undefined}
+            aria-required={required || undefined}
+            checked={checked}
+            className="peaui-form-switch-toggle__input"
+            data-testid={dataTestId ? `${dataTestId}-element` : undefined}
+            disabled={blocked}
+            form={text(props, 'form') || undefined}
+            id={id}
+            name={text(props, 'name') || undefined}
+            ref={forwardedRef as ForwardedRef<HTMLInputElement>}
+            required={required}
+            role="switch"
+            type="checkbox"
+            value={serializeSwitchFormValue(trueValue)}
+            onBlur={(event) => callback(props, 'onBlur')?.(event)}
+            onChange={(event) => {
+              if (readonly || blocked) {
+                event.preventDefault();
+                event.currentTarget.checked = checked;
+                return;
+              }
+              const nextValue = event.currentTarget.checked ? trueValue : falseValue;
+              setValue(nextValue);
+              callback(props, 'onChange')?.(nextValue, event);
+            }}
+            onClick={(event) => {
+              if (readonly) {
+                event.preventDefault();
+                const input = event.currentTarget;
+                queueMicrotask(() => {
+                  input.checked = checked;
+                });
+              }
+              if (typeof props.onClick === 'function') {
+                (props.onClick as MouseEventHandler<HTMLInputElement>)(event);
+              }
+            }}
+            onFocus={(event) => callback(props, 'onFocus')?.(event)}
+            onKeyDown={
+              typeof props.onKeyDown === 'function'
+                ? (props.onKeyDown as KeyboardEventHandler<HTMLInputElement>)
+                : undefined
+            }
+            onPointerDown={
+              typeof props.onPointerDown === 'function'
+                ? (props.onPointerDown as PointerEventHandler<HTMLInputElement>)
+                : undefined
+            }
+          />
+          <span aria-hidden="true" className="peaui-form-switch-toggle__track">
+            <span className="peaui-form-switch-toggle__thumb">
+              {renderThumb?.({ checked, loading }) ??
+                (loading ? <span className="peaui-form-switch-toggle__spinner" /> : null)}
+            </span>
+          </span>
+        </span>
+        {labelPosition === 'end' ? labelNode : null}
+        {showStateLabel ? (
+          <span aria-hidden="true" className="peaui-form-switch-toggle__state">
+            {stateContent}
+          </span>
+        ) : null}
+      </label>
+      {hasDescription ? (
+        <p className="peaui-form-switch-toggle__description" id={descriptionId}>
+          {descriptionContent}
+        </p>
+      ) : null}
+      {hasError ? (
+        <p aria-live="polite" className="peaui-form-switch-toggle__error" id={errorId}>
+          {errorContent}
+        </p>
+      ) : null}
+      {loading ? (
+        <span
+          aria-atomic="true"
+          aria-live="polite"
+          className="peaui-form-switch-toggle__loading-status"
+          id={loadingId}
+          role="status"
+        >
+          {text(props, 'loadingLabel', 'Trwa aktualizowanie ustawienia')}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 function FormRenderer({
   forwardedRef,
   ...props
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const kind = text(props, '__name');
+  if (kind === 'FormSwitchToggle') {
+    return <FormSwitchToggleRenderer {...props} forwardedRef={forwardedRef} />;
+  }
   if (
     [
       'FormInput',
@@ -2562,6 +5361,15 @@ function FormRenderer({
         <FormShell props={{ ...props, id, value }}>
           <textarea
             aria-disabled={bool(props, 'disabled')}
+            aria-describedby={
+              [text(props, 'aria-describedby'), node(props, 'error') ? `${id}-error` : undefined]
+                .filter(Boolean)
+                .join(' ') || undefined
+            }
+            aria-invalid={Boolean(node(props, 'error')) || text(props, 'aria-invalid') === 'true'}
+            aria-label={
+              text(props, 'ariaLabel') || text(props, 'label') || text(props, 'name') || undefined
+            }
             className={cx(
               'peaui-form-field__element',
               'peaui-form-field-textarea',
@@ -2587,12 +5395,16 @@ function FormRenderer({
             style={
               {
                 '--pl': text(props, 'before')
-                  ? `${text(props, 'before').length * 7.5 + 14 + (text(props, 'iconBefore') ? 24 : 0)}px`
+                  ? `${
+                      text(props, 'before').length * 7.5 + 14 + (text(props, 'iconBefore') ? 24 : 0)
+                    }px`
                   : text(props, 'iconBefore')
                     ? '32px'
                     : '12px',
                 '--pr': text(props, 'after')
-                  ? `${text(props, 'after').length * 7.5 + 12 + (text(props, 'iconAfter') ? 24 : 0)}px`
+                  ? `${
+                      text(props, 'after').length * 7.5 + 12 + (text(props, 'iconAfter') ? 24 : 0)
+                    }px`
                   : text(props, 'iconAfter')
                     ? '32px'
                     : '12px',
@@ -2614,7 +5426,7 @@ function FormRenderer({
     return <DateRenderer {...props} __name={kind} forwardedRef={forwardedRef} />;
   if (kind === 'FormFileUpload' || kind === 'FormFileUploadSimple')
     return <FileRenderer {...props} __name={kind} forwardedRef={forwardedRef} />;
-  if (kind === 'FieldLabel')
+  if (kind === 'FormFieldLabel')
     return (
       <label
         className={cx('peaui-form-label', props.className)}
@@ -2651,9 +5463,40 @@ function FormRenderer({
       </label>
     );
   if (kind === 'FormField') {
-    return (
-      <FormShell props={props}>
-        {props.children ?? (
+    const before = text(props, 'before');
+    const after = text(props, 'after');
+    const iconBefore = text(props, 'iconBefore');
+    const iconAfter = text(props, 'iconAfter');
+    const canErase = bool(props, 'canErase');
+    const eraseButtonRight = getFormFieldEraseOffset({
+      after,
+      hasAdditional: Boolean(node(props, 'additional')),
+      iconAfter,
+      minimumEraseOffset:
+        typeof props.rightErasePosition === 'number' ? props.rightErasePosition : undefined,
+    });
+    const fieldStyle = {
+      '--pl': before
+        ? `${before.length * 7.5 + 14 + (iconBefore ? 24 : 0)}px`
+        : iconBefore
+          ? '32px'
+          : '12px',
+      '--pr': `${getFormFieldPaddingRight({
+        after,
+        canErase,
+        hasAdditional: Boolean(node(props, 'additional')),
+        iconAfter,
+        minimumEraseOffset: eraseButtonRight,
+      })}px`,
+    } as CSSProperties;
+    const fieldControl = isValidElement<{ className?: string; style?: CSSProperties }>(
+      props.children,
+    )
+      ? cloneElement(props.children, {
+          className: cx('peaui-form-field__element', props.children.props.className),
+          style: { ...fieldStyle, ...props.children.props.style },
+        })
+      : (props.children ?? (
           <input
             className={cx(
               'peaui-form-field__element',
@@ -2669,10 +5512,26 @@ function FormRenderer({
             name={text(props, 'name')}
             placeholder={text(props, 'placeholder')}
             readOnly={bool(props, 'readonly')}
+            style={fieldStyle}
             value={text(props, 'value')}
             onChange={() => undefined}
           />
-        )}
+        ));
+
+    return (
+      <FormShell props={props}>
+        {fieldControl}
+        {canErase && props.value !== undefined && props.value !== '' && !bool(props, 'disabled') ? (
+          <button
+            aria-label="Usuń wartość pola"
+            className="peaui-form-field__erase-button"
+            style={{ '--right': `${eraseButtonRight}px` } as CSSProperties}
+            type="button"
+            onClick={() => callback(props, 'onRemove')?.()}
+          >
+            <Svg className="peaui-form-field__erase-icon" name="cross" />
+          </button>
+        ) : null}
       </FormShell>
     );
   }
@@ -2743,6 +5602,42 @@ function FormRenderer({
         ) : null}
       </div>
     </form>
+  );
+}
+
+function InlineEditRuntimeRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  return (
+    <InlineEditRenderer
+      {...(props as InlineEditRuntimeProps)}
+      __renderButton={(buttonProps, children) => (
+        <ButtonRenderer {...buttonProps} __name="ButtonAction">
+          {children}
+        </ButtonRenderer>
+      )}
+      __renderField={(name, fieldProps) => <FormRenderer {...fieldProps} __name={name} />}
+      forwardedRef={forwardedRef}
+    />
+  );
+}
+
+function CopyButtonRuntimeRenderer({
+  forwardedRef,
+  ...props
+}: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
+  return (
+    <CopyButtonRenderer
+      {...(props as CopyButtonRuntimeProps)}
+      __renderButton={(buttonProps, children) => (
+        <ButtonRenderer {...buttonProps} __name="ButtonAction">
+          {children}
+        </ButtonRenderer>
+      )}
+      __renderIcon={(iconProps) => <BasicRenderer {...iconProps} __name="SvgIcon" />}
+      forwardedRef={forwardedRef}
+    />
   );
 }
 
@@ -3207,24 +6102,25 @@ function Disclosure({
   props: RuntimeProps;
   forwardedRef?: ForwardedRef<HTMLElement>;
 }): ReactElement {
-  const [open, setOpen] = useModel<boolean>(props, 'open', bool(props, 'allwaysOpen'));
+  const alwaysOpen = bool(props, 'alwaysOpen') || bool(props, 'allwaysOpen');
+  const [open, setOpen] = useModel<boolean>(props, 'open', alwaysOpen);
   return (
     <details
       {...common(props)}
       className={cx('peaui-disclosure-panel', props.className)}
-      open={open || bool(props, 'allwaysOpen')}
+      open={open || alwaysOpen}
       ref={forwardedRef as ForwardedRef<HTMLDetailsElement>}
     >
       <summary
         aria-disabled={bool(props, 'disabled')}
         className={cx(
           'peaui-disclosure-panel__summary',
-          (open || bool(props, 'allwaysOpen')) && 'peaui-disclosure-panel__summary--open',
+          (open || alwaysOpen) && 'peaui-disclosure-panel__summary--open',
           bool(props, 'disabled') && 'peaui-disclosure-panel__summary--disabled',
         )}
         onClick={(event) => {
           event.preventDefault();
-          if (!bool(props, 'disabled') && !bool(props, 'allwaysOpen')) setOpen(!open);
+          if (!bool(props, 'disabled') && !alwaysOpen) setOpen(!open);
         }}
       >
         <span className="peaui-disclosure-panel__title">
@@ -3234,15 +6130,13 @@ function Disclosure({
           {node(props, 'additional') ? (
             <span className="peaui-disclosure-panel__additional">{node(props, 'additional')}</span>
           ) : null}
-          {!bool(props, 'allwaysOpen') ? (
-            <Svg className="peaui-disclosure-panel__icon" name="arrow" />
-          ) : null}
+          {!alwaysOpen ? <Svg className="peaui-disclosure-panel__icon" name="arrow" /> : null}
         </span>
       </summary>
       <div
         className={cx(
           'peaui-disclosure-panel__content',
-          (open || bool(props, 'allwaysOpen')) && 'peaui-disclosure-panel__content--open',
+          (open || alwaysOpen) && 'peaui-disclosure-panel__content--open',
         )}
         role="region"
       >
@@ -3687,16 +6581,22 @@ function TableRenderer({
   useEffect(() => setHiddenColumnKeys(new Set()), [props.columns]);
 
   const [filtersOpen, setFiltersOpen] = useModel<boolean>(props, 'filtersOpen', false);
-  if (kind === 'TableListHeader')
+  if (kind === 'TableListHeader') {
+    const additionalDescription =
+      node(props, 'additionalDescription') ??
+      node(props, 'addtionalDescription') ??
+      node(props, 'description');
+    const additionalContent = node(props, 'additionalContent') ?? node(props, 'addtionalContent');
+
     return (
       <header
         className={cx(
           'peaui-table-list-header',
-          Boolean(node(props, 'description')) && 'peaui-table-list-header--with-description',
+          Boolean(additionalDescription) && 'peaui-table-list-header--with-description',
           props.className,
         )}
       >
-        {node(props, 'description')}
+        {additionalDescription}
         <div className="peaui-table-list-header__controls">
           <div className="peaui-table-list-header__search-area">
             <strong>{num(props, 'totalRecords')} rekordów</strong>
@@ -3740,6 +6640,7 @@ function TableRenderer({
             ) : null}
             {bool(props, 'canCreate') ? (
               <button
+                aria-label={text(props, 'buttonCreateLabel', 'Dodaj')}
                 className="peaui-table-list-header__create-button peaui-button-action peaui-button-action--variant-primary"
                 type="button"
                 onClick={() => callback(props, 'onCreate')?.()}
@@ -3763,9 +6664,10 @@ function TableRenderer({
           </div>
         </div>
         {node(props, 'filtersDrawer')}
-        {node(props, 'addtionalContent')}
+        {additionalContent}
       </header>
     );
+  }
   if (kind === 'TableListFooter')
     return (
       <footer
@@ -3887,7 +6789,7 @@ function TableRenderer({
       {...common(props)}
       className={cx(
         'peaui-table-list',
-        bool(props, 'isDetials') && 'peaui-table-list--details',
+        (bool(props, 'isDetails') || bool(props, 'isDetials')) && 'peaui-table-list--details',
         bool(props, 'isLoading') && 'peaui-table-list--loading',
         bool(props, 'scroll') && 'peaui-table-list--scroll',
         props.className,
@@ -4102,7 +7004,9 @@ function TableRenderer({
                           const actionKey = String(item.key ?? actionIndex);
                           return (
                             <button
-                              aria-label={`${String(item.label ?? actionKey)}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+                              aria-label={`${String(item.label ?? actionKey)}: ${String(
+                                record.name ?? `wiersz ${rowIndex + 1}`,
+                              )}`}
                               className="peaui-table-list__actions-simple-button"
                               key={actionKey}
                               type="button"
@@ -5187,12 +8091,16 @@ function Popover({
       <div
         className={cx(
           `${root}__content`,
-          `peaui-${button ? 'popover-button' : 'popover-overlayer'}__content--placement-${text(props, 'placement', 'bottom')}`,
+          `peaui-${button ? 'popover-button' : 'popover-overlayer'}__content--placement-${text(
+            props,
+            'placement',
+            'bottom',
+          )}`,
           bool(props, 'matchTriggerWidth') && `${root}__content--match-trigger-width`,
           text(props, 'contentClass'),
         )}
         id={popoverId}
-        popover={nativePopoverValue()}
+        popover={getNativePopoverValue()}
         ref={popoverRef}
         role={text(props, 'popupType', 'dialog')}
         style={sharedStyles}
@@ -5208,9 +8116,8 @@ function Popover({
   );
 }
 
-const groupByName: Record<ReactComponentName, RuntimeComponent> = {
+const groupByName: Partial<Record<ReactComponentName, RuntimeComponent>> = {
   ImageView: BasicRenderer,
-  PhotoEditor: BasicRenderer,
   SvgIcon: BasicRenderer,
   Avatar: DisplayRenderer,
   AvatarGroup: AvatarGroupRenderer,
@@ -5219,6 +8126,7 @@ const groupByName: Record<ReactComponentName, RuntimeComponent> = {
   CounterBadge: DisplayRenderer,
   DescriptionField: DisplayRenderer,
   DisclosurePanel: DisplayRenderer,
+  KeyboardKey: DisplayRenderer,
   SectionHeading: DisplayRenderer,
   TableList: DisplayRenderer,
   TableListFooter: DisplayRenderer,
@@ -5228,15 +8136,21 @@ const groupByName: Record<ReactComponentName, RuntimeComponent> = {
   ButtonAction: ButtonRenderer,
   ButtonExport: ButtonRenderer,
   InputSlider: FormRenderer,
+  InlineEdit: InlineEditRuntimeRenderer,
+  CopyButton: CopyButtonRuntimeRenderer,
   SearchInput: FormRenderer,
   SelectableCard: ButtonRenderer,
+  ToggleButton: ToggleButtonRenderer,
+  ToggleGroup: ToggleGroupRenderer,
+  SegmentedControl: SegmentedControlRenderer,
+  SplitButton: SplitButtonRenderer,
   EmptyState: FeedbackRenderer,
   MessageText: FeedbackRenderer,
   ProgressIndicator: FeedbackRenderer,
   SkeletonLoading: FeedbackRenderer,
   SpinnerLoader: FeedbackRenderer,
   ToastAlert: FeedbackRenderer,
-  FieldLabel: FormRenderer,
+  FormFieldLabel: FormRenderer,
   FormButtonCheckbox: FormRenderer,
   FormButtonGroup: FormRenderer,
   FormCheckbox: FormRenderer,
@@ -5253,6 +8167,7 @@ const groupByName: Record<ReactComponentName, RuntimeComponent> = {
   FormSelect: FormRenderer,
   FormTextarea: FormRenderer,
   FormYearPicker: FormRenderer,
+  FormSwitchToggle: FormRenderer,
   CardPanel: LayoutRenderer,
   FullscreenContainer: LayoutRenderer,
   GridItem: LayoutRenderer,
@@ -5260,6 +8175,9 @@ const groupByName: Record<ReactComponentName, RuntimeComponent> = {
   PageLayout: LayoutRenderer,
   SectionDivider: LayoutRenderer,
   Breadcrumbs: NavigationRenderer,
+  ContextMenu: ContextMenuRenderer,
+  DropdownMenu: DropdownMenuRenderer,
+  MenuBar: MenuBarRenderer,
   ListLimitControl: NavigationRenderer,
   NavigationCard: NavigationRenderer,
   NavigationDisclosureCard: NavigationRenderer,
@@ -5278,7 +8196,10 @@ const groupByName: Record<ReactComponentName, RuntimeComponent> = {
 export function createPeauiReactComponent<Name extends ReactComponentName>(
   name: Name,
 ): ComponentType<PeauiReactProps<Name>> {
-  const Renderer: RuntimeComponent = groupByName[name];
+  const Renderer = groupByName[name];
+  if (!Renderer) {
+    throw new Error(`[PeaUI React] Missing renderer for ${name}.`);
+  }
   const Component = forwardRef<HTMLElement, RuntimeProps>((props, ref) =>
     createElement(Renderer, { ...props, __name: name, forwardedRef: ref }),
   );

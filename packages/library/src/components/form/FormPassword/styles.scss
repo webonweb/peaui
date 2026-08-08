@@ -73,7 +73,8 @@
 }
 
 .peaui-form-field-password__strength {
-  --peaui-form-password-strength-color: var(--peaui-color-grey-300);
+  --peaui-form-password-strength-bar-color: var(--peaui-color-grey-300);
+  --peaui-form-password-strength-text-color: var(--peaui-color-grey-700);
 
   display: flex;
   align-items: center;
@@ -86,15 +87,18 @@
 }
 
 .peaui-form-field-password__strength[data-tone='danger'] {
-  --peaui-form-password-strength-color: var(--peaui-color-danger-500);
+  --peaui-form-password-strength-bar-color: var(--peaui-color-danger-500);
+  --peaui-form-password-strength-text-color: var(--peaui-color-danger-700);
 }
 
 .peaui-form-field-password__strength[data-tone='warning'] {
-  --peaui-form-password-strength-color: var(--peaui-color-warning-500);
+  --peaui-form-password-strength-bar-color: var(--peaui-color-warning-500);
+  --peaui-form-password-strength-text-color: var(--peaui-color-warning-700);
 }
 
 .peaui-form-field-password__strength[data-tone='success'] {
-  --peaui-form-password-strength-color: var(--peaui-color-success-500);
+  --peaui-form-password-strength-bar-color: var(--peaui-color-success-500);
+  --peaui-form-password-strength-text-color: var(--peaui-color-success-700);
 }
 
 .peaui-form-field-password__strength-bar {
@@ -113,12 +117,12 @@
 }
 
 .peaui-form-field-password__strength-segment[data-active='true'] {
-  background-color: var(--peaui-form-password-strength-color);
+  background-color: var(--peaui-form-password-strength-bar-color);
 }
 
 .peaui-form-field-password__strength-label {
   flex: 0 0 auto;
-  color: var(--peaui-form-password-strength-color);
+  color: var(--peaui-form-password-strength-text-color);
   font-weight: 500;
   white-space: nowrap;
 

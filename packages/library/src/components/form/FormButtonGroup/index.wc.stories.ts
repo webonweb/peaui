@@ -12,10 +12,24 @@ import { FormButtonGroupElement, defineFormButtonGroup } from './index.wc';
 
 defineFormButtonGroup();
 
+const options = [
+  { key: 'yes', label: 'Tak' },
+  { key: 'no', label: 'Nie' },
+  { disabled: true, key: 'maybe', label: 'Może' },
+];
+
 const meta = {
   title: '5. Form/FormButtonGroup',
   component: FormButtonGroupElement.tagName,
-  args: createVueCustomElementStoryArgs(FormButtonGroupVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormButtonGroupVueComponent),
+    dataTestId: 'form-button-group-wc',
+    id: 'decision-wc',
+    label: 'Decyzja',
+    name: 'decision',
+    options,
+    value: 'yes',
+  },
   argTypes: createVueCustomElementArgTypes(FormButtonGroupVueComponent),
   parameters: {
     name: 'FormButtonGroup',

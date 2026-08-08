@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createElement, type ComponentType, type ReactNode } from 'react';
+import { createElement, Suspense, type ComponentType, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { t } from '../i18n';
@@ -52,7 +52,19 @@ function renderReactComponent(): void {
     else reactProps[toCamelCase(name)] = renderSlot(value, name);
   }
 
-  root.render(createElement(props.component, reactProps));
+  root.render(
+    createElement(
+      Suspense,
+      {
+        fallback: createElement(
+          'span',
+          { className: 'sr-only', role: 'status' },
+          t('demo.loadingPreview'),
+        ),
+      },
+      createElement(props.component, reactProps),
+    ),
+  );
 }
 
 onMounted(() => {

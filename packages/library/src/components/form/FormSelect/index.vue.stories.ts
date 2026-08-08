@@ -11,21 +11,21 @@ const { getSettings } = useSettingsStorie();
 const defaultOptions = [
   {
     id: '7026160b-d1c3-4760-b5bc-6439f03e4a02',
-    value: '',
+    value: 'uncovered',
     label: 'nieosłonięte',
     disabled: false,
     active: false,
   },
   {
     id: 'e86cb89b-7d88-43ea-8e7d-5a7b7d0a1ac4',
-    value: '',
+    value: 'partly-covered',
     label: 'średnio osłonięte',
     disabled: false,
     active: false,
   },
   {
     id: 'acbaf27d-e584-4300-b897-cecfb29deb39',
-    value: '',
+    value: 'covered',
     label: 'mocno osłonięte',
     disabled: false,
     active: false,
@@ -230,7 +230,7 @@ export const FormSelect: Story = {
     },
     template: `
       <StoryContent :settings>
-          <FormSelectComponent v-bind="args" :value="undefined">
+          <FormSelectComponent v-bind="args" v-model:value="args.value">
             <template #hint>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ullamcorper finibus augue ut feugiat.
             </template>
@@ -241,7 +241,7 @@ export const FormSelect: Story = {
   args: {
     id: 'lorem-ipsum',
     name: 'lorem-ipsum',
-    value: undefined,
+    value: 'partly-covered',
 
     label: 'Lorem ipsum',
     required: true,

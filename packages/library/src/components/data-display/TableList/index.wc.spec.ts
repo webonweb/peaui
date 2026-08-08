@@ -30,5 +30,25 @@ describe('TableList (index.wc.ts)', () => {
     await Promise.resolve();
 
     expect(element.childNodes.length).toBeGreaterThan(0);
+    expect(element.getAttribute('role')).toBe('group');
   });
+
+  it.each(['isDetails', 'isDetials'] as const)(
+    'keeps compatibility with the %s property',
+    async (propertyName) => {
+      const element = document.createElement(TableListElement.tagName) as HTMLElement &
+        Record<typeof propertyName, boolean> & {
+          columns: Array<Record<string, unknown>>;
+          records: Array<Record<string, unknown>>;
+        };
+      element.columns = [{ key: 'name', label: 'Name' }];
+      element.records = [{ id: '1', name: 'Alpha' }];
+      element[propertyName] = true;
+      document.body.appendChild(element);
+      await nextTick();
+      await Promise.resolve();
+
+      expect(element.querySelector('.peaui-table-list')).toHaveClass('peaui-table-list--details');
+    },
+  );
 });

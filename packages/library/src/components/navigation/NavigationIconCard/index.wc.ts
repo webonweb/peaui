@@ -9,6 +9,7 @@ import NavigationIconCardVueComponent from './index.ce.vue';
 export const NavigationIconCardElement = createVueCustomElement(
   NavigationIconCardVueComponent,
   `${UIKIT_NAME}-navigation-icon-card`,
+  { hostRole: 'group' },
 );
 
 export function defineNavigationIconCard(): void {

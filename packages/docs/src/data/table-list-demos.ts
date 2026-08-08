@@ -170,7 +170,7 @@ export function getTableListDemoVariants(baseProps: Record<string, unknown>): De
         { key: 'stepper', label: 'Etapy', type: 'stepper', steps, width: 360 },
         { key: 'status', label: 'Szczegóły', type: 'expandable', width: 140 },
       ],
-      isDetials: true,
+      isDetails: true,
     }),
     variant('column-layout', 'tableList.demo.layoutLabel', 'tableList.demo.layout', {
       ...common,

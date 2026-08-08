@@ -94,6 +94,10 @@ export default tseslint.config(
       'src/**/*.spec.tsx',
       'src/**/*.stories.ts',
       'scripts/**',
+      'src/assets/icons/runtime/catalog/buckets/**',
+      'src/assets/icons/runtime/catalog/bucket-loaders.ts',
+      'src/assets/icons/runtime/buckets/**',
+      'src/assets/icons/runtime/bucket-loaders.ts',
     ],
   },
 );

@@ -135,6 +135,7 @@ function createPreviewShell(content: Node): HTMLDivElement {
 
   wrapper.style.width = '100%';
   wrapper.style.maxWidth = '720px';
+  wrapper.style.boxSizing = 'border-box';
   wrapper.style.padding = '24px';
   wrapper.style.borderRadius = '16px';
   wrapper.style.background = '#f8fafc';
@@ -148,7 +149,10 @@ function createSizesPreview(): HTMLDivElement {
   const sizes: StoryArgs['size'][] = ['xs', 's', 'm', 'l', 'xl', 'full'];
 
   preview.style.display = 'grid';
+  preview.style.boxSizing = 'border-box';
   preview.style.gap = '20px';
+  preview.style.gridTemplateColumns = 'minmax(0, 1fr)';
+  preview.style.minWidth = '0';
   preview.style.width = '100%';
   preview.style.maxWidth = '920px';
   preview.style.padding = '24px';
@@ -165,6 +169,8 @@ function createSizesPreview(): HTMLDivElement {
 
     row.style.display = 'grid';
     row.style.gap = '12px';
+    row.style.maxWidth = '100%';
+    row.style.minWidth = '0';
 
     label.textContent = `size="${size}"`;
     label.style.fontSize = '12px';

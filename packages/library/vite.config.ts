@@ -155,13 +155,14 @@ export default defineConfig(() => {
             return `index.${format === 'es' ? 'js' : 'umd.cjs'}`;
           }
 
-          const parsed = name.split('/');
-          return `components/${parsed[0]}/${parsed[1]}/${parsed[2]}.${format === 'es' ? 'js' : 'umd.cjs'}`;
+          const normalizedName = name.replace(/\\/g, '/').replace(/^src\//, '');
+          return `components/${normalizedName}.${format === 'es' ? 'js' : 'umd.cjs'}`;
         },
       },
       rollupOptions: {
         external: [/^vue(?:\/|$)/, /^react(?:\/|$)/, /^react-dom(?:\/|$)/],
         output: {
+          exports: 'named',
           preserveModules: true,
           preserveModulesRoot: 'src',
           globals: { vue: 'Vue', react: 'React', 'react-dom': 'ReactDOM' },
@@ -207,6 +208,7 @@ export default defineConfig(() => {
         },
       },
       cssMinify: true,
+      minify: 'esbuild',
       outDir: 'dist',
       cssCodeSplit: false,
       emptyOutDir: true,

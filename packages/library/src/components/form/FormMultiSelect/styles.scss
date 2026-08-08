@@ -43,7 +43,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-right: var(--peaui-form-multiselect-input-padding-right);
+  padding-right: var(--peaui-form-multiselect-input-padding-right, var(--pr));
 }
 
 .peaui-form-multiselect__input--searchable {

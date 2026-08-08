@@ -1,0 +1,67 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-context-menu {
+  position: relative;
+  display: inline-block;
+  max-inline-size: 100%;
+  color: var(--peaui-color-grey-900);
+  font-family: inherit;
+}
+
+.peaui-context-menu__target {
+  display: block;
+  max-inline-size: 100%;
+  border-radius: 0.75rem;
+
+  @include outline(var(--peaui-color-primary-600));
+}
+
+.peaui-context-menu__target[aria-expanded='true'] {
+  outline: 2px solid color-mix(in srgb, var(--peaui-color-primary-600) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.peaui-context-menu__placeholder {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-block-size: 5rem;
+  padding: 1rem 1.25rem;
+  color: var(--peaui-color-grey-700);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  cursor: context-menu;
+  background: var(--peaui-color-grey-50);
+  border: 1px dashed var(--peaui-color-grey-300);
+  border-radius: 0.75rem;
+}
+
+.peaui-context-menu--disabled .peaui-context-menu__placeholder {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.peaui-context-menu__menu {
+  position: absolute;
+  inset: 0 auto auto 0;
+  inline-size: 0;
+  block-size: 0;
+}
+
+.peaui-context-menu__virtual-trigger {
+  position: fixed;
+  z-index: -1;
+  inset: 0 auto auto 0;
+  inline-size: 0;
+  block-size: 0;
+  padding: 0;
+  pointer-events: none;
+  opacity: 0;
+  border: 0;
+}
+
+@media (forced-colors: active) {
+  .peaui-context-menu__placeholder {
+    border-color: ButtonText;
+  }
+}

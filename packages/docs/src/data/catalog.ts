@@ -1,5 +1,5 @@
 import { defineAsyncComponent, type Component } from 'vue';
-import type { ComponentType } from 'react';
+import { lazy, type ComponentType } from 'react';
 
 import { generatedComponentApi } from '../generated/component-api';
 import {
@@ -19,7 +19,7 @@ const componentModules = import.meta.glob<{ default: Component }>(
 );
 const reactComponentModules = import.meta.glob<{
   default: ComponentType<Record<string, unknown>>;
-}>('../../../library/src/components/*/*/index.tsx', { eager: true });
+}>('../../../library/src/components/*/*/index.tsx');
 
 export function toSlug(value: string): string {
   return value
@@ -44,13 +44,15 @@ function resolveReactComponent(
   sourceName: string,
 ): ComponentType<Record<string, unknown>> | undefined {
   const suffix = `/components/${category}/${sourceName}/index.tsx`;
-  return Object.entries(reactComponentModules).find(([file]) =>
+  const entry = Object.entries(reactComponentModules).find(([file]) =>
     file.replace(/\\/g, '/').endsWith(suffix),
-  )?.[1].default;
+  );
+
+  return entry ? (lazy(entry[1]) as ComponentType<Record<string, unknown>>) : undefined;
 }
 
 export const components: ComponentDefinition[] = generatedComponentApi.map((api) => {
-  const publicName = api.name === 'PhotoEditior' ? 'PhotoEditor' : api.name;
+  const publicName = api.name;
 
   return {
     ...api,
@@ -93,7 +95,7 @@ function enhanceFrameworkComponent(api: FrameworkComponentApi): FrameworkCompone
 const vueFrameworkComponents: FrameworkComponentDefinition[] = components.map((component) => ({
   ...component,
   framework: 'vue',
-  sourceName: component.name === 'PhotoEditor' ? 'PhotoEditior' : component.name,
+  sourceName: component.name,
   status: 'stable',
 }));
 

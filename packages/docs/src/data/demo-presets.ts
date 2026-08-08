@@ -1,6 +1,29 @@
 import type { ApiEntry, ComponentDefinition, DemoPreset, DemoVariant } from '../types';
 import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
 import { avatarGroupDemoItems } from '../../../library/src/components/data-display/AvatarGroup/avatar-group.demo';
+import { keyboardKeyDemoProps } from '../../../library/src/components/data-display/KeyboardKey/keyboard-key.demo';
+import { virtualListDemoItems } from '../../../library/src/components/data-display/VirtualList/virtual-list.demo';
+import { inlineEditDemoProps } from '../../../library/src/components/data-entry/InlineEdit/inline-edit.demo';
+import { copyButtonDemoProps } from '../../../library/src/components/data-entry/CopyButton/copy-button.demo';
+import { toggleButtonDemoProps } from '../../../library/src/components/data-entry/ToggleButton/toggle-button.demo';
+import { toggleGroupViewItems } from '../../../library/src/components/data-entry/ToggleGroup/toggle-group.demo';
+import { segmentedControlViewItems } from '../../../library/src/components/data-entry/SegmentedControl/segmented-control.demo';
+import { splitButtonDemoProps } from '../../../library/src/components/data-entry/SplitButton/split-button.demo';
+import {
+  transferListDemoValue,
+  transferListItems,
+} from '../../../library/src/components/data-entry/TransferList/transfer-list.demo';
+import { contextMenuDemoItems } from '../../../library/src/components/navigation/ContextMenu/context-menu.demo';
+import { dropdownMenuDemoItems } from '../../../library/src/components/navigation/DropdownMenu/dropdown-menu.demo';
+import { menuBarDemoMenus } from '../../../library/src/components/navigation/MenuBar/menu-bar.demo';
+import { formSwitchToggleDemoProps } from '../../../library/src/components/form/FormSwitchToggle/form-switch-toggle.demo';
+import { formRatingInputDemoProps } from '../../../library/src/components/form/FormRatingInput/form-rating-input.demo';
+import { formTimePickerDemoProps } from '../../../library/src/components/form/FormTimePicker/form-time-picker.demo';
+import { formDateTimePickerDemoProps } from '../../../library/src/components/form/FormDateTimePicker/form-date-time-picker.demo';
+import { formDateRangePickerDemoProps } from '../../../library/src/components/form/FormDateRangePicker/form-date-range-picker.demo';
+import { formColorPickerDemoProps } from '../../../library/src/components/form/FormColorPicker/form-color-picker.demo';
+import { formPinInputDemoProps } from '../../../library/src/components/form/FormPinInput/form-pin-input.demo';
+import { formTagsInputDemoProps } from '../../../library/src/components/form/FormTagsInput/form-tags-input.demo';
 import { t } from '../i18n';
 import { localizeDemoData } from './demo-localization';
 import { serializeDemoValue } from './demo-utils';
@@ -18,6 +41,7 @@ const selectOptions = [
 ];
 
 const formIdentity = { id: 'example-field', name: 'exampleField' };
+const docsComponentsPath = `${import.meta.env.BASE_URL}vue/components`;
 
 const componentPresets: Record<string, DemoPreset> = {
   ImageView: {
@@ -27,7 +51,6 @@ const componentPresets: Record<string, DemoPreset> = {
       src: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"%3E%3Cdefs%3E%3ClinearGradient id="g" x2="1" y2="1"%3E%3Cstop stop-color="%23005ad4"/%3E%3Cstop offset="1" stop-color="%235be0ba"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="640" height="360" rx="32" fill="url(%23g)"/%3E%3Ccircle cx="510" cy="74" r="120" fill="%23fff" opacity=".12"/%3E%3Cpath d="M82 255 202 135l74 74 52-52 150 150H82z" fill="%23fff" opacity=".82"/%3E%3Ccircle cx="390" cy="102" r="32" fill="%23fff" opacity=".9"/%3E%3C/svg%3E',
     },
   },
-  PhotoEditor: { props: { image: undefined, ariaLabel: 'Edytor przykładowego zdjęcia' } },
   SvgIcon: { props: { name: 'checkCircle' } },
   Avatar: {
     props: {
@@ -48,12 +71,66 @@ const componentPresets: Record<string, DemoPreset> = {
       size: 'l',
     },
   },
+  ContextMenu: {
+    props: {
+      ariaLabel: 'Akcje raportu',
+      context: { id: 'report-q3', type: 'document' },
+      items: contextMenuDemoItems,
+      open: false,
+      position: 'cursor',
+    },
+    defaultSlot: 'Raport kwartalny — prawy przycisk lub Shift+F10',
+  },
+  DropdownMenu: {
+    props: {
+      ariaLabel: 'Akcje profilu',
+      items: dropdownMenuDemoItems,
+      open: false,
+      triggerLabel: 'Opcje',
+    },
+  },
+  MenuBar: {
+    props: {
+      ariaLabel: 'Menu edytora',
+      menus: menuBarDemoMenus,
+      openMenu: null,
+    },
+  },
   CalculationResults: {
     props: { label: 'Szacowany wynik', result: '128,40 kWh/m²/rok', showCalculateButton: true },
   },
   CardCarousel: {
     props: { ariaLabel: 'Polecane sekcje', defaultVisibleSlides: 3, isNavigationDotsVisible: true },
     defaultSlot: ['Pierwsza karta', 'Druga karta', 'Trzecia karta', 'Czwarta karta'],
+  },
+  ScrollArea: {
+    props: {
+      ariaLabel: 'Sekcje raportu',
+      orientation: 'vertical',
+      scrollbarVisibility: 'always',
+      style: { blockSize: '18rem' },
+      tabindex: 0,
+      type: 'styled',
+    },
+    defaultSlot: Array.from({ length: 12 }, (_, index) => `Sekcja raportu ${index + 1}`),
+  },
+  KeyboardKey: {
+    props: { ...keyboardKeyDemoProps, platform: 'generic' },
+  },
+  VirtualList: {
+    props: {
+      ariaLabel: 'Wyniki wyszukiwania',
+      height: 320,
+      items: virtualListDemoItems,
+      itemSize: 64,
+      overscan: 4,
+    },
+  },
+  InlineEdit: {
+    props: { ...inlineEditDemoProps, activation: 'click', display: 'block' },
+  },
+  CopyButton: {
+    props: { ...copyButtonDemoProps, resetDelay: 1600 },
   },
   CounterBadge: { props: { value: 12, variant: 'info', size: 'm' } },
   DescriptionField: { props: { label: 'Status wniosku' }, defaultSlot: 'Gotowy do wysłania' },
@@ -127,6 +204,39 @@ const componentPresets: Record<string, DemoPreset> = {
     props: { active: true, ariaLabel: 'Wybierz wariant standardowy' },
     defaultSlot: 'Wariant standardowy',
   },
+  ToggleButton: {
+    props: { ...toggleButtonDemoProps },
+  },
+  ToggleGroup: {
+    props: {
+      appearance: 'attached',
+      ariaLabel: 'Widok wyników',
+      items: toggleGroupViewItems,
+      label: 'Widok wyników',
+      size: 'm',
+      value: 'grid',
+    },
+  },
+  SegmentedControl: {
+    props: {
+      ariaLabel: 'Sposób wyświetlania',
+      content: 'icon-text',
+      items: segmentedControlViewItems,
+      value: 'grid',
+    },
+  },
+  SplitButton: {
+    props: {
+      ...splitButtonDemoProps,
+      open: false,
+    },
+  },
+  TransferList: {
+    props: {
+      items: transferListItems,
+      value: [...transferListDemoValue],
+    },
+  },
   EmptyState: {
     props: {
       title: 'Brak wyników',
@@ -149,7 +259,7 @@ const componentPresets: Record<string, DemoPreset> = {
       withShadow: true,
     },
   },
-  FieldLabel: { props: { for: 'demo-name', text: 'Nazwa inwestycji', required: true } },
+  FormFieldLabel: { props: { for: 'demo-name', text: 'Nazwa inwestycji', required: true } },
   FormButtonCheckbox: {
     props: { ...formIdentity, value: true, ariaLabel: 'Zaznacz zgodę' },
     defaultSlot: 'Akceptuję warunki',
@@ -170,6 +280,30 @@ const componentPresets: Record<string, DemoPreset> = {
     props: { ...formIdentity, value: true },
     defaultSlot: 'Chcę otrzymywać powiadomienia',
   },
+  FormSwitchToggle: {
+    props: { ...formSwitchToggleDemoProps },
+  },
+  FormRatingInput: {
+    props: { ...formRatingInputDemoProps, allowClear: true, step: 0.5 },
+  },
+  FormTimePicker: {
+    props: { ...formTimePickerDemoProps, canErase: true, open: false },
+  },
+  FormDateTimePicker: {
+    props: { ...formDateTimePickerDemoProps, canErase: true, open: false },
+  },
+  FormDateRangePicker: {
+    props: { ...formDateRangePickerDemoProps, canErase: true, open: false },
+  },
+  FormColorPicker: {
+    props: { ...formColorPickerDemoProps, canErase: true, open: false },
+  },
+  FormPinInput: {
+    props: { ...formPinInputDemoProps },
+  },
+  FormTagsInput: {
+    props: { ...formTagsInputDemoProps, suggestions: [...formTagsInputDemoProps.suggestions] },
+  },
   FormContainer: {
     props: {
       label: 'Dane kontaktowe',
@@ -183,7 +317,13 @@ const componentPresets: Record<string, DemoPreset> = {
     props: { ...formIdentity, label: 'Data rozpoczęcia', value: '2026-08-05', canErase: true },
   },
   FormField: {
-    props: { ...formIdentity, label: 'Przykładowe pole', value: 'Treść pola', required: true },
+    props: {
+      ...formIdentity,
+      canErase: true,
+      label: 'Przykładowe pole',
+      value: 'Treść pola',
+      required: true,
+    },
     defaultSlot: 'Własna kontrolka formularza',
   },
   FormFileUpload: {
@@ -208,6 +348,7 @@ const componentPresets: Record<string, DemoPreset> = {
   FormMultiSelect: {
     props: {
       ...formIdentity,
+      canErase: true,
       label: 'Kategorie',
       options: selectOptions,
       value: ['formalny'],
@@ -219,6 +360,7 @@ const componentPresets: Record<string, DemoPreset> = {
   FormNumber: {
     props: {
       ...formIdentity,
+      canErase: true,
       label: 'Powierzchnia',
       value: 128,
       min: 0,
@@ -249,6 +391,7 @@ const componentPresets: Record<string, DemoPreset> = {
   FormSelect: {
     props: {
       ...formIdentity,
+      canErase: true,
       label: 'Kategoria',
       options: selectOptions,
       value: 'formalny',
@@ -268,6 +411,7 @@ const componentPresets: Record<string, DemoPreset> = {
   FormYearPicker: {
     props: {
       ...formIdentity,
+      canErase: true,
       label: 'Rok zakończenia',
       value: 2026,
       minYear: 2000,
@@ -315,7 +459,7 @@ const componentPresets: Record<string, DemoPreset> = {
     props: {
       title: 'Formularze',
       description: 'Komponenty do zbierania i walidowania danych.',
-      path: '#/components',
+      path: docsComponentsPath,
       variant: 'default',
     },
   },
@@ -332,12 +476,12 @@ const componentPresets: Record<string, DemoPreset> = {
     props: {
       icon: 'cogs',
       text: 'Ustawienia',
-      path: '#/components',
+      path: docsComponentsPath,
       ariaLabel: 'Przejdź do ustawień',
     },
   },
   NavigationLink: {
-    props: { path: '#/components', variant: 'primary', size: 'm' },
+    props: { path: docsComponentsPath, variant: 'primary', size: 'm' },
     defaultSlot: 'Zobacz komponenty',
   },
   NavigationStepper: {
@@ -529,12 +673,16 @@ export function getExampleCode(component: DemoDefinition, props: Record<string, 
     .filter((model) => props[model.name] !== undefined)
     .map((model) => `  v-model:${model.name}="${model.name}"`);
   const hasContent = Boolean(getDemoPreset(component).defaultSlot);
-  const opening = `<${component.name}${[...models, ...attributes].length ? `\n${[...models, ...attributes].join('\n')}\n` : ''}>`;
+  const opening = `<${component.name}${
+    [...models, ...attributes].length ? `\n${[...models, ...attributes].join('\n')}\n` : ''
+  }>`;
   const template = hasContent
     ? `${opening}\n  ${getDemoPreset(component).defaultSlot}\n</${component.name}>`
     : opening.replace(/>$/, ' />');
 
-  return `<script setup lang="ts">\nimport { ${component.name} } from '@peaui/ui';${scriptModels ? `\nimport { ref } from 'vue';\n\n${scriptModels}` : ''}\n<\/script>\n\n<template>\n${template}\n</template>`;
+  return `<script setup lang="ts">\nimport { ${component.name} } from '@peaui/ui';${
+    scriptModels ? `\nimport { ref } from 'vue';\n\n${scriptModels}` : ''
+  }\n<\/script>\n\n<template>\n${template}\n</template>`;
 }
 
 function reactPropValue(value: unknown): string {
@@ -551,7 +699,11 @@ export function getReactExampleCode(
   const state = activeModels
     .map((model) => {
       const capitalized = model.name.charAt(0).toUpperCase() + model.name.slice(1);
-      return `  const [${model.name}, set${capitalized}] = useState(${JSON.stringify(props[model.name], null, 2)});`;
+      return `  const [${model.name}, set${capitalized}] = useState(${JSON.stringify(
+        props[model.name],
+        null,
+        2,
+      )});`;
     })
     .join('\n');
   const attributes = Object.entries(props)
@@ -568,16 +720,22 @@ export function getReactExampleCode(
   const preset = getDemoPreset(component);
   const namedSlots = Object.entries(preset.slots).map(
     ([name, value]) =>
-      `      ${name.replace(/[-:]([a-z])/g, (_, character: string) => character.toUpperCase())}=${reactPropValue(value)}`,
+      `      ${name.replace(/[-:]([a-z])/g, (_, character: string) =>
+        character.toUpperCase(),
+      )}=${reactPropValue(value)}`,
   );
   const allAttributes = [...models, ...attributes, ...namedSlots];
   const content = Array.isArray(preset.defaultSlot)
     ? preset.defaultSlot.join('\n')
     : preset.defaultSlot;
-  const opening = `<${component.name}${allAttributes.length ? `\n${allAttributes.join('\n')}\n    ` : ''}>`;
+  const opening = `<${component.name}${
+    allAttributes.length ? `\n${allAttributes.join('\n')}\n    ` : ''
+  }>`;
   const jsx = content
     ? `${opening}\n      ${content}\n    </${component.name}>`
     : opening.replace(/>$/, ' />');
 
-  return `import ${component.name} from '${component.importPath}';\nimport '@peaui/ui/styles.css';${activeModels.length ? "\nimport { useState } from 'react';" : ''}\n\nexport function Example() {${state ? `\n${state}\n` : ''}\n  return (\n    ${jsx}\n  );\n}`;
+  return `import ${component.name} from '${component.importPath}';\nimport '@peaui/ui/styles.css';${
+    activeModels.length ? "\nimport { useState } from 'react';" : ''
+  }\n\nexport function Example() {${state ? `\n${state}\n` : ''}\n  return (\n    ${jsx}\n  );\n}`;
 }

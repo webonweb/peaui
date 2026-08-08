@@ -21,7 +21,6 @@ import { computed, nextTick, ref, useAttrs, useSlots, useTemplateRef, watch } fr
 
 // HELPERS
 //-----------------------------------------------------------------------------------------------//
-import { getPaddingRight } from '@/helpers/functions.helper';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -104,7 +103,6 @@ const pendingRangeStart = ref<number | undefined>();
 const panelId = computed(() => `${id}-dialog`);
 const rangeLabelId = computed(() => `${id}-range-label`);
 const gridId = computed(() => `${id}-grid`);
-const inputReferencePaddingRight = computed(() => getPaddingRight(inputReference.value));
 const explicitAriaLabel = computed(() => getNormalizedAttributeValue(attrs['aria-label']));
 const explicitAriaLabelledBy = computed(() =>
   getNormalizedAttributeValue(attrs['aria-labelledby']),
@@ -279,8 +277,6 @@ const inputClass = computed(() => [
     [`${classNameComponent}__input--interactive`]: !disabled && !readonly,
   },
 ]);
-
-const rightErasePosition = computed(() => inputReferencePaddingRight.value);
 
 const elementTestId = computed(() => (dataTestId ? `${dataTestId}-element` : undefined));
 const panelTestId = computed(() => (dataTestId ? `${dataTestId}-panel` : undefined));
@@ -844,7 +840,6 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
       :placeholder
       :readonly
       :required
-      :right-erase-position="rightErasePosition"
       :value="displayValue"
       :data-test-id="dataTestId"
       @on:remove="handleEraseValue"

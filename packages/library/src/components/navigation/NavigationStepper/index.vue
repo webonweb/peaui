@@ -19,7 +19,7 @@ export interface NavStepper {
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 import { UIKIT_NAME } from '@/constants';
-import { sanitizeToSlug } from '@/helpers/string.helepr';
+import { sanitizeToSlug } from '@/helpers/string.helper';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
 
 // TYPES

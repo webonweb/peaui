@@ -1,0 +1,515 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-date-time-picker,
+.peaui-popover-overlayer.peaui-form-date-time-picker {
+  width: 100%;
+  min-width: 0;
+}
+
+.peaui-popover-overlayer.peaui-form-date-time-picker {
+  anchor-name: none;
+}
+
+.peaui-popover-overlayer.peaui-form-date-time-picker .peaui-form-field__content {
+  anchor-name: var(--unique-anchor);
+}
+
+.peaui-popover-overlayer.peaui-form-date-time-picker[aria-disabled='true'] {
+  opacity: 1;
+}
+
+.peaui-form-date-time-picker__trigger-host {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.peaui-form-date-time-picker .peaui-form-field__icon--after {
+  right: 0.75rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding-right: 0;
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-date-time-picker--open .peaui-form-field__icon--after {
+  color: var(--peaui-color-primary-700);
+}
+
+.peaui-form-date-time-picker__input {
+  padding-right: var(--pr);
+  color: var(--peaui-color-grey-800);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.peaui-form-date-time-picker__split-fields {
+  display: grid;
+  min-height: 2.75rem;
+  grid-template-columns: minmax(0, 1.25fr) 1px minmax(0, 0.9fr);
+  align-items: stretch;
+  padding: 0;
+  padding-inline-end: var(--pr);
+  overflow: hidden;
+}
+
+.peaui-form-date-time-picker__split-input {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0.625rem 0.75rem;
+  color: var(--peaui-color-grey-800);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.peaui-form-date-time-picker__split-input:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+.peaui-form-date-time-picker__split-divider {
+  width: 1px;
+  margin-block: 0.5rem;
+  background: var(--peaui-color-grey-200);
+}
+
+.peaui-form-date-time-picker--disabled .peaui-form-date-time-picker__input,
+.peaui-form-date-time-picker--disabled .peaui-form-date-time-picker__split-input,
+.peaui-form-date-time-picker--loading .peaui-form-date-time-picker__input,
+.peaui-form-date-time-picker--loading .peaui-form-date-time-picker__split-input {
+  cursor: not-allowed;
+}
+
+.peaui-form-date-time-picker--readonly .peaui-form-date-time-picker__input,
+.peaui-form-date-time-picker--readonly .peaui-form-date-time-picker__split-input {
+  cursor: default;
+}
+
+.peaui-form-date-time-picker__loading-status {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--peaui-color-grey-600);
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-date-time-picker__spinner {
+  width: 0.875rem;
+  height: 0.875rem;
+  box-sizing: border-box;
+  border: 2px solid var(--peaui-color-grey-300);
+  border-top-color: var(--peaui-color-primary-700);
+  border-radius: 50%;
+  animation: peaui-form-date-time-picker-spin 0.8s linear infinite;
+}
+
+.peaui-popover-overlayer__content.peaui-form-date-time-picker__popover-content[popover] {
+  --peaui-form-date-time-picker-overlay-width: min(
+    max(
+      var(--peaui-popover-overlayer-trigger-width, var(--peaui-picker-overlay-min-width)),
+      var(--peaui-picker-overlay-min-width)
+    ),
+    calc(100vw - var(--peaui-overlay-viewport-inset))
+  );
+
+  width: var(--peaui-form-date-time-picker-overlay-width);
+  min-width: var(--peaui-form-date-time-picker-overlay-width);
+  max-width: var(--peaui-form-date-time-picker-overlay-width);
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+  container: peaui-date-time-picker / inline-size;
+
+  &.peaui-popover-overlayer__content--placement-top,
+  &.peaui-popover-overlayer__content--placement-bottom {
+    left: clamp(
+      calc(
+        var(--peaui-form-date-time-picker-overlay-width) / 2 + var(--peaui-overlay-viewport-gap)
+      ),
+      anchor(center),
+      calc(
+        100vw - var(--peaui-form-date-time-picker-overlay-width) /
+          2 - var(--peaui-overlay-viewport-gap)
+      )
+    );
+  }
+}
+
+.peaui-form-date-time-picker__panel {
+  display: grid;
+  width: 100%;
+  max-height: min(
+    38rem,
+    calc(100dvh - 1rem),
+    var(--peaui-form-date-time-picker-available-height, 38rem)
+  );
+  box-sizing: border-box;
+  gap: 1rem;
+  padding: var(--peaui-overlay-padding);
+  overflow: auto;
+  background: var(--peaui-color-grey-0);
+
+  @include scrollbar(var(--peaui-color-primary-700));
+}
+
+.peaui-form-date-time-picker__sections {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.peaui-form-date-time-picker__panel--stacked .peaui-form-date-time-picker__sections {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.peaui-form-date-time-picker__date-section,
+.peaui-form-date-time-picker__time-section {
+  min-width: 0;
+}
+
+.peaui-form-date-time-picker__time-section {
+  padding-top: 1rem;
+  padding-left: 0;
+  border-top: 1px solid var(--peaui-color-grey-200);
+  border-left: 0;
+}
+
+.peaui-form-date-time-picker__panel--stacked .peaui-form-date-time-picker__time-section {
+  padding-top: 1rem;
+  padding-left: 0;
+  border-top: 1px solid var(--peaui-color-grey-200);
+  border-left: 0;
+}
+
+@container peaui-date-time-picker (min-width: 38rem) {
+  .peaui-form-date-time-picker__panel--side-by-side .peaui-form-date-time-picker__sections {
+    grid-template-columns: minmax(18rem, 1.2fr) minmax(14rem, 0.8fr);
+  }
+
+  .peaui-form-date-time-picker__panel--side-by-side .peaui-form-date-time-picker__time-section {
+    padding-top: 0;
+    padding-left: 1rem;
+    border-top: 0;
+    border-left: 1px solid var(--peaui-color-grey-200);
+  }
+}
+
+.peaui-form-date-time-picker__section-heading,
+.peaui-form-date-time-picker__month-label {
+  margin: 0;
+  color: var(--peaui-color-grey-800);
+  font-weight: 600;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-date-time-picker__section-heading {
+  margin-bottom: 0.75rem;
+}
+
+.peaui-form-date-time-picker__calendar-header {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.peaui-form-date-time-picker__calendar-header .peaui-form-date-picker-navigation__button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.peaui-form-date-time-picker__month-label::first-letter {
+  text-transform: uppercase;
+}
+
+.peaui-form-date-time-picker__calendar {
+  display: grid;
+  gap: var(--peaui-calendar-grid-gap);
+}
+
+.peaui-form-date-time-picker__calendar-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--peaui-calendar-grid-gap);
+}
+
+.peaui-form-date-time-picker__weekday {
+  display: inline-flex;
+  min-width: 0;
+  min-height: var(--peaui-calendar-weekday-min-height);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--peaui-color-grey-500);
+  font-weight: 600;
+  text-overflow: ellipsis;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-date-time-picker__day,
+.peaui-form-date-time-picker__time-action,
+.peaui-form-date-time-picker__time-value,
+.peaui-form-date-time-picker__button {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, border-color, color, box-shadow);
+}
+
+.peaui-form-date-time-picker__day {
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: var(--peaui-calendar-cell-min-height);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--peaui-calendar-cell-radius);
+  color: var(--peaui-color-grey-700);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-date-time-picker__day:not(:disabled):hover,
+.peaui-form-date-time-picker__day:not(:disabled):focus-visible {
+  background: var(--peaui-calendar-hover-background);
+  color: var(--peaui-calendar-hover-color);
+}
+
+.peaui-form-date-time-picker__day--outside {
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-date-time-picker__day--today {
+  box-shadow: inset 0 0 0 1px var(--peaui-calendar-today-border);
+}
+
+.peaui-form-date-time-picker__day--selected {
+  background: var(--peaui-calendar-selected-background);
+  color: var(--peaui-calendar-selected-color);
+  font-weight: 600;
+}
+
+.peaui-form-date-time-picker__day--selected:not(:disabled):hover,
+.peaui-form-date-time-picker__day--selected:not(:disabled):focus-visible {
+  background: var(--peaui-calendar-selected-hover-background);
+  color: var(--peaui-calendar-selected-color);
+}
+
+.peaui-form-date-time-picker__day:disabled {
+  color: var(--peaui-color-grey-400);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.peaui-form-date-time-picker__time-controls {
+  display: grid;
+  grid-auto-columns: minmax(3.25rem, 1fr);
+  grid-auto-flow: column;
+  gap: 0.5rem;
+}
+
+.peaui-form-date-time-picker__time-column {
+  display: grid;
+  grid-template-rows: auto repeat(3, minmax(2.75rem, auto));
+  gap: 0.375rem;
+}
+
+.peaui-form-date-time-picker__time-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--peaui-color-grey-500);
+  font-weight: 600;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-date-time-picker__time-action,
+.peaui-form-date-time-picker__time-value {
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  color: var(--peaui-color-grey-700);
+  cursor: pointer;
+}
+
+.peaui-form-date-time-picker__time-action {
+  border: 1px solid var(--peaui-color-grey-200);
+  font-size: 1.125rem;
+}
+
+.peaui-form-date-time-picker__time-value {
+  background: var(--peaui-color-primary-50);
+  color: var(--peaui-color-primary-900);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.peaui-form-date-time-picker__time-action:hover,
+.peaui-form-date-time-picker__time-action:focus-visible,
+.peaui-form-date-time-picker__time-value:focus-visible {
+  border-color: var(--peaui-color-primary-500);
+  background: var(--peaui-color-primary-100);
+  color: var(--peaui-color-primary-900);
+}
+
+.peaui-form-date-time-picker__time-zone {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0.75rem 0 0;
+  color: var(--peaui-color-grey-600);
+  overflow-wrap: anywhere;
+
+  @include set-size-text(xs);
+}
+
+.peaui-form-date-time-picker__time-zone svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.peaui-form-date-time-picker__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--peaui-color-grey-200);
+}
+
+.peaui-form-date-time-picker__button {
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  @include set-size-text(s);
+}
+
+.peaui-form-date-time-picker__button--secondary {
+  border-color: var(--peaui-color-grey-300);
+  background: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-form-date-time-picker__button--primary {
+  background: var(--peaui-color-primary-700);
+  color: var(--peaui-color-grey-0);
+}
+
+.peaui-form-date-time-picker__button:not(:disabled):hover {
+  filter: brightness(0.96);
+}
+
+.peaui-form-date-time-picker__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.peaui-form-date-time-picker__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@keyframes peaui-form-date-time-picker-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@container peaui-date-time-picker (max-width: 24rem) {
+  .peaui-form-date-time-picker__panel {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .peaui-form-date-time-picker__calendar-row {
+    gap: 0.125rem;
+  }
+
+  .peaui-form-date-time-picker__day {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .peaui-form-date-time-picker__time-controls {
+    min-width: 0;
+    gap: 0.25rem;
+  }
+}
+
+@container peaui-date-time-picker (max-width: 20rem) {
+  .peaui-form-date-time-picker__calendar-header {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .peaui-form-date-picker-navigation {
+    margin-left: auto;
+  }
+
+  .peaui-form-date-time-picker__footer {
+    flex-wrap: wrap;
+  }
+
+  .peaui-form-date-time-picker__button {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 24rem) {
+  .peaui-form-date-time-picker__split-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .peaui-form-date-time-picker__split-divider {
+    width: auto;
+    height: 1px;
+    margin: 0 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-form-date-time-picker__spinner {
+    animation-duration: 1.6s;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-date-time-picker__day--selected,
+  .peaui-form-date-time-picker__time-value {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

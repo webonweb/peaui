@@ -1,0 +1,300 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-scroll-area {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.peaui-scroll-area {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow: hidden;
+  border: 1px solid var(--peaui-color-grey-200);
+  border-radius: 0.75rem;
+  background: var(--peaui-color-grey-0);
+  color: var(--peaui-color-grey-900);
+  container-type: inline-size;
+  isolation: isolate;
+  --peaui-scroll-area-scrollbar-size: 10px;
+}
+
+.peaui-scroll-area__viewport {
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
+.peaui-scroll-area--vertical .peaui-scroll-area__viewport {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.peaui-scroll-area--both .peaui-scroll-area__viewport {
+  overflow: auto;
+}
+
+.peaui-scroll-area--native .peaui-scroll-area__viewport {
+  @include scrollbar(
+    var(--peaui-color-grey-400),
+    var(--peaui-color-grey-100),
+    var(--peaui-scroll-area-scrollbar-size),
+    999px
+  );
+}
+
+.peaui-scroll-area--styled .peaui-scroll-area__viewport {
+  scrollbar-width: none;
+  scrollbar-gutter: auto;
+}
+
+.peaui-scroll-area--styled .peaui-scroll-area__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.peaui-scroll-area__viewport:focus-visible,
+.peaui-scroll-area__scrollbar:focus-visible {
+  outline: 2px solid var(--peaui-color-primary-600);
+  outline-offset: -2px;
+}
+
+.peaui-scroll-area__content {
+  box-sizing: border-box;
+  min-inline-size: 100%;
+  min-block-size: 100%;
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__content {
+  inline-size: max-content;
+}
+
+.peaui-scroll-area__scrollbar {
+  position: absolute;
+  z-index: 3;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  opacity: 0;
+  touch-action: none;
+  transition: opacity 140ms ease;
+}
+
+.peaui-scroll-area__scrollbar::before {
+  position: absolute;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--peaui-color-grey-100) 88%, transparent);
+  content: '';
+}
+
+.peaui-scroll-area__scrollbar[hidden],
+.peaui-scroll-area--native .peaui-scroll-area__scrollbar {
+  display: none;
+}
+
+.peaui-scroll-area__scrollbar--horizontal {
+  inset-inline: 0.375rem calc(var(--peaui-scroll-area-scrollbar-size) + 0.375rem);
+  inset-block-end: 0;
+  block-size: max(1.5rem, var(--peaui-scroll-area-scrollbar-size));
+}
+
+.peaui-scroll-area__scrollbar--vertical {
+  inset-block: 0.375rem calc(var(--peaui-scroll-area-scrollbar-size) + 0.375rem);
+  inset-inline-end: 0;
+  inline-size: max(1.5rem, var(--peaui-scroll-area-scrollbar-size));
+}
+
+.peaui-scroll-area__scrollbar--horizontal::before {
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: var(--peaui-scroll-area-scrollbar-size);
+  transform: translateY(-50%);
+}
+
+.peaui-scroll-area__scrollbar--vertical::before {
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--peaui-scroll-area-scrollbar-size);
+  transform: translateX(-50%);
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__scrollbar--horizontal {
+  inset-inline-end: 0.375rem;
+}
+
+.peaui-scroll-area--vertical .peaui-scroll-area__scrollbar--vertical {
+  inset-block-end: 0.375rem;
+}
+
+.peaui-scroll-area__thumb {
+  position: absolute;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: grab;
+  transition: background-color 120ms ease;
+}
+
+.peaui-scroll-area__thumb::before {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--peaui-color-grey-700) 18%, transparent);
+  border-radius: 999px;
+  background: var(--peaui-color-grey-500);
+  box-shadow: 0 1px 2px rgb(from var(--peaui-color-grey-900) r g b / 0.12);
+  content: '';
+  transition: background-color 120ms ease;
+}
+
+.peaui-scroll-area__scrollbar--horizontal .peaui-scroll-area__thumb {
+  inset-block: 0;
+  min-inline-size: 1.5rem;
+}
+
+.peaui-scroll-area__scrollbar--horizontal .peaui-scroll-area__thumb::before {
+  inset-inline: 0;
+  inset-block-start: 50%;
+  block-size: var(--peaui-scroll-area-scrollbar-size);
+  transform: translateY(-50%);
+}
+
+.peaui-scroll-area__scrollbar--vertical .peaui-scroll-area__thumb {
+  inset-inline: 0;
+  min-block-size: 1.5rem;
+}
+
+.peaui-scroll-area__scrollbar--vertical .peaui-scroll-area__thumb::before {
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: var(--peaui-scroll-area-scrollbar-size);
+  transform: translateX(-50%);
+}
+
+.peaui-scroll-area__scrollbar:hover .peaui-scroll-area__thumb::before,
+.peaui-scroll-area__scrollbar:focus-visible .peaui-scroll-area__thumb::before,
+.peaui-scroll-area[data-dragging='true'] .peaui-scroll-area__thumb::before {
+  background: var(--peaui-color-primary-700);
+}
+
+.peaui-scroll-area[data-dragging='true'] .peaui-scroll-area__thumb {
+  cursor: grabbing;
+}
+
+.peaui-scroll-area--visibility-always .peaui-scroll-area__scrollbar,
+.peaui-scroll-area--visibility-hover:hover .peaui-scroll-area__scrollbar,
+.peaui-scroll-area--visibility-hover:focus-within .peaui-scroll-area__scrollbar,
+.peaui-scroll-area--visibility-auto:hover .peaui-scroll-area__scrollbar,
+.peaui-scroll-area--visibility-auto:focus-within .peaui-scroll-area__scrollbar,
+.peaui-scroll-area--visibility-auto[data-active='true'] .peaui-scroll-area__scrollbar,
+.peaui-scroll-area[data-scrolling='true'] .peaui-scroll-area__scrollbar,
+.peaui-scroll-area[data-dragging='true'] .peaui-scroll-area__scrollbar {
+  opacity: 1;
+}
+
+.peaui-scroll-area--disabled .peaui-scroll-area__scrollbar {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.peaui-scroll-area__indicator {
+  position: absolute;
+  z-index: 2;
+  inset-inline: 0;
+  block-size: 1.25rem;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+.peaui-scroll-area__indicator--start {
+  inset-block-start: 0;
+  background: linear-gradient(to bottom, var(--peaui-color-grey-0), transparent);
+}
+
+.peaui-scroll-area__indicator--end {
+  inset-block-end: 0;
+  background: linear-gradient(to top, var(--peaui-color-grey-0), transparent);
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__indicator {
+  inset-block: 0;
+  inline-size: 1.25rem;
+  block-size: auto;
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__indicator--start {
+  inset-inline: 0 auto;
+  background: linear-gradient(to right, var(--peaui-color-grey-0), transparent);
+}
+
+.peaui-scroll-area--horizontal .peaui-scroll-area__indicator--end {
+  inset-inline: auto 0;
+  background: linear-gradient(to left, var(--peaui-color-grey-0), transparent);
+}
+
+[dir='rtl'] .peaui-scroll-area--horizontal .peaui-scroll-area__indicator--start {
+  background: linear-gradient(to left, var(--peaui-color-grey-0), transparent);
+}
+
+[dir='rtl'] .peaui-scroll-area--horizontal .peaui-scroll-area__indicator--end {
+  background: linear-gradient(to right, var(--peaui-color-grey-0), transparent);
+}
+
+.peaui-scroll-area[data-at-start='true'] .peaui-scroll-area__indicator--start,
+.peaui-scroll-area[data-at-end='true'] .peaui-scroll-area__indicator--end,
+.peaui-scroll-area--vertical[data-overflow-y='false'] .peaui-scroll-area__indicator,
+.peaui-scroll-area--both[data-overflow-y='false'] .peaui-scroll-area__indicator,
+.peaui-scroll-area--horizontal[data-overflow-x='false'] .peaui-scroll-area__indicator {
+  opacity: 0;
+}
+
+@media (forced-colors: active) {
+  .peaui-scroll-area {
+    border-color: CanvasText;
+  }
+
+  .peaui-scroll-area__scrollbar::before {
+    background: Canvas;
+  }
+
+  .peaui-scroll-area__scrollbar {
+    opacity: 1;
+  }
+
+  .peaui-scroll-area__thumb::before {
+    border-color: Highlight;
+    background: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-scroll-area__scrollbar,
+  .peaui-scroll-area__thumb,
+  .peaui-scroll-area__indicator {
+    transition: none;
+  }
+}
+
+@container (max-width: 20rem) {
+  .peaui-scroll-area__scrollbar--horizontal {
+    inset-inline-start: 0.25rem;
+  }
+
+  .peaui-scroll-area__scrollbar--vertical {
+    inset-block-start: 0.25rem;
+  }
+}

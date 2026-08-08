@@ -1,0 +1,5407 @@
+{
+  "inventoryVersion": 2,
+  "packageName": "PeaUI Outline Icons Mega",
+  "packageVersion": "0.3.0",
+  "iconSize": 24,
+  "strokeWidth": 1.8,
+  "categories": [
+    "core",
+    "extended",
+    "ring",
+    "tile"
+  ],
+  "icons": [
+    {
+      "category": "core",
+      "name": "accessibility"
+    },
+    {
+      "category": "core",
+      "name": "activity"
+    },
+    {
+      "category": "core",
+      "name": "alarm-clock"
+    },
+    {
+      "category": "core",
+      "name": "align-center"
+    },
+    {
+      "category": "core",
+      "name": "align-justify"
+    },
+    {
+      "category": "core",
+      "name": "align-left"
+    },
+    {
+      "category": "core",
+      "name": "align-right"
+    },
+    {
+      "category": "core",
+      "name": "anchor"
+    },
+    {
+      "category": "core",
+      "name": "aperture"
+    },
+    {
+      "category": "core",
+      "name": "api"
+    },
+    {
+      "category": "core",
+      "name": "archive"
+    },
+    {
+      "category": "core",
+      "name": "archive-box"
+    },
+    {
+      "category": "core",
+      "name": "arrow-down"
+    },
+    {
+      "category": "core",
+      "name": "arrow-down-circle"
+    },
+    {
+      "category": "core",
+      "name": "arrow-down-left"
+    },
+    {
+      "category": "core",
+      "name": "arrow-down-right"
+    },
+    {
+      "category": "core",
+      "name": "arrow-down-square"
+    },
+    {
+      "category": "core",
+      "name": "arrow-left"
+    },
+    {
+      "category": "core",
+      "name": "arrow-left-circle"
+    },
+    {
+      "category": "core",
+      "name": "arrow-left-right"
+    },
+    {
+      "category": "core",
+      "name": "arrow-left-square"
+    },
+    {
+      "category": "core",
+      "name": "arrow-right"
+    },
+    {
+      "category": "core",
+      "name": "arrow-right-circle"
+    },
+    {
+      "category": "core",
+      "name": "arrow-right-square"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up-circle"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up-down"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up-left"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up-right"
+    },
+    {
+      "category": "core",
+      "name": "arrow-up-square"
+    },
+    {
+      "category": "core",
+      "name": "at-sign"
+    },
+    {
+      "category": "core",
+      "name": "award"
+    },
+    {
+      "category": "core",
+      "name": "badge"
+    },
+    {
+      "category": "core",
+      "name": "badge-0"
+    },
+    {
+      "category": "core",
+      "name": "badge-1"
+    },
+    {
+      "category": "core",
+      "name": "badge-2"
+    },
+    {
+      "category": "core",
+      "name": "badge-3"
+    },
+    {
+      "category": "core",
+      "name": "badge-4"
+    },
+    {
+      "category": "core",
+      "name": "badge-5"
+    },
+    {
+      "category": "core",
+      "name": "badge-6"
+    },
+    {
+      "category": "core",
+      "name": "badge-7"
+    },
+    {
+      "category": "core",
+      "name": "badge-8"
+    },
+    {
+      "category": "core",
+      "name": "badge-9"
+    },
+    {
+      "category": "core",
+      "name": "badge-accessibility"
+    },
+    {
+      "category": "core",
+      "name": "badge-activity"
+    },
+    {
+      "category": "core",
+      "name": "badge-alarm-clock"
+    },
+    {
+      "category": "core",
+      "name": "badge-align-center"
+    },
+    {
+      "category": "core",
+      "name": "badge-align-justify"
+    },
+    {
+      "category": "core",
+      "name": "badge-align-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-align-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-anchor"
+    },
+    {
+      "category": "core",
+      "name": "badge-aperture"
+    },
+    {
+      "category": "core",
+      "name": "badge-api"
+    },
+    {
+      "category": "core",
+      "name": "badge-archive"
+    },
+    {
+      "category": "core",
+      "name": "badge-archive-box"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-down"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-down-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-down-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-left-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-up"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-up-down"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-up-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-arrow-up-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-at-sign"
+    },
+    {
+      "category": "core",
+      "name": "badge-award"
+    },
+    {
+      "category": "core",
+      "name": "badge-badge"
+    },
+    {
+      "category": "core",
+      "name": "badge-bank"
+    },
+    {
+      "category": "core",
+      "name": "badge-barcode"
+    },
+    {
+      "category": "core",
+      "name": "badge-battery"
+    },
+    {
+      "category": "core",
+      "name": "badge-battery-charging"
+    },
+    {
+      "category": "core",
+      "name": "badge-bell"
+    },
+    {
+      "category": "core",
+      "name": "badge-bell-off"
+    },
+    {
+      "category": "core",
+      "name": "badge-bike"
+    },
+    {
+      "category": "core",
+      "name": "badge-binary"
+    },
+    {
+      "category": "core",
+      "name": "badge-bluetooth"
+    },
+    {
+      "category": "core",
+      "name": "badge-bluetooth-connected"
+    },
+    {
+      "category": "core",
+      "name": "badge-bold"
+    },
+    {
+      "category": "core",
+      "name": "badge-book"
+    },
+    {
+      "category": "core",
+      "name": "badge-book-marked"
+    },
+    {
+      "category": "core",
+      "name": "badge-book-open"
+    },
+    {
+      "category": "core",
+      "name": "badge-bookmark"
+    },
+    {
+      "category": "core",
+      "name": "badge-bookmark-check"
+    },
+    {
+      "category": "core",
+      "name": "badge-bookmark-plus"
+    },
+    {
+      "category": "core",
+      "name": "badge-box"
+    },
+    {
+      "category": "core",
+      "name": "badge-box-open"
+    },
+    {
+      "category": "core",
+      "name": "badge-braces"
+    },
+    {
+      "category": "core",
+      "name": "badge-brackets"
+    },
+    {
+      "category": "core",
+      "name": "badge-briefcase"
+    },
+    {
+      "category": "core",
+      "name": "badge-brush"
+    },
+    {
+      "category": "core",
+      "name": "badge-bug"
+    },
+    {
+      "category": "core",
+      "name": "badge-bus"
+    },
+    {
+      "category": "core",
+      "name": "badge-calculator"
+    },
+    {
+      "category": "core",
+      "name": "badge-calendar"
+    },
+    {
+      "category": "core",
+      "name": "badge-calendar-check"
+    },
+    {
+      "category": "core",
+      "name": "badge-calendar-plus"
+    },
+    {
+      "category": "core",
+      "name": "badge-calendar-x"
+    },
+    {
+      "category": "core",
+      "name": "badge-camera"
+    },
+    {
+      "category": "core",
+      "name": "badge-captions"
+    },
+    {
+      "category": "core",
+      "name": "badge-car"
+    },
+    {
+      "category": "core",
+      "name": "badge-cart-minus"
+    },
+    {
+      "category": "core",
+      "name": "badge-cart-plus"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-area"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-bar"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-bar-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-donut"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-line"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-pie"
+    },
+    {
+      "category": "core",
+      "name": "badge-chart-scatter"
+    },
+    {
+      "category": "core",
+      "name": "badge-chat"
+    },
+    {
+      "category": "core",
+      "name": "badge-check"
+    },
+    {
+      "category": "core",
+      "name": "badge-check-circle"
+    },
+    {
+      "category": "core",
+      "name": "badge-check-double"
+    },
+    {
+      "category": "core",
+      "name": "badge-check-square"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevron-down"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevron-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevron-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevron-up"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevrons-down"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevrons-left"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevrons-right"
+    },
+    {
+      "category": "core",
+      "name": "badge-chevrons-up"
+    },
+    {
+      "category": "core",
+      "name": "badge-chip"
+    },
+    {
+      "category": "core",
+      "name": "badge-circle"
+    },
+    {
+      "category": "core",
+      "name": "badge-clapperboard"
+    },
+    {
+      "category": "core",
+      "name": "badge-clipboard"
+    },
+    {
+      "category": "core",
+      "name": "badge-clipboard-check"
+    },
+    {
+      "category": "core",
+      "name": "badge-clipboard-list"
+    },
+    {
+      "category": "core",
+      "name": "badge-clock"
+    },
+    {
+      "category": "core",
+      "name": "badge-close"
+    },
+    {
+      "category": "core",
+      "name": "badge-close-circle"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud-download"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud-lightning"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud-rain"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud-snow"
+    },
+    {
+      "category": "core",
+      "name": "badge-cloud-upload"
+    },
+    {
+      "category": "core",
+      "name": "badge-code"
+    },
+    {
+      "category": "core",
+      "name": "badge-code-file"
+    },
+    {
+      "category": "core",
+      "name": "badge-coffee"
+    },
+    {
+      "category": "core",
+      "name": "badge-coin"
+    },
+    {
+      "category": "core",
+      "name": "badge-coins"
+    },
+    {
+      "category": "core",
+      "name": "badge-collapse"
+    },
+    {
+      "category": "core",
+      "name": "badge-columns"
+    },
+    {
+      "category": "core",
+      "name": "badge-command"
+    },
+    {
+      "category": "core",
+      "name": "badge-compass"
+    },
+    {
+      "category": "core",
+      "name": "bank"
+    },
+    {
+      "category": "core",
+      "name": "barcode"
+    },
+    {
+      "category": "core",
+      "name": "battery"
+    },
+    {
+      "category": "core",
+      "name": "battery-charging"
+    },
+    {
+      "category": "core",
+      "name": "bell"
+    },
+    {
+      "category": "core",
+      "name": "bell-circle"
+    },
+    {
+      "category": "core",
+      "name": "bell-off"
+    },
+    {
+      "category": "core",
+      "name": "bell-square"
+    },
+    {
+      "category": "core",
+      "name": "bike"
+    },
+    {
+      "category": "core",
+      "name": "binary"
+    },
+    {
+      "category": "core",
+      "name": "bluetooth"
+    },
+    {
+      "category": "core",
+      "name": "bluetooth-connected"
+    },
+    {
+      "category": "core",
+      "name": "bold"
+    },
+    {
+      "category": "core",
+      "name": "book"
+    },
+    {
+      "category": "core",
+      "name": "book-marked"
+    },
+    {
+      "category": "core",
+      "name": "book-open"
+    },
+    {
+      "category": "core",
+      "name": "bookmark"
+    },
+    {
+      "category": "core",
+      "name": "bookmark-check"
+    },
+    {
+      "category": "core",
+      "name": "bookmark-circle"
+    },
+    {
+      "category": "core",
+      "name": "bookmark-plus"
+    },
+    {
+      "category": "core",
+      "name": "bookmark-square"
+    },
+    {
+      "category": "core",
+      "name": "box"
+    },
+    {
+      "category": "core",
+      "name": "box-open"
+    },
+    {
+      "category": "core",
+      "name": "braces"
+    },
+    {
+      "category": "core",
+      "name": "brackets"
+    },
+    {
+      "category": "core",
+      "name": "briefcase"
+    },
+    {
+      "category": "core",
+      "name": "brush"
+    },
+    {
+      "category": "core",
+      "name": "bug"
+    },
+    {
+      "category": "core",
+      "name": "bus"
+    },
+    {
+      "category": "core",
+      "name": "calculator"
+    },
+    {
+      "category": "core",
+      "name": "calendar"
+    },
+    {
+      "category": "core",
+      "name": "calendar-check"
+    },
+    {
+      "category": "core",
+      "name": "calendar-circle"
+    },
+    {
+      "category": "core",
+      "name": "calendar-plus"
+    },
+    {
+      "category": "core",
+      "name": "calendar-square"
+    },
+    {
+      "category": "core",
+      "name": "calendar-x"
+    },
+    {
+      "category": "core",
+      "name": "camera"
+    },
+    {
+      "category": "core",
+      "name": "camera-circle"
+    },
+    {
+      "category": "core",
+      "name": "camera-square"
+    },
+    {
+      "category": "core",
+      "name": "captions"
+    },
+    {
+      "category": "core",
+      "name": "car"
+    },
+    {
+      "category": "core",
+      "name": "cart-minus"
+    },
+    {
+      "category": "core",
+      "name": "cart-plus"
+    },
+    {
+      "category": "core",
+      "name": "chart-area"
+    },
+    {
+      "category": "core",
+      "name": "chart-bar"
+    },
+    {
+      "category": "core",
+      "name": "chart-bar-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "chart-donut"
+    },
+    {
+      "category": "core",
+      "name": "chart-line"
+    },
+    {
+      "category": "core",
+      "name": "chart-pie"
+    },
+    {
+      "category": "core",
+      "name": "chart-scatter"
+    },
+    {
+      "category": "core",
+      "name": "chat"
+    },
+    {
+      "category": "core",
+      "name": "check"
+    },
+    {
+      "category": "core",
+      "name": "check-circle"
+    },
+    {
+      "category": "core",
+      "name": "check-double"
+    },
+    {
+      "category": "core",
+      "name": "check-square"
+    },
+    {
+      "category": "core",
+      "name": "chevron-down"
+    },
+    {
+      "category": "core",
+      "name": "chevron-down-circle"
+    },
+    {
+      "category": "core",
+      "name": "chevron-down-square"
+    },
+    {
+      "category": "core",
+      "name": "chevron-left"
+    },
+    {
+      "category": "core",
+      "name": "chevron-left-circle"
+    },
+    {
+      "category": "core",
+      "name": "chevron-left-square"
+    },
+    {
+      "category": "core",
+      "name": "chevron-right"
+    },
+    {
+      "category": "core",
+      "name": "chevron-right-circle"
+    },
+    {
+      "category": "core",
+      "name": "chevron-right-square"
+    },
+    {
+      "category": "core",
+      "name": "chevron-up"
+    },
+    {
+      "category": "core",
+      "name": "chevron-up-circle"
+    },
+    {
+      "category": "core",
+      "name": "chevron-up-square"
+    },
+    {
+      "category": "core",
+      "name": "chevrons-down"
+    },
+    {
+      "category": "core",
+      "name": "chevrons-left"
+    },
+    {
+      "category": "core",
+      "name": "chevrons-right"
+    },
+    {
+      "category": "core",
+      "name": "chevrons-up"
+    },
+    {
+      "category": "core",
+      "name": "chip"
+    },
+    {
+      "category": "core",
+      "name": "circle"
+    },
+    {
+      "category": "core",
+      "name": "clapperboard"
+    },
+    {
+      "category": "core",
+      "name": "clipboard"
+    },
+    {
+      "category": "core",
+      "name": "clipboard-check"
+    },
+    {
+      "category": "core",
+      "name": "clipboard-list"
+    },
+    {
+      "category": "core",
+      "name": "clock"
+    },
+    {
+      "category": "core",
+      "name": "clock-circle"
+    },
+    {
+      "category": "core",
+      "name": "clock-square"
+    },
+    {
+      "category": "core",
+      "name": "close"
+    },
+    {
+      "category": "core",
+      "name": "close-circle"
+    },
+    {
+      "category": "core",
+      "name": "close-square"
+    },
+    {
+      "category": "core",
+      "name": "cloud"
+    },
+    {
+      "category": "core",
+      "name": "cloud-circle"
+    },
+    {
+      "category": "core",
+      "name": "cloud-download"
+    },
+    {
+      "category": "core",
+      "name": "cloud-lightning"
+    },
+    {
+      "category": "core",
+      "name": "cloud-rain"
+    },
+    {
+      "category": "core",
+      "name": "cloud-snow"
+    },
+    {
+      "category": "core",
+      "name": "cloud-square"
+    },
+    {
+      "category": "core",
+      "name": "cloud-upload"
+    },
+    {
+      "category": "core",
+      "name": "code"
+    },
+    {
+      "category": "core",
+      "name": "code-circle"
+    },
+    {
+      "category": "core",
+      "name": "code-file"
+    },
+    {
+      "category": "core",
+      "name": "code-square"
+    },
+    {
+      "category": "core",
+      "name": "coffee"
+    },
+    {
+      "category": "core",
+      "name": "coin"
+    },
+    {
+      "category": "core",
+      "name": "coins"
+    },
+    {
+      "category": "core",
+      "name": "collapse"
+    },
+    {
+      "category": "core",
+      "name": "columns"
+    },
+    {
+      "category": "core",
+      "name": "command"
+    },
+    {
+      "category": "core",
+      "name": "compass"
+    },
+    {
+      "category": "core",
+      "name": "contact"
+    },
+    {
+      "category": "core",
+      "name": "contrast"
+    },
+    {
+      "category": "core",
+      "name": "copy"
+    },
+    {
+      "category": "core",
+      "name": "corner-up-left"
+    },
+    {
+      "category": "core",
+      "name": "corner-up-right"
+    },
+    {
+      "category": "core",
+      "name": "cpu"
+    },
+    {
+      "category": "core",
+      "name": "credit-card"
+    },
+    {
+      "category": "core",
+      "name": "crop"
+    },
+    {
+      "category": "core",
+      "name": "crosshair"
+    },
+    {
+      "category": "core",
+      "name": "crown"
+    },
+    {
+      "category": "core",
+      "name": "cursor"
+    },
+    {
+      "category": "core",
+      "name": "database"
+    },
+    {
+      "category": "core",
+      "name": "diamond"
+    },
+    {
+      "category": "core",
+      "name": "direction-east"
+    },
+    {
+      "category": "core",
+      "name": "direction-north"
+    },
+    {
+      "category": "core",
+      "name": "direction-north-east"
+    },
+    {
+      "category": "core",
+      "name": "direction-north-west"
+    },
+    {
+      "category": "core",
+      "name": "direction-south"
+    },
+    {
+      "category": "core",
+      "name": "direction-south-east"
+    },
+    {
+      "category": "core",
+      "name": "direction-south-west"
+    },
+    {
+      "category": "core",
+      "name": "direction-west"
+    },
+    {
+      "category": "core",
+      "name": "disc"
+    },
+    {
+      "category": "core",
+      "name": "dock-bottom"
+    },
+    {
+      "category": "core",
+      "name": "dock-top"
+    },
+    {
+      "category": "core",
+      "name": "dollar"
+    },
+    {
+      "category": "core",
+      "name": "download"
+    },
+    {
+      "category": "core",
+      "name": "download-circle"
+    },
+    {
+      "category": "core",
+      "name": "download-square"
+    },
+    {
+      "category": "core",
+      "name": "drag-handle"
+    },
+    {
+      "category": "core",
+      "name": "droplet"
+    },
+    {
+      "category": "core",
+      "name": "edit"
+    },
+    {
+      "category": "core",
+      "name": "edit-circle"
+    },
+    {
+      "category": "core",
+      "name": "edit-square"
+    },
+    {
+      "category": "core",
+      "name": "ellipsis"
+    },
+    {
+      "category": "core",
+      "name": "ellipsis-circle"
+    },
+    {
+      "category": "core",
+      "name": "equal"
+    },
+    {
+      "category": "core",
+      "name": "eraser"
+    },
+    {
+      "category": "core",
+      "name": "euro"
+    },
+    {
+      "category": "core",
+      "name": "expand"
+    },
+    {
+      "category": "core",
+      "name": "external-link"
+    },
+    {
+      "category": "core",
+      "name": "eye"
+    },
+    {
+      "category": "core",
+      "name": "eye-check"
+    },
+    {
+      "category": "core",
+      "name": "eye-circle"
+    },
+    {
+      "category": "core",
+      "name": "eye-off"
+    },
+    {
+      "category": "core",
+      "name": "eye-square"
+    },
+    {
+      "category": "core",
+      "name": "fast-forward"
+    },
+    {
+      "category": "core",
+      "name": "file"
+    },
+    {
+      "category": "core",
+      "name": "file-audio"
+    },
+    {
+      "category": "core",
+      "name": "file-check"
+    },
+    {
+      "category": "core",
+      "name": "file-circle"
+    },
+    {
+      "category": "core",
+      "name": "file-code"
+    },
+    {
+      "category": "core",
+      "name": "file-image"
+    },
+    {
+      "category": "core",
+      "name": "file-lock"
+    },
+    {
+      "category": "core",
+      "name": "file-minus"
+    },
+    {
+      "category": "core",
+      "name": "file-plus"
+    },
+    {
+      "category": "core",
+      "name": "file-search"
+    },
+    {
+      "category": "core",
+      "name": "file-square"
+    },
+    {
+      "category": "core",
+      "name": "file-text"
+    },
+    {
+      "category": "core",
+      "name": "file-video"
+    },
+    {
+      "category": "core",
+      "name": "file-x"
+    },
+    {
+      "category": "core",
+      "name": "film"
+    },
+    {
+      "category": "core",
+      "name": "filter"
+    },
+    {
+      "category": "core",
+      "name": "filter-circle"
+    },
+    {
+      "category": "core",
+      "name": "filter-square"
+    },
+    {
+      "category": "core",
+      "name": "fingerprint"
+    },
+    {
+      "category": "core",
+      "name": "flag"
+    },
+    {
+      "category": "core",
+      "name": "flame"
+    },
+    {
+      "category": "core",
+      "name": "flower"
+    },
+    {
+      "category": "core",
+      "name": "focus"
+    },
+    {
+      "category": "core",
+      "name": "folder"
+    },
+    {
+      "category": "core",
+      "name": "folder-check"
+    },
+    {
+      "category": "core",
+      "name": "folder-circle"
+    },
+    {
+      "category": "core",
+      "name": "folder-minus"
+    },
+    {
+      "category": "core",
+      "name": "folder-open"
+    },
+    {
+      "category": "core",
+      "name": "folder-plus"
+    },
+    {
+      "category": "core",
+      "name": "folder-search"
+    },
+    {
+      "category": "core",
+      "name": "folder-square"
+    },
+    {
+      "category": "core",
+      "name": "folder-x"
+    },
+    {
+      "category": "core",
+      "name": "folders"
+    },
+    {
+      "category": "core",
+      "name": "frame"
+    },
+    {
+      "category": "core",
+      "name": "fuel"
+    },
+    {
+      "category": "core",
+      "name": "gamepad"
+    },
+    {
+      "category": "core",
+      "name": "gauge"
+    },
+    {
+      "category": "core",
+      "name": "gift"
+    },
+    {
+      "category": "core",
+      "name": "git-branch"
+    },
+    {
+      "category": "core",
+      "name": "git-commit"
+    },
+    {
+      "category": "core",
+      "name": "git-merge"
+    },
+    {
+      "category": "core",
+      "name": "git-pull-request"
+    },
+    {
+      "category": "core",
+      "name": "globe"
+    },
+    {
+      "category": "core",
+      "name": "globe-circle"
+    },
+    {
+      "category": "core",
+      "name": "globe-square"
+    },
+    {
+      "category": "core",
+      "name": "grid"
+    },
+    {
+      "category": "core",
+      "name": "grip-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "grip-vertical"
+    },
+    {
+      "category": "core",
+      "name": "hammer"
+    },
+    {
+      "category": "core",
+      "name": "hard-drive"
+    },
+    {
+      "category": "core",
+      "name": "hash"
+    },
+    {
+      "category": "core",
+      "name": "heading"
+    },
+    {
+      "category": "core",
+      "name": "headphones"
+    },
+    {
+      "category": "core",
+      "name": "heart"
+    },
+    {
+      "category": "core",
+      "name": "heart-circle"
+    },
+    {
+      "category": "core",
+      "name": "heart-plus"
+    },
+    {
+      "category": "core",
+      "name": "heart-square"
+    },
+    {
+      "category": "core",
+      "name": "help-circle"
+    },
+    {
+      "category": "core",
+      "name": "help-circle-circle"
+    },
+    {
+      "category": "core",
+      "name": "help-circle-square"
+    },
+    {
+      "category": "core",
+      "name": "hexagon"
+    },
+    {
+      "category": "core",
+      "name": "highlighter"
+    },
+    {
+      "category": "core",
+      "name": "history"
+    },
+    {
+      "category": "core",
+      "name": "home"
+    },
+    {
+      "category": "core",
+      "name": "home-circle"
+    },
+    {
+      "category": "core",
+      "name": "home-square"
+    },
+    {
+      "category": "core",
+      "name": "hotel"
+    },
+    {
+      "category": "core",
+      "name": "hourglass"
+    },
+    {
+      "category": "core",
+      "name": "id-card"
+    },
+    {
+      "category": "core",
+      "name": "image"
+    },
+    {
+      "category": "core",
+      "name": "image-circle"
+    },
+    {
+      "category": "core",
+      "name": "image-square"
+    },
+    {
+      "category": "core",
+      "name": "inbox"
+    },
+    {
+      "category": "core",
+      "name": "indent-decrease"
+    },
+    {
+      "category": "core",
+      "name": "indent-increase"
+    },
+    {
+      "category": "core",
+      "name": "info-circle"
+    },
+    {
+      "category": "core",
+      "name": "info-circle-circle"
+    },
+    {
+      "category": "core",
+      "name": "info-circle-square"
+    },
+    {
+      "category": "core",
+      "name": "italic"
+    },
+    {
+      "category": "core",
+      "name": "key"
+    },
+    {
+      "category": "core",
+      "name": "key-circle"
+    },
+    {
+      "category": "core",
+      "name": "key-round"
+    },
+    {
+      "category": "core",
+      "name": "key-square"
+    },
+    {
+      "category": "core",
+      "name": "keyboard"
+    },
+    {
+      "category": "core",
+      "name": "lamp"
+    },
+    {
+      "category": "core",
+      "name": "laptop"
+    },
+    {
+      "category": "core",
+      "name": "layers"
+    },
+    {
+      "category": "core",
+      "name": "layout-dashboard"
+    },
+    {
+      "category": "core",
+      "name": "layout-grid"
+    },
+    {
+      "category": "core",
+      "name": "leaf"
+    },
+    {
+      "category": "core",
+      "name": "lightbulb"
+    },
+    {
+      "category": "core",
+      "name": "lightning"
+    },
+    {
+      "category": "core",
+      "name": "link"
+    },
+    {
+      "category": "core",
+      "name": "list"
+    },
+    {
+      "category": "core",
+      "name": "list-ordered"
+    },
+    {
+      "category": "core",
+      "name": "loader"
+    },
+    {
+      "category": "core",
+      "name": "loader-circle"
+    },
+    {
+      "category": "core",
+      "name": "lock"
+    },
+    {
+      "category": "core",
+      "name": "lock-circle"
+    },
+    {
+      "category": "core",
+      "name": "lock-square"
+    },
+    {
+      "category": "core",
+      "name": "login"
+    },
+    {
+      "category": "core",
+      "name": "logout"
+    },
+    {
+      "category": "core",
+      "name": "mail"
+    },
+    {
+      "category": "core",
+      "name": "mail-check"
+    },
+    {
+      "category": "core",
+      "name": "mail-circle"
+    },
+    {
+      "category": "core",
+      "name": "mail-open"
+    },
+    {
+      "category": "core",
+      "name": "mail-plus"
+    },
+    {
+      "category": "core",
+      "name": "mail-square"
+    },
+    {
+      "category": "core",
+      "name": "mail-x"
+    },
+    {
+      "category": "core",
+      "name": "map"
+    },
+    {
+      "category": "core",
+      "name": "map-pin"
+    },
+    {
+      "category": "core",
+      "name": "map-pin-circle"
+    },
+    {
+      "category": "core",
+      "name": "map-pin-square"
+    },
+    {
+      "category": "core",
+      "name": "maximize"
+    },
+    {
+      "category": "core",
+      "name": "memory"
+    },
+    {
+      "category": "core",
+      "name": "menu"
+    },
+    {
+      "category": "core",
+      "name": "message"
+    },
+    {
+      "category": "core",
+      "name": "message-check"
+    },
+    {
+      "category": "core",
+      "name": "message-circle"
+    },
+    {
+      "category": "core",
+      "name": "message-plus"
+    },
+    {
+      "category": "core",
+      "name": "message-square"
+    },
+    {
+      "category": "core",
+      "name": "mic"
+    },
+    {
+      "category": "core",
+      "name": "minimize"
+    },
+    {
+      "category": "core",
+      "name": "minus"
+    },
+    {
+      "category": "core",
+      "name": "minus-circle"
+    },
+    {
+      "category": "core",
+      "name": "minus-square"
+    },
+    {
+      "category": "core",
+      "name": "monitor"
+    },
+    {
+      "category": "core",
+      "name": "moon"
+    },
+    {
+      "category": "core",
+      "name": "moon-circle"
+    },
+    {
+      "category": "core",
+      "name": "moon-square"
+    },
+    {
+      "category": "core",
+      "name": "more-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "more-vertical"
+    },
+    {
+      "category": "core",
+      "name": "mountain"
+    },
+    {
+      "category": "core",
+      "name": "mouse"
+    },
+    {
+      "category": "core",
+      "name": "move"
+    },
+    {
+      "category": "core",
+      "name": "music"
+    },
+    {
+      "category": "core",
+      "name": "music-2"
+    },
+    {
+      "category": "core",
+      "name": "mute"
+    },
+    {
+      "category": "core",
+      "name": "navigation"
+    },
+    {
+      "category": "core",
+      "name": "network"
+    },
+    {
+      "category": "core",
+      "name": "notebook"
+    },
+    {
+      "category": "core",
+      "name": "octagon"
+    },
+    {
+      "category": "core",
+      "name": "package"
+    },
+    {
+      "category": "core",
+      "name": "package-open"
+    },
+    {
+      "category": "core",
+      "name": "paintbrush"
+    },
+    {
+      "category": "core",
+      "name": "palette"
+    },
+    {
+      "category": "core",
+      "name": "panel-left"
+    },
+    {
+      "category": "core",
+      "name": "panel-right"
+    },
+    {
+      "category": "core",
+      "name": "paperclip"
+    },
+    {
+      "category": "core",
+      "name": "pause"
+    },
+    {
+      "category": "core",
+      "name": "pause-circle"
+    },
+    {
+      "category": "core",
+      "name": "pause-square"
+    },
+    {
+      "category": "core",
+      "name": "pen"
+    },
+    {
+      "category": "core",
+      "name": "pen-tool"
+    },
+    {
+      "category": "core",
+      "name": "pencil"
+    },
+    {
+      "category": "core",
+      "name": "percent"
+    },
+    {
+      "category": "core",
+      "name": "percent-badge"
+    },
+    {
+      "category": "core",
+      "name": "phone"
+    },
+    {
+      "category": "core",
+      "name": "phone-call"
+    },
+    {
+      "category": "core",
+      "name": "phone-circle"
+    },
+    {
+      "category": "core",
+      "name": "phone-incoming"
+    },
+    {
+      "category": "core",
+      "name": "phone-outgoing"
+    },
+    {
+      "category": "core",
+      "name": "phone-square"
+    },
+    {
+      "category": "core",
+      "name": "picture-in-picture"
+    },
+    {
+      "category": "core",
+      "name": "pilcrow"
+    },
+    {
+      "category": "core",
+      "name": "pin"
+    },
+    {
+      "category": "core",
+      "name": "pin-off"
+    },
+    {
+      "category": "core",
+      "name": "plane"
+    },
+    {
+      "category": "core",
+      "name": "play"
+    },
+    {
+      "category": "core",
+      "name": "play-circle"
+    },
+    {
+      "category": "core",
+      "name": "play-square"
+    },
+    {
+      "category": "core",
+      "name": "plus"
+    },
+    {
+      "category": "core",
+      "name": "plus-circle"
+    },
+    {
+      "category": "core",
+      "name": "plus-square"
+    },
+    {
+      "category": "core",
+      "name": "podcast"
+    },
+    {
+      "category": "core",
+      "name": "pointer"
+    },
+    {
+      "category": "core",
+      "name": "pound"
+    },
+    {
+      "category": "core",
+      "name": "power"
+    },
+    {
+      "category": "core",
+      "name": "printer"
+    },
+    {
+      "category": "core",
+      "name": "printer-2"
+    },
+    {
+      "category": "core",
+      "name": "qr-code"
+    },
+    {
+      "category": "core",
+      "name": "quote"
+    },
+    {
+      "category": "core",
+      "name": "radio"
+    },
+    {
+      "category": "core",
+      "name": "receipt"
+    },
+    {
+      "category": "core",
+      "name": "record"
+    },
+    {
+      "category": "core",
+      "name": "redo"
+    },
+    {
+      "category": "core",
+      "name": "refresh"
+    },
+    {
+      "category": "core",
+      "name": "repeat"
+    },
+    {
+      "category": "core",
+      "name": "repeat-one"
+    },
+    {
+      "category": "core",
+      "name": "rewind"
+    },
+    {
+      "category": "core",
+      "name": "rocket"
+    },
+    {
+      "category": "core",
+      "name": "rocket-circle"
+    },
+    {
+      "category": "core",
+      "name": "rocket-square"
+    },
+    {
+      "category": "core",
+      "name": "rotate-ccw"
+    },
+    {
+      "category": "core",
+      "name": "rotate-cw"
+    },
+    {
+      "category": "core",
+      "name": "route"
+    },
+    {
+      "category": "core",
+      "name": "router"
+    },
+    {
+      "category": "core",
+      "name": "rows"
+    },
+    {
+      "category": "core",
+      "name": "rss"
+    },
+    {
+      "category": "core",
+      "name": "ruler"
+    },
+    {
+      "category": "core",
+      "name": "save"
+    },
+    {
+      "category": "core",
+      "name": "save-circle"
+    },
+    {
+      "category": "core",
+      "name": "save-square"
+    },
+    {
+      "category": "core",
+      "name": "scan"
+    },
+    {
+      "category": "core",
+      "name": "scan-face"
+    },
+    {
+      "category": "core",
+      "name": "scissors"
+    },
+    {
+      "category": "core",
+      "name": "search"
+    },
+    {
+      "category": "core",
+      "name": "search-circle"
+    },
+    {
+      "category": "core",
+      "name": "search-square"
+    },
+    {
+      "category": "core",
+      "name": "send"
+    },
+    {
+      "category": "core",
+      "name": "server"
+    },
+    {
+      "category": "core",
+      "name": "settings"
+    },
+    {
+      "category": "core",
+      "name": "settings-circle"
+    },
+    {
+      "category": "core",
+      "name": "settings-square"
+    },
+    {
+      "category": "core",
+      "name": "shapes"
+    },
+    {
+      "category": "core",
+      "name": "shield"
+    },
+    {
+      "category": "core",
+      "name": "shield-alert"
+    },
+    {
+      "category": "core",
+      "name": "shield-check"
+    },
+    {
+      "category": "core",
+      "name": "shield-circle"
+    },
+    {
+      "category": "core",
+      "name": "shield-square"
+    },
+    {
+      "category": "core",
+      "name": "shield-x"
+    },
+    {
+      "category": "core",
+      "name": "ship"
+    },
+    {
+      "category": "core",
+      "name": "shopping-bag"
+    },
+    {
+      "category": "core",
+      "name": "shopping-cart"
+    },
+    {
+      "category": "core",
+      "name": "shopping-cart-circle"
+    },
+    {
+      "category": "core",
+      "name": "shopping-cart-square"
+    },
+    {
+      "category": "core",
+      "name": "shuffle"
+    },
+    {
+      "category": "core",
+      "name": "sidebar-left"
+    },
+    {
+      "category": "core",
+      "name": "sidebar-right"
+    },
+    {
+      "category": "core",
+      "name": "sigma"
+    },
+    {
+      "category": "core",
+      "name": "signpost"
+    },
+    {
+      "category": "core",
+      "name": "skip-next"
+    },
+    {
+      "category": "core",
+      "name": "skip-previous"
+    },
+    {
+      "category": "core",
+      "name": "sliders-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "sliders-vertical"
+    },
+    {
+      "category": "core",
+      "name": "smartphone"
+    },
+    {
+      "category": "core",
+      "name": "snowflake"
+    },
+    {
+      "category": "core",
+      "name": "sort"
+    },
+    {
+      "category": "core",
+      "name": "sparkles"
+    },
+    {
+      "category": "core",
+      "name": "sparkles-circle"
+    },
+    {
+      "category": "core",
+      "name": "sparkles-square"
+    },
+    {
+      "category": "core",
+      "name": "speaker"
+    },
+    {
+      "category": "core",
+      "name": "spellcheck"
+    },
+    {
+      "category": "core",
+      "name": "split-horizontal"
+    },
+    {
+      "category": "core",
+      "name": "split-vertical"
+    },
+    {
+      "category": "core",
+      "name": "square"
+    },
+    {
+      "category": "core",
+      "name": "star"
+    },
+    {
+      "category": "core",
+      "name": "star-circle"
+    },
+    {
+      "category": "core",
+      "name": "star-half"
+    },
+    {
+      "category": "core",
+      "name": "star-square"
+    },
+    {
+      "category": "core",
+      "name": "stop"
+    },
+    {
+      "category": "core",
+      "name": "store"
+    },
+    {
+      "category": "core",
+      "name": "strikethrough"
+    },
+    {
+      "category": "core",
+      "name": "subscript"
+    },
+    {
+      "category": "core",
+      "name": "suitcase"
+    },
+    {
+      "category": "core",
+      "name": "sun"
+    },
+    {
+      "category": "core",
+      "name": "sun-circle"
+    },
+    {
+      "category": "core",
+      "name": "sun-square"
+    },
+    {
+      "category": "core",
+      "name": "sunrise"
+    },
+    {
+      "category": "core",
+      "name": "sunset"
+    },
+    {
+      "category": "core",
+      "name": "superscript"
+    },
+    {
+      "category": "core",
+      "name": "swatch"
+    },
+    {
+      "category": "core",
+      "name": "sync"
+    },
+    {
+      "category": "core",
+      "name": "table"
+    },
+    {
+      "category": "core",
+      "name": "tablet"
+    },
+    {
+      "category": "core",
+      "name": "tag"
+    },
+    {
+      "category": "core",
+      "name": "target"
+    },
+    {
+      "category": "core",
+      "name": "terminal"
+    },
+    {
+      "category": "core",
+      "name": "terminal-circle"
+    },
+    {
+      "category": "core",
+      "name": "terminal-square"
+    },
+    {
+      "category": "core",
+      "name": "text-cursor"
+    },
+    {
+      "category": "core",
+      "name": "thermometer"
+    },
+    {
+      "category": "core",
+      "name": "ticket"
+    },
+    {
+      "category": "core",
+      "name": "timer"
+    },
+    {
+      "category": "core",
+      "name": "toggle-left"
+    },
+    {
+      "category": "core",
+      "name": "toggle-right"
+    },
+    {
+      "category": "core",
+      "name": "train"
+    },
+    {
+      "category": "core",
+      "name": "trash"
+    },
+    {
+      "category": "core",
+      "name": "trash-circle"
+    },
+    {
+      "category": "core",
+      "name": "trash-square"
+    },
+    {
+      "category": "core",
+      "name": "tree"
+    },
+    {
+      "category": "core",
+      "name": "trend-down"
+    },
+    {
+      "category": "core",
+      "name": "trend-up"
+    },
+    {
+      "category": "core",
+      "name": "triangle"
+    },
+    {
+      "category": "core",
+      "name": "underline"
+    },
+    {
+      "category": "core",
+      "name": "undo"
+    },
+    {
+      "category": "core",
+      "name": "unlock"
+    },
+    {
+      "category": "core",
+      "name": "unlock-circle"
+    },
+    {
+      "category": "core",
+      "name": "unlock-square"
+    },
+    {
+      "category": "core",
+      "name": "upload"
+    },
+    {
+      "category": "core",
+      "name": "upload-circle"
+    },
+    {
+      "category": "core",
+      "name": "upload-square"
+    },
+    {
+      "category": "core",
+      "name": "user"
+    },
+    {
+      "category": "core",
+      "name": "user-check"
+    },
+    {
+      "category": "core",
+      "name": "user-circle"
+    },
+    {
+      "category": "core",
+      "name": "user-minus"
+    },
+    {
+      "category": "core",
+      "name": "user-plus"
+    },
+    {
+      "category": "core",
+      "name": "user-square"
+    },
+    {
+      "category": "core",
+      "name": "user-x"
+    },
+    {
+      "category": "core",
+      "name": "users"
+    },
+    {
+      "category": "core",
+      "name": "users-circle"
+    },
+    {
+      "category": "core",
+      "name": "users-square"
+    },
+    {
+      "category": "core",
+      "name": "video"
+    },
+    {
+      "category": "core",
+      "name": "video-circle"
+    },
+    {
+      "category": "core",
+      "name": "video-square"
+    },
+    {
+      "category": "core",
+      "name": "volume"
+    },
+    {
+      "category": "core",
+      "name": "volume-2"
+    },
+    {
+      "category": "core",
+      "name": "wallet"
+    },
+    {
+      "category": "core",
+      "name": "wand"
+    },
+    {
+      "category": "core",
+      "name": "warning-triangle"
+    },
+    {
+      "category": "core",
+      "name": "warning-triangle-circle"
+    },
+    {
+      "category": "core",
+      "name": "warning-triangle-square"
+    },
+    {
+      "category": "core",
+      "name": "watch"
+    },
+    {
+      "category": "core",
+      "name": "waves"
+    },
+    {
+      "category": "core",
+      "name": "webhook"
+    },
+    {
+      "category": "core",
+      "name": "wheelchair"
+    },
+    {
+      "category": "core",
+      "name": "wifi"
+    },
+    {
+      "category": "core",
+      "name": "wind"
+    },
+    {
+      "category": "core",
+      "name": "wrench"
+    },
+    {
+      "category": "core",
+      "name": "x-circle"
+    },
+    {
+      "category": "core",
+      "name": "x-square"
+    },
+    {
+      "category": "core",
+      "name": "yen"
+    },
+    {
+      "category": "core",
+      "name": "zap"
+    },
+    {
+      "category": "core",
+      "name": "zoom-in"
+    },
+    {
+      "category": "core",
+      "name": "zoom-out"
+    },
+    {
+      "category": "extended",
+      "name": "bookmark-minus"
+    },
+    {
+      "category": "extended",
+      "name": "bookmark-x"
+    },
+    {
+      "category": "extended",
+      "name": "building"
+    },
+    {
+      "category": "extended",
+      "name": "building-2"
+    },
+    {
+      "category": "extended",
+      "name": "chef-hat"
+    },
+    {
+      "category": "extended",
+      "name": "cloud-fog"
+    },
+    {
+      "category": "extended",
+      "name": "cookie"
+    },
+    {
+      "category": "extended",
+      "name": "file-heart"
+    },
+    {
+      "category": "extended",
+      "name": "folder-heart"
+    },
+    {
+      "category": "extended",
+      "name": "gallery"
+    },
+    {
+      "category": "extended",
+      "name": "hospital"
+    },
+    {
+      "category": "extended",
+      "name": "laptop-minimal"
+    },
+    {
+      "category": "extended",
+      "name": "mail-lock"
+    },
+    {
+      "category": "extended",
+      "name": "mail-search"
+    },
+    {
+      "category": "extended",
+      "name": "mail-warning"
+    },
+    {
+      "category": "extended",
+      "name": "megaphone"
+    },
+    {
+      "category": "extended",
+      "name": "message-warning"
+    },
+    {
+      "category": "extended",
+      "name": "monitor-smartphone"
+    },
+    {
+      "category": "extended",
+      "name": "moon-stars"
+    },
+    {
+      "category": "extended",
+      "name": "newspaper"
+    },
+    {
+      "category": "extended",
+      "name": "newspaper-fold"
+    },
+    {
+      "category": "extended",
+      "name": "package-check"
+    },
+    {
+      "category": "extended",
+      "name": "package-plus"
+    },
+    {
+      "category": "extended",
+      "name": "palette-2"
+    },
+    {
+      "category": "extended",
+      "name": "pen-square"
+    },
+    {
+      "category": "extended",
+      "name": "pencil-ruler"
+    },
+    {
+      "category": "extended",
+      "name": "phone-missed"
+    },
+    {
+      "category": "extended",
+      "name": "scan-line"
+    },
+    {
+      "category": "extended",
+      "name": "scan-text"
+    },
+    {
+      "category": "extended",
+      "name": "school"
+    },
+    {
+      "category": "extended",
+      "name": "shield-minus"
+    },
+    {
+      "category": "extended",
+      "name": "shield-plus"
+    },
+    {
+      "category": "extended",
+      "name": "shopping-basket"
+    },
+    {
+      "category": "extended",
+      "name": "signal"
+    },
+    {
+      "category": "extended",
+      "name": "signal-high"
+    },
+    {
+      "category": "extended",
+      "name": "signal-low"
+    },
+    {
+      "category": "extended",
+      "name": "signal-medium"
+    },
+    {
+      "category": "extended",
+      "name": "signal-zero"
+    },
+    {
+      "category": "extended",
+      "name": "smartphone-charging"
+    },
+    {
+      "category": "extended",
+      "name": "sprout"
+    },
+    {
+      "category": "extended",
+      "name": "storefront"
+    },
+    {
+      "category": "extended",
+      "name": "sun-dim"
+    },
+    {
+      "category": "extended",
+      "name": "tablet-landscape"
+    },
+    {
+      "category": "extended",
+      "name": "tag-dollar"
+    },
+    {
+      "category": "extended",
+      "name": "tree-pine"
+    },
+    {
+      "category": "extended",
+      "name": "utensils"
+    },
+    {
+      "category": "extended",
+      "name": "warehouse"
+    },
+    {
+      "category": "extended",
+      "name": "wifi-off"
+    },
+    {
+      "category": "ring",
+      "name": "ring-accessibility"
+    },
+    {
+      "category": "ring",
+      "name": "ring-activity"
+    },
+    {
+      "category": "ring",
+      "name": "ring-alarm-clock"
+    },
+    {
+      "category": "ring",
+      "name": "ring-align-center"
+    },
+    {
+      "category": "ring",
+      "name": "ring-align-justify"
+    },
+    {
+      "category": "ring",
+      "name": "ring-align-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-align-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-anchor"
+    },
+    {
+      "category": "ring",
+      "name": "ring-aperture"
+    },
+    {
+      "category": "ring",
+      "name": "ring-api"
+    },
+    {
+      "category": "ring",
+      "name": "ring-archive"
+    },
+    {
+      "category": "ring",
+      "name": "ring-archive-box"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-down"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-down-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-down-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-left-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-up"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-up-down"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-up-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-arrow-up-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-at-sign"
+    },
+    {
+      "category": "ring",
+      "name": "ring-award"
+    },
+    {
+      "category": "ring",
+      "name": "ring-badge"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bank"
+    },
+    {
+      "category": "ring",
+      "name": "ring-barcode"
+    },
+    {
+      "category": "ring",
+      "name": "ring-battery"
+    },
+    {
+      "category": "ring",
+      "name": "ring-battery-charging"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bell"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bell-off"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bike"
+    },
+    {
+      "category": "ring",
+      "name": "ring-binary"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bluetooth"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bluetooth-connected"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bold"
+    },
+    {
+      "category": "ring",
+      "name": "ring-book"
+    },
+    {
+      "category": "ring",
+      "name": "ring-book-marked"
+    },
+    {
+      "category": "ring",
+      "name": "ring-book-open"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bookmark"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bookmark-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bookmark-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-box"
+    },
+    {
+      "category": "ring",
+      "name": "ring-box-open"
+    },
+    {
+      "category": "ring",
+      "name": "ring-braces"
+    },
+    {
+      "category": "ring",
+      "name": "ring-brackets"
+    },
+    {
+      "category": "ring",
+      "name": "ring-briefcase"
+    },
+    {
+      "category": "ring",
+      "name": "ring-brush"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bug"
+    },
+    {
+      "category": "ring",
+      "name": "ring-bus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-calculator"
+    },
+    {
+      "category": "ring",
+      "name": "ring-calendar"
+    },
+    {
+      "category": "ring",
+      "name": "ring-calendar-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-calendar-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-calendar-x"
+    },
+    {
+      "category": "ring",
+      "name": "ring-camera"
+    },
+    {
+      "category": "ring",
+      "name": "ring-captions"
+    },
+    {
+      "category": "ring",
+      "name": "ring-car"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cart-minus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cart-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-area"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-bar"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-bar-horizontal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-donut"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-line"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-pie"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chart-scatter"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chat"
+    },
+    {
+      "category": "ring",
+      "name": "ring-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-check-double"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevron-down"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevron-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevron-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevron-up"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevrons-down"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevrons-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevrons-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chevrons-up"
+    },
+    {
+      "category": "ring",
+      "name": "ring-chip"
+    },
+    {
+      "category": "ring",
+      "name": "ring-circle"
+    },
+    {
+      "category": "ring",
+      "name": "ring-clapperboard"
+    },
+    {
+      "category": "ring",
+      "name": "ring-clipboard"
+    },
+    {
+      "category": "ring",
+      "name": "ring-clipboard-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-clipboard-list"
+    },
+    {
+      "category": "ring",
+      "name": "ring-clock"
+    },
+    {
+      "category": "ring",
+      "name": "ring-close"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud-download"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud-lightning"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud-rain"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud-snow"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cloud-upload"
+    },
+    {
+      "category": "ring",
+      "name": "ring-code"
+    },
+    {
+      "category": "ring",
+      "name": "ring-code-file"
+    },
+    {
+      "category": "ring",
+      "name": "ring-coffee"
+    },
+    {
+      "category": "ring",
+      "name": "ring-coin"
+    },
+    {
+      "category": "ring",
+      "name": "ring-coins"
+    },
+    {
+      "category": "ring",
+      "name": "ring-collapse"
+    },
+    {
+      "category": "ring",
+      "name": "ring-columns"
+    },
+    {
+      "category": "ring",
+      "name": "ring-command"
+    },
+    {
+      "category": "ring",
+      "name": "ring-compass"
+    },
+    {
+      "category": "ring",
+      "name": "ring-contact"
+    },
+    {
+      "category": "ring",
+      "name": "ring-contrast"
+    },
+    {
+      "category": "ring",
+      "name": "ring-copy"
+    },
+    {
+      "category": "ring",
+      "name": "ring-corner-up-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-corner-up-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cpu"
+    },
+    {
+      "category": "ring",
+      "name": "ring-credit-card"
+    },
+    {
+      "category": "ring",
+      "name": "ring-crop"
+    },
+    {
+      "category": "ring",
+      "name": "ring-crosshair"
+    },
+    {
+      "category": "ring",
+      "name": "ring-crown"
+    },
+    {
+      "category": "ring",
+      "name": "ring-cursor"
+    },
+    {
+      "category": "ring",
+      "name": "ring-database"
+    },
+    {
+      "category": "ring",
+      "name": "ring-diamond"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-east"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-north"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-north-east"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-north-west"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-south"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-south-east"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-south-west"
+    },
+    {
+      "category": "ring",
+      "name": "ring-direction-west"
+    },
+    {
+      "category": "ring",
+      "name": "ring-disc"
+    },
+    {
+      "category": "ring",
+      "name": "ring-dock-bottom"
+    },
+    {
+      "category": "ring",
+      "name": "ring-dock-top"
+    },
+    {
+      "category": "ring",
+      "name": "ring-dollar"
+    },
+    {
+      "category": "ring",
+      "name": "ring-download"
+    },
+    {
+      "category": "ring",
+      "name": "ring-drag-handle"
+    },
+    {
+      "category": "ring",
+      "name": "ring-droplet"
+    },
+    {
+      "category": "ring",
+      "name": "ring-edit"
+    },
+    {
+      "category": "ring",
+      "name": "ring-ellipsis"
+    },
+    {
+      "category": "ring",
+      "name": "ring-equal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-eraser"
+    },
+    {
+      "category": "ring",
+      "name": "ring-euro"
+    },
+    {
+      "category": "ring",
+      "name": "ring-expand"
+    },
+    {
+      "category": "ring",
+      "name": "ring-external-link"
+    },
+    {
+      "category": "ring",
+      "name": "ring-eye"
+    },
+    {
+      "category": "ring",
+      "name": "ring-eye-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-eye-off"
+    },
+    {
+      "category": "ring",
+      "name": "ring-fast-forward"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-audio"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-code"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-image"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-lock"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-minus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-search"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-text"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-video"
+    },
+    {
+      "category": "ring",
+      "name": "ring-file-x"
+    },
+    {
+      "category": "ring",
+      "name": "ring-film"
+    },
+    {
+      "category": "ring",
+      "name": "ring-filter"
+    },
+    {
+      "category": "ring",
+      "name": "ring-fingerprint"
+    },
+    {
+      "category": "ring",
+      "name": "ring-flag"
+    },
+    {
+      "category": "ring",
+      "name": "ring-flame"
+    },
+    {
+      "category": "ring",
+      "name": "ring-flower"
+    },
+    {
+      "category": "ring",
+      "name": "ring-focus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-minus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-open"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-search"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folder-x"
+    },
+    {
+      "category": "ring",
+      "name": "ring-folders"
+    },
+    {
+      "category": "ring",
+      "name": "ring-frame"
+    },
+    {
+      "category": "ring",
+      "name": "ring-fuel"
+    },
+    {
+      "category": "ring",
+      "name": "ring-gamepad"
+    },
+    {
+      "category": "ring",
+      "name": "ring-gauge"
+    },
+    {
+      "category": "ring",
+      "name": "ring-gift"
+    },
+    {
+      "category": "ring",
+      "name": "ring-git-branch"
+    },
+    {
+      "category": "ring",
+      "name": "ring-git-commit"
+    },
+    {
+      "category": "ring",
+      "name": "ring-git-merge"
+    },
+    {
+      "category": "ring",
+      "name": "ring-git-pull-request"
+    },
+    {
+      "category": "ring",
+      "name": "ring-globe"
+    },
+    {
+      "category": "ring",
+      "name": "ring-grid"
+    },
+    {
+      "category": "ring",
+      "name": "ring-grip-horizontal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-grip-vertical"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hammer"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hard-drive"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hash"
+    },
+    {
+      "category": "ring",
+      "name": "ring-heading"
+    },
+    {
+      "category": "ring",
+      "name": "ring-headphones"
+    },
+    {
+      "category": "ring",
+      "name": "ring-heart"
+    },
+    {
+      "category": "ring",
+      "name": "ring-heart-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hexagon"
+    },
+    {
+      "category": "ring",
+      "name": "ring-highlighter"
+    },
+    {
+      "category": "ring",
+      "name": "ring-history"
+    },
+    {
+      "category": "ring",
+      "name": "ring-home"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hotel"
+    },
+    {
+      "category": "ring",
+      "name": "ring-hourglass"
+    },
+    {
+      "category": "ring",
+      "name": "ring-id-card"
+    },
+    {
+      "category": "ring",
+      "name": "ring-image"
+    },
+    {
+      "category": "ring",
+      "name": "ring-inbox"
+    },
+    {
+      "category": "ring",
+      "name": "ring-indent-decrease"
+    },
+    {
+      "category": "ring",
+      "name": "ring-indent-increase"
+    },
+    {
+      "category": "ring",
+      "name": "ring-italic"
+    },
+    {
+      "category": "ring",
+      "name": "ring-key"
+    },
+    {
+      "category": "ring",
+      "name": "ring-key-round"
+    },
+    {
+      "category": "ring",
+      "name": "ring-keyboard"
+    },
+    {
+      "category": "ring",
+      "name": "ring-lamp"
+    },
+    {
+      "category": "ring",
+      "name": "ring-laptop"
+    },
+    {
+      "category": "ring",
+      "name": "ring-layers"
+    },
+    {
+      "category": "ring",
+      "name": "ring-layout-dashboard"
+    },
+    {
+      "category": "ring",
+      "name": "ring-layout-grid"
+    },
+    {
+      "category": "ring",
+      "name": "ring-leaf"
+    },
+    {
+      "category": "ring",
+      "name": "ring-lightbulb"
+    },
+    {
+      "category": "ring",
+      "name": "ring-lightning"
+    },
+    {
+      "category": "ring",
+      "name": "ring-link"
+    },
+    {
+      "category": "ring",
+      "name": "ring-list"
+    },
+    {
+      "category": "ring",
+      "name": "ring-list-ordered"
+    },
+    {
+      "category": "ring",
+      "name": "ring-loader"
+    },
+    {
+      "category": "ring",
+      "name": "ring-lock"
+    },
+    {
+      "category": "ring",
+      "name": "ring-login"
+    },
+    {
+      "category": "ring",
+      "name": "ring-logout"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mail"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mail-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mail-open"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mail-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mail-x"
+    },
+    {
+      "category": "ring",
+      "name": "ring-map"
+    },
+    {
+      "category": "ring",
+      "name": "ring-map-pin"
+    },
+    {
+      "category": "ring",
+      "name": "ring-maximize"
+    },
+    {
+      "category": "ring",
+      "name": "ring-memory"
+    },
+    {
+      "category": "ring",
+      "name": "ring-menu"
+    },
+    {
+      "category": "ring",
+      "name": "ring-message"
+    },
+    {
+      "category": "ring",
+      "name": "ring-message-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-message-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mic"
+    },
+    {
+      "category": "ring",
+      "name": "ring-minimize"
+    },
+    {
+      "category": "ring",
+      "name": "ring-minus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-monitor"
+    },
+    {
+      "category": "ring",
+      "name": "ring-moon"
+    },
+    {
+      "category": "ring",
+      "name": "ring-more-horizontal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-more-vertical"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mountain"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mouse"
+    },
+    {
+      "category": "ring",
+      "name": "ring-move"
+    },
+    {
+      "category": "ring",
+      "name": "ring-music"
+    },
+    {
+      "category": "ring",
+      "name": "ring-music-2"
+    },
+    {
+      "category": "ring",
+      "name": "ring-mute"
+    },
+    {
+      "category": "ring",
+      "name": "ring-navigation"
+    },
+    {
+      "category": "ring",
+      "name": "ring-network"
+    },
+    {
+      "category": "ring",
+      "name": "ring-notebook"
+    },
+    {
+      "category": "ring",
+      "name": "ring-octagon"
+    },
+    {
+      "category": "ring",
+      "name": "ring-package"
+    },
+    {
+      "category": "ring",
+      "name": "ring-package-open"
+    },
+    {
+      "category": "ring",
+      "name": "ring-paintbrush"
+    },
+    {
+      "category": "ring",
+      "name": "ring-palette"
+    },
+    {
+      "category": "ring",
+      "name": "ring-panel-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-panel-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-paperclip"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pause"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pen"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pen-tool"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pencil"
+    },
+    {
+      "category": "ring",
+      "name": "ring-percent"
+    },
+    {
+      "category": "ring",
+      "name": "ring-percent-badge"
+    },
+    {
+      "category": "ring",
+      "name": "ring-phone"
+    },
+    {
+      "category": "ring",
+      "name": "ring-phone-call"
+    },
+    {
+      "category": "ring",
+      "name": "ring-phone-incoming"
+    },
+    {
+      "category": "ring",
+      "name": "ring-phone-outgoing"
+    },
+    {
+      "category": "ring",
+      "name": "ring-picture-in-picture"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pilcrow"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pin"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pin-off"
+    },
+    {
+      "category": "ring",
+      "name": "ring-plane"
+    },
+    {
+      "category": "ring",
+      "name": "ring-play"
+    },
+    {
+      "category": "ring",
+      "name": "ring-plus"
+    },
+    {
+      "category": "ring",
+      "name": "ring-podcast"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pointer"
+    },
+    {
+      "category": "ring",
+      "name": "ring-pound"
+    },
+    {
+      "category": "ring",
+      "name": "ring-power"
+    },
+    {
+      "category": "ring",
+      "name": "ring-printer"
+    },
+    {
+      "category": "ring",
+      "name": "ring-printer-2"
+    },
+    {
+      "category": "ring",
+      "name": "ring-qr-code"
+    },
+    {
+      "category": "ring",
+      "name": "ring-quote"
+    },
+    {
+      "category": "ring",
+      "name": "ring-radio"
+    },
+    {
+      "category": "ring",
+      "name": "ring-receipt"
+    },
+    {
+      "category": "ring",
+      "name": "ring-record"
+    },
+    {
+      "category": "ring",
+      "name": "ring-redo"
+    },
+    {
+      "category": "ring",
+      "name": "ring-refresh"
+    },
+    {
+      "category": "ring",
+      "name": "ring-repeat"
+    },
+    {
+      "category": "ring",
+      "name": "ring-repeat-one"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rewind"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rocket"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rotate-ccw"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rotate-cw"
+    },
+    {
+      "category": "ring",
+      "name": "ring-route"
+    },
+    {
+      "category": "ring",
+      "name": "ring-router"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rows"
+    },
+    {
+      "category": "ring",
+      "name": "ring-rss"
+    },
+    {
+      "category": "ring",
+      "name": "ring-ruler"
+    },
+    {
+      "category": "ring",
+      "name": "ring-save"
+    },
+    {
+      "category": "ring",
+      "name": "ring-scan"
+    },
+    {
+      "category": "ring",
+      "name": "ring-scan-face"
+    },
+    {
+      "category": "ring",
+      "name": "ring-scissors"
+    },
+    {
+      "category": "ring",
+      "name": "ring-search"
+    },
+    {
+      "category": "ring",
+      "name": "ring-send"
+    },
+    {
+      "category": "ring",
+      "name": "ring-server"
+    },
+    {
+      "category": "ring",
+      "name": "ring-settings"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shapes"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shield"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shield-alert"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shield-check"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shield-x"
+    },
+    {
+      "category": "ring",
+      "name": "ring-ship"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shopping-bag"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shopping-cart"
+    },
+    {
+      "category": "ring",
+      "name": "ring-shuffle"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sidebar-left"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sidebar-right"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sigma"
+    },
+    {
+      "category": "ring",
+      "name": "ring-signpost"
+    },
+    {
+      "category": "ring",
+      "name": "ring-skip-next"
+    },
+    {
+      "category": "ring",
+      "name": "ring-skip-previous"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sliders-horizontal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sliders-vertical"
+    },
+    {
+      "category": "ring",
+      "name": "ring-smartphone"
+    },
+    {
+      "category": "ring",
+      "name": "ring-snowflake"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sort"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sparkles"
+    },
+    {
+      "category": "ring",
+      "name": "ring-speaker"
+    },
+    {
+      "category": "ring",
+      "name": "ring-spellcheck"
+    },
+    {
+      "category": "ring",
+      "name": "ring-split-horizontal"
+    },
+    {
+      "category": "ring",
+      "name": "ring-split-vertical"
+    },
+    {
+      "category": "ring",
+      "name": "ring-square"
+    },
+    {
+      "category": "ring",
+      "name": "ring-star"
+    },
+    {
+      "category": "ring",
+      "name": "ring-star-half"
+    },
+    {
+      "category": "ring",
+      "name": "ring-stop"
+    },
+    {
+      "category": "ring",
+      "name": "ring-store"
+    },
+    {
+      "category": "ring",
+      "name": "ring-strikethrough"
+    },
+    {
+      "category": "ring",
+      "name": "ring-subscript"
+    },
+    {
+      "category": "ring",
+      "name": "ring-suitcase"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sun"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sunrise"
+    },
+    {
+      "category": "ring",
+      "name": "ring-sunset"
+    },
+    {
+      "category": "ring",
+      "name": "ring-superscript"
+    },
+    {
+      "category": "tile",
+      "name": "tile-accessibility"
+    },
+    {
+      "category": "tile",
+      "name": "tile-activity"
+    },
+    {
+      "category": "tile",
+      "name": "tile-alarm-clock"
+    },
+    {
+      "category": "tile",
+      "name": "tile-align-center"
+    },
+    {
+      "category": "tile",
+      "name": "tile-align-justify"
+    },
+    {
+      "category": "tile",
+      "name": "tile-align-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-align-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-anchor"
+    },
+    {
+      "category": "tile",
+      "name": "tile-aperture"
+    },
+    {
+      "category": "tile",
+      "name": "tile-api"
+    },
+    {
+      "category": "tile",
+      "name": "tile-archive"
+    },
+    {
+      "category": "tile",
+      "name": "tile-archive-box"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-down"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-down-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-down-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-left-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-up"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-up-down"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-up-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-arrow-up-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-at-sign"
+    },
+    {
+      "category": "tile",
+      "name": "tile-award"
+    },
+    {
+      "category": "tile",
+      "name": "tile-badge"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bank"
+    },
+    {
+      "category": "tile",
+      "name": "tile-barcode"
+    },
+    {
+      "category": "tile",
+      "name": "tile-battery"
+    },
+    {
+      "category": "tile",
+      "name": "tile-battery-charging"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bell"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bell-off"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bike"
+    },
+    {
+      "category": "tile",
+      "name": "tile-binary"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bluetooth"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bluetooth-connected"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bold"
+    },
+    {
+      "category": "tile",
+      "name": "tile-book"
+    },
+    {
+      "category": "tile",
+      "name": "tile-book-marked"
+    },
+    {
+      "category": "tile",
+      "name": "tile-book-open"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bookmark"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bookmark-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bookmark-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-box"
+    },
+    {
+      "category": "tile",
+      "name": "tile-box-open"
+    },
+    {
+      "category": "tile",
+      "name": "tile-braces"
+    },
+    {
+      "category": "tile",
+      "name": "tile-brackets"
+    },
+    {
+      "category": "tile",
+      "name": "tile-briefcase"
+    },
+    {
+      "category": "tile",
+      "name": "tile-brush"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bug"
+    },
+    {
+      "category": "tile",
+      "name": "tile-bus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-calculator"
+    },
+    {
+      "category": "tile",
+      "name": "tile-calendar"
+    },
+    {
+      "category": "tile",
+      "name": "tile-calendar-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-calendar-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-calendar-x"
+    },
+    {
+      "category": "tile",
+      "name": "tile-camera"
+    },
+    {
+      "category": "tile",
+      "name": "tile-captions"
+    },
+    {
+      "category": "tile",
+      "name": "tile-car"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cart-minus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cart-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-area"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-bar"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-bar-horizontal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-donut"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-line"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-pie"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chart-scatter"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chat"
+    },
+    {
+      "category": "tile",
+      "name": "tile-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-check-double"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevron-down"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevron-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevron-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevron-up"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevrons-down"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevrons-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevrons-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chevrons-up"
+    },
+    {
+      "category": "tile",
+      "name": "tile-chip"
+    },
+    {
+      "category": "tile",
+      "name": "tile-circle"
+    },
+    {
+      "category": "tile",
+      "name": "tile-clapperboard"
+    },
+    {
+      "category": "tile",
+      "name": "tile-clipboard"
+    },
+    {
+      "category": "tile",
+      "name": "tile-clipboard-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-clipboard-list"
+    },
+    {
+      "category": "tile",
+      "name": "tile-clock"
+    },
+    {
+      "category": "tile",
+      "name": "tile-close"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud-download"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud-lightning"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud-rain"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud-snow"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cloud-upload"
+    },
+    {
+      "category": "tile",
+      "name": "tile-code"
+    },
+    {
+      "category": "tile",
+      "name": "tile-code-file"
+    },
+    {
+      "category": "tile",
+      "name": "tile-coffee"
+    },
+    {
+      "category": "tile",
+      "name": "tile-coin"
+    },
+    {
+      "category": "tile",
+      "name": "tile-coins"
+    },
+    {
+      "category": "tile",
+      "name": "tile-collapse"
+    },
+    {
+      "category": "tile",
+      "name": "tile-columns"
+    },
+    {
+      "category": "tile",
+      "name": "tile-command"
+    },
+    {
+      "category": "tile",
+      "name": "tile-compass"
+    },
+    {
+      "category": "tile",
+      "name": "tile-contact"
+    },
+    {
+      "category": "tile",
+      "name": "tile-contrast"
+    },
+    {
+      "category": "tile",
+      "name": "tile-copy"
+    },
+    {
+      "category": "tile",
+      "name": "tile-corner-up-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-corner-up-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cpu"
+    },
+    {
+      "category": "tile",
+      "name": "tile-credit-card"
+    },
+    {
+      "category": "tile",
+      "name": "tile-crop"
+    },
+    {
+      "category": "tile",
+      "name": "tile-crosshair"
+    },
+    {
+      "category": "tile",
+      "name": "tile-crown"
+    },
+    {
+      "category": "tile",
+      "name": "tile-cursor"
+    },
+    {
+      "category": "tile",
+      "name": "tile-database"
+    },
+    {
+      "category": "tile",
+      "name": "tile-diamond"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-east"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-north"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-north-east"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-north-west"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-south"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-south-east"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-south-west"
+    },
+    {
+      "category": "tile",
+      "name": "tile-direction-west"
+    },
+    {
+      "category": "tile",
+      "name": "tile-disc"
+    },
+    {
+      "category": "tile",
+      "name": "tile-dock-bottom"
+    },
+    {
+      "category": "tile",
+      "name": "tile-dock-top"
+    },
+    {
+      "category": "tile",
+      "name": "tile-dollar"
+    },
+    {
+      "category": "tile",
+      "name": "tile-download"
+    },
+    {
+      "category": "tile",
+      "name": "tile-drag-handle"
+    },
+    {
+      "category": "tile",
+      "name": "tile-droplet"
+    },
+    {
+      "category": "tile",
+      "name": "tile-edit"
+    },
+    {
+      "category": "tile",
+      "name": "tile-ellipsis"
+    },
+    {
+      "category": "tile",
+      "name": "tile-equal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-eraser"
+    },
+    {
+      "category": "tile",
+      "name": "tile-euro"
+    },
+    {
+      "category": "tile",
+      "name": "tile-expand"
+    },
+    {
+      "category": "tile",
+      "name": "tile-external-link"
+    },
+    {
+      "category": "tile",
+      "name": "tile-eye"
+    },
+    {
+      "category": "tile",
+      "name": "tile-eye-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-eye-off"
+    },
+    {
+      "category": "tile",
+      "name": "tile-fast-forward"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-audio"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-code"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-image"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-lock"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-minus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-search"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-text"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-video"
+    },
+    {
+      "category": "tile",
+      "name": "tile-file-x"
+    },
+    {
+      "category": "tile",
+      "name": "tile-film"
+    },
+    {
+      "category": "tile",
+      "name": "tile-filter"
+    },
+    {
+      "category": "tile",
+      "name": "tile-fingerprint"
+    },
+    {
+      "category": "tile",
+      "name": "tile-flag"
+    },
+    {
+      "category": "tile",
+      "name": "tile-flame"
+    },
+    {
+      "category": "tile",
+      "name": "tile-flower"
+    },
+    {
+      "category": "tile",
+      "name": "tile-focus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-minus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-open"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-search"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folder-x"
+    },
+    {
+      "category": "tile",
+      "name": "tile-folders"
+    },
+    {
+      "category": "tile",
+      "name": "tile-frame"
+    },
+    {
+      "category": "tile",
+      "name": "tile-fuel"
+    },
+    {
+      "category": "tile",
+      "name": "tile-gamepad"
+    },
+    {
+      "category": "tile",
+      "name": "tile-gauge"
+    },
+    {
+      "category": "tile",
+      "name": "tile-gift"
+    },
+    {
+      "category": "tile",
+      "name": "tile-git-branch"
+    },
+    {
+      "category": "tile",
+      "name": "tile-git-commit"
+    },
+    {
+      "category": "tile",
+      "name": "tile-git-merge"
+    },
+    {
+      "category": "tile",
+      "name": "tile-git-pull-request"
+    },
+    {
+      "category": "tile",
+      "name": "tile-globe"
+    },
+    {
+      "category": "tile",
+      "name": "tile-grid"
+    },
+    {
+      "category": "tile",
+      "name": "tile-grip-horizontal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-grip-vertical"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hammer"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hard-drive"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hash"
+    },
+    {
+      "category": "tile",
+      "name": "tile-heading"
+    },
+    {
+      "category": "tile",
+      "name": "tile-headphones"
+    },
+    {
+      "category": "tile",
+      "name": "tile-heart"
+    },
+    {
+      "category": "tile",
+      "name": "tile-heart-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hexagon"
+    },
+    {
+      "category": "tile",
+      "name": "tile-highlighter"
+    },
+    {
+      "category": "tile",
+      "name": "tile-history"
+    },
+    {
+      "category": "tile",
+      "name": "tile-home"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hotel"
+    },
+    {
+      "category": "tile",
+      "name": "tile-hourglass"
+    },
+    {
+      "category": "tile",
+      "name": "tile-id-card"
+    },
+    {
+      "category": "tile",
+      "name": "tile-image"
+    },
+    {
+      "category": "tile",
+      "name": "tile-inbox"
+    },
+    {
+      "category": "tile",
+      "name": "tile-indent-decrease"
+    },
+    {
+      "category": "tile",
+      "name": "tile-indent-increase"
+    },
+    {
+      "category": "tile",
+      "name": "tile-italic"
+    },
+    {
+      "category": "tile",
+      "name": "tile-key"
+    },
+    {
+      "category": "tile",
+      "name": "tile-key-round"
+    },
+    {
+      "category": "tile",
+      "name": "tile-keyboard"
+    },
+    {
+      "category": "tile",
+      "name": "tile-lamp"
+    },
+    {
+      "category": "tile",
+      "name": "tile-laptop"
+    },
+    {
+      "category": "tile",
+      "name": "tile-layers"
+    },
+    {
+      "category": "tile",
+      "name": "tile-layout-dashboard"
+    },
+    {
+      "category": "tile",
+      "name": "tile-layout-grid"
+    },
+    {
+      "category": "tile",
+      "name": "tile-leaf"
+    },
+    {
+      "category": "tile",
+      "name": "tile-lightbulb"
+    },
+    {
+      "category": "tile",
+      "name": "tile-lightning"
+    },
+    {
+      "category": "tile",
+      "name": "tile-link"
+    },
+    {
+      "category": "tile",
+      "name": "tile-list"
+    },
+    {
+      "category": "tile",
+      "name": "tile-list-ordered"
+    },
+    {
+      "category": "tile",
+      "name": "tile-loader"
+    },
+    {
+      "category": "tile",
+      "name": "tile-lock"
+    },
+    {
+      "category": "tile",
+      "name": "tile-login"
+    },
+    {
+      "category": "tile",
+      "name": "tile-logout"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mail"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mail-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mail-open"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mail-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mail-x"
+    },
+    {
+      "category": "tile",
+      "name": "tile-map"
+    },
+    {
+      "category": "tile",
+      "name": "tile-map-pin"
+    },
+    {
+      "category": "tile",
+      "name": "tile-maximize"
+    },
+    {
+      "category": "tile",
+      "name": "tile-memory"
+    },
+    {
+      "category": "tile",
+      "name": "tile-menu"
+    },
+    {
+      "category": "tile",
+      "name": "tile-message"
+    },
+    {
+      "category": "tile",
+      "name": "tile-message-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-message-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mic"
+    },
+    {
+      "category": "tile",
+      "name": "tile-minimize"
+    },
+    {
+      "category": "tile",
+      "name": "tile-minus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-monitor"
+    },
+    {
+      "category": "tile",
+      "name": "tile-moon"
+    },
+    {
+      "category": "tile",
+      "name": "tile-more-horizontal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-more-vertical"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mountain"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mouse"
+    },
+    {
+      "category": "tile",
+      "name": "tile-move"
+    },
+    {
+      "category": "tile",
+      "name": "tile-music"
+    },
+    {
+      "category": "tile",
+      "name": "tile-music-2"
+    },
+    {
+      "category": "tile",
+      "name": "tile-mute"
+    },
+    {
+      "category": "tile",
+      "name": "tile-navigation"
+    },
+    {
+      "category": "tile",
+      "name": "tile-network"
+    },
+    {
+      "category": "tile",
+      "name": "tile-notebook"
+    },
+    {
+      "category": "tile",
+      "name": "tile-octagon"
+    },
+    {
+      "category": "tile",
+      "name": "tile-package"
+    },
+    {
+      "category": "tile",
+      "name": "tile-package-open"
+    },
+    {
+      "category": "tile",
+      "name": "tile-paintbrush"
+    },
+    {
+      "category": "tile",
+      "name": "tile-palette"
+    },
+    {
+      "category": "tile",
+      "name": "tile-panel-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-panel-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-paperclip"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pause"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pen"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pen-tool"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pencil"
+    },
+    {
+      "category": "tile",
+      "name": "tile-percent"
+    },
+    {
+      "category": "tile",
+      "name": "tile-percent-badge"
+    },
+    {
+      "category": "tile",
+      "name": "tile-phone"
+    },
+    {
+      "category": "tile",
+      "name": "tile-phone-call"
+    },
+    {
+      "category": "tile",
+      "name": "tile-phone-incoming"
+    },
+    {
+      "category": "tile",
+      "name": "tile-phone-outgoing"
+    },
+    {
+      "category": "tile",
+      "name": "tile-picture-in-picture"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pilcrow"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pin"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pin-off"
+    },
+    {
+      "category": "tile",
+      "name": "tile-plane"
+    },
+    {
+      "category": "tile",
+      "name": "tile-play"
+    },
+    {
+      "category": "tile",
+      "name": "tile-plus"
+    },
+    {
+      "category": "tile",
+      "name": "tile-podcast"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pointer"
+    },
+    {
+      "category": "tile",
+      "name": "tile-pound"
+    },
+    {
+      "category": "tile",
+      "name": "tile-power"
+    },
+    {
+      "category": "tile",
+      "name": "tile-printer"
+    },
+    {
+      "category": "tile",
+      "name": "tile-printer-2"
+    },
+    {
+      "category": "tile",
+      "name": "tile-qr-code"
+    },
+    {
+      "category": "tile",
+      "name": "tile-quote"
+    },
+    {
+      "category": "tile",
+      "name": "tile-radio"
+    },
+    {
+      "category": "tile",
+      "name": "tile-receipt"
+    },
+    {
+      "category": "tile",
+      "name": "tile-record"
+    },
+    {
+      "category": "tile",
+      "name": "tile-redo"
+    },
+    {
+      "category": "tile",
+      "name": "tile-refresh"
+    },
+    {
+      "category": "tile",
+      "name": "tile-repeat"
+    },
+    {
+      "category": "tile",
+      "name": "tile-repeat-one"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rewind"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rocket"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rotate-ccw"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rotate-cw"
+    },
+    {
+      "category": "tile",
+      "name": "tile-route"
+    },
+    {
+      "category": "tile",
+      "name": "tile-router"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rows"
+    },
+    {
+      "category": "tile",
+      "name": "tile-rss"
+    },
+    {
+      "category": "tile",
+      "name": "tile-ruler"
+    },
+    {
+      "category": "tile",
+      "name": "tile-save"
+    },
+    {
+      "category": "tile",
+      "name": "tile-scan"
+    },
+    {
+      "category": "tile",
+      "name": "tile-scan-face"
+    },
+    {
+      "category": "tile",
+      "name": "tile-scissors"
+    },
+    {
+      "category": "tile",
+      "name": "tile-search"
+    },
+    {
+      "category": "tile",
+      "name": "tile-send"
+    },
+    {
+      "category": "tile",
+      "name": "tile-server"
+    },
+    {
+      "category": "tile",
+      "name": "tile-settings"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shapes"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shield"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shield-alert"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shield-check"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shield-x"
+    },
+    {
+      "category": "tile",
+      "name": "tile-ship"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shopping-bag"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shopping-cart"
+    },
+    {
+      "category": "tile",
+      "name": "tile-shuffle"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sidebar-left"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sidebar-right"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sigma"
+    },
+    {
+      "category": "tile",
+      "name": "tile-signpost"
+    },
+    {
+      "category": "tile",
+      "name": "tile-skip-next"
+    },
+    {
+      "category": "tile",
+      "name": "tile-skip-previous"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sliders-horizontal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sliders-vertical"
+    },
+    {
+      "category": "tile",
+      "name": "tile-smartphone"
+    },
+    {
+      "category": "tile",
+      "name": "tile-snowflake"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sort"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sparkles"
+    },
+    {
+      "category": "tile",
+      "name": "tile-speaker"
+    },
+    {
+      "category": "tile",
+      "name": "tile-spellcheck"
+    },
+    {
+      "category": "tile",
+      "name": "tile-split-horizontal"
+    },
+    {
+      "category": "tile",
+      "name": "tile-split-vertical"
+    },
+    {
+      "category": "tile",
+      "name": "tile-square"
+    },
+    {
+      "category": "tile",
+      "name": "tile-star"
+    },
+    {
+      "category": "tile",
+      "name": "tile-star-half"
+    },
+    {
+      "category": "tile",
+      "name": "tile-stop"
+    },
+    {
+      "category": "tile",
+      "name": "tile-store"
+    },
+    {
+      "category": "tile",
+      "name": "tile-strikethrough"
+    },
+    {
+      "category": "tile",
+      "name": "tile-subscript"
+    },
+    {
+      "category": "tile",
+      "name": "tile-suitcase"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sun"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sunrise"
+    },
+    {
+      "category": "tile",
+      "name": "tile-sunset"
+    },
+    {
+      "category": "tile",
+      "name": "tile-superscript"
+    }
+  ]
+}

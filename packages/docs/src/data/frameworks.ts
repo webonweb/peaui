@@ -26,8 +26,8 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     compactLabel: 'Vue',
     badge: 'Vue 3',
     description: {
-      en: 'The primary, complete library API with interactive examples and full API reference.',
-      pl: 'Główne, kompletne API biblioteki z interaktywnymi przykładami i pełnym API.',
+      en: 'Native Vue 3 components with Composition API and TypeScript.',
+      pl: 'Natywne komponenty Vue 3 wykorzystujące Composition API i TypeScript.',
     },
     availability: { en: 'Stable', pl: 'Stabilne' },
   },
@@ -38,8 +38,8 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     compactLabel: 'React',
     badge: 'React 19',
     description: {
-      en: 'A complete catalog of 62 native React components with the same API, appearance and behavior as Vue.',
-      pl: 'Pełny katalog 62 natywnych komponentów React z tym samym API, wyglądem i zachowaniem co Vue.',
+      en: 'Native React components with fully typed APIs.',
+      pl: 'Natywne komponenty React z w pełni typowanym API.',
     },
     availability: { en: 'Stable', pl: 'Stabilne' },
   },
@@ -50,8 +50,8 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     compactLabel: 'WC',
     badge: 'Custom Elements',
     description: {
-      en: 'A complete Custom Elements catalog with rendering and behavior matching the Vue components 1:1.',
-      pl: 'Pełny katalog Custom Elements z renderingiem i zachowaniem zgodnym 1:1 z komponentami Vue.',
+      en: 'Framework-independent custom elements powered by the same design system.',
+      pl: 'Niezależne od frameworka custom elements oparte na tym samym systemie projektowym.',
     },
     availability: { en: 'Stable', pl: 'Stabilne' },
   },

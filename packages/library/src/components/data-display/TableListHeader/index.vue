@@ -48,8 +48,10 @@ const isFiltersDrawerPanelOpen = defineModel<boolean>('filters-open', { default:
   <div
     class="peaui-table-list-header"
     :class="{
-      'peaui-table-list-header--without-description': !slots['addtional-description'],
-      'peaui-table-list-header--with-description': slots['addtional-description'],
+      'peaui-table-list-header--without-description':
+        !slots['additional-description'] && !slots['addtional-description'],
+      'peaui-table-list-header--with-description':
+        slots['additional-description'] || slots['addtional-description'],
     }"
     data-testid="table-list-header"
     role="region"
@@ -128,6 +130,7 @@ const isFiltersDrawerPanelOpen = defineModel<boolean>('filters-open', { default:
           :ariaLabel="buttonCreateLabel"
           size="s"
           type="button"
+          use-aria-label
           variant="primary"
           @click.prevent="emit('on:create')"
         >
@@ -152,7 +155,9 @@ const isFiltersDrawerPanelOpen = defineModel<boolean>('filters-open', { default:
         </ButtonExport>
       </div>
     </div>
-    <slot name="addtional-content" />
-    <slot name="addtional-description" />
+    <slot v-if="slots['additional-content']" name="additional-content" />
+    <slot v-else name="addtional-content" />
+    <slot v-if="slots['additional-description']" name="additional-description" />
+    <slot v-else name="addtional-description" />
   </div>
 </template>

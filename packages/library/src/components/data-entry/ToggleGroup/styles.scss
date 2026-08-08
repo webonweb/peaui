@@ -1,0 +1,160 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-toggle-group {
+  display: block;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.peaui-toggle-group__field {
+  display: grid;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  gap: 0.375rem;
+}
+
+.peaui-toggle-group__label {
+  color: var(--peaui-color-grey-600);
+  font-weight: 500;
+
+  @include set-size-text(xs);
+}
+
+.peaui-toggle-group__required {
+  margin-inline-start: 0.25rem;
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-toggle-group {
+  display: flex;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.peaui-toggle-group--vertical {
+  inline-size: fit-content;
+  flex-direction: column;
+}
+
+.peaui-toggle-group--overflow-wrap {
+  flex-wrap: wrap;
+}
+
+.peaui-toggle-group--vertical.peaui-toggle-group--overflow-wrap {
+  flex-wrap: nowrap;
+}
+
+.peaui-toggle-group--overflow-scroll {
+  padding: 0.1875rem;
+  margin: -0.1875rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+
+.peaui-toggle-group--overflow-scroll .peaui-toggle-group__item {
+  flex: 0 0 auto;
+}
+
+.peaui-toggle-group--attached {
+  gap: 0;
+  isolation: isolate;
+}
+
+.peaui-toggle-group--attached .peaui-toggle-group__item {
+  position: relative;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--horizontal
+  .peaui-toggle-group__item
+  + .peaui-toggle-group__item {
+  margin-inline-start: -1px;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--horizontal .peaui-toggle-group__item:first-child {
+  border-start-start-radius: 0.5rem;
+  border-end-start-radius: 0.5rem;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--horizontal .peaui-toggle-group__item:last-child {
+  border-start-end-radius: 0.5rem;
+  border-end-end-radius: 0.5rem;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--vertical
+  .peaui-toggle-group__item
+  + .peaui-toggle-group__item {
+  margin-block-start: -1px;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--vertical .peaui-toggle-group__item:first-child {
+  border-start-start-radius: 0.5rem;
+  border-start-end-radius: 0.5rem;
+}
+
+.peaui-toggle-group--attached.peaui-toggle-group--vertical .peaui-toggle-group__item:last-child {
+  border-end-start-radius: 0.5rem;
+  border-end-end-radius: 0.5rem;
+}
+
+.peaui-toggle-group--attached .peaui-toggle-group__item:hover,
+.peaui-toggle-group--attached .peaui-toggle-group__item:focus-visible,
+.peaui-toggle-group--attached .peaui-toggle-group__item[data-pressed='true'] {
+  z-index: 1;
+}
+
+.peaui-toggle-group--attached .peaui-toggle-group__item:focus-visible {
+  outline-offset: 2px;
+}
+
+.peaui-toggle-group--vertical .peaui-toggle-group__item {
+  inline-size: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.peaui-toggle-group__error {
+  color: var(--peaui-color-danger-700);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.peaui-toggle-group--invalid {
+  border-radius: 0.5rem;
+  outline: 2px solid transparent;
+}
+
+.peaui-toggle-group--disabled {
+  cursor: not-allowed;
+}
+
+@media (max-width: 32rem) {
+  .peaui-toggle-group--overflow-wrap .peaui-toggle-group__item {
+    flex: 1 1 max(8rem, calc(50% - 0.5rem));
+  }
+
+  .peaui-toggle-group--attached.peaui-toggle-group--overflow-wrap {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .peaui-toggle-group--attached.peaui-toggle-group--overflow-wrap .peaui-toggle-group__item {
+    flex: 0 0 auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-toggle-group__error,
+  .peaui-toggle-group__required {
+    color: Mark;
+  }
+}

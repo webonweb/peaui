@@ -48,7 +48,7 @@ export const AllColumnTypes: Story = {
 export const WorkflowAndDetails: Story = {
   args: {
     columns: tableListWorkflowColumns,
-    isDetials: true,
+    isDetails: true,
     records: tableListStoryRecords,
   },
 };

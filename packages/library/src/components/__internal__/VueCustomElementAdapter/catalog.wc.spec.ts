@@ -16,7 +16,7 @@ describe('Web Components catalog parity', () => {
   it('keeps a Web Component, story and test next to every Vue component', () => {
     const expectedComponents = componentDirectories(vueComponents);
 
-    expect(expectedComponents).toHaveLength(64);
+    expect(expectedComponents).toHaveLength(84);
     expect(componentDirectories(webComponents)).toEqual(expectedComponents);
     expect(componentDirectories(webComponentStories)).toEqual(expectedComponents);
     expect(componentDirectories(webComponentTests)).toEqual(expectedComponents);

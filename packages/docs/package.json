@@ -6,8 +6,11 @@
   "scripts": {
     "generate": "node ./scripts/generate-component-api.mjs",
     "dev": "npm run generate && vite --open",
-    "build": "npm run generate && vue-tsc --noEmit && vite build && node ./scripts/validate-shared-styles.mjs",
+    "build": "npm run generate && vue-tsc --noEmit && vite build && node ./scripts/generate-static-pages.mjs && node ./scripts/validate-shared-styles.mjs",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:browser": "playwright test --config ./playwright.config.ts",
+    "test:browser:install": "playwright install chromium",
     "format": "prettier . --check",
     "format:fix": "prettier . --write",
     "preview": "vite preview --open",
@@ -20,18 +23,23 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.54.2",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/test-utils": "^2.4.11",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.7.0",
+    "jsdom": "^27.4.0",
     "prettier": "^3.7.4",
     "sass": "^1.93.2",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.53.1",
     "vite": "^7.1.10",
     "vite-svg-loader": "^5.1.1",
-    "vue-tsc": "^3.1.1",
-    "typescript-eslint": "^8.53.1"
+    "vitest": "^4.1.10",
+    "vue-tsc": "^3.1.1"
   }
 }

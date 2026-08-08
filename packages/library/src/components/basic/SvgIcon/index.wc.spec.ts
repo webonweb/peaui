@@ -94,6 +94,24 @@ describe('SvgIcon (index.wc.ts)', () => {
     expect(svg.getAttribute('role')).toBe('img');
   });
 
+  it('renders a normalized catalog icon and derives accessible image semantics', async () => {
+    const element = mountSvgIcon({
+      name: 'tile/tile-accessibility',
+    });
+    element.setAttribute('aria-label', 'Dostepnosc');
+
+    const svg = await waitForSvg(element);
+
+    expect(svg.getAttribute('viewBox')).toBe('0 0 24 24');
+    expect(svg.getAttribute('fill')).toBe('none');
+    expect(svg.getAttribute('stroke')).toBe('currentColor');
+    expect(svg.getAttribute('stroke-width')).toBe('1.8');
+    expect(svg.querySelector('circle')).not.toBeNull();
+    expect(svg.getAttribute('aria-label')).toBe('Dostepnosc');
+    expect(svg.hasAttribute('aria-hidden')).toBe(false);
+    expect(svg.getAttribute('role')).toBe('img');
+  });
+
   it('merges external host class with the base svg icon class', async () => {
     const element = mountSvgIcon({
       name: 'plus',

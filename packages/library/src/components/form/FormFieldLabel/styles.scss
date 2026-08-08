@@ -1,0 +1,41 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-form-label {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+
+  @include set-param(column-gap, 0.5rem);
+  @include set-param(margin-bottom, 0.125rem);
+}
+
+.peaui-form-label__content {
+  display: flex;
+  width: 100%;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+.peaui-form-label__text {
+  font-weight: 500;
+  @include set-size-text(xs);
+
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-label__text--readonly {
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-label__optional {
+  @include set-size-text(xs);
+  color: var(--peaui-color-grey-500);
+}
+
+.peaui-form-label__hint-icon {
+  fill: var(--peaui-color-primary-700);
+
+  @include set-param(width, 0.875rem);
+  @include set-param(height, 0.875rem);
+}

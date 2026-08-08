@@ -22,7 +22,11 @@ defineTableList();
 const meta = {
   title: '2. Data Display/TableList',
   component: TableListElement.tagName,
-  args: createVueCustomElementStoryArgs(TableListVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(TableListVueComponent),
+    columns: tableListStoryColumns,
+    records: tableListStoryRecords,
+  },
   argTypes: createVueCustomElementArgTypes(TableListVueComponent),
   parameters: {
     name: 'TableList',
@@ -70,7 +74,7 @@ export const AllColumnTypes: Story = {
 export const WorkflowAndDetails: Story = {
   args: {
     columns: tableListWorkflowColumns,
-    isDetials: true,
+    isDetails: true,
     records: tableListStoryRecords,
   },
 };

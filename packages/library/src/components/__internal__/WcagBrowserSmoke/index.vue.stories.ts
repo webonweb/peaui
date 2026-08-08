@@ -360,7 +360,7 @@ export const TreeList: Story = {
       };
     },
     template: `
-      <div style="padding: 2rem; width: 20rem; max-width: 100%;">
+      <div style="box-sizing: border-box; padding: 2rem; width: 20rem; max-width: 100%;">
         <TreeListComponent
           v-model:tree="tree"
           canRemove

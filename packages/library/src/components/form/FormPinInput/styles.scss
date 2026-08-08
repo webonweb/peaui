@@ -1,0 +1,245 @@
+@use '@/assets/mixins.scss' as *;
+
+peaui-form-pin-input {
+  display: block;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.peaui-form-pin-input {
+  --peaui-pin-cell-size: 2.875rem;
+  --peaui-pin-cell-font-size: 1.125rem;
+
+  display: grid;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  color: var(--peaui-color-grey-900);
+  font-family: inherit;
+  row-gap: 0.375rem;
+}
+
+.peaui-form-pin-input--size-s {
+  --peaui-pin-cell-size: 2.75rem;
+  --peaui-pin-cell-font-size: 1rem;
+}
+
+.peaui-form-pin-input--size-l {
+  --peaui-pin-cell-size: 3.25rem;
+  --peaui-pin-cell-font-size: 1.25rem;
+}
+
+.peaui-form-pin-input__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-inline-size: 0;
+  gap: 0.5rem;
+}
+
+.peaui-form-pin-input__label {
+  min-inline-size: 0;
+  color: var(--peaui-color-grey-900);
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.peaui-form-pin-input__required {
+  margin-inline-start: 0.1875rem;
+  color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-pin-input__group {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  min-block-size: var(--peaui-pin-cell-size);
+  min-inline-size: 0;
+  padding: 0.375rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 0.375rem;
+  overscroll-behavior-inline: contain;
+  scroll-padding-inline: 0.375rem;
+  scrollbar-width: thin;
+}
+
+.peaui-form-pin-input__cell {
+  flex: 0 0 var(--peaui-pin-cell-size);
+  box-sizing: border-box;
+  min-block-size: 2.75rem;
+  inline-size: var(--peaui-pin-cell-size);
+  block-size: var(--peaui-pin-cell-size);
+  padding: 0.25rem;
+  color: var(--peaui-color-grey-900);
+  background: var(--peaui-color-grey-0);
+  border: 1px solid var(--peaui-color-grey-300);
+  border-radius: 0.5rem;
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--peaui-pin-cell-font-size);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.peaui-form-pin-input__cell:hover:not(:disabled):not(:read-only) {
+  border-color: var(--peaui-color-primary-600);
+}
+
+.peaui-form-pin-input__cell:focus-visible {
+  position: relative;
+  z-index: 1;
+  border-color: var(--peaui-color-primary-600);
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-primary-600) r g b / 0.7);
+  outline: none;
+}
+
+.peaui-form-pin-input__separator {
+  display: grid;
+  flex: 0 0 0.75rem;
+  place-items: center;
+  min-block-size: 2.75rem;
+  color: var(--peaui-color-grey-500);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+}
+
+.peaui-form-pin-input__description,
+.peaui-form-pin-input__error {
+  max-inline-size: 40rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.peaui-form-pin-input__description {
+  color: var(--peaui-color-grey-700);
+}
+
+.peaui-form-pin-input__error {
+  color: var(--peaui-color-danger-700);
+  font-weight: 600;
+}
+
+.peaui-form-pin-input--invalid .peaui-form-pin-input__cell {
+  border-color: var(--peaui-color-danger-700);
+}
+
+.peaui-form-pin-input--invalid .peaui-form-pin-input__cell:focus-visible {
+  box-shadow: 0 0 5px 0 rgb(from var(--peaui-color-danger-600) r g b / 0.7);
+}
+
+.peaui-form-pin-input--readonly .peaui-form-pin-input__label {
+  cursor: default;
+}
+
+.peaui-form-pin-input--readonly .peaui-form-pin-input__cell {
+  background-color: var(--peaui-color-grey-100);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    transparent 4px,
+    rgb(from var(--peaui-color-grey-900) r g b / 0.035) 4px,
+    rgb(from var(--peaui-color-grey-900) r g b / 0.035) 6px
+  );
+}
+
+.peaui-form-pin-input--disabled,
+.peaui-form-pin-input--loading {
+  color: var(--peaui-color-grey-600);
+}
+
+.peaui-form-pin-input--disabled .peaui-form-pin-input__label,
+.peaui-form-pin-input--loading .peaui-form-pin-input__label {
+  color: var(--peaui-color-grey-600);
+  cursor: not-allowed;
+}
+
+.peaui-form-pin-input--disabled .peaui-form-pin-input__cell,
+.peaui-form-pin-input--loading .peaui-form-pin-input__cell {
+  color: var(--peaui-color-grey-600);
+  background: var(--peaui-color-grey-100);
+  border-color: var(--peaui-color-grey-300);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.78;
+}
+
+.peaui-form-pin-input--loading .peaui-form-pin-input__cell {
+  color: transparent;
+  background-image: linear-gradient(
+    100deg,
+    var(--peaui-color-grey-100) 20%,
+    var(--peaui-color-grey-200) 45%,
+    var(--peaui-color-grey-100) 70%
+  );
+  background-size: 200% 100%;
+  animation: peaui-pin-loading 1.2s ease-in-out infinite;
+}
+
+.peaui-form-pin-input__loading-status {
+  @include sr-only;
+}
+
+@keyframes peaui-pin-loading {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 30rem) {
+  .peaui-form-pin-input {
+    --peaui-pin-cell-size: 2.75rem;
+  }
+
+  .peaui-form-pin-input__group {
+    gap: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-form-pin-input__cell {
+    transition: none;
+  }
+
+  .peaui-form-pin-input--loading .peaui-form-pin-input__cell {
+    background-image: none;
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-pin-input__cell {
+    color: CanvasText;
+    background: Field;
+    border-color: FieldText;
+    forced-color-adjust: auto;
+  }
+
+  .peaui-form-pin-input__cell:focus-visible {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -3px;
+  }
+
+  .peaui-form-pin-input--invalid .peaui-form-pin-input__cell {
+    border-color: Mark;
+  }
+}

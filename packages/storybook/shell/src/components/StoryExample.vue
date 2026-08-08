@@ -117,11 +117,11 @@ watchEffect(async () => {
   background-color: transparent !important;
 }
 
-:global(body.dark-mode) .story-source {
+:global(body.dark-mode .story-source) {
   background: #0c1220;
 }
 
-:global(body.dark-mode) .story-source__toolbar button {
+:global(body.dark-mode .story-source__toolbar button) {
   border-color: #334159;
   background: #172033;
   color: #d5dfed;

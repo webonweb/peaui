@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 
-import 'vue-advanced-cropper/dist/style.css';
 import '../../library/src/styles.scss';
 import './styles/main.css';
 import App from './App.vue';

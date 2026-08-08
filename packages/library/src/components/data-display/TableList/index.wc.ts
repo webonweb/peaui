@@ -9,6 +9,7 @@ import TableListVueComponent from './index.ce.vue';
 export const TableListElement = createVueCustomElement(
   TableListVueComponent,
   `${UIKIT_NAME}-table-list`,
+  { hostRole: 'group' },
 );
 
 export function defineTableList(): void {

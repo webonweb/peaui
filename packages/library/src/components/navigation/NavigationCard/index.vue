@@ -2,7 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { sanitizeToSlug } from '@/helpers/string.helepr';
+import { sanitizeToSlug } from '@/helpers/string.helper';
 import { computed, getCurrentInstance, useId } from 'vue';
 
 // TYPES

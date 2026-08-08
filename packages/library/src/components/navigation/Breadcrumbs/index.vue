@@ -33,7 +33,7 @@ type ParsedBreadcrumbItem = {
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
 const {
-  items,
+  items = [],
   separator = '/',
   ariaLabel = 'Ścieżka nawigacji',
   dataTestId,

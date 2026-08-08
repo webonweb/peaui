@@ -150,20 +150,32 @@
 
 .peaui-form-field__erase-button {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 50%;
+  z-index: 2;
 
   @include set-param(right, var(--right));
+  @include set-param(width, 2rem);
+  @include set-param(height, 2rem);
 
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   border: 0;
+  border-radius: 0.375rem;
   background-color: transparent;
   padding: 0;
   color: var(--peaui-color-grey-500);
+  transform: translateY(-50%);
+  touch-action: manipulation;
 
-  @include transition(opacity);
+  @include outline(var(--peaui-color-primary-700));
+  @include transition(background-color, color, opacity);
+}
+
+.peaui-form-field__erase-button:hover {
+  background-color: var(--peaui-color-grey-100);
+  color: var(--peaui-color-grey-800);
 }
 
 .peaui-form-field__erase-icon {

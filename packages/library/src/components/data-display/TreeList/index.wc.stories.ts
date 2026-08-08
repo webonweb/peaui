@@ -12,10 +12,25 @@ import { TreeListElement, defineTreeList } from './index.wc';
 
 defineTreeList();
 
+const tree = {
+  label: 'malopolskie',
+  children: {
+    krakowski: {
+      label: 'krakowski',
+      children: {
+        skala: { label: 'skala', children: {} },
+      },
+    },
+  },
+};
+
 const meta = {
   title: '2. Data Display/TreeList',
   component: TreeListElement.tagName,
-  args: createVueCustomElementStoryArgs(TreeListVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(TreeListVueComponent),
+    tree,
+  },
   argTypes: createVueCustomElementArgTypes(TreeListVueComponent),
   parameters: {
     name: 'TreeList',

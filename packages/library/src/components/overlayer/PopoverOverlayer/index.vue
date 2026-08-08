@@ -55,6 +55,7 @@ const {
   ariaLabel,
   dataTestId,
   contentClass,
+  manageTriggerAccessibility = true,
   matchTriggerWidth = false,
   popupType,
 } = defineProps<{
@@ -63,6 +64,7 @@ const {
   disabled?: boolean;
   ariaLabel?: string;
   contentClass?: string;
+  manageTriggerAccessibility?: boolean;
   matchTriggerWidth?: boolean;
   popupType?: PopupType;
 }>();
@@ -78,6 +80,7 @@ let managedTriggerKeyboardElement: HTMLElement | null = null;
 let managedTriggerAttributes: ManagedTriggerAttributes = {};
 const focusableTriggerSelector =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+const preferredTriggerSelector = '[data-peaui-popover-trigger]';
 
 const triggerReference = ref<HTMLElement | null>(null);
 const popoverReference = ref<PopoverElement | null>(null);
@@ -133,7 +136,7 @@ const resolvedExplicitTriggerAriaLabel = computed(
 );
 const shouldProvideDefaultTriggerAccessibility = computed(
   () =>
-    !disabled &&
+    manageTriggerAccessibility &&
     attrs.role === undefined &&
     attrs.tabindex === undefined &&
     !hasFocusableTriggerDescendant.value,
@@ -150,14 +153,14 @@ const resolvedManagedTriggerRole = computed(() => {
     return attrs.role;
   }
 
-  return disabled ? undefined : 'button';
+  return 'button';
 });
 const resolvedTriggerTabindex = computed(() => {
   if (typeof attrs.tabindex === 'string' || typeof attrs.tabindex === 'number') {
     return attrs.tabindex;
   }
 
-  return shouldProvideDefaultTriggerAccessibility.value ? 0 : undefined;
+  return shouldProvideDefaultTriggerAccessibility.value ? (disabled ? -1 : 0) : undefined;
 });
 const resolvedTriggerAriaLabel = computed(() => {
   if (normalizedTriggerAriaLabelledby.value) {
@@ -196,16 +199,20 @@ const getTriggerWrapperAttributes = () => {
   return nextAttrs;
 };
 
-const triggerBindings = computed(() => ({
-  ...getTriggerWrapperAttributes(),
-  'aria-controls': hasFocusableTriggerDescendant.value ? undefined : uid,
-  'aria-disabled': hasFocusableTriggerDescendant.value ? undefined : disabled || undefined,
-  'aria-expanded': hasFocusableTriggerDescendant.value ? undefined : isOpen.value,
-  'aria-haspopup': hasFocusableTriggerDescendant.value ? undefined : resolvedAriaHaspopup.value,
-  'aria-label': hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerAriaLabel.value,
-  role: hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerRole.value,
-  tabindex: hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerTabindex.value,
-}));
+const triggerBindings = computed(() => {
+  if (!manageTriggerAccessibility) return { ...attrs };
+
+  return {
+    ...getTriggerWrapperAttributes(),
+    'aria-controls': hasFocusableTriggerDescendant.value ? undefined : uid,
+    'aria-disabled': hasFocusableTriggerDescendant.value ? undefined : disabled || undefined,
+    'aria-expanded': hasFocusableTriggerDescendant.value ? undefined : isOpen.value,
+    'aria-haspopup': hasFocusableTriggerDescendant.value ? undefined : resolvedAriaHaspopup.value,
+    'aria-label': hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerAriaLabel.value,
+    role: hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerRole.value,
+    tabindex: hasFocusableTriggerDescendant.value ? undefined : resolvedTriggerTabindex.value,
+  };
+});
 
 // FUNCTIONS
 //-----------------------------------------------------------------------------------------------//
@@ -368,8 +375,15 @@ const onHandleManagedTriggerKeydown = (event: KeyboardEvent) => {
 const syncTriggerAccessibility = () => {
   clearManagedTriggerAccessibility();
 
+  if (!manageTriggerAccessibility) {
+    hasFocusableTriggerDescendant.value = false;
+    return;
+  }
+
   const focusableTriggerElement =
-    triggerReference.value?.querySelector<HTMLElement>(focusableTriggerSelector) ?? null;
+    triggerReference.value?.querySelector<HTMLElement>(preferredTriggerSelector) ??
+    triggerReference.value?.querySelector<HTMLElement>(focusableTriggerSelector) ??
+    null;
 
   hasFocusableTriggerDescendant.value = Boolean(focusableTriggerElement);
 

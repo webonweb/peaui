@@ -15,7 +15,15 @@ defineFormSelect();
 const meta = {
   title: '5. Form/FormSelect',
   component: FormSelectElement.tagName,
-  args: createVueCustomElementStoryArgs(FormSelectVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormSelectVueComponent),
+    canErase: true,
+    options: [
+      { label: 'Aktywny', value: 'active' },
+      { label: 'Nieaktywny', value: 'inactive' },
+    ],
+    value: 'active',
+  },
   argTypes: createVueCustomElementArgTypes(FormSelectVueComponent),
   parameters: {
     name: 'FormSelect',

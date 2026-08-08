@@ -9,7 +9,24 @@ const iconModules = import.meta.glob('../../../assets/icons/*.svg');
 const iconNames = Object.keys(iconModules)
   .map((path) => path.split('/').pop()?.replace('.svg', ''))
   .filter((name): name is string => Boolean(name))
-  .sort((left, right) => left.localeCompare(right));
+  .sort((left, right) => left.localeCompare(right))
+  .concat([
+    'core/accessibility',
+    'core/check-circle',
+    'core/calendar',
+    'core/warning-triangle',
+    'core/cloud-upload',
+    'core/copy',
+    'core/file-text',
+    'core/heart',
+    'core/menu',
+    'core/search',
+    'core/settings',
+    'core/sparkles',
+    'extended/building',
+    'ring/ring-check',
+    'tile/tile-check',
+  ]);
 
 type SvgIconStoryArgs = {
   dataTestId?: string;
@@ -23,8 +40,9 @@ const meta = {
     name: 'SvgIcon',
     description:
       'Komponent SvgIcon laduje ikone SVG dynamicznie na podstawie propu `name`. ' +
+      'Pogrupowany katalog zawiera 1348 ikon PeaUI Outline Icons Mega 0.3.0. ' +
       'Wartosc propu musi odpowiadac nazwie pliku w katalogu `src/assets/icons`, bez rozszerzenia, ' +
-      'np. `plus` dla pliku `plus.svg`.',
+      'np. `plus` dla ikony zgodnosci albo `core/sparkles` dla pogrupowanego katalogu PEAUI.',
     code: `
 <script type="module">
   import "@peaui/ui/basic/SvgIcon";

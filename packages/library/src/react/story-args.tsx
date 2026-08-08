@@ -2,6 +2,29 @@ import { createElement } from 'react';
 
 import { avatarDemoProps } from '@/components/data-display/Avatar/avatar.demo';
 import { avatarGroupDemoProps } from '@/components/data-display/AvatarGroup/avatar-group.demo';
+import { keyboardKeyDemoProps } from '@/components/data-display/KeyboardKey/keyboard-key.demo';
+import { virtualListDemoItems } from '@/components/data-display/VirtualList/virtual-list.demo';
+import { inlineEditDemoProps } from '@/components/data-entry/InlineEdit/inline-edit.demo';
+import { copyButtonDemoProps } from '@/components/data-entry/CopyButton/copy-button.demo';
+import { contextMenuDemoProps } from '@/components/navigation/ContextMenu/context-menu.demo';
+import { dropdownMenuDemoItems } from '@/components/navigation/DropdownMenu/dropdown-menu.demo';
+import { menuBarDemoProps } from '@/components/navigation/MenuBar/menu-bar.demo';
+import { formSwitchToggleDemoProps } from '@/components/form/FormSwitchToggle/form-switch-toggle.demo';
+import { formRatingInputDemoProps } from '@/components/form/FormRatingInput/form-rating-input.demo';
+import { formTimePickerDemoProps } from '@/components/form/FormTimePicker/form-time-picker.demo';
+import { formDateTimePickerDemoProps } from '@/components/form/FormDateTimePicker/form-date-time-picker.demo';
+import { formDateRangePickerDemoProps } from '@/components/form/FormDateRangePicker/form-date-range-picker.demo';
+import { formColorPickerDemoProps } from '@/components/form/FormColorPicker/form-color-picker.demo';
+import { formPinInputDemoProps } from '@/components/form/FormPinInput/form-pin-input.demo';
+import { formTagsInputDemoProps } from '@/components/form/FormTagsInput/form-tags-input.demo';
+import { toggleButtonDemoProps } from '@/components/data-entry/ToggleButton/toggle-button.demo';
+import { toggleGroupViewItems } from '@/components/data-entry/ToggleGroup/toggle-group.demo';
+import { segmentedControlViewItems } from '@/components/data-entry/SegmentedControl/segmented-control.demo';
+import { splitButtonDemoProps } from '@/components/data-entry/SplitButton/split-button.demo';
+import {
+  transferListDemoValue,
+  transferListItems,
+} from '@/components/data-entry/TransferList/transfer-list.demo';
 
 import type { PeauiReactProps, ReactComponentName } from './generated-react-props';
 
@@ -13,7 +36,6 @@ const card = (title: string) =>
 
 const presets: Record<ReactComponentName, Record<string, unknown>> = {
   ImageView: { alt: 'Zielony groszek PEAUI', max: '18rem', size: 'm', src: '/peaui-logo.png' },
-  PhotoEditor: { ariaLabel: 'Edytor zdjęcia' },
   SvgIcon: { name: 'checkCircle' },
   Avatar: { ...avatarDemoProps },
   AvatarGroup: { ...avatarGroupDemoProps },
@@ -67,14 +89,50 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     ],
     id: 'tree-demo',
   },
+  KeyboardKey: { ...keyboardKeyDemoProps },
+  VirtualList: {
+    ariaLabel: 'Wyniki wyszukiwania',
+    height: 320,
+    items: virtualListDemoItems,
+    itemSize: 64,
+    overscan: 4,
+  },
   ButtonAction: { children: 'Zapisz zmiany', variant: 'primary' },
   ButtonExport: { children: 'Eksportuj dane', selectedItemsCount: 3, variant: 'secondary' },
   InputSlider: { ariaLabel: 'Poziom', defaultValue: 0.5, name: 'level' },
+  InlineEdit: { ...inlineEditDemoProps },
+  CopyButton: { ...copyButtonDemoProps },
   SearchInput: { ariaLabel: 'Szukaj komponentu', defaultValue: '', placeholder: 'Szukaj…' },
   SelectableCard: {
     additional: 'Dodatkowa informacja',
     description: 'Opis dostępnej opcji.',
     title: 'Wybierz wariant',
+  },
+  ToggleButton: {
+    defaultValue: toggleButtonDemoProps.value,
+    ariaLabel: toggleButtonDemoProps.ariaLabel,
+    content: toggleButtonDemoProps.content,
+    icon: toggleButtonDemoProps.icon,
+    label: toggleButtonDemoProps.label,
+    pressedIcon: toggleButtonDemoProps.pressedIcon,
+    pressedLabel: toggleButtonDemoProps.pressedLabel,
+    variant: toggleButtonDemoProps.variant,
+  },
+  ToggleGroup: {
+    ariaLabel: 'Sposób wyświetlania',
+    defaultValue: 'grid',
+    items: toggleGroupViewItems,
+    label: 'Widok wyników',
+  },
+  SegmentedControl: {
+    ariaLabel: 'Sposób wyświetlania',
+    defaultValue: 'grid',
+    items: segmentedControlViewItems,
+  },
+  SplitButton: { ...splitButtonDemoProps },
+  TransferList: {
+    defaultValue: [...transferListDemoValue],
+    items: transferListItems,
   },
   EmptyState: {
     additional: createElement('button', { type: 'button' }, 'Dodaj element'),
@@ -97,7 +155,12 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     variant: 'success',
     withShadow: true,
   },
-  FieldLabel: { for: 'demo-field', hint: 'Pole wymagane', required: true, text: 'Nazwa budynku' },
+  FormFieldLabel: {
+    for: 'demo-field',
+    hint: 'Pole wymagane',
+    required: true,
+    text: 'Nazwa budynku',
+  },
   FormButtonCheckbox: {
     children: 'Włącz powiadomienia',
     defaultValue: false,
@@ -128,11 +191,40 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     showCancelButton: true,
   },
   FormDatePicker: { defaultValue: '2026-08-05', id: 'date', label: 'Data wykonania', name: 'date' },
+  FormTimePicker: { ...formTimePickerDemoProps, defaultValue: formTimePickerDemoProps.value },
+  FormDateTimePicker: {
+    ...formDateTimePickerDemoProps,
+    defaultValue: formDateTimePickerDemoProps.value,
+    value: undefined,
+  },
+  FormDateRangePicker: {
+    ...formDateRangePickerDemoProps,
+    defaultValue: formDateRangePickerDemoProps.value,
+    value: undefined,
+  },
+  FormColorPicker: {
+    ...formColorPickerDemoProps,
+    defaultValue: formColorPickerDemoProps.value,
+    value: undefined,
+  },
+  FormPinInput: {
+    ...formPinInputDemoProps,
+    defaultValue: formPinInputDemoProps.value,
+    value: undefined,
+  },
+  FormTagsInput: {
+    ...formTagsInputDemoProps,
+    defaultValue: [...formTagsInputDemoProps.value],
+    suggestions: [...formTagsInputDemoProps.suggestions],
+    value: undefined,
+  },
   FormField: {
+    canErase: true,
     children: createElement('input', { id: 'custom-field', placeholder: 'Własna kontrolka' }),
     id: 'custom-field',
     label: 'Pole niestandardowe',
     name: 'custom',
+    value: 'Przykładowa wartość',
   },
   FormFileUpload: {},
   FormFileUploadSimple: { context: 'Wybierz maksymalnie 3 pliki', defaultFiles: [], maxFiles: 3 },
@@ -144,6 +236,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     name: 'name',
   },
   FormMultiSelect: {
+    canErase: true,
     defaultValue: ['vue', 'react'],
     id: 'frameworks',
     label: 'Frameworki',
@@ -154,7 +247,14 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
       { label: 'Web Components', value: 'wc' },
     ],
   },
-  FormNumber: { defaultValue: 42, id: 'area', label: 'Powierzchnia', min: 0, name: 'area' },
+  FormNumber: {
+    canErase: true,
+    defaultValue: 42,
+    id: 'area',
+    label: 'Powierzchnia',
+    min: 0,
+    name: 'area',
+  },
   FormPassword: {
     canVisible: true,
     defaultValue: 'BezpieczneHaslo123',
@@ -170,6 +270,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     optionValue: 'basic',
   },
   FormSelect: {
+    canErase: true,
     defaultValue: 'active',
     id: 'status',
     label: 'Status',
@@ -187,6 +288,25 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     rows: 4,
   },
   FormYearPicker: { defaultValue: 2026, id: 'year', label: 'Rok budowy', name: 'year' },
+  FormSwitchToggle: {
+    defaultValue: formSwitchToggleDemoProps.value,
+    description: formSwitchToggleDemoProps.description,
+    id: formSwitchToggleDemoProps.id,
+    label: formSwitchToggleDemoProps.label,
+    name: formSwitchToggleDemoProps.name,
+    showStateLabel: formSwitchToggleDemoProps.showStateLabel,
+  },
+  FormRatingInput: {
+    allowClear: true,
+    defaultValue: formRatingInputDemoProps.value,
+    description: formRatingInputDemoProps.description,
+    id: formRatingInputDemoProps.id,
+    label: formRatingInputDemoProps.label,
+    labels: formRatingInputDemoProps.labels,
+    max: formRatingInputDemoProps.max,
+    name: formRatingInputDemoProps.name,
+    step: 0.5,
+  },
   CardPanel: {
     children: card('Zawartość panelu'),
     header: 'Nagłówek karty',
@@ -202,6 +322,13 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     top: 'Nagłówek strony',
   },
   SectionDivider: { direction: 'horizontal', size: 'm' },
+  ScrollArea: {
+    ariaLabel: 'Lista przykładowych elementów',
+    children: [card('Sekcja 1'), card('Sekcja 2'), card('Sekcja 3')],
+    orientation: 'vertical',
+    style: { blockSize: '18rem' },
+    tabIndex: 0,
+  },
   Breadcrumbs: {
     ariaLabel: 'Okruszki nawigacyjne',
     items: [
@@ -210,6 +337,16 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
       { active: true, label: 'Przycisk' },
     ],
   },
+  ContextMenu: {
+    ...contextMenuDemoProps,
+    children: 'Kliknij prawym przyciskiem lub naciśnij Shift+F10',
+  },
+  DropdownMenu: {
+    ariaLabel: 'Akcje profilu',
+    items: dropdownMenuDemoItems,
+    triggerLabel: 'Opcje',
+  },
+  MenuBar: { ...menuBarDemoProps },
   ListLimitControl: {
     defaultLimit: 20,
     id: 'limit',

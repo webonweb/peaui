@@ -284,9 +284,9 @@ export const FormField: Story = {
   args: {
     after: undefined,
     before: undefined,
-    canErase: false,
+    canErase: true,
     disabled: false,
-    iconAfter: undefined,
+    iconAfter: 'calendar',
     iconBefore: undefined,
     id: 'first-name',
     label: 'Lorem ipsum',
@@ -296,6 +296,6 @@ export const FormField: Story = {
     readonly: false,
     required: true,
     dataTestId: 'form-field',
-    value: undefined,
+    value: 'PEAUI',
   },
 };

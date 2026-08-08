@@ -60,7 +60,7 @@ $sizes: (
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-right: var(--peaui-form-select-input-padding-right);
+  padding-right: var(--peaui-form-select-input-padding-right, var(--pr));
 }
 
 .peaui-form-select__input--searchable {

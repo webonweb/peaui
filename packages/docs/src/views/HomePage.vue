@@ -1,223 +1,272 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
-import BrandMark from '../components/BrandMark.vue';
-import { categories, frameworkComponents } from '../data/catalog';
+import HomeComponentPreview from '../components/HomeComponentPreview.vue';
+import InstallCommand from '../components/InstallCommand.vue';
+import { getFrameworkComponents } from '../data/catalog';
 import { frameworkOrder, getFrameworkDefinition } from '../data/frameworks';
 import { icons } from '../data/icons';
-import { getCategoryLabel } from '../data/localized-content';
+import { getCategoryLabel, getComponentCopy } from '../data/localized-content';
 import { useI18n } from '../i18n';
+import type { FrameworkComponentDefinition, FrameworkId } from '../types';
+import { getPreferredFramework, setPreferredFramework } from '../utils/preferred-framework';
 
-const { localize } = useI18n();
-const copy = computed(() =>
-  localize({
-    en: {
-      version: 'Documentation v1.27.0',
-      title: 'Build clear interfaces',
-      titleAccent: 'with PEAUI.',
-      intro:
-        'One library, three clear integration paths: Vue, React and Web Components — with practical guides, real accessibility and an API generated directly from source code.',
-      getStarted: 'Get started',
-      discoverWc: 'Discover Web Components',
-      copyCommand: 'Copy command',
-      newComponent: 'New component',
-      status: 'Status',
-      ready: 'Ready to use',
-      checked: 'Verified API and available variants.',
-      openDocs: 'Open docs',
-      technologies: 'technologies',
-      docsInfo: 'Documentation information',
-      vueComponents: 'Vue components',
-      reactComponents: 'React components',
-      availableIcons: 'available icons',
-      technology: 'Technology',
-      chooseIntegration: 'Choose your integration',
-      components: 'components',
-      browseApi: 'Browse the complete API',
-      showAll: 'Show all',
-      categoryDescription: 'components with descriptions and variants.',
-      livePreviews: 'Live previews',
-      livePreviewsText: 'Change props and immediately inspect the behavior.',
-      readyCode: 'Ready-to-use code',
-      readyCodeText: 'Copy complete usage examples into your project.',
-      realApi: 'Real API',
-      realApiText: 'Input documentation is generated directly from the components.',
-    },
-    pl: {
-      version: 'Dokumentacja v1.27.0',
-      title: 'Buduj czytelne interfejsy',
-      titleAccent: 'z PEAUI.',
-      intro:
-        'Jedna biblioteka, trzy wyraźne ścieżki integracji: Vue, React i Web Components — z instrukcjami, rzeczywistą dostępnością i API generowanym wprost z kodu źródłowego.',
-      getStarted: 'Zacznij korzystać',
-      discoverWc: 'Poznaj Web Components',
-      copyCommand: 'Skopiuj komendę',
-      newComponent: 'Nowy komponent',
-      status: 'Status',
-      ready: 'Gotowy do użycia',
-      checked: 'Sprawdzone API i dostępne warianty.',
-      openDocs: 'Otwórz docs',
-      technologies: 'technologie',
-      docsInfo: 'Informacje o dokumentacji',
-      vueComponents: 'komponenty Vue',
-      reactComponents: 'komponenty React',
-      availableIcons: 'dostępnych ikon',
-      technology: 'Technologia',
-      chooseIntegration: 'Wybierz sposób integracji',
-      components: 'komponentów',
-      browseApi: 'Przeglądaj kompletne API',
-      showAll: 'Pokaż wszystkie',
-      categoryDescription: 'komponentów wraz z opisami i wariantami.',
-      livePreviews: 'Podglądy na żywo',
-      livePreviewsText: 'Zmieniaj propsy i natychmiast sprawdzaj zachowanie.',
-      readyCode: 'Gotowy kod',
-      readyCodeText: 'Kopiuj kompletne przykłady użycia do swojego projektu.',
-      realApi: 'Rzeczywiste API',
-      realApiText: 'Dokumentacja wejść powstaje bezpośrednio z komponentów.',
-    },
-  }),
+const GITHUB_URL = 'https://github.com/webonweb/peaui';
+const NPM_URL = 'https://www.npmjs.com/package/@peaui/ui';
+const FEATURED_COMPONENT_NAMES = [
+  'TableList',
+  'TreeList',
+  'FormDatePicker',
+  'CardCarousel',
+  'FormFileUpload',
+  'NavigationStepper',
+] as const;
+
+const { t } = useI18n();
+const libraryVersion = __PEAUI_VERSION__;
+const selectedFramework = ref<FrameworkId | null>(getPreferredFramework());
+const documentationFramework = computed(() => selectedFramework.value ?? 'vue');
+const browseTarget = computed(() =>
+  selectedFramework.value
+    ? `/${selectedFramework.value}/components`
+    : { path: '/', hash: '#frameworks' },
 );
-const localizedCategories = computed(() =>
-  categories.map((category) => ({
-    ...category,
-    label: getCategoryLabel(category.slug, category.label),
-  })),
+const startTarget = computed(() =>
+  selectedFramework.value
+    ? `/${selectedFramework.value}/start`
+    : { path: '/', hash: '#frameworks' },
 );
+const featuredComponents = computed(() =>
+  FEATURED_COMPONENT_NAMES.map((name) =>
+    getFrameworkComponents(documentationFramework.value).find(
+      (component) => component.name === name,
+    ),
+  )
+    .filter((component): component is FrameworkComponentDefinition => Boolean(component))
+    .map((component) => ({
+      ...component,
+      categoryLabel: getCategoryLabel(component.category, component.categoryLabel),
+      localizedCopy: getComponentCopy(component.name, component.copy),
+    })),
+);
+const trustFeatures = computed(() => [
+  t('home.trustMit'),
+  t('home.trustTypescript'),
+  t('home.trustTreeShaking'),
+  t('home.trustDarkMode'),
+  t('home.trustKeyboard'),
+  t('home.trustFrameworks'),
+]);
+
+function chooseFramework(framework: FrameworkId): void {
+  selectedFramework.value = framework;
+  setPreferredFramework(framework);
+}
 </script>
 
 <template>
   <div class="home-page">
-    <section class="home-hero">
-      <div class="home-hero__glow home-hero__glow--one" />
-      <div class="home-hero__glow home-hero__glow--two" />
+    <section class="home-hero" aria-labelledby="home-title">
+      <div class="home-hero__glow home-hero__glow--one" aria-hidden="true" />
+      <div class="home-hero__glow home-hero__glow--two" aria-hidden="true" />
       <div class="home-hero__content">
-        <span class="hero-pill"><span /> {{ copy.version }}</span>
-        <h1>
-          {{ copy.title }}<br /><em>{{ copy.titleAccent }}</em>
-        </h1>
-        <p>{{ copy.intro }}</p>
+        <span class="hero-pill">
+          <span aria-hidden="true" /> {{ t('home.version', { version: libraryVersion }) }}
+        </span>
+        <h1 id="home-title">{{ t('home.title') }}</h1>
+        <p>{{ t('home.intro') }}</p>
+
+        <div class="hero-framework-choice">
+          <span>{{ t('home.frameworkChoice') }}</span>
+          <div role="group" :aria-label="t('home.frameworkChoice')">
+            <button
+              v-for="frameworkId in frameworkOrder"
+              :key="frameworkId"
+              type="button"
+              :aria-pressed="selectedFramework === frameworkId"
+              @click="chooseFramework(frameworkId)"
+            >
+              {{ getFrameworkDefinition(frameworkId).compactLabel }}
+            </button>
+          </div>
+          <small>
+            {{
+              selectedFramework
+                ? t('home.frameworkSelected', {
+                    framework: getFrameworkDefinition(selectedFramework).label,
+                  })
+                : t('home.frameworkChoiceHint')
+            }}
+          </small>
+        </div>
+
         <div class="home-hero__actions">
-          <RouterLink class="primary-link" to="/vue/start"
-            >{{ copy.getStarted }} <span>→</span></RouterLink
+          <RouterLink class="primary-link" :to="browseTarget">
+            {{ t('home.browseComponents') }} <span aria-hidden="true">→</span>
+          </RouterLink>
+          <RouterLink class="secondary-link" :to="startTarget">
+            {{ t('home.getStarted') }}
+          </RouterLink>
+          <a
+            class="secondary-link"
+            :href="GITHUB_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('home.githubLabel')"
           >
-          <RouterLink class="secondary-link" to="/web-components/start">{{
-            copy.discoverWc
-          }}</RouterLink>
+            {{ t('home.github') }} <span aria-hidden="true">↗</span>
+          </a>
+          <a
+            class="secondary-link"
+            :href="NPM_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="t('home.npmLabel')"
+          >
+            {{ t('home.npm') }} <span aria-hidden="true">↗</span>
+          </a>
         </div>
-        <div class="install-snippet">
-          <span>$</span><code>npm install @peaui/ui</code
-          ><button type="button" :aria-label="copy.copyCommand">⌘</button>
-        </div>
+
+        <InstallCommand />
       </div>
-      <div class="home-hero__visual" aria-hidden="true">
-        <div class="visual-orbit visual-orbit--one" />
-        <div class="visual-orbit visual-orbit--two" />
-        <div class="visual-card visual-card--back"><span /><span /><span /></div>
-        <div class="visual-card visual-card--main">
-          <div class="visual-card__top">
-            <BrandMark variant="mark" /><span>{{ copy.newComponent }}</span
-            ><i>•••</i>
-          </div>
-          <div class="visual-card__body">
-            <span class="visual-label">{{ copy.status }}</span
-            ><strong>{{ copy.ready }}</strong>
-            <p>{{ copy.checked }}</p>
-          </div>
-          <div class="visual-card__footer">
-            <span>Vue · React · WC</span><button>{{ copy.openDocs }}</button>
-          </div>
-        </div>
-        <div class="floating-chip floating-chip--a">✓ WCAG</div>
-        <div class="floating-chip floating-chip--b">3 {{ copy.technologies }}</div>
+
+      <div class="home-hero__preview">
+        <HomeComponentPreview />
       </div>
     </section>
 
-    <section class="home-stats" :aria-label="copy.docsInfo">
+    <section class="home-stats" :aria-label="t('home.docsInfo')">
       <div>
-        <strong>{{ frameworkComponents.vue.length }}</strong
-        ><span>{{ copy.vueComponents }}</span>
+        <strong>{{ getFrameworkComponents('vue').length }}</strong>
+        <span>{{ t('home.vueComponents') }}</span>
       </div>
       <div>
-        <strong>{{ frameworkComponents['web-components'].length }}</strong
-        ><span>Web Components</span>
+        <strong>{{ getFrameworkComponents('react').length }}</strong>
+        <span>{{ t('home.reactComponents') }}</span>
       </div>
       <div>
-        <strong>{{ frameworkComponents.react.length }}</strong
-        ><span>{{ copy.reactComponents }}</span>
+        <strong>{{ getFrameworkComponents('web-components').length }}</strong>
+        <span>{{ t('home.webComponents') }}</span>
       </div>
       <div>
-        <strong>{{ icons.length }}</strong
-        ><span>{{ copy.availableIcons }}</span>
+        <strong>{{ icons.length }}</strong>
+        <span>{{ t('home.availableIcons') }}</span>
       </div>
     </section>
 
-    <section class="home-section">
+    <section id="frameworks" class="home-section" aria-labelledby="frameworks-title">
       <div class="section-heading-row">
         <div>
-          <span class="eyebrow">{{ copy.technology }}</span>
-          <h2>{{ copy.chooseIntegration }}</h2>
+          <span class="eyebrow">{{ t('home.integrationEyebrow') }}</span>
+          <h2 id="frameworks-title">{{ t('home.integrationTitle') }}</h2>
+          <p>{{ t('home.integrationDescription') }}</p>
         </div>
       </div>
       <div class="framework-card-grid">
-        <RouterLink
+        <article
           v-for="(frameworkId, index) in frameworkOrder"
           :key="frameworkId"
           class="framework-card"
-          :to="`/${frameworkId}/start`"
         >
-          <span class="framework-card__number">0{{ index + 1 }}</span>
+          <span class="framework-card__number" aria-hidden="true">0{{ index + 1 }}</span>
           <span class="framework-card__badge">{{ getFrameworkDefinition(frameworkId).badge }}</span>
           <h3>{{ getFrameworkDefinition(frameworkId).label }}</h3>
           <p>{{ getFrameworkDefinition(frameworkId).description }}</p>
           <footer>
-            <strong>{{ frameworkComponents[frameworkId].length }}</strong>
-            <span>{{ copy.components }}</span>
-            <i>{{ getFrameworkDefinition(frameworkId).availability }} →</i>
+            <span>
+              <strong>{{ getFrameworkComponents(frameworkId).length }}</strong>
+              {{ t('home.components') }}
+            </span>
+            <RouterLink :to="`/${frameworkId}/start`" @click="chooseFramework(frameworkId)">
+              {{
+                t('home.integrationLink', { framework: getFrameworkDefinition(frameworkId).label })
+              }}
+              <span aria-hidden="true">→</span>
+            </RouterLink>
           </footer>
-        </RouterLink>
+        </article>
       </div>
     </section>
 
-    <section class="home-section home-section--soft">
+    <section class="home-section home-section--soft" aria-labelledby="featured-title">
       <div class="section-heading-row">
         <div>
-          <span class="eyebrow">Vue</span>
-          <h2>{{ copy.browseApi }}</h2>
+          <span class="eyebrow">{{ t('home.featuredEyebrow') }}</span>
+          <h2 id="featured-title">{{ t('home.featuredTitle') }}</h2>
+          <p>{{ t('home.featuredDescription') }}</p>
         </div>
-        <RouterLink to="/vue/components">{{ copy.showAll }} <span>→</span></RouterLink>
+        <RouterLink :to="`/${documentationFramework}/components`">
+          {{ t('home.showAll') }} <span aria-hidden="true">→</span>
+        </RouterLink>
       </div>
-      <div class="category-grid">
+
+      <div class="featured-component-grid">
         <RouterLink
-          v-for="(category, index) in localizedCategories"
-          :key="category.slug"
-          class="category-card"
-          :to="`/vue/components/${category.slug}/${category.components[0]?.slug}`"
+          v-for="component in featuredComponents"
+          :key="component.name"
+          class="featured-component-card"
+          :to="`/${documentationFramework}/components/${component.category}/${component.slug}`"
+          :aria-label="t('home.featuredLink', { component: component.name })"
         >
-          <span class="category-card__number">0{{ index + 1 }}</span>
-          <div class="category-card__icon">{{ category.label.slice(0, 1) }}</div>
-          <h3>{{ category.label }}</h3>
-          <p>{{ category.components.length }} {{ copy.categoryDescription }}</p>
-          <span class="category-card__arrow">↗</span>
+          <span class="featured-component-card__preview" aria-hidden="true">
+            {{ component.name.slice(0, 2) }}
+          </span>
+          <span class="featured-component-card__category">{{ component.categoryLabel }}</span>
+          <h3>{{ component.name }}</h3>
+          <p>{{ component.localizedCopy.description }}</p>
+          <span class="featured-component-card__link">
+            {{
+              t('home.integrationLink', {
+                framework: getFrameworkDefinition(documentationFramework).label,
+              })
+            }}
+            <span aria-hidden="true">→</span>
+          </span>
         </RouterLink>
       </div>
     </section>
 
-    <section class="feature-band">
-      <div>
-        <span class="feature-icon">⌁</span>
-        <h3>{{ copy.livePreviews }}</h3>
-        <p>{{ copy.livePreviewsText }}</p>
+    <section class="home-section home-trust" aria-labelledby="trust-title">
+      <div class="section-heading-row">
+        <div>
+          <span class="eyebrow">{{ t('home.trustEyebrow') }}</span>
+          <h2 id="trust-title">{{ t('home.trustTitle') }}</h2>
+          <p>{{ t('home.trustDescription') }}</p>
+        </div>
       </div>
+      <ul class="trust-list">
+        <li v-for="feature in trustFeatures" :key="feature">
+          <span aria-hidden="true">✓</span>{{ feature }}
+        </li>
+      </ul>
+    </section>
+
+    <section class="home-final-cta" aria-labelledby="final-cta-title">
       <div>
-        <span class="feature-icon">&lt;/&gt;</span>
-        <h3>{{ copy.readyCode }}</h3>
-        <p>{{ copy.readyCodeText }}</p>
+        <h2 id="final-cta-title">{{ t('home.finalTitle') }}</h2>
+        <p>{{ t('home.finalDescription') }}</p>
       </div>
-      <div>
-        <span class="feature-icon">◎</span>
-        <h3>{{ copy.realApi }}</h3>
-        <p>{{ copy.realApiText }}</p>
+      <div class="home-final-cta__actions">
+        <RouterLink class="primary-link" :to="browseTarget">{{
+          t('home.browseComponents')
+        }}</RouterLink>
+        <a
+          class="secondary-link"
+          :href="GITHUB_URL"
+          target="_blank"
+          rel="noopener noreferrer"
+          :aria-label="t('home.githubLabel')"
+          >{{ t('home.finalGithub') }}</a
+        >
+        <a
+          class="secondary-link"
+          :href="NPM_URL"
+          target="_blank"
+          rel="noopener noreferrer"
+          :aria-label="t('home.npmLabel')"
+          >{{ t('home.finalNpm') }}</a
+        >
       </div>
     </section>
   </div>

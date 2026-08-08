@@ -181,7 +181,7 @@ function createRender(withDescription = false) {
               </button>
             </template>
 
-            <template #addtional-content>
+            <template #additional-content>
               <div
                 style="padding: 0.75rem 1rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;"
               >
@@ -189,7 +189,7 @@ function createRender(withDescription = false) {
               </div>
             </template>
 
-            <template v-if="withDescription" #addtional-description>
+            <template v-if="withDescription" #additional-description>
               <div
                 style="padding: 0.75rem 1rem; border-radius: 0.75rem; background: #f4fbe8; color: #326a04; min-width: 16rem;"
               >

@@ -2,7 +2,7 @@
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
 import { stripHtmlUsingDom } from '@/helpers/functions.helper';
-import { slugify } from '@/helpers/string.helepr';
+import { slugify } from '@/helpers/string.helper';
 import { computed } from 'vue';
 import type { TableColumn } from '../index.vue';
 import {

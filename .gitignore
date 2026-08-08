@@ -1,12 +1,78 @@
+# Dependencies and package-manager state
 node_modules/
+.pnpm-store/
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Production and documentation builds
 dist/
+dist-ssr/
 storybook-static/
+.vite/
+.vite-inspect/
+.turbo/
+.parcel-cache/
+.cache/
+*.tsbuildinfo
+
+# Tests, coverage and browser tooling
+coverage/
+.nyc_output/
+*.lcov
 test-results/
 playwright-report/
-.pnpm-store/
-packages/react/node_modules/
-packages/react/node_modules/*
-packages/vue/node_modules/
-packages/vue/node_modules/*
-packages/storybook/**/node_modules/
-packages/storybook/**/node_modules/*
+blob-report/
+.playwright-mcp/
+cypress/videos/
+cypress/screenshots/
+
+# Logs and temporary files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Local environment files (keep public templates)
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+
+# Package and release archives
+*.tgz
+peaui-ui-*.tar
+peaui-ui-*.zip
+
+# Local deployment state
+.vercel/
+.netlify/
+.wrangler/
+
+# Editors and operating systems
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local agent instructions and workspace state
+.codex/
+AGENTS.md

@@ -59,8 +59,12 @@ const inputElement = ref<HTMLInputElement | null>(null);
 const validationError = ref<string | null>(null);
 const classNameComponent = `${UIKIT_NAME}-form-file-upload-simple`;
 
+function normalizeFiles(value: unknown): File[] {
+  return Array.isArray(value) ? value : [];
+}
+
 const filesDummy = ref<Array<{ error: string | null; file: unknown }>>(
-  (files.value ?? []).map((file) => ({ error: null, file })),
+  normalizeFiles(files.value).map((file) => ({ error: null, file })),
 );
 
 // COMPUTED PROPERTIES
@@ -78,6 +82,7 @@ const descriptionTestId = computed(() =>
 );
 const inputId = computed(() => `${classNameComponent}-input-${uid}`);
 const descriptionId = computed(() => `${classNameComponent}-description-${uid}`);
+const normalizedFiles = computed(() => normalizeFiles(files.value));
 
 // FUNCTIONS
 //-----------------------------------------------------------------------------------------------//
@@ -201,7 +206,7 @@ const handleFileUpload = (event: Event) => {
 };
 
 const handleRemoveFile = (file: File) => {
-  files.value = files.value.filter((item) => item.name !== file.name);
+  files.value = normalizedFiles.value.filter((item) => item.name !== file.name);
   filesDummy.value = filesDummy.value.filter(
     (item) => ((item.file as { name?: string })?.name ?? '') !== file.name,
   );
@@ -211,7 +216,7 @@ const handleRemoveFile = (file: File) => {
 <template>
   <div v-bind="bindings" :class="classNameComponent" :data-testid="rootTestId" aria-live="polite">
     <div
-      v-if="files.length <= props.maxFiles"
+      v-if="normalizedFiles.length <= props.maxFiles"
       :class="`${classNameComponent}__upload`"
       :data-testid="uploadTestId"
     >

@@ -24,6 +24,7 @@ vi.mock('vue', async () => {
 });
 
 import SvgIcon from './index.vue';
+import { loadCatalogIcon } from '@/assets/icons/runtime/catalog/load-icon';
 import * as vueModule from 'vue';
 
 describe('SvgIcon (index.vue)', () => {
@@ -61,6 +62,49 @@ describe('SvgIcon (index.vue)', () => {
     expect(icon.attributes('aria-hidden')).toBe('false');
     expect(icon.attributes('focusable')).toBe('true');
     expect(icon.attributes('role')).toBe('img');
+  });
+
+  it('exposes a named catalog icon as an image without aria-hidden', () => {
+    const wrapper = mount(SvgIcon, {
+      props: {
+        name: 'core/accessibility',
+      },
+      attrs: {
+        'aria-label': 'Dostepnosc',
+      },
+    });
+
+    const icon = wrapper.get('svg');
+
+    expect(icon.attributes('aria-label')).toBe('Dostepnosc');
+    expect(icon.attributes('aria-hidden')).toBeUndefined();
+    expect(icon.attributes('role')).toBe('img');
+  });
+
+  it('loads the synchronized PEAUI outline geometry for grouped icons', async () => {
+    const [icon, extendedIcon, ringIcon, tileIcon] = await Promise.all([
+      loadCatalogIcon('core/copy'),
+      loadCatalogIcon('extended/building'),
+      loadCatalogIcon('ring/ring-check'),
+      loadCatalogIcon('tile/tile-check'),
+    ]);
+
+    expect(icon?.strokeWidth).toBe('1.8');
+    expect(icon?.body).toContain('<rect');
+    expect(icon?.body).toContain('<path');
+    expect(extendedIcon?.body).toBeTruthy();
+    expect(ringIcon?.body).toBeTruthy();
+    expect(tileIcon?.body).toBeTruthy();
+  });
+
+  it('does not render an unrelated fallback for an unknown name', () => {
+    const wrapper = mount(SvgIcon, {
+      props: {
+        name: 'missing-icon',
+      },
+    });
+
+    expect(wrapper.find('svg').exists()).toBe(false);
   });
 
   it('recomputes icon component when name prop changes', async () => {

@@ -2,11 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots, useTemplateRef } from 'vue';
-
-// HELPERS
-//-----------------------------------------------------------------------------------------------//
-import { getPaddingRight } from '@/helpers/functions.helper';
+import { computed, useAttrs, useSlots } from 'vue';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -48,7 +44,6 @@ const {
 
 const slots = useSlots();
 const attrs = useAttrs();
-const inputReference = useTemplateRef('inputReference');
 const classNameComponent = `${UIKIT_NAME}-form-field-input`;
 const modelValue = defineModel<string | undefined>('value', {
   required: true,
@@ -62,8 +57,6 @@ const emit = defineEmits<{
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
-const rightErasePosition = computed(() => getPaddingRight(inputReference.value));
-
 const elementTestId = computed(() => (dataTestId ? `${dataTestId}-element` : undefined));
 
 const bindings = computed(() => {
@@ -97,7 +90,6 @@ const onHandleRemoveValue = () => {
     :placeholder
     :readonly
     :required
-    :right-erase-position="rightErasePosition"
     :value="modelValue"
     @on:remove="onHandleRemoveValue"
     :data-test-id="dataTestId"
@@ -113,7 +105,6 @@ const onHandleRemoveValue = () => {
         :class="classNameComponent"
         @input.stop.prevent="(e) => (modelValue = (e.target as HTMLInputElement).value)"
         data-type="input"
-        ref="inputReference"
         :data-testid="elementTestId"
       />
     </template>

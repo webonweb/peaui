@@ -42,6 +42,11 @@ const renderedBindings = computed(() => {
   }
 
   for (const event of props.definition.events) {
+    // A generated model callback (for example `onOpenChange`) must retain
+    // ownership of the controlled value. The same callback can also appear in
+    // the events catalog, but replacing it here would make the preview read-only.
+    if (bindings[event.name]) continue;
+
     bindings[event.name] = (...values: unknown[]) => {
       if (props.definition.name === 'TableList') {
         if (event.name === 'onSelectRow' && Array.isArray(values[0])) {
@@ -80,9 +85,45 @@ function updateProp(name: string, value: unknown): void {
   interactiveProps.value = { ...interactiveProps.value, [name]: value };
 }
 
+function getEventType(value: unknown): string | undefined {
+  if (value instanceof Event) return value.type;
+  if (typeof value !== 'object' || value === null || !('type' in value)) return undefined;
+
+  const type = (value as { type?: unknown }).type;
+  const isSyntheticEvent = 'nativeEvent' in value || 'target' in value;
+  return isSyntheticEvent && typeof type === 'string' ? type : undefined;
+}
+
+function serializeLogValue(value: unknown): string {
+  const eventType = getEventType(value);
+  if (eventType) return `[${eventType} event]`;
+  if (typeof value !== 'object' || value === null) return String(value);
+
+  const seen = new WeakSet<object>();
+
+  try {
+    const serialized: unknown = JSON.stringify(value, (_key, nestedValue: unknown) => {
+      const nestedEventType = getEventType(nestedValue);
+      if (nestedEventType) return `[${nestedEventType} event]`;
+      if (nestedValue instanceof Element) return `<${nestedValue.tagName.toLowerCase()}>`;
+
+      if (typeof nestedValue === 'object' && nestedValue !== null) {
+        if (seen.has(nestedValue)) return '[Circular]';
+        seen.add(nestedValue);
+      }
+
+      return nestedValue;
+    });
+
+    if (typeof serialized !== 'string') return String(value);
+    return serialized.length > 240 ? `${serialized.slice(0, 237)}...` : serialized;
+  } catch {
+    return String(value);
+  }
+}
+
 function logEvent(name: string, value: unknown): void {
-  const serialized = typeof value === 'object' ? JSON.stringify(value) : String(value);
-  eventLog.value = [`${name}: ${serialized}`, ...eventLog.value].slice(0, 4);
+  eventLog.value = [`${name}: ${serializeLogValue(value)}`, ...eventLog.value].slice(0, 4);
 }
 
 watch(

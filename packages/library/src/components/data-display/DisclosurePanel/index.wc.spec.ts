@@ -31,4 +31,20 @@ describe('DisclosurePanel (index.wc.ts)', () => {
 
     expect(element.childNodes.length).toBeGreaterThan(0);
   });
+
+  it.each(['alwaysOpen', 'allwaysOpen'] as const)(
+    'keeps compatibility with the %s property',
+    async (propertyName) => {
+      const element = document.createElement(DisclosurePanelElement.tagName) as HTMLElement &
+        Record<typeof propertyName, boolean>;
+      element[propertyName] = true;
+      element.setAttribute('title', 'Details');
+      document.body.appendChild(element);
+      await nextTick();
+      await Promise.resolve();
+
+      expect(element.querySelector('details')).toHaveAttribute('open');
+      expect(element.querySelector('.peaui-disclosure-panel__icon')).toBeNull();
+    },
+  );
 });

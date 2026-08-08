@@ -16,11 +16,18 @@ import FormFileUpload from '@/components/form/FormFileUpload';
 import FormFileUploadSimple from '@/components/form/FormFileUploadSimple';
 import FormButtonGroup from '@/components/form/FormButtonGroup';
 import FormContainer from '@/components/form/FormContainer';
+import FormColorPicker from '@/components/form/FormColorPicker';
 import FormDatePicker from '@/components/form/FormDatePicker';
+import FormDateTimePicker from '@/components/form/FormDateTimePicker';
+import FormField from '@/components/form/FormField';
 import FormInput from '@/components/form/FormInput';
+import FormMultiSelect from '@/components/form/FormMultiSelect';
+import FormNumber from '@/components/form/FormNumber';
 import FormPassword from '@/components/form/FormPassword';
 import FormSelect from '@/components/form/FormSelect';
+import FormTimePicker from '@/components/form/FormTimePicker';
 import FormTextarea from '@/components/form/FormTextarea';
+import FormYearPicker from '@/components/form/FormYearPicker';
 import NavigationCard from '@/components/navigation/NavigationCard';
 import PaginationControl from '@/components/navigation/PaginationControl';
 import InfoTooltip from '@/components/overlayer/InfoTooltip';
@@ -37,8 +44,8 @@ afterEach(cleanup);
 
 describe('katalog komponentów React', () => {
   it('udostępnia natywny komponent React dla każdego komponentu Vue', () => {
-    expect(reactComponentCatalog).toHaveLength(64);
-    expect(Object.keys(componentModules)).toHaveLength(64);
+    expect(reactComponentCatalog).toHaveLength(84);
+    expect(Object.keys(componentModules)).toHaveLength(84);
 
     for (const definition of reactComponentCatalog) {
       const modulePath = `../components/${definition.category}/${definition.sourceName}/index.tsx`;
@@ -253,6 +260,33 @@ describe('katalog komponentów React', () => {
     expect(onDbclick).toHaveBeenCalledWith('1', record);
   });
 
+  it.each(['isDetails', 'isDetials'] as const)(
+    'supports the TableList %s compatibility prop',
+    (propName) => {
+      const { container } = render(
+        createElement(TableList, {
+          [propName]: true,
+          columns: [{ key: 'name', label: 'Nazwa' }],
+          records: [{ id: '1', name: 'Alfa' }],
+        }),
+      );
+
+      expect(container.querySelector('.peaui-table-list')).toHaveClass('peaui-table-list--details');
+    },
+  );
+
+  it('renders the correctly named TableListHeader additional content props', () => {
+    render(
+      <TableListHeader
+        additionalContent={<span>Additional content</span>}
+        additionalDescription={<span>Additional description</span>}
+      />,
+    );
+
+    expect(screen.getByText('Additional content')).toBeInTheDocument();
+    expect(screen.getByText('Additional description')).toBeInTheDocument();
+  });
+
   it('bezpiecznie kopiuje komórkę i przekazuje stan sortowania wielokolumnowego', () => {
     const onSort = vi.fn();
 
@@ -341,6 +375,18 @@ describe('katalog komponentów React', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Przejdź do kolejnej strony' }));
     expect(onPageChange).toHaveBeenCalledWith(2);
   });
+
+  it.each(['alwaysOpen', 'allwaysOpen'] as const)(
+    'keeps DisclosurePanel open through the %s compatibility prop',
+    (propName) => {
+      const { container } = render(
+        createElement(DisclosurePanel, { [propName]: true, title: 'Fixed details' }, 'Content'),
+      );
+
+      expect(container.querySelector('details')).toHaveAttribute('open');
+      expect(container.querySelector('.peaui-disclosure-panel__icon')).not.toBeInTheDocument();
+    },
+  );
 
   it('renderuje elementy BEM wymagane przez współdzielone style', () => {
     const { container } = render(
@@ -452,6 +498,85 @@ describe('katalog komponentów React', () => {
         '.peaui-form-file-upload-simple__button.peaui-button-action--variant-primary',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('rezerwuje spójny pas akcji canErase we wszystkich typach pól', () => {
+    const options = [
+      { id: 'vue', label: 'Vue', value: 'vue' },
+      { id: 'react', label: 'React', value: 'react' },
+    ];
+    const { container } = render(
+      <>
+        <FormField canErase dataTestId="erase-field" id="field" name="field" value="PEAUI" />
+        <FormInput canErase dataTestId="erase-input" id="input" name="input" value="PEAUI" />
+        <FormNumber canErase dataTestId="erase-number" id="number" name="number" value={12} />
+        <FormSelect
+          canErase
+          dataTestId="erase-select"
+          id="select"
+          name="select"
+          options={options}
+          value="vue"
+        />
+        <FormMultiSelect
+          canErase
+          dataTestId="erase-multiselect"
+          id="multiselect"
+          name="multiselect"
+          options={options}
+          value={['vue']}
+        />
+        <FormDatePicker canErase dataTestId="erase-date" id="date" name="date" value="2026-08-07" />
+        <FormYearPicker canErase dataTestId="erase-year" id="year" name="year" value={2026} />
+        <FormTimePicker canErase dataTestId="erase-time" id="time" name="time" value="09:30" />
+        <FormDateTimePicker
+          canErase
+          dataTestId="erase-date-time"
+          id="date-time"
+          name="date-time"
+          value={{ date: '2026-08-07', time: '09:30' }}
+        />
+        <FormColorPicker
+          canErase
+          dataTestId="erase-color"
+          id="color"
+          name="color"
+          value="#2563eb"
+        />
+      </>,
+    );
+
+    expect(
+      container.querySelector('[data-testid="erase-field"] .peaui-form-field__element'),
+    ).toHaveStyle({ '--pr': '48px' });
+    expect(screen.getByTestId('erase-input-element')).toHaveStyle({ '--pr': '48px' });
+    expect(screen.getByTestId('erase-number-element')).toHaveStyle({ '--pr': '68px' });
+
+    for (const testId of ['erase-select', 'erase-multiselect', 'erase-date', 'erase-year']) {
+      expect(screen.getByTestId(`${testId}-element`)).toHaveStyle({ '--pr': '80px' });
+    }
+
+    expect(screen.getByTestId('erase-time-element')).toHaveStyle({ '--pr': '80px' });
+    expect(screen.getByTestId('erase-date-time-input')).toHaveStyle({ '--pr': '80px' });
+    expect(
+      container.querySelector('[data-testid="erase-color"] .peaui-form-field__erase-button'),
+    ).toHaveStyle({ '--right': '48px' });
+
+    const eraseOffsets = Array.from(
+      container.querySelectorAll<HTMLElement>('.peaui-form-field__erase-button'),
+    ).map((element) => element.style.getPropertyValue('--right').trim());
+    expect(eraseOffsets).toEqual([
+      '12px',
+      '12px',
+      '32px',
+      '44px',
+      '44px',
+      '44px',
+      '44px',
+      '44px',
+      '44px',
+      '48px',
+    ]);
   });
 
   it('renderuje i obsługuje kalendarz w strukturze pickera Vue', () => {

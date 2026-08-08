@@ -251,7 +251,7 @@ export const FormInput: Story = {
     after: 'tets',
     iconBefore: undefined,
     iconAfter: undefined,
-    canErase: false,
+    canErase: true,
     maxLength: undefined,
     dataTestId: 'form-input',
   },

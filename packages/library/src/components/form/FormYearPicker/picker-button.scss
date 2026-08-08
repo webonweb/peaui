@@ -5,12 +5,12 @@
 
   display: inline-flex;
   width: 100%;
+  min-width: 0;
+  min-height: var(--peaui-calendar-cell-min-height);
   align-items: center;
   justify-content: center;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  border-radius: 9999px;
+  border: 0;
+  border-radius: var(--peaui-calendar-cell-radius);
   font-weight: 400;
   color: var(--peaui-color-grey-700);
   background-color: transparent;
@@ -23,28 +23,28 @@
   @include transition(background-color, border-color, color, box-shadow);
 }
 
-.peaui-form-year-picker-button:hover:enabled {
-  background-color: var(--peaui-color-primary-50);
-}
-
+.peaui-form-year-picker-button:hover:enabled,
 .peaui-form-year-picker-button:focus-visible {
-  box-shadow: 0 0 0 2px rgb(from var(--peaui-color-primary-400) r g b / 0.35);
+  background-color: var(--peaui-calendar-hover-background);
+  color: var(--peaui-calendar-hover-color);
 }
 
 .peaui-form-year-picker-button--variant-primary {
-  border-color: var(--peaui-color-primary-700);
-  background-color: var(--peaui-color-primary-700);
-  color: var(--peaui-color-grey-0);
+  background-color: var(--peaui-calendar-selected-background);
+  color: var(--peaui-calendar-selected-color);
+  font-weight: 600;
 }
 
-.peaui-form-year-picker-button--variant-primary:hover:enabled {
-  background-color: var(--peaui-color-primary-800);
+.peaui-form-year-picker-button--variant-primary:hover:enabled,
+.peaui-form-year-picker-button--variant-primary:focus-visible {
+  background-color: var(--peaui-calendar-selected-hover-background);
+  color: var(--peaui-calendar-selected-color);
 }
 
 .peaui-form-year-picker-button--variant-outline {
-  border-color: var(--peaui-color-primary-700);
-  background-color: var(--peaui-color-grey-0);
-  color: var(--peaui-color-primary-700);
+  background-color: transparent;
+  color: var(--peaui-color-grey-700);
+  box-shadow: inset 0 0 0 1px var(--peaui-calendar-today-border);
 }
 
 .peaui-form-year-picker-button--variant-ghost {
@@ -54,9 +54,8 @@
 
 .peaui-form-year-picker-button--disabled {
   cursor: not-allowed;
-  border-color: var(--peaui-color-grey-200);
-  background-color: var(--peaui-color-grey-50);
   color: var(--peaui-color-grey-400);
+  opacity: 0.55;
 }
 
 .peaui-form-year-picker-button__label {

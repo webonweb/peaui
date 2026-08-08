@@ -15,7 +15,11 @@ defineFormFileUploadSimple();
 const meta = {
   title: '5. Form/FormFileUploadSimple',
   component: FormFileUploadSimpleElement.tagName,
-  args: createVueCustomElementStoryArgs(FormFileUploadSimpleVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(FormFileUploadSimpleVueComponent),
+    dataTestId: 'form-file-upload-simple-wc',
+    files: [],
+  },
   argTypes: createVueCustomElementArgTypes(FormFileUploadSimpleVueComponent),
   parameters: {
     name: 'FormFileUploadSimple',

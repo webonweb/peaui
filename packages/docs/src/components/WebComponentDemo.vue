@@ -3,6 +3,10 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { avatarDemoImage } from '../../../library/src/components/data-display/Avatar/avatar.demo';
 import { avatarGroupDemoItems } from '../../../library/src/components/data-display/AvatarGroup/avatar-group.demo';
+import { contextMenuDemoItems } from '../../../library/src/components/navigation/ContextMenu/context-menu.demo';
+import { dropdownMenuDemoItems } from '../../../library/src/components/navigation/DropdownMenu/dropdown-menu.demo';
+import { menuBarDemoMenus } from '../../../library/src/components/navigation/MenuBar/menu-bar.demo';
+import { formSwitchToggleDemoProps } from '../../../library/src/components/form/FormSwitchToggle/form-switch-toggle.demo';
 import { getDemoPreset } from '../data/demo-presets';
 import { cloneDemoValue, serializeDemoValue } from '../data/demo-utils';
 import { localizeDemoData } from '../data/demo-localization';
@@ -64,6 +68,35 @@ const presets: Record<string, PreviewPreset> = {
     },
     properties: { items: avatarGroupDemoItems },
   },
+  ContextMenu: {
+    attributes: { 'aria-label': 'Akcje raportu' },
+    properties: {
+      context: { id: 'report-q3', type: 'document' },
+      items: contextMenuDemoItems,
+    },
+    text: 'Raport kwartalny — prawy przycisk lub Shift+F10',
+  },
+  DropdownMenu: {
+    attributes: {
+      'aria-label': 'Akcje profilu',
+      'trigger-label': 'Opcje',
+    },
+    properties: { items: dropdownMenuDemoItems },
+  },
+  MenuBar: {
+    attributes: { 'aria-label': 'Menu edytora' },
+    properties: { menus: menuBarDemoMenus },
+  },
+  FormSwitchToggle: {
+    attributes: {
+      description: formSwitchToggleDemoProps.description,
+      id: formSwitchToggleDemoProps.id,
+      label: formSwitchToggleDemoProps.label,
+      name: formSwitchToggleDemoProps.name,
+      'show-state-label': '',
+    },
+    properties: { value: formSwitchToggleDemoProps.value },
+  },
   CardCarousel: {
     attributes: { 'aria-label': 'Przykładowa karuzela', 'default-visible-slides': '2' },
     cards: ['Pierwsza karta', 'Druga karta', 'Trzecia karta'],
@@ -85,7 +118,7 @@ const presets: Record<string, PreviewPreset> = {
       'with-border': '',
     },
   },
-  FieldLabel: { attributes: { for: 'demo-field', text: 'Nazwa projektu', required: '' } },
+  FormFieldLabel: { attributes: { for: 'demo-field', text: 'Nazwa projektu', required: '' } },
   FormField: {
     attributes: { id: 'demo-field', name: 'demo-field', label: 'Nazwa projektu', value: 'PEAUI' },
   },
@@ -212,6 +245,7 @@ function createBaseProps(): Record<string, unknown> {
   for (const [name, value] of Object.entries(sharedPreset.props)) {
     const inputName = findInputName(name);
     if (inputName) result[inputName] = value;
+    else if (name === 'style') result.style = value;
   }
 
   for (const [name, value] of Object.entries(preset.attributes ?? {})) {
@@ -322,7 +356,14 @@ function getContentPreset(): Required<Pick<PreviewPreset, 'slots' | 'cards'>> & 
 
 function appendPreviewContent(element: HTMLElement): void {
   const content = getContentPreset();
-  if (content.text) element.append(document.createTextNode(content.text));
+  if (content.text) {
+    if (props.definition.name === 'ContextMenu') {
+      const target = document.createElement('span');
+      target.className = 'docs-demo-content';
+      target.textContent = content.text;
+      element.append(target);
+    } else element.append(document.createTextNode(content.text));
+  }
 
   for (const [slot, value] of Object.entries(content.slots)) {
     const child = document.createElement('span');
@@ -331,10 +372,21 @@ function appendPreviewContent(element: HTMLElement): void {
     element.append(child);
   }
 
-  for (const value of content.cards) {
-    const card = document.createElement('div');
-    card.className = 'docs-wc-card';
-    card.textContent = value;
+  for (const [index, value] of content.cards.entries()) {
+    const card = document.createElement('article');
+    card.className = 'docs-demo-card';
+
+    const eyebrow = document.createElement('span');
+    eyebrow.className = 'docs-demo-card__eyebrow';
+    eyebrow.textContent = t('demo.example', { number: index + 1 });
+
+    const title = document.createElement('strong');
+    title.textContent = value;
+
+    const description = document.createElement('p');
+    description.textContent = t('demo.interactiveItem');
+
+    card.append(eyebrow, title, description);
     element.append(card);
   }
 }
@@ -373,17 +425,28 @@ function handleComponentEvent(name: string, event: Event): void {
   if (!name.startsWith('update:')) return;
   const modelName = name.slice('update:'.length);
   const inputName = findInputName(modelName);
-  if (inputName) interactiveProps.value = { ...interactiveProps.value, [inputName]: value };
+  if (!inputName) return;
+
+  interactiveProps.value = { ...interactiveProps.value, [inputName]: value };
+  if (event.currentTarget instanceof HTMLElement) {
+    (event.currentTarget as PreviewElement)[toPropertyName(inputName)] = value;
+  }
 }
 
 function createPreviewElement(): PreviewElement {
   const element = document.createElement(props.definition.tagName ?? 'div') as PreviewElement;
+  const previewStyle = interactiveProps.value.style;
+
+  if (typeof previewStyle === 'string') element.style.cssText = previewStyle;
+  else if (previewStyle && typeof previewStyle === 'object' && !Array.isArray(previewStyle)) {
+    Object.assign(element.style, previewStyle);
+  }
 
   for (const entry of inputEntries.value) {
     const value = interactiveProps.value[entry.name];
     const propertyName = toPropertyName(entry.name);
 
-    if (typeof value === 'function' || isComplexEntry(entry, value)) {
+    if (typeof value === 'function' || isComplexEntry(entry, value) || isNumberEntry(entry)) {
       if (value !== undefined) element[propertyName] = value;
     } else if (isBooleanEntry(entry)) {
       if (value) element.setAttribute(entry.name, '');

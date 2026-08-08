@@ -12,6 +12,10 @@
   <a href="#english">English</a> · <a href="#polski">Polski</a>
 </p>
 
+<p align="center">
+  <a href="https://webonweb.github.io/peaui/"><strong>Documentation / Dokumentacja</strong></a>
+</p>
+
 ---
 
 <a id="english"></a>
@@ -24,7 +28,7 @@ PEAUI is a continuously developed UI component library for building consistent, 
 - native React components;
 - standards-based Web Components.
 
-The current catalog contains **64 components**. New components, variants and improvements will be added as the library evolves.
+The component catalog is generated directly from the public source. The documentation always shows the current count for Vue, React and Web Components.
 
 ## What PEAUI is for
 
@@ -254,11 +258,23 @@ PEAUI is designed around accessible interface patterns. Depending on the compone
 
 Accessibility still depends on correct application usage. Consumers must provide meaningful labels, alternative text and content, and should validate the final product against their accessibility requirements. The component documentation describes important accessibility inputs where applicable.
 
+## Icons
+
+`SvgIcon` includes the compatibility icons and 1348 supplied PeaUI Outline Icons Mega 0.3.0 assets. Catalog names use the `category/icon-name` format, for example `core/search`, `ring/ring-check` and `tile/tile-sparkles`. Every catalog SVG uses a 24 x 24 coordinate grid, a 1.8 px stroke, rounded caps and joins, and `currentColor`; icons are loaded on demand in small bundles.
+
+```vue
+<SvgIcon name="core/sparkles" aria-label="New feature" />
+```
+
+Decorative icons are hidden from assistive technologies by default. Add `aria-label` or `aria-labelledby` only when the icon itself conveys information; icon-only buttons still need an accessible name on the button.
+
 ## TypeScript and package formats
 
 The package includes TypeScript declarations for the root API and every Vue, React and Web Component entry point. It provides ESM and CommonJS builds, plus per-component imports that allow applications to include only the components they use.
 
 ## Documentation
+
+**Live documentation:** [https://webonweb.github.io/peaui/](https://webonweb.github.io/peaui/)
 
 PEAUI has a dedicated documentation portal independent of Storybook. It includes:
 
@@ -371,7 +387,7 @@ PEAUI to stale rozwijana biblioteka komponentów interfejsu przeznaczona do budo
 - natywnych komponentów React;
 - zgodnych ze standardami Web Components.
 
-Aktualny katalog zawiera **64 komponenty**. Wraz z rozwojem biblioteki będą pojawiały się kolejne komponenty, warianty oraz ulepszenia.
+Katalog komponentów jest generowany bezpośrednio z publicznego kodu źródłowego. Dokumentacja zawsze pokazuje aktualną liczbę dla Vue, React i Web Components.
 
 ## Do czego służy PEAUI
 
@@ -606,6 +622,8 @@ Końcowa dostępność aplikacji zależy również od poprawnego użycia kompone
 Paczka zawiera deklaracje TypeScript dla głównego API oraz każdego punktu wejścia Vue, React i Web Components. Udostępnia buildy ESM i CommonJS, a także importy pojedynczych komponentów pozwalające aplikacji korzystać tylko z potrzebnych elementów.
 
 ## Dokumentacja
+
+**Dokumentacja online:** [https://webonweb.github.io/peaui/](https://webonweb.github.io/peaui/)
 
 PEAUI ma oddzielny portal dokumentacyjny, niezależny od Storybooka. Zawiera on:
 

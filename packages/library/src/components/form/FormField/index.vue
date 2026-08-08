@@ -8,7 +8,8 @@ import { computed, onUpdated, ref, useAttrs, useSlots } from 'vue';
 //-----------------------------------------------------------------------------------------------//
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import MessageText from '@/components/feedback/MessageText/index.vue';
-import FieldLabel from '@/components/form/FieldLabel/index.vue';
+import FormFieldLabel from '@/components/form/FormFieldLabel/index.vue';
+import { getFormFieldEraseOffset, getFormFieldPaddingRight } from './form-field-layout.shared';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -81,7 +82,8 @@ const fieldClasses = computed<string>(() => {
     [`${classNameComponent}__element--disabled`]: disabled,
     [`${classNameComponent}__element--readonly`]: readonly,
     [`${classNameComponent}__element--basic`]: !readonly,
-    [`${classNameComponent}__element--error`]: hasErrorSlot.value,
+    [`${classNameComponent}__element--error`]:
+      hasErrorSlot.value || getNormalizedAttributeValue(attrs['aria-invalid']) === 'true',
     [`${classNameComponent}__element--success`]: hasSuccessSlot.value,
   };
 
@@ -95,15 +97,37 @@ const descriptionMessageId = computed(() => `${id}-help-description`);
 const maxLengthMessageId = computed(() => `${id}-help-max-length-description`);
 const errorMessageId = computed(() => `${id}-error`);
 const successMessageId = computed(() => `${id}-success`);
+const hasAdditionalSlot = computed(() => Boolean(slots.additional));
+const eraseButtonRight = computed(() =>
+  getFormFieldEraseOffset({
+    after,
+    hasAdditional: hasAdditionalSlot.value,
+    iconAfter,
+    minimumEraseOffset: rightErasePosition,
+  }),
+);
+const paddingRight = computed(() =>
+  getFormFieldPaddingRight({
+    after,
+    canErase,
+    hasAdditional: hasAdditionalSlot.value,
+    iconAfter,
+    minimumEraseOffset: rightErasePosition,
+  }),
+);
 const explicitAriaLabel = computed(() => getNormalizedAttributeValue(attrs['aria-label']));
 const explicitAriaLabelledBy = computed(() =>
   getNormalizedAttributeValue(attrs['aria-labelledby']),
 );
+const explicitAriaDescribedBy = computed(() =>
+  getNormalizedAttributeValue(attrs['aria-describedby']),
+);
+const explicitAriaInvalid = computed(() => getNormalizedAttributeValue(attrs['aria-invalid']));
 const fieldAriaLabel = computed(
   () => explicitAriaLabel.value ?? (!label && !explicitAriaLabelledBy.value ? name : undefined),
 );
 const fieldAriaLabelledBy = computed(() => (label ? undefined : explicitAriaLabelledBy.value));
-const describeComponent = computed(() => {
+const generatedDescriptionId = computed(() => {
   if (hasErrorSlot.value && !hasSuccessSlot.value) {
     return errorMessageId.value;
   }
@@ -123,11 +147,21 @@ const describeComponent = computed(() => {
   return undefined;
 });
 
+const describeComponent = computed(() => {
+  const ids = new Set(
+    `${explicitAriaDescribedBy.value ?? ''} ${generatedDescriptionId.value ?? ''}`
+      .split(/\s+/)
+      .filter(Boolean),
+  );
+
+  return ids.size ? [...ids].join(' ') : undefined;
+});
+
 const bindings = computed(() => {
   const bindings: Record<string, unknown> = {
     'aria-disabled': disabled,
     'data-disabled': disabled,
-    'aria-invalid': hasErrorSlot.value,
+    'aria-invalid': hasErrorSlot.value || explicitAriaInvalid.value === 'true',
     'aria-label': fieldAriaLabel.value,
     'aria-labelledby': fieldAriaLabelledBy.value,
     'aria-required': required || false,
@@ -144,11 +178,7 @@ const bindings = computed(() => {
     bindings.placeholder = placeholder;
   }
 
-  if (after) {
-    bindings.style = `--pr:${iconAfter ? after.length * 7.5 + 12 + (canErase ? 16 : 0) + 24 : after.length * 7.5 + 12 + (canErase ? 16 : 0)}px;`;
-  } else {
-    bindings.style = `--pr:${iconAfter ? '32px' : '12px'};`;
-  }
+  bindings.style = `--pr:${paddingRight.value}px;`;
 
   if (before) {
     bindings.style = `${bindings.style} --pl:${iconBefore ? before.length * 7.5 + 14 + 24 : before.length * 7.5 + 14}px;`;
@@ -192,11 +222,11 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
 
 <template>
   <div :class="classNameComponent" :data-testid="dataTestId">
-    <FieldLabel v-if="label" :for="id" :required :text="label" :data-test-id="dataTestId">
+    <FormFieldLabel v-if="label" :for="id" :required :text="label" :data-test-id="dataTestId">
       <template v-if="slots.hint" #hint>
         <slot name="hint" />
       </template>
-    </FieldLabel>
+    </FormFieldLabel>
 
     <div :class="`${classNameComponent}__content`">
       <SvgIcon
@@ -232,13 +262,7 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
         :class="`${classNameComponent}__erase-button`"
         :data-testid="eraseButtonTestId"
         aria-label="Usuń wartość pola"
-        :style="{
-          '--right': after
-            ? `${rightErasePosition}px`
-            : slots.additional
-              ? '40px'
-              : `${iconAfter ? 30 : 12}px`,
-        }"
+        :style="{ '--right': `${eraseButtonRight}px` }"
         @click.prevent.stop="emit('on:remove')"
       >
         <SvgIcon name="cross" :class="`${classNameComponent}__erase-icon`" />

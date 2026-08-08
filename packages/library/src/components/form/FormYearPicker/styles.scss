@@ -51,9 +51,32 @@
 }
 
 .peaui-popover-overlayer__content.peaui-form-year-picker__popover-content[popover] {
+  --peaui-form-year-picker-overlay-width: min(
+    max(
+      var(--peaui-popover-overlayer-trigger-width, var(--peaui-picker-overlay-min-width)),
+      var(--peaui-picker-overlay-min-width)
+    ),
+    calc(100vw - var(--peaui-overlay-viewport-inset))
+  );
+
   box-sizing: border-box;
+  width: var(--peaui-form-year-picker-overlay-width);
+  min-width: var(--peaui-form-year-picker-overlay-width);
+  max-width: var(--peaui-form-year-picker-overlay-width);
   padding: 0;
   overflow: hidden;
+  container: peaui-year-picker / inline-size;
+
+  &.peaui-popover-overlayer__content--placement-top,
+  &.peaui-popover-overlayer__content--placement-bottom {
+    left: clamp(
+      calc(var(--peaui-form-year-picker-overlay-width) / 2 + var(--peaui-overlay-viewport-gap)),
+      anchor(center),
+      calc(
+        100vw - var(--peaui-form-year-picker-overlay-width) / 2 - var(--peaui-overlay-viewport-gap)
+      )
+    );
+  }
 }
 
 .peaui-form-year-picker__panel {
@@ -96,4 +119,34 @@
 
 .peaui-form-year-picker__cell {
   min-width: 0;
+}
+
+@container peaui-year-picker (max-width: 24rem) {
+  .peaui-form-year-picker__panel {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .peaui-form-year-picker__grid,
+  .peaui-form-year-picker__row {
+    gap: 0.25rem;
+  }
+}
+
+@container peaui-year-picker (max-width: 20rem) {
+  .peaui-form-year-picker__header {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .peaui-form-date-picker-navigation {
+    margin-left: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-form-year-picker-button--variant-primary {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
 }

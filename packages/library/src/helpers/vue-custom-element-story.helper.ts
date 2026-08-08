@@ -9,7 +9,7 @@ type RuntimePropType =
 type RuntimePropOptions = {
   default?: unknown;
   required?: boolean;
-  type?: RuntimePropType | RuntimePropType[];
+  type?: RuntimePropType | null | Array<RuntimePropType | null>;
 };
 
 type RuntimeComponent = {
@@ -37,11 +37,18 @@ function getProps(component: unknown): Record<string, RuntimePropOptions> {
 
 function getTypes(options: RuntimePropOptions): RuntimePropType[] {
   if (!options.type) return [];
-  return Array.isArray(options.type) ? options.type : [options.type];
+  const types = Array.isArray(options.type) ? options.type : [options.type];
+  return types.filter((type): type is RuntimePropType => typeof type === 'function');
 }
 
 function getTypeSummary(options: RuntimePropOptions): string {
-  const names = getTypes(options).map((type) => type.name.toLocaleLowerCase());
+  if (!options.type) return 'unknown';
+  const types = Array.isArray(options.type) ? options.type : [options.type];
+  const names = types.map((type) => {
+    if (type === null) return 'null';
+    if (typeof type === 'function') return type.name.toLocaleLowerCase();
+    return 'unknown';
+  });
   return names.length > 0 ? names.join(' | ') : 'unknown';
 }
 

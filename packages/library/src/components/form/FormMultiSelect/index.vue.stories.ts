@@ -236,7 +236,7 @@ export const FormMultiSelect: Story = {
   args: {
     id: 'voivodeships',
     name: 'voivodeships',
-    value: ['mazowieckie', 'pomorskie'],
+    value: ['warszawa', 'gdansk'],
     label: 'Wojewodztwa',
     required: true,
     readonly: false,

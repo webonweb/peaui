@@ -1,9 +1,9 @@
-@use '@/assets/mixins.scss' as *;
-
 .peaui-image-view {
   display: inline-flex;
+  box-sizing: border-box;
   align-items: flex-start;
   max-inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .peaui-image-view__image {
@@ -12,23 +12,23 @@
 }
 
 .peaui-image-view--size-xs {
-  @include set-param(inline-size, 4rem);
+  inline-size: min(100%, calc(4rem * var(--peaui-user-scale)));
 }
 
 .peaui-image-view--size-s {
-  @include set-param(inline-size, 8rem);
+  inline-size: min(100%, calc(8rem * var(--peaui-user-scale)));
 }
 
 .peaui-image-view--size-m {
-  @include set-param(inline-size, 12rem);
+  inline-size: min(100%, calc(12rem * var(--peaui-user-scale)));
 }
 
 .peaui-image-view--size-l {
-  @include set-param(inline-size, 16rem);
+  inline-size: min(100%, calc(16rem * var(--peaui-user-scale)));
 }
 
 .peaui-image-view--size-xl {
-  @include set-param(inline-size, 24rem);
+  inline-size: min(100%, calc(24rem * var(--peaui-user-scale)));
 }
 
 .peaui-image-view--size-xs .peaui-image-view__image,

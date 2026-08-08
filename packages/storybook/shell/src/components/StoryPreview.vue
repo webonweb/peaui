@@ -43,7 +43,7 @@
   max-width: 100%;
 }
 
-:global(body.dark-mode) .story-preview {
+:global(body.dark-mode .story-preview) {
   background: #070b13;
 }
 </style>

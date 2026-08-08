@@ -443,6 +443,31 @@ describe('PopoverOverlayerComponent', () => {
 
     expect(popover.showPopover).not.toHaveBeenCalled();
     expect(trigger.attributes('aria-disabled')).toBe('true');
+    expect(trigger.attributes('aria-expanded')).toBe('false');
+    expect(trigger.attributes('role')).toBe('button');
+    expect(trigger.attributes('tabindex')).toBe('-1');
+  });
+
+  it('can leave trigger semantics unmanaged for an inline composition', async () => {
+    const wrapper = mount(PopoverOverlayerComponent, {
+      props: {
+        dataTestId: 'popover-overlayer',
+        disabled: true,
+        manageTriggerAccessibility: false,
+      },
+      slots: {
+        default: '<input aria-label="Wartość koloru" />',
+        content: 'Inline content',
+      },
+    });
+    await nextTick();
+
+    const trigger = wrapper.get('[data-testid="popover-overlayer-trigger"]');
+    const input = trigger.get('input');
+    expect(trigger.attributes('aria-expanded')).toBeUndefined();
+    expect(trigger.attributes('role')).toBeUndefined();
+    expect(input.attributes('aria-expanded')).toBeUndefined();
+    expect(input.attributes('aria-controls')).toBeUndefined();
   });
 
   it('applies placement class from prop and test ids suffixes', () => {

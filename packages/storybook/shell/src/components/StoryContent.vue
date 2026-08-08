@@ -282,7 +282,7 @@ const documentedProps = computed(() => props.settings.props ?? []);
   }
 }
 
-:global(body.dark-mode) .story-content {
+:global(body.dark-mode .story-content) {
   --docs-accent: #afe34b;
   --docs-accent-soft: #1d3f03;
   --docs-border: #29364a;
@@ -291,7 +291,7 @@ const documentedProps = computed(() => props.settings.props ?? []);
   color: #f4f7fb;
 }
 
-:global(body.dark-mode) .story-badge {
+:global(body.dark-mode .story-badge) {
   background: #172033;
   color: #dce5f2;
 }

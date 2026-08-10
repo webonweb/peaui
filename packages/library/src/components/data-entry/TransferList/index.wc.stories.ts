@@ -43,7 +43,7 @@ const meta = {
   parameters: {
     name: 'TransferList',
     description: 'Light-DOM WC o kontrakcie i wyglądzie 1:1 z Vue oraz React.',
-    code: `<script type="module">import '@peaui/ui/wc/data-entry/TransferList'; import '@peaui/ui/styles.css';</script>\n<peaui-transfer-list></peaui-transfer-list>`,
+    code: `<script type="module">import '@peaui/ui/wc/data-entry/TransferList';</script>\n<peaui-transfer-list></peaui-transfer-list>`,
   },
   render: renderTransfer,
 } satisfies Meta<VueCustomElementStoryArgs>;

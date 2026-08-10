@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/overlayer/ModalDialog';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-modal-dialog></peaui-modal-dialog>

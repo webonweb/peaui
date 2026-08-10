@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   createVueCustomElementStoryArgs,
@@ -13,6 +13,7 @@ defineNavigationIconCard();
 
 afterEach(() => {
   document.body.innerHTML = '';
+  vi.restoreAllMocks();
 });
 
 describe('NavigationIconCard (index.wc.ts)', () => {
@@ -21,6 +22,7 @@ describe('NavigationIconCard (index.wc.ts)', () => {
   });
 
   it('renders the original Vue implementation with its public props', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const element = renderVueCustomElementStory(
       NavigationIconCardElement.tagName,
       createVueCustomElementStoryArgs(NavigationIconCardVueComponent),
@@ -31,5 +33,8 @@ describe('NavigationIconCard (index.wc.ts)', () => {
 
     expect(element.childNodes.length).toBeGreaterThan(0);
     expect(element.getAttribute('role')).toBe('group');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[NavigationIconCard] Missing path. Rendering a disabled card without navigation.',
+    );
   });
 });

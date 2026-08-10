@@ -48,7 +48,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/ToggleButton';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-toggle-button label="Podgląd" icon="eye"></peaui-toggle-button>
     `,

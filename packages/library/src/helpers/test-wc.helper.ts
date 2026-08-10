@@ -67,6 +67,7 @@ export async function waitForDomCondition(
 export async function waitForSvgElement(
   root: Element,
   errorMessage = 'SVG did not render in time.',
+  timeoutMs = 2000,
 ): Promise<SVGSVGElement> {
   await waitForDomCondition(
     root,
@@ -77,6 +78,7 @@ export async function waitForSvgElement(
     },
     {
       errorMessage,
+      timeoutMs,
     },
   );
 

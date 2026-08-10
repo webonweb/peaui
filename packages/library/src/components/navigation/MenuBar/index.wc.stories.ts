@@ -46,7 +46,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/navigation/MenuBar';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-menu-bar aria-label="Menu edytora"></peaui-menu-bar>
 <script>

@@ -56,7 +56,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormColorPicker';
-  import '@peaui/ui/styles.css';
   const picker = document.querySelector('peaui-form-color-picker');
   picker.value = '#4C9A2AE6';
 </script>

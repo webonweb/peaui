@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/navigation/ListLimitControl';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-list-limit-control></peaui-list-limit-control>

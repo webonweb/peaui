@@ -28,7 +28,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormNumber';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-number></peaui-form-number>

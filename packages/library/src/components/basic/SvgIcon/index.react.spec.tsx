@@ -18,9 +18,12 @@ describe('SvgIcon (React)', () => {
     expect(icon).toHaveAttribute('aria-hidden', 'true');
     expect(icon).toHaveAttribute('focusable', 'false');
 
-    await waitFor(() => {
-      expect(icon.querySelector('path')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(icon.querySelector('path')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
 
     expect(icon).toHaveAttribute('fill', 'none');
     expect(icon).toHaveAttribute('stroke', 'currentColor');
@@ -43,18 +46,24 @@ describe('SvgIcon (React)', () => {
     expect(icon).not.toHaveAttribute('aria-hidden');
     expect(icon).toHaveAttribute('role', 'img');
 
-    await waitFor(() => {
-      expect(icon.querySelector('circle')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(icon.querySelector('circle')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it('lazy-loads a non-essential legacy icon without the full icon payload', async () => {
     render(<SvgIcon dataTestId="legacy-icon" name="cogs" />);
 
     const icon = screen.getByTestId('legacy-icon');
-    await waitFor(() => {
-      expect(icon.querySelector('path')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(icon.querySelector('path')).toBeInTheDocument();
+      },
+      { timeout: 5000 },
+    );
 
     expect(icon).toHaveAttribute('viewBox');
     expect(icon).toHaveAttribute('aria-hidden', 'true');

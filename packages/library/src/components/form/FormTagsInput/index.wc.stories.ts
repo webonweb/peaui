@@ -54,7 +54,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormTagsInput';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-form-tags-input id="technologies" name="technologies" label="Technologie"></peaui-form-tags-input>
     `,

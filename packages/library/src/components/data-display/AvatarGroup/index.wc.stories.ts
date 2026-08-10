@@ -32,7 +32,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/AvatarGroup';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-avatar-group max-visible="3" overflow-mode="popover"></peaui-avatar-group>

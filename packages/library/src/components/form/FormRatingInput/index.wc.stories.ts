@@ -51,7 +51,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormRatingInput';
-  import '@peaui/ui/styles.css';
   document.querySelector('peaui-form-rating-input').value = 3.5;
 </script>
 <peaui-form-rating-input id="rating" name="rating" label="Ocena" step="0.5"></peaui-form-rating-input>

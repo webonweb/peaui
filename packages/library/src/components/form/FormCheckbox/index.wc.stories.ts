@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormCheckbox';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-checkbox></peaui-form-checkbox>

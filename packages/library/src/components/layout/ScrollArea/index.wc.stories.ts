@@ -62,7 +62,7 @@ const meta = {
     name: 'ScrollArea',
     description:
       'Light-DOM Web Component korzystający z tej samej implementacji, ARIA i geometrii co Vue.',
-    code: `<script type="module">import '@peaui/ui/wc/layout/ScrollArea'; import '@peaui/ui/styles.css';</script>
+    code: `<script type="module">import '@peaui/ui/wc/layout/ScrollArea';</script>
 <peaui-scroll-area aria-label="Sekcje raportu" tabindex="0"></peaui-scroll-area>`,
   },
   render: (args: VueCustomElementStoryArgs) => renderArea(args),

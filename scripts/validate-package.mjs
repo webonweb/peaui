@@ -37,7 +37,9 @@ function getStaticEsmClosure(entryFile) {
     files.add(resolvedFile);
 
     const source = readFileSync(resolvedFile, "utf8");
-    for (const match of source.matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)) {
+    for (const match of source.matchAll(
+      /(?:from\s+|import\s+|require\(\s*)["']([^"']+)["']/g,
+    )) {
       if (!match[1].startsWith(".")) continue;
       visit(resolve(dirname(resolvedFile), match[1]));
     }
@@ -60,6 +62,27 @@ function validateGzipBudget(relativeEntry, maximumBytes) {
   if (gzipBytes > maximumBytes) {
     errors.push(
       `Przekroczony budżet ESM ${relativeEntry}: ${gzipBytes} B gzip > ${maximumBytes} B`,
+    );
+  }
+}
+
+function validateAutomaticStyles(relativeEntry, framework, component) {
+  const entryFile = join(distRoot, relativeEntry);
+  if (!existsSync(entryFile)) return;
+
+  const cssFiles = [...getStaticEsmClosure(entryFile)].filter((file) =>
+    file.endsWith('.css'),
+  );
+
+  if (cssFiles.length === 0) {
+    errors.push(
+      `Brak automatycznego importu CSS dla ${framework}/${component}`,
+    );
+  }
+
+  if (cssFiles.includes(join(distRoot, 'styles.css'))) {
+    errors.push(
+      `Komponent ${framework}/${component} importuje pełny styles.css zamiast stylów komponentu`,
     );
   }
 }
@@ -116,6 +139,16 @@ function validateComponent(directory) {
     assertFile(
       join(distRoot, framework, `${relativeDirectory}.d.ts`),
       `Brak deklaracji komponentu ${framework}`,
+    );
+    validateAutomaticStyles(
+      `components/${framework}/${relativeDirectory}.js`,
+      framework,
+      relativeDirectory,
+    );
+    validateAutomaticStyles(
+      `components/${framework}/${relativeDirectory}.umd.cjs`,
+      framework,
+      relativeDirectory,
     );
 
     if (

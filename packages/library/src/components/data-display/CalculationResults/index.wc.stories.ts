@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/CalculationResults';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-calculation-results></peaui-calculation-results>

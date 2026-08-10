@@ -37,7 +37,7 @@ const meta = {
   parameters: {
     name: 'KeyboardKey',
     description: 'Light-DOM WC o semantyce, mapowaniu, SSR i wyglądzie 1:1 z Vue i React.',
-    code: `<script type="module">import '@peaui/ui/wc/data-display/KeyboardKey'; import '@peaui/ui/styles.css';</script>\n<peaui-keyboard-key keys="Mod + K"></peaui-keyboard-key>`,
+    code: `<script type="module">import '@peaui/ui/wc/data-display/KeyboardKey';</script>\n<peaui-keyboard-key keys="Mod + K"></peaui-keyboard-key>`,
   },
   render: renderKeyboardKey,
 } satisfies Meta<VueCustomElementStoryArgs>;

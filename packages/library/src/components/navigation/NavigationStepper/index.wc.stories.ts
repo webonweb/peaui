@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/navigation/NavigationStepper';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-navigation-stepper></peaui-navigation-stepper>

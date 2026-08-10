@@ -39,7 +39,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/TreeList';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-tree-list></peaui-tree-list>

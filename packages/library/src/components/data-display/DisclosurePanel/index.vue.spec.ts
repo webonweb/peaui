@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/constants', () => ({
   UIKIT_NAME: 'peaui',
@@ -9,6 +9,10 @@ vi.mock('@/assets/global.scss', () => ({}));
 vi.mock('./styles.scss', () => ({}));
 
 import DisclosurePanel from './index.vue';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe('DisclosurePanel (index.vue)', () => {
   it('renders root with base class and passes attrs', () => {
@@ -105,8 +109,12 @@ describe('DisclosurePanel (index.vue)', () => {
   });
 
   it('falls back to generic accessible name when both title and ariaLabel are missing', () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const wrapper = mount(DisclosurePanel);
 
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      '[DisclosurePanel] Missing title/ariaLabel. Using generic accessible name.',
+    );
     expect(wrapper.get('summary').attributes('aria-label')).toBe('Sekcja rozwijana');
     expect(wrapper.get('.peaui-disclosure-panel__content').attributes('aria-label')).toBe(
       'Sekcja rozwijana',

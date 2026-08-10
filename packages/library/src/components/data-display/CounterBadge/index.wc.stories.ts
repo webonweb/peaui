@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/CounterBadge';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-counter-badge></peaui-counter-badge>

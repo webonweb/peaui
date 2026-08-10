@@ -57,7 +57,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/ToggleGroup';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-toggle-group aria-label="Widok wyników"></peaui-toggle-group>
 <script>document.querySelector('peaui-toggle-group').items = [{ value: 'grid', label: 'Kafelki' }];</script>

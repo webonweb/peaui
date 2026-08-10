@@ -46,7 +46,7 @@ The library is useful when you need:
 
 ## How it works
 
-All three implementations use the same PEAUI design tokens and the same published stylesheet. This keeps spacing, typography, colors, states and responsive behavior aligned across frameworks.
+All three implementations use the same PEAUI design tokens and component styles. This keeps spacing, typography, colors, states and responsive behavior aligned across frameworks.
 
 The public API follows the conventions of each target:
 
@@ -83,23 +83,18 @@ For a React application, make sure the React peers are also installed:
 npm install @peaui/ui react react-dom
 ```
 
-Import the shared stylesheet once in the application entry point:
+Per-component entry points load their required styles automatically. You do not need a separate CSS import.
 
-```ts
-import '@peaui/ui/styles.css';
-```
-
-The stylesheet is also available through the backward-compatible `@peaui/ui/style.css` path.
+The complete stylesheet remains available through `@peaui/ui/styles.css` and the backward-compatible `@peaui/ui/style.css` path when you intentionally want to load styles for the entire catalog.
 
 ## Using PEAUI with Vue
 
-Components can be imported from the main Vue API:
+Use a per-component Vue entry point to load only that component and its required styles:
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { FormInput } from '@peaui/ui';
-import '@peaui/ui/styles.css';
+import FormInput from '@peaui/ui/vue/form/FormInput';
 
 const name = ref('');
 </script>
@@ -115,10 +110,10 @@ const name = ref('');
 </template>
 ```
 
-Use a per-component entry point when you only need one component:
+The main Vue API remains available for aggregate imports:
 
 ```ts
-import FormInput from '@peaui/ui/vue/form/FormInput';
+import { FormInput } from '@peaui/ui';
 ```
 
 Existing framework-less component paths remain Vue-compatible:
@@ -136,7 +131,6 @@ Yes — PEAUI provides **native React components**. They are React implementatio
 ```tsx
 import { useState } from 'react';
 import FormInput from '@peaui/ui/react/form/FormInput';
-import '@peaui/ui/styles.css';
 
 export function ProfileForm() {
   const [name, setName] = useState('');
@@ -165,7 +159,6 @@ Web Components can be used with plain HTML and JavaScript or in any environment 
 Importing a component module registers its `peaui-*` element:
 
 ```ts
-import '@peaui/ui/styles.css';
 import '@peaui/ui/wc/form/FormInput';
 ```
 
@@ -228,7 +221,13 @@ The documentation portal is the source of truth for the complete, current compon
 
 ## Styling and theming
 
-PEAUI ships one shared stylesheet for Vue, React and Web Components:
+Every Vue, React and Web Component entry point automatically imports the shared design tokens, its own styles and styles required by its component dependencies:
+
+```ts
+import FormInput from '@peaui/ui/react/form/FormInput';
+```
+
+Bundlers such as Vite and Webpack deduplicate repeated module imports. The complete stylesheet remains optional:
 
 ```ts
 import '@peaui/ui/styles.css';
@@ -405,7 +404,7 @@ Biblioteka jest przydatna, gdy potrzebujesz:
 
 ## Jak działa biblioteka
 
-Wszystkie trzy implementacje korzystają z tych samych tokenów projektowych PEAUI i tego samego publikowanego arkusza stylów. Dzięki temu odstępy, typografia, kolory, stany oraz zachowanie responsywne pozostają zgodne niezależnie od użytej technologii.
+Wszystkie trzy implementacje korzystają z tych samych tokenów projektowych PEAUI i stylów komponentów. Dzięki temu odstępy, typografia, kolory, stany oraz zachowanie responsywne pozostają zgodne niezależnie od użytej technologii.
 
 Publiczne API jest dopasowane do konwencji każdego środowiska:
 
@@ -442,23 +441,18 @@ W aplikacji React upewnij się, że zależności React są również zainstalowa
 npm install @peaui/ui react react-dom
 ```
 
-Zaimportuj wspólny arkusz stylów jeden raz w głównym pliku aplikacji:
+Entry pointy poszczególnych komponentów automatycznie ładują wymagane style. Osobny import CSS nie jest potrzebny.
 
-```ts
-import '@peaui/ui/styles.css';
-```
-
-Arkusz jest dostępny również przez zachowaną dla zgodności ścieżkę `@peaui/ui/style.css`.
+Pełny arkusz pozostaje dostępny przez `@peaui/ui/styles.css` oraz zachowaną dla zgodności ścieżkę `@peaui/ui/style.css`, gdy celowo chcesz załadować style całego katalogu.
 
 ## Korzystanie z PEAUI w Vue
 
-Komponenty można importować z głównego API Vue:
+Użyj entry pointu konkretnego komponentu Vue, aby załadować tylko ten komponent i wymagane przez niego style:
 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue';
-import { FormInput } from '@peaui/ui';
-import '@peaui/ui/styles.css';
+import FormInput from '@peaui/ui/vue/form/FormInput';
 
 const name = ref('');
 </script>
@@ -474,10 +468,10 @@ const name = ref('');
 </template>
 ```
 
-Jeżeli potrzebujesz tylko jednego komponentu, skorzystaj z jego punktu wejścia:
+Główne API Vue pozostaje dostępne dla importów zbiorczych:
 
 ```ts
-import FormInput from '@peaui/ui/vue/form/FormInput';
+import { FormInput } from '@peaui/ui';
 ```
 
 Dotychczasowe ścieżki bez nazwy frameworka pozostają zgodne z Vue:
@@ -495,7 +489,6 @@ Tak — PEAUI udostępnia **natywne komponenty Reactowe**. Są to implementacje 
 ```tsx
 import { useState } from 'react';
 import FormInput from '@peaui/ui/react/form/FormInput';
-import '@peaui/ui/styles.css';
 
 export function ProfileForm() {
   const [name, setName] = useState('');
@@ -524,7 +517,6 @@ Web Components mogą być używane w zwykłym HTML-u i JavaScripcie oraz w dowol
 Import modułu komponentu rejestruje odpowiadający mu element `peaui-*`:
 
 ```ts
-import '@peaui/ui/styles.css';
 import '@peaui/ui/wc/form/FormInput';
 ```
 
@@ -587,7 +579,13 @@ Portal dokumentacji jest źródłem prawdy dla pełnej i aktualnej listy kompone
 
 ## Style i kolorystyka
 
-PEAUI dostarcza jeden wspólny arkusz stylów dla Vue, React i Web Components:
+Każdy entry point Vue, React i Web Component automatycznie importuje wspólne tokeny projektowe, własne style oraz style wymagane przez zależności komponentowe:
+
+```ts
+import FormInput from '@peaui/ui/react/form/FormInput';
+```
+
+Bundlery takie jak Vite i Webpack deduplikują powtarzające się importy modułów. Pełny arkusz pozostaje opcjonalny:
 
 ```ts
 import '@peaui/ui/styles.css';

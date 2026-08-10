@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/SearchInput';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-search-input></peaui-search-input>

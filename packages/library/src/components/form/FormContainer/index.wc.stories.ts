@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormContainer';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-container></peaui-form-container>

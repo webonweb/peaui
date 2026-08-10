@@ -548,7 +548,6 @@ function createExampleCode(): string {
       `component.addEventListener('${event.name}', (event) => {\n  console.log(event.detail);\n});`,
   );
   const scriptLines = [
-    `import '@peaui/ui/styles.css';`,
     `import '${props.definition.importPath}';`,
     '',
     `const component = document.querySelector('${tagName}');`,

@@ -36,7 +36,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormSwitchToggle';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-form-switch-toggle label="Powiadomienia" name="notifications"></peaui-form-switch-toggle>
     `,

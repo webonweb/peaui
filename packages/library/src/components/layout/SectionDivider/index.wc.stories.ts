@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/layout/SectionDivider';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-section-divider></peaui-section-divider>

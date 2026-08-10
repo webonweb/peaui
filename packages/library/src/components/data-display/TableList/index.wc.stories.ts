@@ -35,7 +35,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/TableList';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-table-list></peaui-table-list>

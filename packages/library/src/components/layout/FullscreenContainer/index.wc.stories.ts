@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/layout/FullscreenContainer';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-fullscreen-container></peaui-fullscreen-container>

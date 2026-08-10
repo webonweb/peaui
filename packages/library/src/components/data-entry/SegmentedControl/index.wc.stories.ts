@@ -46,7 +46,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/SegmentedControl';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-segmented-control aria-label="Sposób wyświetlania"></peaui-segmented-control>
 <script>document.querySelector('peaui-segmented-control').items = [{ value: 'grid', label: 'Kafelki' }];</script>

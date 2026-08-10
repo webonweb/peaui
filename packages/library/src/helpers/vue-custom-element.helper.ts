@@ -20,10 +20,10 @@ type PeauiVueElementOptions = {
 /**
  * Exposes an existing Vue component through the Custom Elements platform.
  *
- * Light DOM is intentional: PEAUI styles are distributed through the shared
- * `styles.css` entry and every framework implementation uses the same tokens
- * and BEM selectors. Vue's custom-element runtime also translates component
- * props, emits and native slots into their Custom Elements equivalents.
+ * Light DOM is intentional: every component entry loads its required styles,
+ * and all framework implementations use the same tokens and BEM selectors.
+ * Vue's custom-element runtime also translates component props, emits and
+ * native slots into their Custom Elements equivalents.
  */
 export function createVueCustomElement(
   component: unknown,

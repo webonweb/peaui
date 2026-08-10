@@ -41,10 +41,21 @@ describe('LinkColumn.vue', () => {
       bubbles: true,
       cancelable: true,
     });
+    let defaultPreventedByComponent = true;
+
+    link.element.addEventListener(
+      'click',
+      (event) => {
+        defaultPreventedByComponent = event.defaultPrevented;
+        event.preventDefault();
+      },
+      { once: true },
+    );
 
     expect(link.attributes('href')).toBe('/rekord/1');
     expect(wrapper.find('button').exists()).toBe(false);
-    expect(link.element.dispatchEvent(clickEvent)).toBe(true);
+    expect(link.element.dispatchEvent(clickEvent)).toBe(false);
+    expect(defaultPreventedByComponent).toBe(false);
     expect(wrapper.emitted('on:click')).toEqual([[]]);
   });
 

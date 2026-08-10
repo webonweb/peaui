@@ -735,7 +735,7 @@ export function getReactExampleCode(
     ? `${opening}\n      ${content}\n    </${component.name}>`
     : opening.replace(/>$/, ' />');
 
-  return `import ${component.name} from '${component.importPath}';\nimport '@peaui/ui/styles.css';${
+  return `import ${component.name} from '${component.importPath}';${
     activeModels.length ? "\nimport { useState } from 'react';" : ''
   }\n\nexport function Example() {${state ? `\n${state}\n` : ''}\n  return (\n    ${jsx}\n  );\n}`;
 }

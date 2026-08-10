@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/feedback/ProgressIndicator';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-progress-indicator></peaui-progress-indicator>

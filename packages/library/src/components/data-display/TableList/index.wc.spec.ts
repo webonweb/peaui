@@ -1,6 +1,6 @@
-import { nextTick } from 'vue';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { waitForDomCondition } from '@/helpers/test-wc.helper';
 import {
   createVueCustomElementStoryArgs,
   renderVueCustomElementStory,
@@ -26,8 +26,10 @@ describe('TableList (index.wc.ts)', () => {
       createVueCustomElementStoryArgs(TableListVueComponent),
     );
     document.body.appendChild(element);
-    await nextTick();
-    await Promise.resolve();
+    await waitForDomCondition(element, () => element.childNodes.length > 0, {
+      errorMessage: 'TableList Web Component did not render in time.',
+      timeoutMs: 5000,
+    });
 
     expect(element.childNodes.length).toBeGreaterThan(0);
     expect(element.getAttribute('role')).toBe('group');
@@ -45,8 +47,14 @@ describe('TableList (index.wc.ts)', () => {
       element.records = [{ id: '1', name: 'Alpha' }];
       element[propertyName] = true;
       document.body.appendChild(element);
-      await nextTick();
-      await Promise.resolve();
+      await waitForDomCondition(
+        element,
+        () => element.querySelector('.peaui-table-list--details') !== null,
+        {
+          errorMessage: `TableList did not apply the ${propertyName} compatibility property in time.`,
+          timeoutMs: 5000,
+        },
+      );
 
       expect(element.querySelector('.peaui-table-list')).toHaveClass('peaui-table-list--details');
     },

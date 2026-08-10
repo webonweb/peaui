@@ -4,15 +4,139 @@ import path from 'path';
 import react from '@vitejs/plugin-react';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 import GlobPlugin from 'vite-plugin-glob';
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgLoader from 'vite-svg-loader';
 
 import { peauiVueCustomElementPlugin } from './vue-custom-element-plugin';
 
 const projectRootDir = resolve(__dirname);
+const componentSourceRoot = resolve(projectRootDir, 'src/components');
+const globalStylesPath = resolve(projectRootDir, 'src/assets/global.scss');
 type ComponentsMap = Record<string, string>;
+
+const componentStyleCache = new Map<string, string[]>();
+
+function isInsideComponentSource(filePath: string): boolean {
+  const relativePath = path.relative(componentSourceRoot, filePath);
+
+  return relativePath !== '' && !relativePath.startsWith('..') && !path.isAbsolute(relativePath);
+}
+
+function resolveVueComponentImport(specifier: string, importerDirectory: string): string | undefined {
+  let importedPath: string;
+
+  if (specifier.startsWith('@/components/')) {
+    importedPath = path.join(componentSourceRoot, specifier.slice('@/components/'.length));
+  } else if (specifier.startsWith('.')) {
+    importedPath = path.resolve(importerDirectory, specifier);
+  } else {
+    return undefined;
+  }
+
+  const candidates = [
+    importedPath,
+    `${importedPath}.vue`,
+    path.join(importedPath, 'index.vue'),
+  ];
+
+  for (const candidate of candidates) {
+    if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) continue;
+    if (path.basename(candidate) !== 'index.vue') continue;
+
+    const componentDirectory = path.dirname(candidate);
+
+    if (isInsideComponentSource(componentDirectory)) return componentDirectory;
+  }
+
+  return undefined;
+}
+
+/**
+ * Uses the Vue composition graph as the framework-neutral source of style
+ * dependencies. React and Web Component implementations render the same BEM
+ * structure, so they need the same primitive styles as their Vue counterpart.
+ */
+function collectComponentStyles(componentDirectory: string): string[] {
+  const cachedStyles = componentStyleCache.get(componentDirectory);
+
+  if (cachedStyles) return cachedStyles;
+
+  const styles = new Set<string>();
+  const visitedComponents = new Set<string>();
+
+  function visit(directory: string) {
+    if (visitedComponents.has(directory)) return;
+    visitedComponents.add(directory);
+
+    const vueEntry = path.join(directory, 'index.vue');
+
+    if (fs.existsSync(vueEntry)) {
+      const source = fs.readFileSync(vueEntry, 'utf8');
+
+      for (const match of source.matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)) {
+        const dependencyDirectory = resolveVueComponentImport(match[1], directory);
+
+        if (dependencyDirectory) visit(dependencyDirectory);
+      }
+    }
+
+    for (const entry of fs
+      .readdirSync(directory, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.scss'))
+      .sort((left, right) => left.name.localeCompare(right.name))) {
+      styles.add(path.join(directory, entry.name));
+    }
+  }
+
+  visit(componentDirectory);
+
+  const collectedStyles = [...styles];
+  componentStyleCache.set(componentDirectory, collectedStyles);
+
+  return collectedStyles;
+}
+
+function toRelativeImport(importerFile: string, importedFile: string): string {
+  const relativePath = path.relative(path.dirname(importerFile), importedFile).replace(/\\/g, '/');
+
+  return relativePath.startsWith('.') ? relativePath : `./${relativePath}`;
+}
+
+/**
+ * Adds styles to every framework entry before Rollup creates its chunks.
+ * vite-plugin-lib-inject-css then writes the corresponding CSS import into
+ * the published ESM/CommonJS module, keeping SSR compatibility.
+ */
+function peauiComponentStylesPlugin(): Plugin {
+  const componentEntryNames = new Set(['index.vue', 'index.ce.vue', 'index.tsx', 'index.wc.ts']);
+
+  return {
+    name: 'peaui:component-styles',
+    apply: 'build',
+    enforce: 'post',
+    transform(code, id) {
+      if (id.includes('?')) return undefined;
+
+      const normalizedId = id.replace(/\\/g, '/');
+      const componentDirectory = path.dirname(id);
+
+      if (!componentEntryNames.has(path.basename(normalizedId))) return undefined;
+      if (!isInsideComponentSource(componentDirectory)) return undefined;
+
+      const styleImports = [globalStylesPath, ...collectComponentStyles(componentDirectory)]
+        .map((styleFile) => `import '${toRelativeImport(id, styleFile)}';`)
+        .join('\n');
+
+      return {
+        code: `${styleImports}\n${code}`,
+        map: null,
+      };
+    },
+  };
+}
 
 /**
  * Recursively scans the given components directory and collects framework-specific
@@ -97,7 +221,8 @@ function collectLibraryEntries(): ComponentsMap {
  * - Supports both Vue and React in a single repository
  * - Generates framework-specific component bundles
  * - Preserves module structure for tree-shaking
- * - Publishes component CSS through a single explicit style bundle
+ * - Associates every component entry with only its required CSS
+ * - Keeps the complete stylesheet as an optional compatibility entry
  * - Provides type definitions via `vite-plugin-dts`
  *
  * Build output structure:
@@ -117,6 +242,8 @@ export default defineConfig(() => {
       vue(),
       svgLoader(),
       react(),
+      peauiComponentStylesPlugin(),
+      libInjectCss(),
       dts({
         compilerOptions: {
           noCheck: true,
@@ -175,34 +302,7 @@ export default defineConfig(() => {
               return 'styles[extname]';
             }
 
-            const sourceFile = assetInfo.originalFileNames?.[0] ?? '';
-
-            if (!sourceFile.includes('src/components/')) {
-              return 'assets/[name][extname]';
-            }
-
-            const relativeSource = sourceFile.replace(/\\/g, '/').replace('src/components/', '');
-
-            const componentDir = relativeSource.replace(/index(\.wc)?\.(vue|tsx|ts)$/, '');
-
-            return `components/${componentDir}[name][extname]`;
-
-            // if (assetInfo.name?.endsWith('.css')) {
-            //   let name = '';
-            //   if (
-            //     assetInfo.originalFileNames &&
-            //     assetInfo.originalFileNames.length > 0 &&
-            //     assetInfo.originalFileNames[0].includes('src/components')
-            //   ) {
-            //     const orginaleName = assetInfo.name.replace('.css', '');
-            //     name = assetInfo.originalFileNames[0]
-            //       .replace('src/components/', '')
-            //       .replace(`${orginaleName}.vue`, '');
-            //   }
-
-            //   return `components/${name}[name][extname]`;
-            // }
-            // return 'assets/[name][extname]';
+            return 'assets/[name]-[hash][extname]';
           },
           chunkFileNames: '[name]-[hash].js',
         },
@@ -210,7 +310,7 @@ export default defineConfig(() => {
       cssMinify: true,
       minify: 'esbuild',
       outDir: 'dist',
-      cssCodeSplit: false,
+      cssCodeSplit: true,
       emptyOutDir: true,
     },
   };

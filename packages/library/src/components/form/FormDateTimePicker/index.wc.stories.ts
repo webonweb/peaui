@@ -56,7 +56,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormDateTimePicker';
-  import '@peaui/ui/styles.css';
   const picker = document.querySelector('peaui-form-date-time-picker');
   picker.value = { date: '2026-08-18', time: '09:30' };
 </script>

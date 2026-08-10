@@ -28,8 +28,7 @@ let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
 const vueUsageCode = computed(
   () => `<script setup lang="ts">
-import { SvgIcon } from '@peaui/ui';
-import '@peaui/ui/styles.css';
+import SvgIcon from '@peaui/ui/vue/basic/SvgIcon';
 <\/script>
 
 <template>
@@ -40,15 +39,13 @@ import '@peaui/ui/styles.css';
 );
 
 const reactUsageCode = `import SvgIcon from '@peaui/ui/react/basic/SvgIcon';
-import '@peaui/ui/styles.css';
 
 export function ConfirmIcon() {
   return <SvgIcon name="core/check-circle" aria-hidden="true" />;
 }`;
 
 const webComponentUsageCode = computed(
-  () => `import '@peaui/ui/styles.css';
-import '@peaui/ui/wc/basic/SvgIcon';
+  () => `import '@peaui/ui/wc/basic/SvgIcon';
 
 document.body.innerHTML = \`
   <button type="button" aria-label="${localize({ en: 'Save', pl: 'Zapisz' })}">

@@ -236,7 +236,9 @@ describe('Breadcrumbs (index.vue)', () => {
       },
     );
 
-    await wrapper.get('ol').find('a').trigger('click');
+    const link = wrapper.get('ol').find('a');
+    link.element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+    await link.trigger('click');
 
     expect(wrapper.emitted('on:navigate')?.[0]).toEqual([
       {
@@ -275,6 +277,9 @@ describe('Breadcrumbs (index.vue)', () => {
     expect(desktopLink.attributes('data-testid')).toBeUndefined();
     expect(desktop.findAll('button').length).toBe(1);
 
+    desktopLink.element.addEventListener('click', (event) => event.preventDefault(), {
+      once: true,
+    });
     await desktopLink.trigger('click');
 
     expect(wrapper.emitted('on:navigate')?.[0]).toEqual([
@@ -306,10 +311,19 @@ describe('Breadcrumbs (index.vue)', () => {
       cancelable: true,
       button: 0,
     });
+    let defaultPreventedByComponent = true;
 
-    desktopLink.element.dispatchEvent(event);
+    desktopLink.element.addEventListener(
+      'click',
+      (clickEvent) => {
+        defaultPreventedByComponent = clickEvent.defaultPrevented;
+        clickEvent.preventDefault();
+      },
+      { once: true },
+    );
 
-    expect(event.defaultPrevented).toBe(false);
+    expect(desktopLink.element.dispatchEvent(event)).toBe(false);
+    expect(defaultPreventedByComponent).toBe(false);
     expect(wrapper.emitted('on:navigate')?.[0]).toEqual([
       { key: 'home', label: 'Home', path: '/home' },
     ]);

@@ -50,7 +50,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormPinInput';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-form-pin-input id="otp" name="otp" label="Kod weryfikacyjny"></peaui-form-pin-input>
     `,

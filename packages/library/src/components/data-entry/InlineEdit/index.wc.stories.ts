@@ -40,7 +40,7 @@ const meta = {
   parameters: {
     name: 'InlineEdit',
     description: 'Light-DOM WC o zachowaniu, wyglądzie i relacjach ARIA 1:1 z Vue i React.',
-    code: `<script type="module">import '@peaui/ui/wc/data-entry/InlineEdit'; import '@peaui/ui/styles.css';</script>\n<peaui-inline-edit value="Panel klienta"></peaui-inline-edit>`,
+    code: `<script type="module">import '@peaui/ui/wc/data-entry/InlineEdit';</script>\n<peaui-inline-edit value="Panel klienta"></peaui-inline-edit>`,
   },
   render: renderInlineEdit,
 } satisfies Meta<VueCustomElementStoryArgs>;

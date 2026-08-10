@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/feedback/SpinnerLoader';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-spinner-loader></peaui-spinner-loader>

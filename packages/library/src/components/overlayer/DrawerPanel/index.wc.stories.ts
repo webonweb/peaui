@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/overlayer/DrawerPanel';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-drawer-panel></peaui-drawer-panel>

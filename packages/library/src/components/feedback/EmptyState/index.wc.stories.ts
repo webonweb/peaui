@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/feedback/EmptyState';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-empty-state></peaui-empty-state>

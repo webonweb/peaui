@@ -155,12 +155,12 @@ const inputLabel = computed(() =>
 const importCode = computed(() => {
   if (!definition.value) return '';
   if (framework.value === 'vue') {
-    return `import { ${definition.value.name} } from '@peaui/ui';\nimport '@peaui/ui/styles.css';`;
+    return `import ${definition.value.name} from '${definition.value.importPath}';`;
   }
   if (framework.value === 'react') {
-    return `import ${definition.value.name} from '${definition.value.importPath}';\nimport '@peaui/ui/styles.css';`;
+    return `import ${definition.value.name} from '${definition.value.importPath}';`;
   }
-  return `import '@peaui/ui/styles.css';\nimport '${definition.value.importPath}';`;
+  return `import '${definition.value.importPath}';`;
 });
 </script>
 

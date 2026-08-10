@@ -3,6 +3,22 @@ import path from 'node:path';
 
 import type { Plugin } from 'vite';
 
+function createIdentitySourceMap(id: string, sourceFile: string, code: string) {
+  const mappings = code
+    .split('\n')
+    .map((_, index) => (index === 0 ? 'AAAA' : 'AACA'))
+    .join(';');
+
+  return {
+    version: 3 as const,
+    file: id,
+    sources: [sourceFile.replace(/\\/g, '/')],
+    sourcesContent: [code],
+    names: [],
+    mappings,
+  };
+}
+
 /**
  * Loads `index.ce.vue` requests from the colocated `index.vue` source.
  *
@@ -30,7 +46,14 @@ export function peauiVueCustomElementPlugin(): Plugin {
     },
     load(id) {
       const sourceFile = sourceFiles.get(path.normalize(id));
-      return sourceFile ? fs.readFileSync(sourceFile, 'utf8') : undefined;
+      if (!sourceFile) return undefined;
+
+      const code = fs.readFileSync(sourceFile, 'utf8');
+
+      return {
+        code,
+        map: createIdentitySourceMap(id, sourceFile, code),
+      };
     },
   };
 }

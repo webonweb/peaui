@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/overlayer/PopoverOverlayer';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-popover-overlayer></peaui-popover-overlayer>

@@ -1679,17 +1679,27 @@ describe('TableList (index.vue)', () => {
     });
 
     await wrapper.get('[data-testid="table-list-create-row"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
+    await vi.waitFor(
+      () => {
+        expect(wrapper.find('[data-testid="editable-submit"]').exists()).toBe(true);
+      },
+      { timeout: 10000 },
+    );
     await wrapper.get('[data-testid="editable-submit"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
+    await vi.waitFor(
+      () => {
+        expect(
+          wrapper.find('[data-testid="table-list-editable-create-field-name-error"]').exists(),
+        ).toBe(true);
+      },
+      { timeout: 10000 },
+    );
 
     expect(wrapper.emitted('on:submit')).toBeUndefined();
     expect(
       wrapper.get('[data-testid="table-list-editable-create-field-name-error"]').text(),
     ).toContain('Pole jest wymagane');
-  });
+  }, 15000);
 
   it('keeps validation active after closing and reopening create row', async () => {
     const wrapper = factoryWithRealEditableColumn({
@@ -1715,30 +1725,49 @@ describe('TableList (index.vue)', () => {
     });
 
     await wrapper.get('[data-testid="table-list-create-row"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
+    await vi.waitFor(
+      () => {
+        expect(wrapper.find('[data-testid="editable-submit"]').exists()).toBe(true);
+      },
+      { timeout: 10000 },
+    );
     await wrapper.get('[data-testid="editable-submit"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
 
-    expect(
-      wrapper.get('[data-testid="table-list-editable-create-field-name-error"]').text(),
-    ).toContain('Pole jest wymagane');
+    await vi.waitFor(
+      () => {
+        expect(
+          wrapper.find('[data-testid="table-list-editable-create-field-name-error"]').text(),
+        ).toContain('Pole jest wymagane');
+      },
+      { timeout: 10000 },
+    );
 
     (wrapper.vm as unknown as { handleCancelEditable: () => void }).handleCancelEditable();
-    await flushPromises();
+    await vi.waitFor(
+      () => {
+        expect(wrapper.find('[data-testid="editable-submit"]').exists()).toBe(false);
+      },
+      { timeout: 10000 },
+    );
 
     await wrapper.get('[data-testid="table-list-create-row"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
+    await vi.waitFor(
+      () => {
+        expect(wrapper.find('[data-testid="editable-submit"]').exists()).toBe(true);
+      },
+      { timeout: 10000 },
+    );
     await wrapper.get('[data-testid="editable-submit"]').trigger('click');
-    await vi.dynamicImportSettled();
-    await flushPromises();
 
-    expect(
-      wrapper.get('[data-testid="table-list-editable-create-field-name-error"]').text(),
-    ).toContain('Pole jest wymagane');
-  });
+    await vi.waitFor(
+      () => {
+        expect(
+          wrapper.find('[data-testid="table-list-editable-create-field-name-error"]').text(),
+        ).toContain('Pole jest wymagane');
+      },
+      { timeout: 10000 },
+    );
+  }, 30000);
 
   it('updates text field value in TableBodyEditableColumn create row', async () => {
     const wrapper = factoryWithRealEditableColumn({

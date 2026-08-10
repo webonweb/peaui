@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/DisclosurePanel';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-disclosure-panel></peaui-disclosure-panel>

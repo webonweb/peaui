@@ -47,7 +47,7 @@ function mountSvgIcon(options: MountOptions = {}): SvgIconElement {
 }
 
 async function waitForSvg(element: SvgIconElement): Promise<SVGSVGElement> {
-  return waitForSvgElement(element, 'SVG icon did not render in time.');
+  return waitForSvgElement(element, 'SVG icon did not render in time.', 5000);
 }
 
 async function waitForInnerHtmlChange(
@@ -56,6 +56,7 @@ async function waitForInnerHtmlChange(
 ): Promise<void> {
   await waitForDomCondition(element, () => element.innerHTML !== previousMarkup, {
     errorMessage: 'SVG icon markup did not change in time.',
+    timeoutMs: 5000,
   });
 }
 

@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/SelectableCard';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-selectable-card></peaui-selectable-card>

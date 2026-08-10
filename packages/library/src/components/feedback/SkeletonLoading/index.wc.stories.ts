@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/feedback/SkeletonLoading';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-skeleton-loading></peaui-skeleton-loading>

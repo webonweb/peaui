@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/navigation/PaginationControl';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-pagination-control></peaui-pagination-control>

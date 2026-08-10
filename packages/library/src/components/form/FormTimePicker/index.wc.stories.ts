@@ -52,7 +52,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormTimePicker';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-form-time-picker id="meeting-time" name="meetingTime" label="Godzina spotkania" value="09:30"></peaui-form-time-picker>
     `,

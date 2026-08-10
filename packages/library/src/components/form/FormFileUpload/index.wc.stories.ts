@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormFileUpload';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-file-upload></peaui-form-file-upload>

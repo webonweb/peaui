@@ -41,7 +41,7 @@ const meta = {
   parameters: {
     name: 'VirtualList',
     description: 'Light-DOM WC o kontrakcie, wyglądzie, ARIA i wydajności 1:1 z Vue i React.',
-    code: `<script type="module">import '@peaui/ui/wc/data-display/VirtualList'; import '@peaui/ui/styles.css';</script>\n<peaui-virtual-list></peaui-virtual-list>`,
+    code: `<script type="module">import '@peaui/ui/wc/data-display/VirtualList';</script>\n<peaui-virtual-list></peaui-virtual-list>`,
   },
   render: renderVirtualList,
 } satisfies Meta<VueCustomElementStoryArgs>;

@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/InputSlider';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-input-slider></peaui-input-slider>

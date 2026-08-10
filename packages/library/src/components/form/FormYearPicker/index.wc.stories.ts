@@ -27,7 +27,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormYearPicker';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-year-picker></peaui-form-year-picker>

@@ -33,7 +33,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormMultiSelect';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-multi-select></peaui-form-multi-select>

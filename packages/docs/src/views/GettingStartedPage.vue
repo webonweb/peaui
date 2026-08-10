@@ -24,13 +24,12 @@ const installCode = computed(() =>
 );
 
 const vueSetupCode = `import { createApp } from 'vue';
-import '@peaui/ui/styles.css';
 import App from './App.vue';
 
 createApp(App).mount('#app');`;
 const vueUsageCode = computed(
   () => `<script setup lang="ts">
-import { FormInput } from '@peaui/ui';
+import FormInput from '@peaui/ui/vue/form/FormInput';
 import { ref } from 'vue';
 
 const name = ref('');
@@ -47,6 +46,7 @@ const name = ref('');
 );
 const vueDirectImportCode = computed(
   () => `import ButtonAction from '@peaui/ui/vue/data-entry/ButtonAction';
+// ${localize({ en: 'The component module loads its required CSS automatically.', pl: 'Moduł komponentu automatycznie ładuje wymagany CSS.' })}
 // ${localize({ en: 'Backward-compatible Vue path:', pl: 'Zgodna wstecznie ścieżka Vue:' })}
 import ButtonActionLegacy from '@peaui/ui/data-entry/ButtonAction';`,
 );
@@ -55,7 +55,6 @@ const reactUsageCode = computed(
   () => `import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import FormInput from '@peaui/ui/react/form/FormInput';
-import '@peaui/ui/styles.css';
 
 function App() {
   const [name, setName] = useState('');
@@ -82,8 +81,7 @@ import FormInput from '@peaui/ui/react/form/FormInput';
 // ${localize({ en: 'so do not import React components from the main entry point.', pl: 'dlatego nie importuj komponentów React z głównego entry pointu.' })}`,
 );
 
-const webComponentSetupCode = `import '@peaui/ui/styles.css';
-import '@peaui/ui/wc/data-entry/ButtonAction';
+const webComponentSetupCode = `import '@peaui/ui/wc/data-entry/ButtonAction';
 import '@peaui/ui/wc/form/FormInput';`;
 const webComponentHtmlCode = computed(
   () => `<peaui-form-input
@@ -120,10 +118,17 @@ if (typeof window !== 'undefined') {
 }`,
 );
 
-const themeImportOrderCode = computed(
-  () => `import '@peaui/ui/styles.css';
-import './peaui-theme.css'; // ${localize({ en: 'custom tokens must follow the library styles', pl: 'własne tokeny muszą być za stylami biblioteki' })}`,
-);
+const themeImportOrderCode = computed(() => {
+  const componentImport =
+    framework.value === 'react'
+      ? `import FormInput from '@peaui/ui/react/form/FormInput';`
+      : framework.value === 'web-components'
+        ? `import '@peaui/ui/wc/form/FormInput';`
+        : `import FormInput from '@peaui/ui/vue/form/FormInput';`;
+
+  return `${componentImport}
+import './peaui-theme.css'; // ${localize({ en: 'custom tokens must follow the component import', pl: 'własne tokeny muszą być za importem komponentu' })}`;
+});
 
 const colorOverrideCode = computed(
   () => `:root {
@@ -173,16 +178,18 @@ const copy = computed(() =>
         'The React API provides the complete Vue-compatible catalog. Every model supports a controlled value, a default… initial value and an on…Change callback.',
       installTitle: '1. Installation',
       installText:
-        'Install one package. Styles and implementations for every technology share one version.',
+        'Install one package. Every component entry automatically loads its required styles and dependencies.',
       vueSetupTitle: '2. Vue setup',
-      vueSetupText: 'Include the global styles once before mounting the application.',
+      vueSetupText: 'No global stylesheet import is required before mounting the application.',
       firstTitle: '3. First component',
-      vueFirstText: 'The main package entry is intended for Vue 3 and exposes named exports.',
+      vueFirstText:
+        'An explicit Vue component entry provides a default export and automatically includes its required styles.',
       directTitle: '4. Direct imports',
-      directText: 'You can import one component from an explicit Vue path.',
+      directText:
+        'Import one component from an explicit Vue path to load only its code, styles and component dependencies.',
       reactRunTitle: '2. Run in React',
       reactRunText:
-        'Import a component from the explicit @peaui/ui/react subtree and include the shared stylesheet.',
+        'Import a component from the explicit @peaui/ui/react subtree. Its required CSS is included automatically.',
       importRulesTitle: '3. Import rules',
       importRulesText:
         'The main package API remains the Vue API. React uses separate, stable subpaths.',
@@ -190,7 +197,7 @@ const copy = computed(() =>
       fullCatalogText: `The documentation covers all ${availableComponents.value.length} components with variants, a props editor, ready TSX, callbacks and ReactNode content.`,
       viewReact: 'View React components',
       registerTitle: '2. Register elements',
-      registerText: `Importing a module registers that element through customElements.define. Import only the elements used by your application. All ${availableComponents.value.length} elements share the Vue rendering layer declared as a peer dependency, while their public interface remains standard Custom Elements.`,
+      registerText: `Importing a module registers that element through customElements.define and loads its required CSS automatically. Import only the elements used by your application. All ${availableComponents.value.length} elements share the Vue rendering layer declared as a peer dependency, while their public interface remains standard Custom Elements.`,
       htmlTitle: '3. Use in HTML',
       htmlText:
         'After registration, use native peaui-* tags. Pass simple values as HTML attributes.',
@@ -222,7 +229,7 @@ const copy = computed(() =>
       dark: 'Dark',
       overrideTitle: 'Override the colors',
       overrideText:
-        'Import PEAUI styles first and your theme file afterwards. Variables with the same names then replace the defaults.',
+        'Import a PEAUI component first and your theme file afterwards. Variables with the same names then replace the defaults. The optional @peaui/ui/styles.css entry remains available when you intentionally need the full catalog stylesheet.',
       themesTitle: 'Light and dark themes',
       themesText:
         'Every token uses light-dark(light, dark) and responds to color-scheme. If your application enforces dark mode with body.dark-mode, override the same tokens in that selector too.',
@@ -242,24 +249,26 @@ const copy = computed(() =>
         'API React ma pełny katalog zgodny z Vue. Każdy model obsługuje tryb kontrolowany, wartość początkową default… i callback on…Change.',
       installTitle: '1. Instalacja',
       installText:
-        'Zainstaluj jedną paczkę. Style i implementacje wszystkich technologii mają wspólne wersjonowanie.',
+        'Zainstaluj jedną paczkę. Każdy entry point komponentu automatycznie ładuje wymagane style i zależności.',
       vueSetupTitle: '2. Konfiguracja Vue',
-      vueSetupText: 'Dołącz globalne style jeden raz przed zamontowaniem aplikacji.',
+      vueSetupText:
+        'Przed zamontowaniem aplikacji nie musisz importować globalnego arkusza stylów.',
       firstTitle: '3. Pierwszy komponent',
       vueFirstText:
-        'Główny entry point paczki jest przeznaczony dla Vue 3 i udostępnia nazwane eksporty.',
+        'Jawny entry point komponentu Vue udostępnia domyślny eksport i automatycznie dołącza wymagane style.',
       directTitle: '4. Importy bezpośrednie',
-      directText: 'Możesz importować pojedynczy komponent z jawnej ścieżki Vue.',
+      directText:
+        'Importuj pojedynczy komponent z jawnej ścieżki Vue, aby załadować tylko jego kod, style i zależności komponentowe.',
       reactRunTitle: '2. Uruchomienie w React',
       reactRunText:
-        'Importuj komponent z jawnego poddrzewa @peaui/ui/react i dołącz wspólny arkusz stylów.',
+        'Importuj komponent z jawnego poddrzewa @peaui/ui/react. Wymagany CSS zostanie dołączony automatycznie.',
       importRulesTitle: '3. Zasady importowania',
       importRulesText: 'Główne API paczki pozostaje API Vue. React ma osobne, stabilne podścieżki.',
       fullCatalogTitle: '4. Pełny katalog i dokumentacja',
       fullCatalogText: `Dokumentacja pokazuje wszystkie ${availableComponents.value.length} komponentów z wariantami, edytorem propsów, gotowym kodem TSX, callbackami oraz treścią ReactNode.`,
       viewReact: 'Zobacz komponenty React',
       registerTitle: '2. Rejestracja elementów',
-      registerText: `Zaimportowanie modułu rejestruje dany element przez customElements.define. Importuj tylko elementy używane w aplikacji. Wszystkie ${availableComponents.value.length} elementy korzystają ze wspólnej warstwy renderującej Vue, deklarowanej przez paczkę jako peer dependency, ale ich publicznym interfejsem pozostaje standard Custom Elements.`,
+      registerText: `Zaimportowanie modułu rejestruje dany element przez customElements.define i automatycznie ładuje wymagany CSS. Importuj tylko elementy używane w aplikacji. Wszystkie ${availableComponents.value.length} elementy korzystają ze wspólnej warstwy renderującej Vue, deklarowanej przez paczkę jako peer dependency, ale ich publicznym interfejsem pozostaje standard Custom Elements.`,
       htmlTitle: '3. Użycie w HTML',
       htmlText:
         'Po rejestracji korzystasz z natywnych znaczników peaui-*. Proste wartości przekazuj jako atrybuty HTML.',
@@ -291,7 +300,7 @@ const copy = computed(() =>
       dark: 'Ciemny',
       overrideTitle: 'Jak nadpisać kolorystykę',
       overrideText:
-        'Najpierw zaimportuj style PEAUI, a dopiero później własny plik motywu. Dzięki temu zmienne o tej samej nazwie zastąpią wartości domyślne.',
+        'Najpierw zaimportuj komponent PEAUI, a dopiero później własny plik motywu. Zmienne o tej samej nazwie zastąpią wtedy wartości domyślne. Opcjonalny entry point @peaui/ui/styles.css pozostaje dostępny, gdy celowo potrzebujesz stylów całego katalogu.',
       themesTitle: 'Motyw jasny i ciemny',
       themesText:
         'Każdy token korzysta z funkcji light-dark(jasny, ciemny) i reaguje na color-scheme. Jeżeli aplikacja wymusza tryb ciemny klasą body.dark-mode, nadpisz te same tokeny również w tym selektorze.',

@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-display/TableListHeader';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-table-list-header></peaui-table-list-header>

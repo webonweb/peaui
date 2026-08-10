@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/ButtonExport';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-button-export></peaui-button-export>

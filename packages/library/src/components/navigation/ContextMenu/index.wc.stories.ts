@@ -55,7 +55,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/navigation/ContextMenu';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-context-menu aria-label="Akcje raportu">
   <button type="button">Raport kwartalny</button>

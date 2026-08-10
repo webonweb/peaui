@@ -38,7 +38,7 @@ const meta = {
   parameters: {
     name: 'CopyButton',
     description: 'Light-DOM WC o zachowaniu, wyglądzie i komunikatach ARIA 1:1 z Vue i React.',
-    code: `<script type="module">import '@peaui/ui/wc/data-entry/CopyButton'; import '@peaui/ui/styles.css';</script>\n<peaui-copy-button text="PEA-2026-022"></peaui-copy-button>`,
+    code: `<script type="module">import '@peaui/ui/wc/data-entry/CopyButton';</script>\n<peaui-copy-button text="PEA-2026-022"></peaui-copy-button>`,
   },
   render: renderCopyButton,
 } satisfies Meta<VueCustomElementStoryArgs>;

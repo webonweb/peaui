@@ -50,7 +50,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/data-entry/SplitButton';
-  import '@peaui/ui/styles.css';
 </script>
 <peaui-split-button label="Eksportuj" aria-label="Akcje eksportu"></peaui-split-button>
 <script>

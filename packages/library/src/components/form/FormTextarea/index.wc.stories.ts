@@ -24,7 +24,6 @@ const meta = {
     code: `
 <script type="module">
   import '@peaui/ui/wc/form/FormTextarea';
-  import '@peaui/ui/styles.css';
 </script>
 
 <peaui-form-textarea></peaui-form-textarea>

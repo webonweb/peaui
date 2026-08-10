@@ -60,8 +60,8 @@ import {
 import legacyIconBucketLoaders, {
   iconNames as legacyIconNames,
 } from '../assets/icons/runtime/bucket-loaders';
-import { InlineEditRenderer, type InlineEditRuntimeProps } from './inline-edit.renderer';
-import { CopyButtonRenderer, type CopyButtonRuntimeProps } from './copy-button.renderer';
+import { InlineEditRenderer } from './inline-edit.renderer';
+import { CopyButtonRenderer } from './copy-button.renderer';
 import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 
 type RuntimeProps = Record<string, unknown> & {
@@ -1648,7 +1648,7 @@ function contextPointRect(x: number, y: number): DOMRect {
     x,
     y,
     toJSON: () => ({ bottom: y, height: 0, left: x, right: x, top: y, width: 0, x, y }),
-  } as DOMRect;
+  };
 }
 
 function ContextMenuRenderer({
@@ -2469,7 +2469,7 @@ function BasicRenderer({
     <span
       {...common(props)}
       className={cx('peaui-image-view', `peaui-image-view--size-${size}`, props.className)}
-      ref={forwardedRef as ForwardedRef<HTMLSpanElement>}
+      ref={forwardedRef}
     >
       <img
         alt={text(props, 'alt')}
@@ -5611,7 +5611,7 @@ function InlineEditRuntimeRenderer({
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   return (
     <InlineEditRenderer
-      {...(props as InlineEditRuntimeProps)}
+      {...props}
       __renderButton={(buttonProps, children) => (
         <ButtonRenderer {...buttonProps} __name="ButtonAction">
           {children}
@@ -5629,7 +5629,7 @@ function CopyButtonRuntimeRenderer({
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   return (
     <CopyButtonRenderer
-      {...(props as CopyButtonRuntimeProps)}
+      {...props}
       __renderButton={(buttonProps, children) => (
         <ButtonRenderer {...buttonProps} __name="ButtonAction">
           {children}
@@ -5866,7 +5866,7 @@ function FeedbackRenderer({
       aria-label={text(props, 'title') ? undefined : text(props, 'description', 'Brak danych')}
       aria-labelledby={text(props, 'title') ? `${feedbackId}-title` : undefined}
       className={cx('peaui-empty-state', props.className)}
-      ref={forwardedRef as ForwardedRef<HTMLElement>}
+      ref={forwardedRef}
     >
       <svg
         aria-hidden="true"
@@ -5921,7 +5921,7 @@ function DisplayRenderer({
           `peaui-counter-badge--size-${text(props, 'size', 'm')}`,
           props.className,
         )}
-        ref={forwardedRef as ForwardedRef<HTMLSpanElement>}
+        ref={forwardedRef}
       >
         {text(props, 'value', '0')}
       </span>
@@ -6031,7 +6031,7 @@ function DisplayRenderer({
           bool(props, 'isSimple') && 'peaui-calculation-results--simple',
           props.className,
         )}
-        ref={forwardedRef as ForwardedRef<HTMLElement>}
+        ref={forwardedRef}
       >
         <div
           className={cx(
@@ -7337,7 +7337,7 @@ function NavigationRenderer({
       <nav
         {...common(props)}
         className={cx('peaui-breadcrumbs', props.className)}
-        ref={forwardedRef as ForwardedRef<HTMLElement>}
+        ref={forwardedRef}
       >
         <div className="peaui-breadcrumbs__mobile">
           <span className="peaui-breadcrumbs__popover">•••</span>
@@ -7385,7 +7385,7 @@ function NavigationRenderer({
           !bool(props, 'withBackround', true) && 'peaui-navigation-tabs--without-background',
           props.className,
         )}
-        ref={forwardedRef as ForwardedRef<HTMLElement>}
+        ref={forwardedRef}
       >
         {options.map((item, index) => (
           <button
@@ -7728,7 +7728,7 @@ function Pagination({
       className={cx('peaui-pagination-control', props.className)}
       data-current-page={current}
       data-total-pages={total}
-      ref={forwardedRef as ForwardedRef<HTMLElement>}
+      ref={forwardedRef}
     >
       <div className="peaui-pagination-control__controls peaui-pagination-control__controls--start">
         <button
@@ -8204,5 +8204,5 @@ export function createPeauiReactComponent<Name extends ReactComponentName>(
     createElement(Renderer, { ...props, __name: name, forwardedRef: ref }),
   );
   Component.displayName = name;
-  return Component as unknown as ComponentType<PeauiReactProps<Name>>;
+  return Component;
 }

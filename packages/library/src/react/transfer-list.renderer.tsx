@@ -33,7 +33,6 @@ import {
   type TransferListKeyResolver,
   type TransferListLabelResolver,
   type TransferListLabels,
-  type TransferListLoadingState,
   type TransferListMoveDetail,
   type TransferListOrientation,
   type TransferListPanel,
@@ -70,7 +69,7 @@ const call = (props: RuntimeProps, name: string, ...args: unknown[]): void => {
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 function TransferIcon({ flip = false, name }: { flip?: boolean; name: string }): ReactElement {
@@ -273,9 +272,7 @@ export function TransferListRenderer({
     () => getTransferListLabels((props.labels ?? {}) as Partial<TransferListLabels>),
     [props.labels],
   );
-  const loading = normalizeTransferListLoading(
-    (props.loading ?? false) as boolean | TransferListLoadingState,
-  );
+  const loading = normalizeTransferListLoading(props.loading ?? false);
   const normalizedItems = useMemo(
     () => normalizeTransferListItems(items, { disabledKeys, itemKey, itemLabel }),
     [disabledKeys, itemKey, itemLabel, items],

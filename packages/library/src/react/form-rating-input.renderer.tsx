@@ -6,7 +6,6 @@ import {
   type CSSProperties,
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type PointerEvent as ReactPointerEvent,
   type ReactElement,
   type ReactNode,
@@ -60,7 +59,7 @@ function hasContent(value: unknown): boolean {
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 function RatingIcon({ name }: { name: string }): ReactElement {

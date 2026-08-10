@@ -200,7 +200,9 @@ function buildExpectedFiles() {
   const icons = inventory.icons
     .map(({ category, name }) => {
       const fileName = `${name}.svg`;
-      const source = fs.readFileSync(path.join(iconsRoot, category, fileName), 'utf8');
+      const source = fs
+        .readFileSync(path.join(iconsRoot, category, fileName), 'utf8')
+        .replace(/\r\n?/g, '\n');
 
       validateSvg(fileName, source);
 
@@ -255,7 +257,9 @@ function buildExpectedFiles() {
     .map((entry) => entry.name)
     .sort((left, right) => left.localeCompare(right, 'en'))
     .map((fileName) => {
-      const source = fs.readFileSync(path.join(iconsRoot, fileName), 'utf8');
+      const source = fs
+        .readFileSync(path.join(iconsRoot, fileName), 'utf8')
+        .replace(/\r\n?/g, '\n');
 
       if (
         !/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*\.svg$/.test(fileName) ||

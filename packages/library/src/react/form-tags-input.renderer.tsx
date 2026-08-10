@@ -11,7 +11,6 @@ import {
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
-  type MutableRefObject,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -84,7 +83,7 @@ function TagsInputIcon({ className, name }: { className: string; name: string })
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 export function FormTagsInputRenderer({

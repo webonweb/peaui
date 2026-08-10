@@ -124,7 +124,7 @@ function useNativePopover(open: boolean): MutableRefObject<NativePopoverElement 
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 function Icon({ name, className }: { name: string; className?: string }): ReactElement {

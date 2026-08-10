@@ -11,7 +11,6 @@ import {
   type ForwardedRef,
   type HTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -66,7 +65,7 @@ function hasContent(value: unknown): boolean {
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 export function FormPinInputRenderer({

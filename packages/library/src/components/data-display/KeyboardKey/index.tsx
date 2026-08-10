@@ -4,7 +4,6 @@ import {
   useEffect,
   useMemo,
   useState,
-  type CSSProperties,
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
@@ -105,7 +104,7 @@ const KeyboardKey = forwardRef<HTMLSpanElement, KeyboardKeyProps>(function Keybo
       {...rest}
       ref={ref}
       className={classes}
-      style={style as CSSProperties}
+      style={style}
       data-format={format}
       data-inline={inline || undefined}
       data-muted={muted || undefined}

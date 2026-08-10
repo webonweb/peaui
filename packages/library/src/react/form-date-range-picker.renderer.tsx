@@ -8,7 +8,6 @@ import {
   type CSSProperties,
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -37,7 +36,6 @@ import {
   type DateRangePreset,
   type DateRangeValue,
   type DateRangeValidationOptions,
-  type FormDateRangePickerCalendars,
   type FormDateRangePickerDateFormat,
   type FormDateRangePickerInvalidDetail,
   type FormDateRangePickerPlacement,
@@ -93,7 +91,7 @@ function useRuntimeModel<T>(
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
-  else if (ref) (ref as MutableRefObject<T | null>).current = value;
+  else if (ref) ref.current = value;
 }
 
 function hasContent(value: unknown): boolean {
@@ -137,7 +135,7 @@ export function FormDateRangePickerRenderer({
   const label = text(props, 'label');
   const locale = text(props, 'locale', 'pl-PL');
   const dateFormat = text(props, 'dateFormat', 'locale') as FormDateRangePickerDateFormat;
-  const calendars = (props.calendars === 1 ? 1 : 2) as FormDateRangePickerCalendars;
+  const calendars = props.calendars === 1 ? 1 : 2;
   const variant = text(props, 'variant', 'two-inputs') as FormDateRangePickerVariant;
   const selectionOrder = text(props, 'selectionOrder', 'swap') as FormDateRangePickerSelectionOrder;
   const placement = text(props, 'placement', 'bottom') as FormDateRangePickerPlacement;

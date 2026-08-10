@@ -458,7 +458,7 @@ export function VirtualListRenderer({
               id={`${resolvedId}-item-${item.index}`}
               key={item.key}
               role={role === 'listbox' ? 'option' : 'listitem'}
-              style={state.style as CSSProperties}
+              style={state.style}
               onBlur={(event) => handleItemBlur(event, item)}
               onClick={() => role === 'listbox' && setActiveItem(item.index, true)}
               onFocus={() => handleItemFocus(item)}

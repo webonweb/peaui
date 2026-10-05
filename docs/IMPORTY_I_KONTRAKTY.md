@@ -160,7 +160,7 @@ Serwer i klient muszą otrzymać zgodne początkowe propsy, treść, locale i da
 
 ## Praca z repozytorium
 
-Używaj Node.js 22 i npm 11.6.0 zgodnie z CI oraz `packageManager`. Instalację wszystkich workspace'ów wykonuj z katalogu głównego; nie instaluj oddzielnie pakietów frameworków:
+Używaj Node.js 22.12 lub nowszego z linii 22.x oraz npm 11.6.0 zgodnie z CI i `packageManager`. Instalację wszystkich workspace'ów wykonuj z katalogu głównego; nie instaluj oddzielnie pakietów frameworków:
 
 ```bash
 npm install --global npm@11.6.0
@@ -195,4 +195,4 @@ npm run storybook:check:catalog
 
 `test:production`, hydratacja i kontrakty wymagają zbudowanej biblioteki. Kontrola katalogu wymaga zbudowanych Storybooków. `PEAUI_BROWSER` wybiera silnik przeglądarki obsługiwany przez dany runner; CI uruchamia Chromium, Firefox i WebKit. `test:coverage:wc:behavior` w workspace biblioteki obejmuje również kod Vue wykonywany przez adaptery WC.
 
-Przed wydaniem używaj `npm run release:check`; `npm run release:artifact` przygotowuje i sprawdza archiwum bez publikacji. `npm run release:npm` publikuje paczkę i należy do odrębnego procesu wydania. Zmiana dokumentacji nie oznacza, że kod znajdujący się w repozytorium został już opublikowany na npm.
+Przed wydaniem używaj `npm run release:check`; `npm run release:artifact` przygotowuje i sprawdza archiwum bez publikacji. Oba polecenia zaczynają się od `npm run security:check`, które sprawdza również zależności deweloperskie i blokuje proces przy podatnościach wysokich lub krytycznych. Ta sama kontrola obowiązuje w CI i w `prepublishOnly` paczki. `npm run release:npm` publikuje paczkę i należy do odrębnego procesu wydania. Zmiana dokumentacji nie oznacza, że kod znajdujący się w repozytorium został już opublikowany na npm.

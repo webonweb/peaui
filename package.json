@@ -72,11 +72,12 @@
     "release:version:minor": "npm version minor --workspace packages/library --no-git-tag-version",
     "release:version:major": "npm version major --workspace packages/library --no-git-tag-version",
     "release:pack": "npm pack --workspace packages/library",
-    "release:artifact": "node scripts/release-artifact.mjs",
+    "release:artifact": "npm run security:check && node scripts/release-artifact.mjs",
     "release:pack:dry-run": "npm pack --workspace packages/library --dry-run",
     "release:package:check": "node scripts/validate-package.mjs",
     "release:types:check": "tsc scripts/package-smoke.ts scripts/package-api-smoke.tsx --noEmit --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx --skipLibCheck",
-    "release:check": "npm-run-all -s check release:package:check release:types:check release:pack:dry-run",
+    "security:check": "npm audit --include=dev --audit-level=high",
+    "release:check": "npm-run-all -s security:check check release:package:check release:types:check release:pack:dry-run",
     "release:npm:dry-run": "npm publish --workspace packages/library --access public --dry-run",
     "release:npm": "npm publish --workspace packages/library --access public",
     "release:changesets": "npm run release:check && changeset publish",
@@ -86,12 +87,13 @@
     "test:browser:contracts": "node scripts/browser-forms.cjs && node scripts/browser-interactions.cjs && node scripts/browser-display.cjs"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^20.4.0",
     "@commitlint/config-conventional": "^20.4.0",
     "husky": "^9.1.7",
     "nanoid": "^3.3.18",
     "npm-run-all": "^4.1.5",
+    "prettier": "^3.5.3",
     "uuid": "^11.1.1"
   },
   "overrides": {

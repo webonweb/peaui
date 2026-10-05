@@ -383,7 +383,7 @@ The documentation application is located in the repository at:
 packages/docs
 ```
 
-Use Node.js 22 and npm 11.6.0, matching CI and the repository's `packageManager`. Install all workspaces from the monorepo root:
+Use Node.js 22.12 or later in the 22.x line and npm 11.6.0, matching CI and the repository's `packageManager`. Install all workspaces from the monorepo root:
 
 ```bash
 npm install --global npm@11.6.0
@@ -452,6 +452,8 @@ The project follows semantic versioning and supports Changesets. Before publishi
 ```bash
 npm run release:check
 ```
+
+The release check starts with `npm run security:check`, which checks production and development dependencies and fails on high or critical vulnerabilities. The same check runs in CI, before preparing a release artifact and before publishing the workspace package. Resolve reported dependencies before releasing; a production-only check does not cover the build and release tools.
 
 Inspect the package without publishing it:
 
@@ -825,7 +827,7 @@ Aplikacja dokumentacji znajduje się w repozytorium w katalogu:
 packages/docs
 ```
 
-Używaj Node.js 22 i npm 11.6.0 zgodnie z CI oraz `packageManager`. Zainstaluj wszystkie workspace'y z głównego katalogu monorepo:
+Używaj Node.js 22.12 lub nowszego z linii 22.x oraz npm 11.6.0 zgodnie z CI i `packageManager`. Zainstaluj wszystkie workspace'y z głównego katalogu monorepo:
 
 ```bash
 npm install --global npm@11.6.0
@@ -894,6 +896,8 @@ Projekt korzysta z wersjonowania semantycznego i obsługuje Changesets. Przed pu
 ```bash
 npm run release:check
 ```
+
+Kontrola wydania zaczyna się od `npm run security:check`, które obejmuje zależności produkcyjne i deweloperskie oraz zatrzymuje proces przy podatnościach wysokich lub krytycznych. Ta sama kontrola działa w CI, przed przygotowaniem archiwum wydania i przed publikacją paczki z workspace. Przed wydaniem popraw zgłoszone zależności; kontrola samych zależności produkcyjnych nie obejmuje narzędzi budowania i publikacji.
 
 Sprawdź zawartość paczki bez publikowania:
 

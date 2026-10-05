@@ -6,7 +6,6 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
-import GlobPlugin from 'vite-plugin-glob';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgLoader from 'vite-svg-loader';
 
@@ -326,9 +325,6 @@ export default defineConfig(() => {
           }
           return { filePath, content };
         },
-      }),
-      GlobPlugin({
-        restoreQueryExtension: true,
       }),
     ],
     resolve: {

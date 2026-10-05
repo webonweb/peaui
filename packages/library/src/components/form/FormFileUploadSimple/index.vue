@@ -2,13 +2,13 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { ERROR_MESSAGES } from '@/constants/error.const';
-import { computed, ref, useAttrs, useId } from 'vue';
+import { computed, ref, useAttrs, useId, watch, toRaw } from 'vue';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
+import { validateUploadFile } from '../FormFileUpload/file-upload.shared';
 
 defineOptions({
   inheritAttrs: false,
@@ -65,6 +65,21 @@ function normalizeFiles(value: unknown): File[] {
 
 const filesDummy = ref<Array<{ error: string | null; file: unknown }>>(
   normalizeFiles(files.value).map((file) => ({ error: null, file })),
+);
+
+let lastEmittedFiles: File[] | undefined;
+watch(
+  files,
+  (value) => {
+    if (toRaw(value) === lastEmittedFiles) {
+      lastEmittedFiles = undefined;
+      return;
+    }
+    lastEmittedFiles = undefined;
+    filesDummy.value = normalizeFiles(value).map((file) => ({ error: null, file }));
+    validationError.value = null;
+  },
+  { deep: true },
 );
 
 // COMPUTED PROPERTIES
@@ -159,18 +174,10 @@ const handleFileUpload = (event: Event) => {
     return;
   }
 
-  let iterate = filesDummy.value.length;
+  let iterate = filesDummy.value.filter((item) => !item.error).length;
 
   Array.from(documents).forEach((file) => {
-    let error: string | null = null;
-
-    if (!props.allowedTypes.includes(file.type)) {
-      error = ERROR_MESSAGES.fileFormat;
-    }
-
-    if (file.size > props.maxFileSize) {
-      error = ERROR_MESSAGES.fileSize;
-    }
+    const error = validateUploadFile(file, props.allowedTypes, props.maxFileSize) ?? null;
 
     if (error && !validationError.value) {
       validationError.value = error;
@@ -180,8 +187,8 @@ const handleFileUpload = (event: Event) => {
       (item) => ((item.file as { name?: string })?.name ?? '') === file.name,
     );
 
-    if (iterate <= props.maxFiles && !exist) {
-      iterate += 1;
+    if ((error || iterate < props.maxFiles) && !exist) {
+      if (!error) iterate += 1;
 
       filesDummy.value.push({
         error,
@@ -191,7 +198,7 @@ const handleFileUpload = (event: Event) => {
   });
 
   if (inputElement.value) {
-    files.value = filesDummy.value
+    const nextFiles = filesDummy.value
       .filter((fileItem) => !fileItem.error)
       .map((fileItem) => {
         if (props.context) {
@@ -200,12 +207,15 @@ const handleFileUpload = (event: Event) => {
 
         return fileItem.file;
       }) as File[];
+    lastEmittedFiles = nextFiles;
+    files.value = nextFiles;
 
     inputElement.value.value = '';
   }
 };
 
 const handleRemoveFile = (file: File) => {
+  if (props.disabled) return;
   files.value = normalizedFiles.value.filter((item) => item.name !== file.name);
   filesDummy.value = filesDummy.value.filter(
     (item) => ((item.file as { name?: string })?.name ?? '') !== file.name,
@@ -216,7 +226,7 @@ const handleRemoveFile = (file: File) => {
 <template>
   <div v-bind="bindings" :class="classNameComponent" :data-testid="rootTestId" aria-live="polite">
     <div
-      v-if="normalizedFiles.length <= props.maxFiles"
+      v-if="normalizedFiles.length < props.maxFiles"
       :class="`${classNameComponent}__upload`"
       :data-testid="uploadTestId"
     >
@@ -305,6 +315,7 @@ const handleRemoveFile = (file: File) => {
         <div>
           <button
             :class="`${classNameComponent}__remove`"
+            :disabled="props.disabled"
             aria-label="Usun plik"
             type="button"
             @click.prevent="handleRemoveFile(item.file as File)"

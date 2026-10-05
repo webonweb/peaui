@@ -185,7 +185,7 @@ describe('FormPassword (index.vue)', () => {
 
     const input = wrapper.get('[data-testid="form-password-element"]');
 
-    expect(wrapper.get('[data-testid="form-password-toggle-button"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-password-toggle-button"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="form-password-copy-button"]').exists()).toBe(false);
     expect(input.attributes('style')).toContain('--pr: 2.875rem;');
   });
@@ -199,7 +199,7 @@ describe('FormPassword (index.vue)', () => {
     const input = wrapper.get('[data-testid="form-password-element"]');
 
     expect(wrapper.find('[data-testid="form-password-toggle-button"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="form-password-copy-button"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-password-copy-button"]').exists()).toBe(true);
     expect(input.attributes('type')).toBe('password');
     expect(input.attributes('style')).toContain('--pr: 2.875rem;');
   });

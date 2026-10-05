@@ -7,7 +7,7 @@ import { computed, getCurrentInstance } from 'vue';
 
 // TYPES
 //-----------------------------------------------------------------------------------------------//
-type BreadcrumbLabel = string | ((router: any) => string);
+type BreadcrumbLabel = string | ((route: BreadcrumbRoute) => string);
 
 type BreadcrumbItem = {
   key?: string;
@@ -181,34 +181,35 @@ function onHandleClick(item: BreadcrumbItem, index: number, event?: MouseEvent) 
                 v-if="isLast(index)"
                 :class="`${classNameComponent}__current`"
                 aria-current="page"
-                v-html="item.parsedLabel"
-              />
+              >
+                {{ item.parsedLabel }}
+              </span>
               <component
                 v-else-if="shouldRenderLink(item.originalItem, index)"
                 :is="getLinkTag(item.originalItem, index)"
                 v-bind="getLinkAttributes(item.originalItem, item.parsedLabel)"
                 @click="onHandleClick(item.originalItem, index, $event)"
-                v-html="item.parsedLabel"
-              />
+              >
+                {{ item.parsedLabel }}
+              </component>
               <button
                 v-else
                 type="button"
                 :class="`${classNameComponent}__button`"
                 @click="onHandleClick(item.originalItem, index)"
                 :aria-label="getItemAriaLabel(item.parsedLabel)"
-                v-html="item.parsedLabel"
-              />
+              >
+                {{ item.parsedLabel }}
+              </button>
             </li>
           </ul>
         </template>
       </PopoverButton>
 
       <span :class="`${classNameComponent}__separator`" aria-hidden="true">{{ separator }}</span>
-      <span
-        :class="`${classNameComponent}__current`"
-        aria-current="page"
-        v-html="parsedItems.at(-1)?.parsedLabel"
-      />
+      <span :class="`${classNameComponent}__current`" aria-current="page">
+        {{ parsedItems.at(-1)?.parsedLabel }}
+      </span>
     </div>
 
     <ol :class="`${classNameComponent}__content`">
@@ -232,8 +233,9 @@ function onHandleClick(item: BreadcrumbItem, index: number, event?: MouseEvent) 
           :class="`${classNameComponent}__current`"
           :data-testid="currentTestId ? `${currentTestId}-${item.resolvedKey}` : undefined"
           aria-current="page"
-          v-html="item.parsedLabel"
-        />
+        >
+          {{ item.parsedLabel }}
+        </span>
 
         <component
           v-else-if="shouldRenderLink(item.originalItem, index)"
@@ -246,8 +248,9 @@ function onHandleClick(item: BreadcrumbItem, index: number, event?: MouseEvent) 
             )
           "
           @click="onHandleClick(item.originalItem, index, $event)"
-          v-html="item.parsedLabel"
-        />
+        >
+          {{ item.parsedLabel }}
+        </component>
 
         <button
           v-else
@@ -256,8 +259,9 @@ function onHandleClick(item: BreadcrumbItem, index: number, event?: MouseEvent) 
           @click="onHandleClick(item.originalItem, index)"
           :aria-label="getItemAriaLabel(item.parsedLabel)"
           :data-testid="buttonTestId ? `${buttonTestId}-${item.resolvedKey}` : undefined"
-          v-html="item.parsedLabel"
-        />
+        >
+          {{ item.parsedLabel }}
+        </button>
       </li>
     </ol>
   </nav>

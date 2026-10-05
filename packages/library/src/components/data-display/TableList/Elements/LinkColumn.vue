@@ -3,9 +3,9 @@ import { computed } from 'vue';
 import type { TableColumn } from '../index.vue';
 import { TABLE_LIST_CLASS } from '../shared';
 
-const { column, deep, record, value } = defineProps<{
+const { column, deep, value } = defineProps<{
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   value: string | undefined | Record<string, string>;
 }>();

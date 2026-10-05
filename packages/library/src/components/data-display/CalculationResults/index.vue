@@ -75,7 +75,7 @@ const outputLiveBindings = computed<
         ]"
         :data-testid="labelTestId"
       >
-        <span v-html="label" />
+        <span>{{ label }}</span>
         <slot name="additional" />
         <InfoTooltip v-if="slots.hint" placement="right" :data-test-id="hintTestId">
           <svg
@@ -102,7 +102,7 @@ const outputLiveBindings = computed<
         :class="`${classNameComponent}__content-output`"
         :data-testid="outputTestId"
       >
-        <span v-if="!isLoading" v-html="result" />
+        <span v-if="!isLoading">{{ result }}</span>
         <span v-else :class="`${classNameComponent}__content-loading`">Trwa obliczanie…</span>
       </output>
     </div>
@@ -117,7 +117,7 @@ const outputLiveBindings = computed<
       ]"
       :data-testid="outputTestId"
     >
-      <span v-if="!isLoading" v-html="result" />
+      <span v-if="!isLoading">{{ result }}</span>
       <span v-else :class="`${classNameComponent}__content-loading`">Trwa obliczanie…</span>
     </output>
 

@@ -2,6 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { format, resolveConfig } from 'prettier';
+
+const generatedFiles = new Map();
+function writeGeneratedFile(file, source) {
+  generatedFiles.set(file, source);
+}
 
 const libraryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const componentsRoot = path.join(libraryRoot, 'src/components');
@@ -91,13 +97,6 @@ function toCamelCase(value) {
   return value.replace(/[-:]([a-z])/g, (_, character) => character.toUpperCase());
 }
 
-function toKebabCase(value) {
-  return value
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/_/g, '-')
-    .toLowerCase();
-}
-
 function toPascalCase(value) {
   const camel = toCamelCase(value.replace(/^on:/, ''));
   return camel.charAt(0).toUpperCase() + camel.slice(1);
@@ -112,6 +111,12 @@ function getCallbackName(eventName) {
 }
 
 function normalizeType(type, propertyName = '', componentName = '') {
+  if (componentName === 'FormFileUpload' && propertyName === 'valueMode')
+    return 'FileUploadValueMode';
+  if (['FormSelect', 'FormMultiSelect'].includes(componentName) && propertyName === 'valueMode')
+    return 'SelectValueMode';
+  if (['FormSelect', 'FormMultiSelect'].includes(componentName) && propertyName === 'labels')
+    return 'Partial<PeauiSelectLabels>';
   if (componentName === 'KeyboardKey') {
     if (propertyName === 'keys') return 'string | readonly string[]';
     if (propertyName === 'platform') return "'auto' | 'windows' | 'mac' | 'linux' | 'generic'";
@@ -226,12 +231,13 @@ function normalizeType(type, propertyName = '', componentName = '') {
   if (componentName === 'AvatarGroup' && propertyName === 'itemKey') {
     return 'keyof PeauiAvatarGroupItem | ((item: PeauiAvatarGroupItem, index: number) => string | number)';
   }
-  if (propertyName === 'columns') return 'PeauiTableColumn[]';
+  if (propertyName === 'columns')
+    return ['GridItem', 'GridSection'].includes(componentName) ? 'number' : 'PeauiTableColumn[]';
   if (propertyName === 'records') return 'PeauiRecord[]';
   if (['items', 'options', 'tabs'].includes(propertyName)) return 'PeauiOption[]';
   if (propertyName === 'tree') return 'PeauiTreeNode | PeauiTreeNode[]';
   if (propertyName === 'image') return 'string | File | Blob | undefined';
-  if (propertyName === 'file') return 'File | undefined';
+  if (propertyName === 'file') return 'FormFileUploadValue | File | undefined';
   if (propertyName === 'sortColumns') return 'PeauiSortDescriptor[]';
   if (propertyName === 'sortType') return "'asc' | 'desc' | undefined";
   if (propertyName === 'value' && type.includes('DatePickerRangeValue')) {
@@ -754,13 +760,19 @@ function renderProps(api) {
 function writePropsFile(components) {
   const names = components.map((api) => `'${toPublicName(api.name)}'`).join(' | ');
   const map = components
-    .map((api) => `  ${toPublicName(api.name)}: PeauiReactBaseProps & {\n${renderProps(api)}\n  };`)
+    .map((api) => {
+      const props = `PeauiReactBaseProps & {\n${renderProps(api)}\n  }`;
+      return `  ${toPublicName(api.name)}: ${api.name === 'FormFileUpload' ? `Omit<${props}, 'valueMode' | 'onFileChange'> & PeauiFileUploadModel` : props};`;
+    })
     .join('\n');
   const source =
     `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
     `// Źródłem kontraktu są publiczne propsy, modele, zdarzenia i sloty komponentów Vue.\n\n` +
-    `import type { CSSProperties, FocusEvent as ReactFocusEvent, FocusEventHandler, KeyboardEvent, KeyboardEventHandler, MouseEvent, MouseEventHandler, PointerEventHandler, ReactNode } from 'react';\n\n` +
+    `import type { FormFileUploadValue, FileUploadValueMode } from '../components/form/FormFileUpload/file-upload.shared';\n` +
+    `import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ImgHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes, CSSProperties, FocusEvent as ReactFocusEvent, FocusEventHandler, KeyboardEvent, KeyboardEventHandler, MouseEvent, MouseEventHandler, PointerEventHandler, ReactNode } from 'react';\n\n` +
     `export type ReactComponentName = ${names};\n\n` +
+    `import type { SelectLabels, SelectValueMode } from '../components/form/FormSelect/select.shared';\nexport type PeauiSelectLabels = SelectLabels;\n\n` +
+    `import type { TableColumn } from '../components/data-display/TableList/table.types';\n` +
     `export type PeauiReactBaseProps = {\n` +
     `  children?: ReactNode;\n` +
     `  className?: string;\n` +
@@ -818,19 +830,20 @@ function writePropsFile(components) {
     `export type PeauiContextMenuOpenDetail = { context: unknown; source: 'pointer' | 'keyboard' | 'long-press' | 'programmatic'; x: number; y: number };\n` +
     `export type PeauiContextMenuCloseReason = 'programmatic' | 'dismiss' | 'select' | 'scroll' | 'target-removed' | 'disabled';\n` +
     `export type PeauiContextMenuLongPressCancelReason = 'move' | 'release' | 'pointer-cancel' | 'disabled' | 'target-removed';\n` +
-    `export type PeauiOption = { id?: string; key?: string; label: string; value?: unknown; active?: boolean; disabled?: boolean; hint?: string; icon?: string; path?: string; isValid?: boolean; number?: string; status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden'; additional?: ReactNode };\n` +
-    `export type PeauiTableColumn = PeauiRecord & { key: string; label?: string; canSort?: boolean; sortable?: boolean; type?: string; actionName?: string; actionLabel?: string; inline?: boolean; manage?: PeauiRecord };\n` +
+    `export type PeauiOption = { id?: string; key?: string | number; label: string; value?: unknown; active?: boolean; disabled?: boolean; hint?: string; icon?: string; path?: string; isValid?: boolean; number?: string; status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden'; additional?: ReactNode };\n` +
+    `export type PeauiTableColumn = Omit<TableColumn, 'label'> & { label?: string; sortable?: boolean };\n` +
     `export type PeauiTreeNode = PeauiRecord & { id?: string | number; label?: string; children?: PeauiTreeNode[] | Record<string, PeauiTreeNode> };\n` +
     `export type PeauiSortDescriptor = { key: string; direction?: 'asc' | 'desc' };\n` +
     `export type PeauiLegacyRangeValue<Value> = { from?: Value; to?: Value; start?: Value; end?: Value };\n` +
     `export type PeauiPickerRangeValue<Value> = [Value, Value] | PeauiLegacyRangeValue<Value>;\n` +
     `/** @deprecated Prefer PeauiPickerRangeValue for picker models. */\n` +
     `export type PeauiRangeValue<Value> = PeauiLegacyRangeValue<Value>;\n\n` +
+    `export type PeauiFileUploadModel = { valueMode?: 'object'; onFileChange?: (value: FormFileUploadValue | undefined) => void } | { valueMode: 'file'; onFileChange?: (value: File | undefined) => void };\n\n` +
     `export type ReactComponentPropsMap = {\n${map}\n};\n\n` +
-    `export type PeauiReactProps<Name extends ReactComponentName> = ReactComponentPropsMap[Name];\n`;
+    `export type PeauiReactProps<Name extends ReactComponentName> = ReactComponentPropsMap[Name] & Omit<Name extends 'ButtonAction' ? ButtonHTMLAttributes<HTMLButtonElement> : Name extends 'CardPanel' | 'NavigationLink' | 'NavigationCard' | 'NavigationIconCard' ? AnchorHTMLAttributes<HTMLAnchorElement> : Name extends 'ImageView' ? ImgHTMLAttributes<HTMLImageElement> : Name extends 'FormInput' | 'FormNumber' | 'FormPassword' | 'SearchInput' | 'InputSlider' ? InputHTMLAttributes<HTMLInputElement> : Name extends 'FormTextarea' ? TextareaHTMLAttributes<HTMLTextAreaElement> : HTMLAttributes<HTMLElement>, keyof ReactComponentPropsMap[Name]>;\n`;
 
   fs.mkdirSync(reactRoot, { recursive: true });
-  fs.writeFileSync(path.join(reactRoot, 'generated-react-props.ts'), source, 'utf8');
+  writeGeneratedFile(path.join(reactRoot, 'generated-react-props.ts'), source, 'utf8');
 }
 
 function writeCatalogFile(components) {
@@ -846,7 +859,7 @@ function writeCatalogFile(components) {
     `// Ten plik jest generowany przez scripts/generate-react-components.mjs.\n` +
     `import type { ReactComponentName } from './generated-react-props';\n\n` +
     `export const reactComponentCatalog = [\n${entries}\n] as const satisfies readonly { category: string; name: ReactComponentName; sourceName: string }[];\n`;
-  fs.writeFileSync(path.join(reactRoot, 'generated-react-catalog.ts'), source, 'utf8');
+  writeGeneratedFile(path.join(reactRoot, 'generated-react-catalog.ts'), source, 'utf8');
 }
 
 function writeIconData() {
@@ -885,7 +898,38 @@ function writeIconData() {
       null,
       2,
     )};\n`;
-  fs.writeFileSync(path.join(reactRoot, 'generated-icon-data.ts'), source, 'utf8');
+  writeGeneratedFile(path.join(reactRoot, 'generated-icon-data.ts'), source, 'utf8');
+
+  // Individual exports let each control include only the icons it renders.
+  const starSource = fs.readFileSync(path.join(iconsDirectory, 'core/star.svg'), 'utf8');
+  const starRoot = starSource.match(/<svg\b([^>]*)>/i)?.[1] ?? '';
+  const staticIcons = [
+    ...icons,
+    [
+      'coreStar',
+      {
+        body: starSource.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i)?.[1]?.trim() ?? '',
+        viewBox: readAttribute(starRoot, 'viewBox') ?? '0 0 24 24',
+        fill: readAttribute(starRoot, 'fill'),
+        stroke: readAttribute(starRoot, 'stroke'),
+        strokeWidth: readAttribute(starRoot, 'stroke-width'),
+        strokeLinecap: readAttribute(starRoot, 'stroke-linecap'),
+        strokeLinejoin: readAttribute(starRoot, 'stroke-linejoin'),
+      },
+    ],
+  ];
+  writeGeneratedFile(
+    path.join(reactRoot, 'generated-static-icons.ts'),
+    `// Generated by scripts/generate-react-components.mjs.\n` +
+      `import type { ReactIconData } from './generated-icon-data';\n\n` +
+      staticIcons
+        .map(
+          ([name, icon]) =>
+            `export const icon${name.replace(/(^|[^a-z0-9]+)([a-z0-9])/gi, (_, _separator, letter) => letter.toUpperCase())}: ReactIconData = ${JSON.stringify(icon)};\n`,
+        )
+        .join(''),
+    'utf8',
+  );
 
   const essentialIconNames = new Set([
     'arrow',
@@ -917,7 +961,7 @@ function writeIconData() {
       null,
       2,
     )};\n`;
-  fs.writeFileSync(
+  writeGeneratedFile(
     path.join(reactRoot, 'generated-essential-icon-data.ts'),
     essentialSource,
     'utf8',
@@ -1118,23 +1162,103 @@ function writeComponentFiles(components) {
                               `export type ${publicName}Props = PeauiReactProps<'${publicName}'>;\n\n` +
                               `const ${publicName} = createPeauiReactComponent('${publicName}');\n\n` +
                               `export default ${publicName};\n`;
-    const directRendererByName = {
-      FormColorPicker: 'FormColorPickerRenderer',
-      FormDateTimePicker: 'FormDateTimePickerRenderer',
-      FormPinInput: 'FormPinInputRenderer',
-      FormTimePicker: 'FormTimePickerRenderer',
-      TransferList: 'TransferListRenderer',
+    const centralRendererByName = {
+      ImageView: ['ImageViewRenderer', 'image-view'],
+      SvgIcon: ['BasicRenderer', 'basic'],
+      Avatar: ['AvatarRenderer', 'avatar'],
+      AvatarGroup: ['AvatarGroupRenderer', 'avatar-group'],
+      CalculationResults: ['CalculationResultsLeafRenderer', 'display'],
+      CardCarousel: ['CardCarouselLeafRenderer', 'display'],
+      CounterBadge: ['CounterBadgeLeafRenderer', 'display'],
+      DescriptionField: ['DescriptionFieldLeafRenderer', 'display'],
+      DisclosurePanel: ['DisclosurePanelLeafRenderer', 'display'],
+      KeyboardKey: ['DisplayRenderer', 'display'],
+      SectionHeading: ['SectionHeadingLeafRenderer', 'display'],
+      TableList: ['TableRenderer', 'table'],
+      TableListFooter: ['TableListFooterLeafRenderer', 'table'],
+      TableListHeader: ['TableListHeaderLeafRenderer', 'table'],
+      TagChip: ['TagChipLeafRenderer', 'display'],
+      TreeList: ['TreeListLeafRenderer', 'display'],
+      ButtonAction: ['ButtonActionRenderer', 'button-action'],
+      ButtonExport: ['ButtonExportLeafRenderer', 'button'],
+      SelectableCard: ['SelectableCardLeafRenderer', 'button'],
+      InputSlider: ['InputSliderLeafRenderer', 'text-input'],
+      SearchInput: ['SearchInputLeafRenderer', 'text-input'],
+      EmptyState: ['EmptyStateLeafRenderer', 'feedback'],
+      MessageText: ['MessageTextLeafRenderer', 'feedback'],
+      ProgressIndicator: ['ProgressIndicatorLeafRenderer', 'feedback'],
+      SkeletonLoading: ['SkeletonLoadingLeafRenderer', 'feedback'],
+      SpinnerLoader: ['SpinnerLoaderLeafRenderer', 'feedback'],
+      ToastAlert: ['ToastAlertLeafRenderer', 'feedback'],
+      FormFieldLabel: ['FormFieldLabelLeafRenderer', 'form'],
+      FormButtonCheckbox: ['ChoiceControlsRenderer', 'choice-controls'],
+      FormButtonGroup: ['ButtonGroupRenderer', 'button-group'],
+      FormCheckbox: ['ChoiceControlsRenderer', 'choice-controls'],
+      FormContainer: ['FormContainerLeafRenderer', 'form-container'],
+      FormDatePicker: ['DateRenderer', 'date'],
+      FormField: ['FormFieldLeafRenderer', 'form'],
+      FormFileUpload: ['FileRenderer', 'file'],
+      FormFileUploadSimple: ['FileRenderer', 'file'],
+      FormInput: ['TextFieldLeafRenderer', 'text-input'],
+      FormMultiSelect: ['SelectRenderer', 'select'],
+      FormNumber: ['TextFieldLeafRenderer', 'text-input'],
+      FormPassword: ['FormPasswordLeafRenderer', 'text-input'],
+      FormRadio: ['ChoiceControlsRenderer', 'choice-controls'],
+      FormSelect: ['SelectRenderer', 'select'],
+      FormTextarea: ['FormTextareaRenderer', 'form-textarea'],
+      FormYearPicker: ['DateRenderer', 'date'],
+      FormSwitchToggle: ['FormSwitchToggleRenderer', 'form-switch-toggle'],
+      CardPanel: ['CardPanelLeafRenderer', 'layout'],
+      FullscreenContainer: ['FullscreenContainerLeafRenderer', 'layout'],
+      GridItem: ['GridItemLeafRenderer', 'layout'],
+      GridSection: ['GridSectionLeafRenderer', 'layout'],
+      PageLayout: ['PageLayoutLeafRenderer', 'layout'],
+      SectionDivider: ['SectionDividerLeafRenderer', 'layout'],
+      Breadcrumbs: ['BreadcrumbsLeafRenderer', 'navigation'],
+      ListLimitControl: ['ListLimitControlRenderer', 'list-limit-control'],
+      NavigationCard: ['NavigationCardLeafRenderer', 'navigation'],
+      NavigationDisclosureCard: ['NavigationDisclosureCardRenderer', 'navigation-disclosure-card'],
+      NavigationIconCard: ['NavigationIconCardLeafRenderer', 'navigation'],
+      NavigationLink: ['NavigationLinkLeafRenderer', 'navigation'],
+      NavigationStepper: ['NavigationStepperLeafRenderer', 'navigation'],
+      NavigationTabs: ['NavigationTabsLeafRenderer', 'navigation'],
+      PaginationControl: ['PaginationControlLeafRenderer', 'navigation'],
+      DrawerPanel: ['DialogLeafRenderer', 'dialog-leaf'],
+      InfoTooltip: ['InfoTooltipRenderer', 'info-tooltip'],
+      ModalDialog: ['DialogLeafRenderer', 'dialog-leaf'],
+      PopoverButton: ['PopoverLeafRenderer', 'popover-leaf'],
+      PopoverOverlayer: ['PopoverLeafRenderer', 'popover-leaf'],
+      ContextMenu: ['ContextMenuRenderer', 'context-menu'],
+      DropdownMenu: ['DropdownMenuRenderer', 'dropdown-menu'],
+      MenuBar: ['MenuBarRenderer', 'menu-bar'],
+      ToggleButton: ['ToggleButtonRenderer', 'toggle-button'],
+      ToggleGroup: ['ToggleGroupRenderer', 'toggle-group'],
+      SegmentedControl: ['SegmentedControlRenderer', 'segmented-control'],
+      SplitButton: ['SplitButtonRenderer', 'split-button'],
     };
-    const directRenderer = directRendererByName[publicName];
+    const specializedRendererByName = {
+      FormColorPicker: ['FormColorPickerRenderer', '@/react/form-color-picker.renderer'],
+      FormDateTimePicker: ['FormDateTimePickerRenderer', '@/react/form-date-time-picker.renderer'],
+      FormPinInput: ['FormPinInputRenderer', '@/react/form-pin-input.renderer'],
+      FormTimePicker: ['FormTimePickerRenderer', '@/react/form-time-picker.renderer'],
+      TransferList: ['TransferListRenderer', '@/react/transfer-list.renderer'],
+    };
+    const centralRenderer = centralRendererByName[publicName];
+    const specializedRenderer = specializedRendererByName[publicName];
+    const directRenderer = centralRenderer ?? specializedRenderer;
     const optimizedComponentSource = directRenderer
       ? componentSource
           .replace(
             `import { createPeauiReactComponent } from '@/react/create-peaui-react-component';`,
-            `import { createDirectReactComponent } from '@/react/create-direct-react-component';\nimport { ${directRenderer} } from '@/react/${toKebabCase(publicName)}.renderer';`,
+            `import { createDirectReactComponent } from '@/react/create-direct-react-component';\nimport { ${directRenderer[0]} } from '${
+              centralRenderer
+                ? `@/react/renderer-entries/${centralRenderer[1]}.renderer-entry`
+                : specializedRenderer[1]
+            }';`,
           )
           .replace(
             `createPeauiReactComponent('${publicName}')`,
-            `createDirectReactComponent('${publicName}', ${directRenderer})`,
+            `createDirectReactComponent('${publicName}', ${directRenderer[0]})`,
           )
       : componentSource;
     const storySource =
@@ -1167,40 +1291,26 @@ function writeComponentFiles(components) {
         'InlineEdit',
         'CopyButton',
         'KeyboardKey',
+        'CommandPalette',
+        'GuidedTour',
+        'NotificationCenter',
       ].includes(api.name)
     ) {
-      fs.writeFileSync(path.join(directory, 'index.tsx'), optimizedComponentSource, 'utf8');
+      writeGeneratedFile(
+        path.join(directory, 'index.tsx'),
+        optimizedComponentSource +
+          (publicName === 'TableList'
+            ? "\nexport type * from './table.types';\n"
+            : publicName === 'FormFileUpload'
+              ? "\nexport type { FormFileUploadValue, FileUploadValueMode } from './file-upload.shared';\n"
+              : ''),
+        'utf8',
+      );
     }
-    // These components own extended hand-written story suites next to generated entry points.
-    // Keep them intact when the catalog is regenerated.
-    if (
-      ![
-        'ContextMenu',
-        'DropdownMenu',
-        'MenuBar',
-        'FormSwitchToggle',
-        'FormTimePicker',
-        'FormDateTimePicker',
-        'FormDateRangePicker',
-        'FormRatingInput',
-        'FormColorPicker',
-        'FormPinInput',
-        'FormTagsInput',
-        'TableList',
-        'ToggleButton',
-        'ToggleGroup',
-        'SegmentedControl',
-        'SplitButton',
-        'TransferList',
-        'ScrollArea',
-        'VirtualList',
-        'InlineEdit',
-        'CopyButton',
-        'KeyboardKey',
-      ].includes(api.name)
-    ) {
-      fs.writeFileSync(path.join(directory, 'index.react.stories.tsx'), storySource, 'utf8');
-    }
+    // Stories belong to their authors after the initial scaffold is created.
+    // Regeneration must never remove interactions, edge cases or accessibility examples.
+    const storyFile = path.join(directory, 'index.react.stories.tsx');
+    if (!fs.existsSync(storyFile)) writeGeneratedFile(storyFile, storySource);
   }
 }
 
@@ -1213,7 +1323,23 @@ writeIconData();
 if (!metadataOnly) writeComponentFiles(components);
 
 console.log(
-  metadataOnly
-    ? `Wygenerowano metadane React: ${components.length}.`
-    : `Wygenerowano natywne entry pointy React: ${components.length}.`,
+  process.argv.includes('--check')
+    ? `Sprawdzono pliki React: ${components.length}.`
+    : metadataOnly
+      ? `Wygenerowano metadane React: ${components.length}.`
+      : `Wygenerowano natywne entry pointy React: ${components.length}.`,
 );
+
+const checkOnly = process.argv.includes('--check');
+const changedFiles = [];
+for (const [file, source] of generatedFiles) {
+  const options = await resolveConfig(file);
+  const formatted = await format(source, { ...options, filepath: file });
+  if (fs.existsSync(file) && fs.readFileSync(file, 'utf8') === formatted) continue;
+  changedFiles.push(path.relative(libraryRoot, file));
+  if (!checkOnly) fs.writeFileSync(file, formatted, 'utf8');
+}
+if (checkOnly && changedFiles.length > 0) {
+  console.error(`Generated React files are outdated:\n${changedFiles.join('\n')}`);
+  process.exitCode = 1;
+}

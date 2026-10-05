@@ -33,8 +33,8 @@ describe('SegmentedControl Vue', () => {
 
   it('emituje model przed change, zachowuje typ wartości i pole formularza', async () => {
     const order: string[] = [];
-    const onValueChange = vi.fn(() => order.push('value'));
-    const onChange = vi.fn(() => order.push('change'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('value'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
     render(SegmentedControl, {
       props: { items, name: 'period', onChange, 'onUpdate:value': onValueChange },
     });

@@ -39,8 +39,8 @@ describe('ToggleGroup React', () => {
 
   it('obsługuje niekontrolowany model single i kolejność callbacków', () => {
     const order: string[] = [];
-    const onValueChange = vi.fn(() => order.push('value'));
-    const onChange = vi.fn(() => order.push('change'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('value'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
     render(<ToggleGroup items={items} onChange={onChange} onValueChange={onValueChange} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Kompaktowo' }));

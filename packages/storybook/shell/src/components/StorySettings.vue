@@ -44,7 +44,9 @@ function handleChangeFontSize(type: "enlarge" | "reduce"): void {
 }
 
 function handleToggleDarkMode(): void {
-  document.body.classList.toggle("dark-mode");
+  const dark = document.body.classList.toggle("dark-mode");
+  document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  document.body.style.colorScheme = dark ? "dark" : "light";
 }
 </script>
 

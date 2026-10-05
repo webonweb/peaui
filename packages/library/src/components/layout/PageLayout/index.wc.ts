@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { isCustomElementNode, syncNodeChildren } from '@/helpers/dom.helper';
 
@@ -47,7 +48,8 @@ function setStringAttribute(element: HTMLElement, name: string, value: string | 
 }
 
 function setBooleanAttribute(element: HTMLElement, name: string, value: boolean) {
-  element.setAttribute(name, String(value));
+  if (value) element.setAttribute(name, '');
+  else element.removeAttribute(name);
 }
 
 function normalizeNodes(nodes: Node[]): Node[] {
@@ -86,6 +88,7 @@ export class PageLayoutElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -103,7 +106,8 @@ export class PageLayoutElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }

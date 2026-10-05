@@ -1,6 +1,7 @@
 import type { KeyboardEvent, MouseEvent, ReactElement, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { SegmentedControlRenderer } from '@/react/renderer-entries/segmented-control.renderer-entry';
 import type {
   PeauiReactProps,
   PeauiSegmentedControlItem,
@@ -24,7 +25,10 @@ export type SegmentedControlProps = Omit<
 export type SegmentedControlItem = PeauiSegmentedControlItem;
 export type SegmentedControlValue = PeauiSegmentedControlValue;
 
-const SegmentedControlBase = createPeauiReactComponent('SegmentedControl');
+const SegmentedControlBase = createDirectReactComponent(
+  'SegmentedControl',
+  SegmentedControlRenderer,
+);
 const SegmentedControl = SegmentedControlBase as unknown as (
   props: SegmentedControlProps & RefAttributes<HTMLDivElement>,
 ) => ReactElement | null;

@@ -104,8 +104,7 @@ afterEach(() => {
 });
 
 function mountPicker(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-  wrapper = mount(FormDateTimePicker, {
+  const wrapper = mount(FormDateTimePicker, {
     attachTo: document.body,
     props: {
       id: 'meeting-date-time',

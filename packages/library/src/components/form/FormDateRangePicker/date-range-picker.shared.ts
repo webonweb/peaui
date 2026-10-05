@@ -18,12 +18,7 @@ export type FormDateRangePickerSelectionOrder = 'swap' | 'reject' | 'resetEnd';
 export type FormDateRangePickerPlacement = 'top' | 'bottom';
 export type FormDateRangePickerDateFormat = FormDateTimePickerDateFormat;
 export type FormDateRangePickerInvalidReason =
-  | 'empty'
-  | 'partial'
-  | 'format'
-  | 'order'
-  | 'range'
-  | 'disabled';
+  'empty' | 'partial' | 'format' | 'order' | 'range' | 'disabled';
 export type FormDateRangePickerSection = 'start' | 'end' | 'value';
 
 export type FormDateRangePickerInvalidDetail = {

@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { SectionHeadingLeafRenderer } from '@/react/renderer-entries/display.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type SectionHeadingProps = PeauiReactProps<'SectionHeading'>;
 
-const SectionHeading = createPeauiReactComponent('SectionHeading');
+const SectionHeading = createDirectReactComponent('SectionHeading', SectionHeadingLeafRenderer);
 
 export default SectionHeading;

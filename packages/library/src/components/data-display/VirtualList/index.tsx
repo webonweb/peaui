@@ -69,9 +69,9 @@ export type {
   VirtualListScrollDetail,
 } from './virtual-list.shared';
 
-const VirtualList = forwardRef<VirtualListHandle, VirtualListProps>(
-  (props, ref): ReactElement => <VirtualListRenderer {...props} forwardedRef={ref} />,
-);
+const VirtualList = forwardRef<VirtualListHandle, VirtualListProps>((props, ref): ReactElement => (
+  <VirtualListRenderer {...props} forwardedRef={ref} />
+));
 
 VirtualList.displayName = 'VirtualList';
 

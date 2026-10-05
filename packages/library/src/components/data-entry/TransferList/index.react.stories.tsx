@@ -42,7 +42,7 @@ export const Error: Story = { args: { error: 'Nie udało się zapisać przypisan
 export const ObjectsAndLongLabels: Story = { args: { items: transferListLongItems } };
 
 export const Controlled: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState<TransferListKey[]>([...transferListDemoValue]);
     return <TransferList {...args} onValueChange={setValue} value={value} />;
   },
@@ -66,5 +66,18 @@ export const CustomItem: Story = {
         <small>{panel}</small>
       </>
     ),
+  },
+};
+
+export const Virtualized: Story = {
+  args: {
+    virtual: true,
+    optionHeight: 64,
+    items: Array.from({ length: 5000 }, (_, value) => ({
+      key: value,
+      value,
+      label: `Option ${value}`,
+    })),
+    value: [0, 1],
   },
 };

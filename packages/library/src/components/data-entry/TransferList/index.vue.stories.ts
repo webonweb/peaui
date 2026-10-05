@@ -28,17 +28,17 @@ const meta = {
     description:
       'Dwie dostępne listy wielokrotnego wyboru z niezależnym filtrowaniem, bezpiecznym transferem i responsywnym układem.',
   },
-} satisfies Meta<typeof TransferListComponent>;
+} satisfies Meta<InstanceType<typeof TransferListComponent>['$props']>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<InstanceType<typeof TransferListComponent>['$props']>;
 const { getSettings } = useSettingsStorie();
 
 export const Playground: Story = {
   render: (args) => ({
     components: { StoryContent, TransferListComponent },
     setup() {
-      const value = ref([...args.value]);
+      const value = ref([...(args.value ?? [])]);
       return { args, settings: getSettings(meta), value };
     },
     template: `<StoryContent :settings><TransferListComponent v-bind="args" v-model:value="value" /></StoryContent>`,
@@ -75,4 +75,17 @@ export const CustomItem: Story = {
       </TransferListComponent>
     `,
   }),
+};
+
+export const Virtualized: Story = {
+  args: {
+    virtual: true,
+    optionHeight: 64,
+    items: Array.from({ length: 5000 }, (_, value) => ({
+      key: value,
+      value,
+      label: `Option ${value}`,
+    })),
+    value: [0, 1],
+  },
 };

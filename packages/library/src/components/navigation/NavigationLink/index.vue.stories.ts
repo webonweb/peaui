@@ -179,3 +179,11 @@ export const Destinations: Story = {
     `,
   }),
 };
+
+export const DownloadLink: Story = {
+  render: () => ({
+    components: { NavigationLinkComponent },
+    template:
+      '<NavigationLinkComponent path="#report" target="_blank" rel="noopener" download="report.txt">Download report</NavigationLinkComponent>',
+  }),
+};

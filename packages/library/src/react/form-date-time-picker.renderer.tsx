@@ -1,4 +1,9 @@
 /** @jsxImportSource react */
+import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
+import { renderSvgMarkup } from './renderers/svg-markup.renderer';
+import { iconHint } from './generated-static-icons';
+import { useModel, useFormControlModel } from './renderers/runtime.shared';
+import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 import {
   useEffect,
   useId,
@@ -8,7 +13,6 @@ import {
   type CSSProperties,
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -51,17 +55,19 @@ import {
   type FormDateTimePickerVariant,
   type LocalDateTimeValue,
 } from '../components/form/FormDateTimePicker/date-time-picker.shared';
-import { reactIconData } from './generated-icon-data';
+import type { ReactIconData } from './generated-icon-data';
+import { iconArrow, iconCalendar, iconClock, iconCross } from './generated-static-icons';
+const controlIcons: Readonly<Record<string, ReactIconData>> = {
+  arrow: iconArrow,
+  calendar: iconCalendar,
+  clock: iconClock,
+  cross: iconCross,
+};
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
-};
-
-type NativePopoverElement = HTMLDivElement & {
-  hidePopover?: () => void;
-  showPopover?: () => void;
 };
 
 const cx = (...values: Array<string | false | null | undefined>): string =>
@@ -89,52 +95,13 @@ const call = (props: RuntimeProps, name: string, ...args: unknown[]): void => {
   if (typeof handler === 'function') (handler as (...values: unknown[]) => void)(...args);
 };
 
-function useRuntimeModel<T>(
-  props: RuntimeProps,
-  name: string,
-  fallback: T,
-): readonly [T, (value: T) => void] {
-  const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-  const controlled = Object.prototype.hasOwnProperty.call(props, name);
-  const valueFromProps = props[name] as T | undefined;
-  const defaultValue = props[`default${capitalized}`] as T | undefined;
-  const [internal, setInternal] = useState<T>(defaultValue ?? fallback);
-  const value = controlled ? (valueFromProps as T) : internal;
-  const update = (next: T): void => {
-    if (!controlled) setInternal(next);
-    call(props, `on${capitalized}Change`, next);
-  };
-  return [value, update] as const;
-}
-
-function useNativePopover(open: boolean): MutableRefObject<NativePopoverElement | null> {
-  const ref = useRef<NativePopoverElement | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (typeof element.showPopover !== 'function' || typeof element.hidePopover !== 'function') {
-      element.hidden = !open;
-      return;
-    }
-    element.hidden = false;
-    try {
-      const visible = element.matches(':popover-open');
-      if (open && !visible) element.showPopover();
-      if (!open && visible) element.hidePopover();
-    } catch {
-      element.hidden = !open;
-    }
-  }, [open]);
-  return ref;
-}
-
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
   else if (ref) ref.current = value;
 }
 
 function Icon({ name, className }: { name: string; className?: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  const icon = controlIcons[name] ?? controlIcons.info;
   return (
     <svg
       aria-hidden="true"
@@ -202,40 +169,53 @@ export function FormDateTimePickerRenderer({
     () => ({ format, locale, showSeconds }),
     [format, locale, showSeconds],
   );
+  const allowOffStep = bool(props, 'allowOffStep');
+  const hourStep = normalizeStep(num(props, 'hourStep', 1), 24);
+  const isDateTimeDisabled = props.isDateTimeDisabled as
+    ((value: LocalDateTimeValue) => boolean) | undefined;
+  const maximum = props.max as LocalDateTimeValue | undefined;
+  const minimum = props.min as LocalDateTimeValue | undefined;
+  const minuteStep = normalizeStep(num(props, 'minuteStep', 5), 60);
+  const secondStep = normalizeStep(num(props, 'secondStep', 5), 60);
   const validationOptions = useMemo<DateTimeValidationOptions>(
     () => ({
-      allowOffStep: bool(props, 'allowOffStep'),
+      allowOffStep,
       format,
-      hourStep: normalizeStep(num(props, 'hourStep', 1), 24),
-      isDateTimeDisabled: props.isDateTimeDisabled as
-        | ((value: LocalDateTimeValue) => boolean)
-        | undefined,
+      hourStep,
+      isDateTimeDisabled,
       locale,
-      max: props.max as LocalDateTimeValue | undefined,
-      min: props.min as LocalDateTimeValue | undefined,
-      minuteStep: normalizeStep(num(props, 'minuteStep', 5), 60),
-      secondStep: normalizeStep(num(props, 'secondStep', 5), 60),
+      max: maximum,
+      min: minimum,
+      minuteStep,
+      secondStep,
       showSeconds,
     }),
     [
+      allowOffStep,
       format,
+      hourStep,
+      isDateTimeDisabled,
       locale,
-      props.allowOffStep,
-      props.hourStep,
-      props.isDateTimeDisabled,
-      props.max,
-      props.min,
-      props.minuteStep,
-      props.secondStep,
+      maximum,
+      minimum,
+      minuteStep,
+      secondStep,
       showSeconds,
     ],
   );
-  const [modelValue, setModelValue] = useRuntimeModel<LocalDateTimeValue | undefined>(
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [modelValue, setModelValue] = useFormControlModel<LocalDateTimeValue | undefined>(
     props,
     'value',
     undefined,
+    rootRef,
+    true,
+    (next) => {
+      syncDraft(next);
+      setReason(undefined);
+    },
   );
-  const [open, setOpen] = useRuntimeModel<boolean>(props, 'open', false);
+  const [open, setOpen] = useModel<boolean>(props, 'open', false, true);
   const [popoverPlacement, setPopoverPlacement] = useState(placement);
   const [availablePanelHeight, setAvailablePanelHeight] = useState(608);
   const [triggerWidth, setTriggerWidth] = useState(0);
@@ -256,7 +236,6 @@ export function FormDateTimePickerRenderer({
   const [visible, setVisible] = useState({ year: initialDate.year, month: initialDate.month });
   const [activeDate, setActiveDate] = useState(modelValue?.date ?? getTodayModelDate());
   const [reason, setReason] = useState<FormDateTimePickerInvalidDetail['reason']>();
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const popoverRef = useNativePopover(open);
   const dayRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -297,7 +276,7 @@ export function FormDateTimePickerRenderer({
   );
   const draftReason = validateLocalDateTime(draft, validationOptions);
 
-  const syncDraft = (value: LocalDateTimeValue | undefined = modelValue): void => {
+  const syncDraft = (value: LocalDateTimeValue | undefined): void => {
     const next = value ? { ...value } : {};
     setDraft(next);
     setSingleText(displayFrom(value));
@@ -308,10 +287,15 @@ export function FormDateTimePickerRenderer({
     setVisible({ year: date.year, month: date.month });
     setActiveDate(value?.date ?? getTodayModelDate());
   };
+  const synchronizationRef = useRef({ modelValue, syncDraft });
+  synchronizationRef.current = { modelValue, syncDraft };
+  const modelDate = modelValue?.date;
+  const modelTime = modelValue?.time;
 
   useEffect(() => {
-    if (!open || !confirm) syncDraft(modelValue);
-  }, [modelValue?.date, modelValue?.time]);
+    const state = synchronizationRef.current;
+    if (!open || !confirm) state.syncDraft(state.modelValue);
+  }, [confirm, dateFormat, format, locale, modelDate, modelTime, open, showSeconds]);
 
   useEffect(() => {
     const element = rootRef.current;
@@ -583,17 +567,13 @@ export function FormDateTimePickerRenderer({
     'aria-readonly': readonly || undefined,
   };
   const customTrigger = props.renderTrigger as
-    | ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode)
-    | undefined;
+    ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode) | undefined;
   const renderDate = props.renderDate as
-    | ((state: { date: string | undefined }) => ReactNode)
-    | undefined;
+    ((state: { date: string | undefined }) => ReactNode) | undefined;
   const renderTime = props.renderTime as
-    | ((state: { time: string | undefined }) => ReactNode)
-    | undefined;
+    ((state: { time: string | undefined }) => ReactNode) | undefined;
   const renderTimeZone = props.renderTimeZone as
-    | ((state: { timeZone: string }) => ReactNode)
-    | undefined;
+    ((state: { timeZone: string }) => ReactNode) | undefined;
   const anchorName = `--anchor-${id.replaceAll(':', '')}`;
 
   const defaultTrigger = (
@@ -607,7 +587,13 @@ export function FormDateTimePickerRenderer({
             ) : null}
           </span>
           {hasContent(props.hint) ? (
-            <span className="peaui-info-tooltip">{props.hint as ReactNode}</span>
+            <InfoTooltipRenderer
+              description={props.hint}
+              placement="right"
+              ariaLabel="Dodatkowa informacja"
+            >
+              {renderSvgMarkup({ className: 'peaui-form-label__hint', data: iconHint })}
+            </InfoTooltipRenderer>
           ) : null}
         </label>
       ) : null}
@@ -616,7 +602,12 @@ export function FormDateTimePickerRenderer({
           <input
             {...inputAria}
             aria-autocomplete="none"
-            aria-label={text(props, 'ariaLabel') || (!label ? name : undefined)}
+            aria-controls={panelId}
+            aria-expanded={open}
+            aria-haspopup="dialog"
+            aria-label={
+              text(props, 'aria-label') || text(props, 'ariaLabel') || (!label ? name : undefined)
+            }
             aria-labelledby={label ? `label-${id}` : undefined}
             autoComplete="off"
             className={cx(fieldClass, `${root}__input`)}
@@ -658,12 +649,16 @@ export function FormDateTimePickerRenderer({
             <input
               {...inputAria}
               role="combobox"
+              aria-controls={panelId}
+              aria-expanded={open}
+              aria-haspopup="dialog"
               aria-label={label ? 'Data' : `${name}: data`}
               className={`${root}__split-input`}
               data-testid={baseTestId ? `${baseTestId}-date-input` : undefined}
               disabled={disabled || loading}
               id={id}
-              name={`${name}-date`}
+              name={name}
+              required={required}
               placeholder={dateFormat === 'iso' ? 'rrrr-mm-dd' : 'dd.mm.rrrr'}
               readOnly={readonly}
               type="text"
@@ -676,12 +671,16 @@ export function FormDateTimePickerRenderer({
             <input
               {...inputAria}
               role="combobox"
+              aria-controls={panelId}
+              aria-expanded={open}
+              aria-haspopup="dialog"
               aria-label={label ? 'Czas' : `${name}: czas`}
               className={`${root}__split-input`}
               data-testid={baseTestId ? `${baseTestId}-time-input` : undefined}
               disabled={disabled || loading}
               id={`${id}-time`}
-              name={`${name}-time`}
+              name={name}
+              required={required}
               placeholder={showSeconds ? 'gg:mm:ss' : 'gg:mm'}
               readOnly={readonly}
               type="text"
@@ -910,12 +909,7 @@ export function FormDateTimePickerRenderer({
         )}
         data-testid={baseTestId ? `${baseTestId}-popover-content` : undefined}
         hidden={!open}
-        popover={
-          typeof HTMLElement !== 'undefined' &&
-          typeof HTMLElement.prototype.showPopover === 'function'
-            ? 'auto'
-            : undefined
-        }
+        popover={getNativePopoverValue()}
         ref={popoverRef}
         style={
           {

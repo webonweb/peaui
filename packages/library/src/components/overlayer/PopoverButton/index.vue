@@ -18,14 +18,7 @@ type ButtonSize = 'xs' | 's' | 'm' | 'l';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 type PopupType = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | 'true';
 
 type ButtonActionReference = ComponentPublicInstance & {

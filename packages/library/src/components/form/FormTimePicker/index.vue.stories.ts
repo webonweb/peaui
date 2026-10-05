@@ -9,6 +9,7 @@ import { formTimePickerDemoProps, formTimePickerLongLabel } from './form-time-pi
 const meta = {
   title: '5. Form/FormTimePicker',
   component: FormTimePickerComponent,
+  args: { ...formTimePickerDemoProps },
   parameters: {
     name: 'FormTimePicker',
     description:
@@ -117,5 +118,14 @@ export const MobileAndLongLabel: Story = {
         <FormTimePickerComponent id="time-mobile" name="time-mobile" :label="formTimePickerLongLabel" value="09:30" data-test-id="form-time-picker-mobile" />
       </div>
     `,
+  }),
+};
+
+export const NativeRequiredAndReset: Story = {
+  render: () => ({
+    components: { FormTimePickerComponent },
+    setup: () => ({ value: ref<string | undefined>(undefined) }),
+    template:
+      '<form @submit.prevent @reset="value = undefined"><FormTimePickerComponent id="native-time" name="value" label="Required value" variant="segmented" required v-model:value="value" /><button type="submit">Validate</button><button type="reset">Reset</button></form>',
   }),
 };

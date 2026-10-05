@@ -1,10 +1,10 @@
-import './library';
-import './main.css';
+import "./library";
+import "./main.css";
 
-const app = document.querySelector<HTMLDivElement>('#app');
+const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) {
-  throw new Error('App root not found.');
+  throw new Error("App root not found.");
 }
 
 app.innerHTML = `
@@ -22,7 +22,7 @@ app.innerHTML = `
         <h2 class="playground__preview-title">Preview</h2>
         <div class="playground__row">
           <peaui-tag-chip label="Default"></peaui-tag-chip>
-          <peaui-tag-chip label="Active" variant="green" active="true"></peaui-tag-chip>
+          <peaui-tag-chip label="Active" variant="green" active></peaui-tag-chip>
           <peaui-tag-chip label="Outline" variant="outline"></peaui-tag-chip>
           <peaui-tag-chip label="Span mode" variant="violet" as="span"></peaui-tag-chip>
         </div>

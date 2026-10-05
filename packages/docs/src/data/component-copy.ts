@@ -11,14 +11,14 @@ export const componentCopy: Record<string, ComponentCopy> = {
     'Responsywny kontener obrazu z kontrolą rozmiaru, maksymalnej szerokości i poprawnego tekstu alternatywnego.',
     [
       'Prezentuje obrazy w spójnych rozmiarach.',
-      'Zapewnia bezpieczny fallback tekstu alternatywnego.',
+      'Przekazuje atrybuty loading, srcset i sizes do obrazu.',
     ],
-    'Adres obrazu, opis alternatywny oraz opcjonalny wariant rozmiaru.',
+    'Podaj src i alt opisujący znaczenie obrazu albo alt="" dla dekoracji. Opcjonalne size i max kontrolują układ. Pominięty alt korzysta z wartości zastępczej, która nie zastępuje opisu dopasowanego do kontekstu.',
   ),
   SvgIcon: copy(
     'Lekki renderer ikon SVG dostępnych w zestawie PEAUI.',
     ['Ładuje ikonę po nazwie.', 'Ukrywa dekoracyjną grafikę przed czytnikami ekranu.'],
-    'Nazwa pliku ikony bez rozszerzenia, na przykład „check”, „edit” albo „search”.',
+    'Nazwa category/icon-name z katalogu ikon albo obsługiwana nazwa zgodności, np. check, edit lub search. Ikona jest domyślnie dekoracyjna; podaj aria-label lub aria-labelledby, jeśli samodzielnie przekazuje informację.',
   ),
   Avatar: copy(
     'Awatar użytkownika z obrazem, inicjałami lub ikoną zastępczą oraz opcjonalnym statusem obecności.',
@@ -35,7 +35,10 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Pokazuje zespół w układzie nakładającym się lub z odstępami bez zmiany kolejności DOM.',
       'Udostępnia każdą osobę i licznik nadmiaru jako natywną akcję klawiaturową.',
-      'Opcjonalny popover prezentuje wyłącznie ukryte osoby i przywraca fokus po zamknięciu.',
+      'Usunięcie osoby z fokusem w otwartym panelu przenosi fokus na dostępną osobę lub wyzwalacz; Escape nadal działa.',
+      'Opcjonalny popover montuje ukryte osoby dopiero po otwarciu i pozostaje w granicach widocznego obszaru.',
+      'Wyłączenie otwartego panelu zamyka go i zachowuje fokus na grupie; loading przenosi fokus na panel, z którego nadal działa Escape.',
+      'Małe awatary zachowują rozmiar obrazu, a ich obszary interakcji są większe, aby umożliwić precyzyjny wybór.',
       'Zachowuje identyczne klasy, tokeny i zachowanie w Vue, React i Web Components.',
     ],
     'Tablica osób z identyfikatorami i nazwami; opcjonalnie limit, rozmiar, kształt, kierunek, sposób obsługi nadmiaru i sterowany stan open.',
@@ -98,7 +101,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Komponuje istniejące ButtonAction i SvgIcon, zachowując skalę rozmiarów, warianty oraz minimum 44 px dla celu dotykowego.',
       'Pobiera dokładną wartość z text albo synchronicznego lub asynchronicznego getText dopiero w chwili aktywacji.',
       'Rozróżnia sukces, błąd zapisu i brak obsługi schowka, sprząta fallback DOM oraz bezpiecznie resetuje timer.',
-      'Utrzymuje focus na natywnym przycisku, stałą nazwę akcji i ogłasza wynik przez atomowy live region.',
+      'Utrzymuje fokus na natywnym przycisku, stałą nazwę akcji i ogłasza wynik przez atomowy live region.',
       'Zapewnia warianty icon, text i icon-text oraz identyczne zachowanie i wygląd w Vue, React i Web Components.',
     ],
     'Tekst albo funkcja getText oraz opcjonalnie czas resetu, etykiety, sposób prezentacji treści, wariant i rozmiar ButtonAction, widoczność statusu oraz stany loading/disabled.',
@@ -114,14 +117,27 @@ export const componentCopy: Record<string, ComponentCopy> = {
     ],
     'Klawisz lub uporządkowana kombinacja tokenów; opcjonalnie platforma, format symbol/text, rozmiar, wariant inline/block, separator, muted i własna dostępna etykieta.',
   ),
+  CommandPalette: copy(
+    'Globalna lub osadzona paleta do szybkiego wyszukiwania i wykonywania poleceń aplikacji.',
+    [
+      'Zapewnia deterministyczne fuzzy search, stabilny ranking, grupy, historię recent i dynamiczną aktualizację rejestru poleceń.',
+      'Obsługuje synchroniczne i asynchroniczne akcje, blokuje podwójne wykonanie oraz prezentuje stany loading, empty i error.',
+      'Udostępnia poziomy zagnieżdżone, kontrolowane open/query/activeId i adapter nawigacji przez callback execute.',
+      'Realizuje wzorzec dialog + combobox + listbox z aria-activedescendant, grupami, disabled, live status i pełną obsługą klawiatury.',
+      'Przywraca fokus, ignoruje globalny skrót w polach edycyjnych i może używać VirtualList dla dziesiątek tysięcy komend.',
+      'Zachowuje równoważny kontrakt, wygląd i zachowanie w Vue, natywnym React i Web Components.',
+    ],
+    'Tablica komend z id i label; opcjonalnie keywords, group, shortcut, disabled, children, execute i metadata oraz kontrolowane open, query i activeId.',
+  ),
   ScrollArea: copy(
     'Responsywny obszar przewijania oparty na natywnym overflow, z opcjonalnymi paskami PeaUI i spójnym API programowym.',
     [
       'Zachowuje natywne przewijanie kółkiem, dotykiem, klawiaturą i momentum bez przechwytywania gestów.',
       'Udostępnia pionowy, poziomy lub dwuosiowy viewport oraz tryby native i styled.',
+      'Tryb native domyślnie dodaje tabindex=0 także dla tekstowej zawartości; jawny tabindex/tabIndex pozwala nadpisać tę wartość.',
       'Stylowane paski realizują wzorzec ARIA scrollbar, pełną klawiaturę, przeciąganie i poprawną pozycję logiczną RTL.',
       'Deduplikuje zdarzenia krawędzi, ogranicza aktualizacje do klatek animacji i sprząta obserwatory po odmontowaniu.',
-      'Zachowuje identyczny DOM, wygląd, zdarzenia i publiczne metody w Vue, React oraz Web Components.',
+      'Zachowuje spójną semantykę, wygląd, zdarzenia i publiczne metody w Vue, React oraz Web Components.',
     ],
     'Treść slotu lub children oraz opcjonalnie osie, typ pasków, sposób ich widoczności, dostępna nazwa i stabilne id do przywracania pozycji.',
   ),
@@ -132,7 +148,8 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Komponuje istniejący ScrollArea, EmptyState i SpinnerLoader oraz zachowuje wspólne tokeny PeaUI.',
       'Udostępnia tryb list i listbox, pełne metadane aria-setsize/aria-posinset oraz nawigację strzałkami, Home, End, PageUp i PageDown.',
       'Utrzymuje fokusowany wiersz w DOM, deduplikuje reachEnd i zachowuje pozycję przy dołączaniu albo poprzedzaniu danych.',
-      'Zapewnia identyczny zakres, DOM, wygląd, zdarzenia i metody przewijania w Vue, React i Web Components.',
+      'Kotwiczy widoczny rekord po stabilnym kluczu. ReachEnd emituje raz dla danej liczby pozycji, niezależnie od zmian fokusu i tożsamości callbacku.',
+      'Zapewnia identyczny renderowany zakres i wygląd, zdarzenia i metody przewijania w Vue, React i Web Components.',
     ],
     'Tablica danych, stały itemSize i wysokość viewportu; opcjonalnie overscan, resolver klucza i etykiety, semanticRole listbox, loading, hasMore oraz kontrolowany activeIndex.',
   ),
@@ -162,6 +179,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Udostępnia jeden natywny suwak i jednoznaczny aria-valuetext zamiast wielu anonimowych przycisków.',
       'Oddziela podgląd hover od zatwierdzonego modelu i pozwala jawnie wyczyścić wartość.',
       'Obsługuje strzałki, Home, End, Delete i Backspace oraz nietabowalny tryb readonly.',
+      'Właściwość form wskazuje właściciela kontrolki i resetu także wtedy, gdy pole znajduje się poza formularzem.',
       'Zapewnia cele dotykowe minimum 44 px, zawijanie przy dużym max i identyczny wygląd w Vue, React oraz Web Components.',
     ],
     'Wartość number lub null, dodatnie max, krok 1 albo 0.5 oraz opcjonalne opisy wartości, własna ikona, etykieta, opis, błąd i stany formularza.',
@@ -199,8 +217,9 @@ export const componentCopy: Record<string, ComponentCopy> = {
   CalculationResults: copy(
     'Panel wyniku obliczeń z opcjonalną akcją ponownego przeliczenia.',
     [
-      'Eksponuje wynik i jego etykietę.',
-      'Obsługuje stan ładowania, blokady oraz tryb uproszczony.',
+      'Wiąże etykietę z wynikiem i ogłasza aktualizacje przez status live.',
+      'Domyślnie pokazuje przycisk obliczania; blokuje go podczas ładowania. Obsługuje również tryb uproszczony.',
+      'Renderuje wartości tekstowe bez wykonywania przekazanego kodu HTML.',
     ],
     'Etykieta i tekst wyniku, a opcjonalnie flagi stanu oraz widoczności przycisku.',
   ),
@@ -209,6 +228,8 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Porządkuje większy zestaw kart w ograniczonej przestrzeni.',
       'Dostosowuje liczbę slajdów do szerokości widoku.',
+      'Dodanie, usunięcie lub przestawienie kart aktualizuje slajdy i strony; Web Components zachowują tożsamość istniejących węzłów oraz ich zdarzenia.',
+      'Rotację zatrzymuje przycisk pauzy, fokus klawiatury i najechanie kursorem. Po wejściu fokusu wymaga jawnego wznowienia; respektuje ograniczenie ruchu. Etykiety zmienisz przez pauseLabel i resumeLabel.',
     ],
     'Karty przekazane w domyślnym slocie oraz ustawienia nawigacji, animacji i liczby widocznych slajdów.',
   ),
@@ -222,6 +243,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Buduje czytelną parę etykieta–wartość.',
       'Nadaje się do podsumowań i widoków tylko do odczytu.',
+      'Traktuje etykietę jako tekst; formatowaną treść przyjmuje przez slot lub children.',
     ],
     'Etykieta oraz treść w domyślnym slocie.',
   ),
@@ -229,28 +251,32 @@ export const componentCopy: Record<string, ComponentCopy> = {
     'Rozwijany panel, który pokazuje lub ukrywa dodatkową treść.',
     [
       'Oszczędza miejsce przy rozbudowanych informacjach.',
-      'Udostępnia kontrolowany stan otwarcia przez v-model:open.',
+      'Udostępnia kontrolowany stan otwarcia przez model open.',
     ],
-    'Tytuł, treść slotu oraz stan otwarcia; panel może być wyłączony albo stale otwarty.',
+    'Tytuł, treść slotu oraz stan otwarcia; panel może być wyłączony albo stale otwarty. Bez tytułu ariaLabel nazywa kontrolkę summary w Vue, React i Web Components. Dynamicznie dodany tytuł zastępuje nazwę zastępczą.',
   ),
   SectionHeading: copy(
     'Nagłówek sekcji z kontrolą poziomu wizualnego, znacznika HTML i wariantu koloru.',
     ['Buduje hierarchię treści.', 'Oddziela semantykę HTML od rozmiaru wizualnego.'],
-    'Treść nagłówka w slocie oraz właściwości size, as i variant.',
+    'Treść nagłówka w slocie oraz właściwości size, as i variant. Wariant secondary korzysta z odwracanych tokenów: stosuj go na powierzchni var(--peaui-color-grey-900), która reaguje na zmianę motywu.',
   ),
   TableList: copy(
     'Rozbudowana tabela danych z sortowaniem, wyborem wierszy, edycją i zarządzaniem kolumnami.',
     [
       'Prezentuje rekordy według deklaratywnych kolumn.',
+      'Zwykłe komórki tekstowe mają zwarty DOM; mutacje rekordów i formatterów pozostają widoczne po przekazaniu nowej tablicy records.',
       'Obsługuje stany puste i ładowania oraz akcje na rekordach.',
       'Zapewnia obsługę klawiatury oraz spójne zdarzenia wyboru, edycji i dwukrotnego kliknięcia.',
+      'Renderuje etykiety kolumn i kroków jako tekst, bez wykonywania HTML z danych.',
+      'Kolumny type="editable" zatwierdzają zmianę po walidacji i zapisie; manage.onUpdate otrzymuje zmieniony rekord. Podpowiedzi kolumn są dostępne z klawiatury.',
+      'Edycja zachowuje szkic po przestawieniu rekordu z unikatowym id; bez id korzysta z tożsamości obiektu. Submit przekazuje aktualny indeks records. Usunięcie, powielony klucz lub zmiana strony ukrywająca rekord anuluje edycję.',
     ],
-    'Tablica records i definicje columns; opcjonalnie konfiguracja sortowania, zaznaczeń, edycji i paginacji.',
+    'Tablica records i definicje columns. Dla dużych zbiorów włącz paginate i ustaw rowsPerPage. Kontroluj page przez v-model:page w Vue, page/onPageChange w React albo property page i update:page w WC. Zaznacz wszystko dotyczy bieżącej strony. Przy paginacji serwerowej pozostaw paginate=false.',
   ),
   TableListFooter: copy(
     'Stopka tabeli pokazująca zakres rekordów i informacje o stronie.',
     ['Podsumowuje widoczne dane.', 'Może układać zawartość standardowo albo elastycznie.'],
-    'Liczba rekordów, rozmiar strony, bieżąca strona i liczba wszystkich rekordów.',
+    'rowsNumber to liczba wszystkich rekordów; rowsPerPage to rozmiar strony, page to bieżąca strona, a total to liczba stron (zero ukrywa paginację). Wspólne limity: 5, 10, 25 i 50.',
   ),
   TableListHeader: copy(
     'Pasek narzędzi tabeli z wyszukiwaniem, filtrowaniem, eksportem i tworzeniem rekordów.',
@@ -258,7 +284,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Grupuje najważniejsze akcje nad tabelą.',
       'Pokazuje liczniki filtrów i zaznaczonych rekordów.',
     ],
-    'Flagi dostępnych akcji, liczniki oraz opcjonalny stan panelu filtrów przez v-model:filters-open.',
+    'Flagi dostępnych akcji, liczniki oraz opcjonalny stan panelu filtrów przez model filtersOpen.',
   ),
   TagChip: copy(
     'Krótka etykieta statusu lub kategorii renderowana jako tekst albo przycisk.',
@@ -268,12 +294,12 @@ export const componentCopy: Record<string, ComponentCopy> = {
   TreeList: copy(
     'Interaktywna lista drzewiasta do edycji danych zagnieżdżonych.',
     ['Pokazuje relacje nadrzędny–podrzędny.', 'Pozwala aktualizować i usuwać elementy drzewa.'],
-    'Obiekt drzewa kontrolowany przez v-model:tree oraz ustawienia poziomu i dozwolonych akcji.',
+    'Obiekt drzewa kontrolowany przez model tree oraz ustawienia poziomu i dozwolonych akcji.',
   ),
   ButtonAction: copy(
     'Podstawowy przycisk akcji biblioteki PEAUI.',
     ['Uruchamia działania użytkownika.', 'Obsługuje warianty wizualne, rozmiary i stan disabled.'],
-    'Treść przycisku w slocie oraz opcjonalne size, variant, type i ariaLabel.',
+    'Treść przycisku w slocie oraz opcjonalne size, variant, type i ariaLabel. W Web Components id identyfikuje host, a natywny przycisk ma id z sufiksem -control. Zewnętrzny label musi wskazywać ten natywny identyfikator; można też użyć aria-labelledby. Host nie jest natywną kontrolką formularza.',
   ),
   ButtonExport: copy(
     'Przycisk eksportu z menu wyboru zakresu danych.',
@@ -285,13 +311,13 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   InputSlider: copy(
     'Suwak pozwalający wybrać wartość liczbową.',
-    ['Zapewnia szybkie sterowanie liczbą.', 'Synchronizuje wartość przez v-model:value.'],
+    ['Zapewnia szybkie sterowanie liczbą.', 'Synchronizuje wartość przez model value.'],
     'Nazwa pola, wartość liczbowa oraz opcjonalna dostępna etykieta i stan disabled.',
   ),
   SearchInput: copy(
     'Pole wyszukiwania z opóźnieniem wywołania i możliwością czyszczenia.',
     ['Zbiera frazę wyszukiwania.', 'Ogranicza częstotliwość aktualizacji przez debounce.'],
-    'Fraza kontrolowana przez v-model:value, placeholder i opcjonalny czas debounce.',
+    'Fraza kontrolowana przez v-model:value (Vue), value/onValueChange (React) albo value/update:value (WC). Wyszukiwanie obejmuje co najmniej 3 znaki; Enter uruchamia je od razu. debounceTime domyślnie wynosi 1000 ms. Czyszczenie, zmiana opóźnienia, disabled, readonly i odmontowanie anulują oczekujące wyszukiwanie.',
   ),
   SelectableCard: copy(
     'Klikalna karta wyboru z aktywnym, wyłączonym i tylko do odczytu stanem.',
@@ -306,11 +332,14 @@ export const componentCopy: Record<string, ComponentCopy> = {
   MessageText: copy(
     'Semantyczny komunikat tekstowy dla informacji, sukcesu, ostrzeżenia lub błędu.',
     ['Nadaje komunikatom spójny wygląd.', 'Może automatycznie dodać ikonę dopasowaną do wariantu.'],
-    'Identyfikator, treść slotu oraz wariant, rozmiar i ustawienia ikony.',
+    'Identyfikator, treść slotu oraz wariant, rozmiar i ustawienia ikony. Wariant white korzysta z odwracanych tokenów: stosuj go na powierzchni var(--peaui-color-grey-900), która reaguje na zmianę motywu.',
   ),
   ProgressIndicator: copy(
     'Okrągły wskaźnik postępu podzielony na kroki.',
-    ['Pokazuje pozycję w procesie.', 'Pozwala dobrać rozmiar i grubość obrysu.'],
+    [
+      'Pokazuje pozycję w procesie; domyślna wartość active wynosi 0 we wszystkich frameworkach.',
+      'Pozwala dobrać rozmiar i grubość obrysu.',
+    ],
     'Liczba wszystkich kroków, aktywny krok oraz opcjonalne wymiary.',
   ),
   SkeletonLoading: copy(
@@ -328,17 +357,33 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Przekazuje wynik operacji bez blokowania widoku.',
       'Rozróżnia semantyczne warianty komunikatów.',
+      'Łączy tytuł i opis z regionem status/alert oraz nazywa przycisk zamknięcia tytułem powiadomienia. Cień i obramowanie są domyślnie wyłączone.',
+      'Traktuje tytuł i opis jako tekst, dzięki czemu dane komunikatu nie wykonują HTML.',
     ],
     'Tytuł, opis, wariant oraz opcjonalne ustawienia rozmiaru, obramowania, cienia i zamykania.',
   ),
+  NotificationCenter: copy(
+    'Kontrolowane centrum powiadomień z filtrami, grupowaniem, akcjami i pobieraniem kolejnych stron.',
+    [
+      'Prezentuje stan przeczytania i priorytet bez mutowania danych należących do aplikacji.',
+      'Obsługuje panel, treść szuflady i pełną stronę w Vue, React oraz Web Components.',
+      'Udostępnia dostępne stany loading, empty i error oraz intencje retry i loadMore.',
+      'Nagłówki grup są unikalne dla każdej instancji. Load more blokuje się od razu po wysłaniu żądania, aż zakończy się loadingMore, zmieni liczba pozycji lub wywołasz resetLoadRequest.',
+    ],
+    'Elementy powiadomień, opcjonalny licznik, filtry, grupowanie, kontrolowany wybór, stany żądań, lokalizacja etykiet i formatowanie dat.',
+  ),
   FormFieldLabel: copy(
     'Dostępna etykieta pola formularza ze wskaźnikiem wymagalności i trybu odczytu.',
-    ['Łączy tekst etykiety z kontrolką przez atrybut for.', 'Komunikuje wymagany charakter pola.'],
-    'Identyfikator kontrolki w for, tekst etykiety i opcjonalne flagi required oraz readonly.',
+    [
+      'Łączy tekst etykiety z kontrolką przez atrybut for.',
+      'Komunikuje wymagany charakter pola.',
+      'Traktuje prop text jako tekst; formatowaną treść przyjmuje przez slot lub children.',
+    ],
+    'Identyfikator natywnej kontrolki w for, tekst etykiety i opcjonalne flagi required oraz readonly. W Web Components jawne id należy do hosta; wewnętrzna etykieta używa sufiksu -control, aby identyfikatory pozostały unikalne.',
   ),
   FormButtonCheckbox: copy(
     'Checkbox prezentowany w formie wyraźnego przycisku wyboru.',
-    ['Pozwala włączać pojedynczą opcję.', 'Synchronizuje stan przez v-model:value.'],
+    ['Pozwala włączać pojedynczą opcję.', 'Synchronizuje stan przez model value.'],
     'Id, name, wartość logiczna i treść slotu; opcjonalnie rozmiar i stany formularza.',
   ),
   FormButtonGroup: copy(
@@ -346,12 +391,13 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Prezentuje niewielki zestaw opcji obok siebie.',
       'Może działać jako wybór jednokrotny albo przełącznik.',
+      'Bez przekazanego modelu pierwsza opcja active ustala początkową wartość i dane formularza. Jawne puste value pozostawia wybór pusty; późniejsze odznaczenie nie przywraca automatycznie opcji początkowej.',
     ],
-    'Lista options, identyfikatory pola i wartość kontrolowana przez v-model:value.',
+    'Lista options, identyfikatory pola i kontrolowany model value.',
   ),
   FormCheckbox: copy(
     'Klasyczne pole wyboru z obsługą walidacji i stanów formularza.',
-    ['Zbiera odpowiedź tak/nie.', 'Synchronizuje stan przez v-model:value.'],
+    ['Zbiera odpowiedź tak/nie.', 'Synchronizuje stan przez model value.'],
     'Id, name, wartość logiczna oraz tekst etykiety w slocie.',
   ),
   FormContainer: copy(
@@ -359,8 +405,9 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Porządkuje pola w kompletny formularz.',
       'Obsługuje zatwierdzenie, anulowanie i pozycję przycisków.',
+      'Disabled blokuje również zatwierdzenie klawiszem Enter; sizeButton ustala rozmiar obu akcji.',
     ],
-    'Etykieta formularza i jego pola w slocie; opcjonalne podpisy i widoczność akcji.',
+    'Etykieta formularza i jego pola w slocie; opcjonalne podpisy i widoczność akcji. Natywny reset przywraca defaultValue niekontrolowanych pól React. Dla kontrolowanego value lub v-model stan przywraca właściciel formularza; anulowany reset nie zmienia modelu.',
   ),
   FormDatePicker: copy(
     'Pole wyboru daty albo zakresu dat z kalendarzem.',
@@ -372,7 +419,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Przy polu o szerokości nawet 200 px zachowuje czytelny overlay minimum 320 px, o ile pozwala na to viewport, dzięki czemu siatka i nawigacja nie są ściskane.',
       'Korzysta ze wspólnej powierzchni pickerów i zachowuje parytet Vue, React oraz Web Components.',
     ],
-    'Id, name i v-model:value; opcjonalnie tryb zakresu, limity, etykieta i stany pola.',
+    'Id, name i model value; opcjonalnie tryb zakresu, limity, etykieta i stany pola.',
   ),
   FormField: copy(
     'Niskopoziomowa obudowa wspólna dla pól formularza.',
@@ -385,45 +432,54 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   FormFileUpload: copy(
     'Pole przesyłania pojedynczego pliku z walidacją typu i rozmiaru.',
-    ['Pozwala wybrać albo usunąć załącznik.', 'Zwraca dane pliku przez v-model:file.'],
-    'Plik kontrolowany przez v-model:file, dozwolone typy, limit rozmiaru i wariant prezentacji.',
+    [
+      'Pozwala wybrać albo usunąć załącznik.',
+      'Domyślny model to { file: File, image: string } we wszystkich frameworkach. valueMode="file" zachowuje wcześniejszy model React oparty na File.',
+      'Odrzucenie pliku pokazuje błąd i zachowuje poprzedni poprawny wybór.',
+    ],
+    'Plik kontrolowany przez model file, dozwolone typy, limit rozmiaru i wariant prezentacji.',
   ),
   FormFileUploadSimple: copy(
     'Uproszczony uploader jednego lub wielu plików.',
     ['Obsługuje wybór wielu załączników.', 'Waliduje typ, rozmiar i maksymalną liczbę plików.'],
-    'Tablica File przez v-model:files oraz ograniczenia allowedTypes, maxFileSize i maxFiles.',
+    'Tablica File przez model files oraz ograniczenia allowedTypes, maxFileSize i maxFiles.',
   ),
   FormInput: copy(
     'Jednowierszowe pole tekstowe osadzone w kompletnej obudowie formularza.',
     [
       'Zbiera krótkie dane tekstowe.',
+      'Przekazuje natywne atrybuty inputa. Reset przywraca defaultValue w niekontrolowanym React; dla kontrolowanego value lub v-model stan resetuje właściciel formularza.',
       'Obsługuje etykietę, ikony, czyszczenie i komunikaty walidacji.',
     ],
-    'Id, name i tekst przez v-model:value; opcjonalnie etykieta, placeholder i stany pola.',
+    'Id, name i tekst w modelu value; opcjonalnie etykieta, placeholder i stany pola.',
   ),
   FormMultiSelect: copy(
     'Wielokrotny wybór z listą opcji, wyszukiwaniem i zaznaczaniem wszystkich pozycji.',
     [
       'Zbiera wiele wartości w jednym polu.',
+      'FormData zawiera osobny wpis pod name dla każdej wartości opcji. valueMode="label" pozostaje trybem migracji. Wymagane pole podlega natywnej walidacji również bez wyszukiwania.',
       'Obsługuje filtrowanie długiej listy opcji.',
       'Utrzymuje panel w granicach viewportu na wspólnej powierzchni overlayów PEAUI.',
     ],
-    'Lista options i tablica wybranych wartości przez v-model:value oraz standardowe dane pola.',
+    'Lista options i tablica wybranych wartości w modelu value oraz standardowe dane pola.',
   ),
   FormNumber: copy(
     'Pole liczbowe z kontrolą zakresu, kroku i opcjonalnym suwakiem.',
-    ['Zbiera wartości numeryczne.', 'Pilnuje ograniczeń min, max i step.'],
-    'Id, name i liczba przez v-model:value; opcjonalnie zakres, krok, etykieta i stany.',
+    [
+      'Zbiera wartości numeryczne.',
+      'Zatwierdza wpis przy utracie fokusu: pusty wpis daje undefined, krok ustala precyzję, min/max ograniczają wynik także dla zera. Strzałki zmieniają wartość o krok.',
+    ],
+    'Id, name i liczba w modelu value; opcjonalnie zakres, krok, etykieta i stany.',
   ),
   FormPassword: copy(
     'Pole hasła z opcją podglądu, kopiowania i miernikiem siły.',
     ['Bezpiecznie zbiera hasło.', 'Może pomóc w ocenie i obsłudze wprowadzonej wartości.'],
-    'Id, name i hasło przez v-model:value oraz opcjonalne etykiety akcji i ustawienia miernika.',
+    'Id, name i hasło w modelu value oraz opcjonalne etykiety akcji i ustawienia miernika.',
   ),
   FormRadio: copy(
     'Pojedynczy przycisk radiowy przeznaczony do grupy opcji.',
     ['Pozwala wybrać jedną wartość z grupy.', 'Obsługuje walidację i stan disabled.'],
-    'Id, wspólna nazwa grupy, optionValue i bieżąca wartość przez v-model:value.',
+    'Id, wspólna nazwa grupy, optionValue i bieżąca wartość w modelu value.',
   ),
   FormSelect: copy(
     'Pole pojedynczego wyboru z listą rozwijaną i opcjonalnym wyszukiwaniem.',
@@ -432,12 +488,12 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Obsługuje listy wyszukiwalne, własne wpisy i bezpieczne pozycjonowanie przy krawędzi ekranu.',
       'Współdzieli promień, obramowanie, cień, odstęp i responsywne ograniczenia z pozostałymi pickerami.',
     ],
-    'Lista options, id, name i wybrana wartość przez v-model:value.',
+    'Lista options, id, name i wybrana wartość w modelu value.',
   ),
   FormTextarea: copy(
     'Wielowierszowe pole tekstowe z etykietą i licznikiem długości.',
     ['Zbiera dłuższą wypowiedź.', 'Obsługuje limit znaków i komunikaty walidacji.'],
-    'Id, name i tekst przez v-model:value; opcjonalnie liczba wierszy, limit i stany pola.',
+    'Id, name i tekst w modelu value; opcjonalnie liczba wierszy (domyślnie 5), limit i stany pola.',
   ),
   FormYearPicker: copy(
     'Pole wyboru roku albo zakresu lat.',
@@ -449,13 +505,14 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Przy polu o szerokości nawet 200 px utrzymuje czytelny overlay minimum 320 px i bezpiecznie przesuwa go przy krawędzi viewportu.',
       'Korzysta ze wspólnej powierzchni pickerów we wszystkich trzech frameworkach.',
     ],
-    'Id, name i v-model:value; opcjonalnie tryb zakresu, limity lat i stany pola.',
+    'Id, name i model value; opcjonalnie tryb zakresu, limity lat i stany pola.',
   ),
   FormTimePicker: copy(
     'Dostępne pole wyboru czasu z ręcznym wpisywaniem, segmentami oraz panelem opcji.',
     [
       'Synchronizuje tekst i wybór z neutralnym modelem HH:mm[:ss] niezależnym od locale.',
       'Obsługuje format 12/24h, sekundy, jawne kroki, ograniczenia min/max i wartości spoza siatki.',
+      'Wariant segmentowy uczestniczy w natywnej walidacji required, pomija disabled podczas wysyłania i respektuje readonly.',
       'Udostępnia wzorce combobox, listbox i spinbutton z pełną klawiaturą oraz przywracaniem fokusu.',
       'Przy polu o szerokości nawet 200 px utrzymuje czytelny panel minimum 320 px, bez ściskania i nachodzenia kontrolek.',
       'Utrzymuje panel w granicach viewportu, cele dotykowe minimum 44 px i parytet Vue, React oraz Web Components.',
@@ -467,6 +524,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Synchronizuje datę i czas w jednym jawnym modelu bez niejawnej konwersji strefy czasowej.',
       'Obsługuje pojedyncze lub dzielone pole, układ poziomy i pionowy oraz zatwierdzanie natychmiastowe albo przyciskiem.',
+      'Wariant split-input wysyła datę i czas pod wspólnym name: FormData.getAll(name) zwraca [date, time]. Required obejmuje oba pola. React korzysta z tego samego kontraktu zamiast dawnych sufiksów -date i -time.',
       'Waliduje wartość częściową, granice całego terminu, wyłączone terminy i interwały czasu.',
       'Zapewnia siatkę kalendarza i kontrolki spinbutton z pełną klawiaturą, czytelnymi nazwami, wysokością 44 px i minimalnym celem 24 × 24 px także w najwęższym panelu.',
       'Definiuje wspólne dla pickerów stany dnia: hover, bieżącą datę, zaznaczenie i wyłączenie.',
@@ -505,6 +563,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Obsługuje cyfry lub znaki alfanumeryczne, maskowanie, transformację, grupowanie oraz natywne one-time-code.',
       'Rozdziela wklejony tekst, odrzuca niedozwolone znaki i umożliwia bezpieczną edycję środka kodu.',
       'Zapewnia pojedynczy punkt wejścia Tab, nawigację strzałkami, jednoznaczne etykiety komórek i cele dotykowe minimum 44 px.',
+      'Właściwość form wiąże komórki, walidację oraz wysyłaną wartość z podanym formularzem, również poza jego drzewem DOM.',
     ],
     'Id, name i kontrolowany string; opcjonalnie długość, typ, maskowanie, pattern, transformacja, grupowanie, autocomplete i stany formularza.',
   ),
@@ -515,20 +574,25 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Obsługuje tryb swobodny i suggestions-only, obiekty jako wartości oraz anulowalne sugestie asynchroniczne.',
       'Zapewnia combobox/listbox, opisane przyciski usuwania, stabilny fokus z subtelnym dwupikselowym ringiem i pełną obsługę klawiatury.',
       'Panel sugestii korzysta ze wspólnej warstwy popover PEAUI, obsługuje light dismiss i zachowuje szerokość pola.',
+      'Właściwość form wskazuje formularz odpowiedzialny za wartość i walidację. Indeks wybranych kluczy eliminuje powtarzane porównywanie każdej sugestii ze wszystkimi tagami.',
       'Zawija długie wartości bez overflow i zachowuje identyczny wygląd oraz działanie w Vue, React i Web Components.',
     ],
     'Id, name i kontrolowane value/inputValue; opcjonalnie sugestie, provider, separatory, normalizacja, walidacja, klucze, serializacja, limit i stany formularza.',
   ),
   CardPanel: copy(
     'Uniwersalny panel-karta do grupowania powiązanej treści.',
-    ['Buduje wizualne sekcje interfejsu.', 'Oferuje warianty tła, obramowania, rozmiaru i cienia.'],
+    [
+      'Buduje wizualne sekcje interfejsu; domyślnie używa div, efektu hover i wyłączonego cienia.',
+      'Obsługuje dynamiczny nagłówek oraz link as="a" z natywnymi href, target, rel i download we wszystkich frameworkach.',
+      'W Web Components zmiana slot na header albo usunięcie atrybutu slot przenosi ten sam węzeł między nagłówkiem a treścią, zachowując zdarzenia.',
+    ],
     'Treść w domyślnym slocie oraz opcjonalne ustawienia wyglądu i znacznika HTML.',
   ),
   FullscreenContainer: copy(
     'Kontener pozwalający przełączyć zawartość do trybu pełnoekranowego.',
     [
       'Zwiększa obszar pracy dla złożonego widoku.',
-      'Zapewnia akcje wejścia i wyjścia z pełnego ekranu.',
+      'Powiększa zawartość w obrębie strony we wszystkich frameworkach. Tab i Shift+Tab pozostają wewnątrz pełnego ekranu. Escape zamyka widok i przywraca fokus; kilka instancji współdzieli blokadę przewijania.',
     ],
     'Treść w slocie oraz dostępna etykieta i własne podpisy przycisków.',
   ),
@@ -536,18 +600,24 @@ export const componentCopy: Record<string, ComponentCopy> = {
     'Element siatki kontrolujący szerokość i opcjonalne zagnieżdżenie kolejnej siatki.',
     [
       'Rozmieszcza pojedynczy fragment treści w gridzie.',
-      'Pozwala określić liczbę zajmowanych kolumn.',
+      'Domyślnie używa wewnętrznej siatki z 2 kolumnami i gap=6. columns=0 dobiera kolumny do dzieci; colspan określa zajęte kolumny.',
     ],
     'Treść slotu oraz colspan, columns, gap i flaga grid.',
   ),
   GridSection: copy(
     'Responsywna sekcja oparta na CSS Grid.',
-    ['Układa elementy w kolumnach.', 'Zapewnia spójne odstępy pomiędzy dziećmi.'],
+    [
+      'Domyślnie układa elementy w 4 kolumnach z gap=6 we wszystkich frameworkach.',
+      'Obsługuje dynamiczne dodatkowe kontrolki i spójne odstępy pomiędzy dziećmi.',
+    ],
     'Elementy w domyślnym slocie oraz liczba kolumn i odstęp.',
   ),
   PageLayout: copy(
     'Główny szkielet strony ze slotami na nagłówek, treść i elementy pomocnicze.',
-    ['Ujednolica układ widoków aplikacji.', 'Może utrzymywać nagłówek podczas przewijania.'],
+    [
+      'Ujednolica układ widoków z semantycznym header, main i footer; ariaLabel nazywa nagłówek.',
+      'Może utrzymywać nagłówek podczas przewijania.',
+    ],
     'Sekcje strony przekazane w slotach oraz opcjonalna dostępna etykieta i sticky header.',
   ),
   SectionDivider: copy(
@@ -557,8 +627,12 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   Breadcrumbs: copy(
     'Okruszki nawigacyjne pokazujące położenie bieżącej strony w hierarchii.',
-    ['Pomagają zrozumieć strukturę serwisu.', 'Pozwalają szybko przejść do poziomów nadrzędnych.'],
-    'Tablica items z etykietami i ścieżkami oraz opcjonalny separator.',
+    [
+      'Pomagają zrozumieć strukturę serwisu.',
+      'Pozwalają szybko przejść do poziomów nadrzędnych.',
+      'Renderują etykiety jako tekst, bez interpretowania HTML z danych routingu.',
+    ],
+    'Tablica items z etykietami i ścieżkami oraz opcjonalny separator. Na wąskim ekranie przycisk otwiera listę poziomów nadrzędnych; wybór przekazuje oryginalny element items. Web Component zachowuje natywną semantykę nawigacji.',
   ),
   ListLimitControl: copy(
     'Kontrolka wyboru liczby elementów prezentowanych na stronie.',
@@ -570,8 +644,12 @@ export const componentCopy: Record<string, ComponentCopy> = {
   ),
   NavigationCard: copy(
     'Karta nawigacyjna z tytułem, opisem i opcjonalnym odnośnikiem.',
-    ['Promuje ważne miejsce lub funkcję.', 'Łączy objaśnienie z dużym obszarem aktywacji.'],
-    'Tytuł i opis, a opcjonalnie ścieżka, rozmiar, wariant i ariaLabel.',
+    [
+      'Promuje ważne miejsce lub funkcję.',
+      'Łączy objaśnienie z dużym obszarem aktywacji.',
+      'Renderuje opis jako tekst, bez interpretowania HTML z danych.',
+    ],
+    'Tytuł i opis, a opcjonalnie ścieżka, rozmiar, wariant i ariaLabel. Domyślny rozmiar tytułu to s. Link przyjmuje natywne target, rel i download także w React.',
   ),
   NavigationDisclosureCard: copy(
     'Karta nawigacyjna z rozwijaną treścią.',
@@ -581,7 +659,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
   NavigationIconCard: copy(
     'Kompaktowa karta-link oparta na ikonie i krótkim tekście.',
     ['Tworzy wizualny skrót do funkcji.', 'Zapewnia duży, czytelny obszar kliknięcia.'],
-    'Nazwa ikony, tekst, ścieżka i opcjonalna dostępna etykieta.',
+    'Nazwa ikony, tekst, ścieżka i opcjonalna dostępna etykieta oraz natywne target, rel i download. Pusta ścieżka oznacza niedostępny link: zachowuje nazwę i stan aria-disabled, nie ma href i pozostaje poza kolejnością Tab.',
   ),
   NavigationLink: copy(
     'Spójny link nawigacyjny PEAUI z wariantami rozmiaru i koloru.',
@@ -589,7 +667,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Przenosi użytkownika pod wskazaną ścieżkę.',
       'Stylizuje tekst lub treść przekazaną w slocie.',
     ],
-    'Ścieżka, treść slotu i opcjonalne ariaLabel, size oraz variant.',
+    'Ścieżka, treść slotu i opcjonalne ariaLabel, size oraz variant. Domyślny size to s we wszystkich trzech implementacjach. Natywne target, rel i download trafiają na link również w React.',
   ),
   NavigationStepper: copy(
     'Pozioma nawigacja po krokach procesu ze statusami i obsługą klawiatury.',
@@ -597,35 +675,44 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Pokazuje postęp wieloetapowego procesu.',
       'Pozwala wracać do ukończonych lub aktywnych kroków.',
     ],
-    'Tablica options opisująca numery, etykiety i statusy kroków.',
+    'Tablica options opisująca numery, etykiety i statusy kroków. Strzałki lewo/prawo oraz Home/End przenoszą fokus między dostępnymi krokami. Przyciski przewijania respektują logiczny kierunek RTL i reagują również na zmianę szerokości samego kontenera.',
   ),
   NavigationTabs: copy(
     'Pasek zakładek do przełączania pomiędzy powiązanymi widokami.',
     ['Organizuje treść w równoległe sekcje.', 'Emituje wybór aktywnej zakładki.'],
-    'Tablica tabs i dostępna etykieta całej nawigacji.',
+    'Tablica tabs i dostępna etykieta całej nawigacji. Strzałki lewo/prawo oraz Home/End omijają wyłączone pozycje; Enter lub Spacja wybiera pozycję. Zdarzenie wyboru przekazuje oryginalny obiekt zakładki z key w Vue, React i Web Components.',
   ),
   PaginationControl: copy(
     'Nawigacja stronicowania z wyborem poprzedniej, następnej i konkretnej strony.',
-    ['Dzieli długie listy na strony.', 'Synchronizuje aktywną stronę przez v-model:page.'],
+    ['Dzieli długie listy na strony.', 'Synchronizuje aktywną stronę przez model page.'],
     'Łączna liczba stron, dostępna etykieta i bieżąca strona.',
   ),
   DrawerPanel: copy(
     'Panel boczny wyświetlany ponad aktualną zawartością.',
     [
       'Pokazuje dodatkowy formularz lub szczegóły bez zmiany strony.',
-      'Kontroluje widoczność przez v-model:open.',
+      'Kontroluje widoczność przez model open.',
     ],
     'Stan otwarcia, ariaLabel oraz treść przekazana w slotach.',
+  ),
+  GuidedTour: copy(
+    'Przewodnik krok po kroku wskazujący elementy interfejsu i objaśniający kolejne działania.',
+    [
+      'Zarządza przejściami między krokami, pozycją panelu i przywracaniem fokusu.',
+      'Escape najpierw zamyka zagnieżdżony popover lub dialog. Tab pozostaje w przewodniku; zagnieżdżony natywny dialog modalny zarządza własnym fokusem.',
+      'Respektuje preventDefault w kontrolkach potomnych i lokalizowane etykiety akcji.',
+    ],
+    'Tablica steps ze stabilnym id, celem i treścią; kontrolowane open i step oraz opcjonalne ustawienia pozycjonowania, maski, nawigacji i obsługi brakującego celu.',
   ),
   InfoTooltip: copy(
     'Dymek z krótką informacją kontekstową.',
     ['Objaśnia ikonę, etykietę albo pojęcie.', 'Obsługuje różne położenia i warianty.'],
-    'Treść wyzwalacza i dymka w slotach oraz placement, variant i disabled.',
+    'Treść wyzwalacza i dymka w slotach oraz placement, variant i disabled. Hover i fokus pokazują opis powiązany przez aria-describedby; Escape zamyka go bez przenoszenia fokusu. Dymek pozostaje dostępny pod kursorem. Nie umieszczaj w nim interaktywnych kontrolek.',
   ),
   ModalDialog: copy(
     'Modalne okno dialogowe oparte na natywnym elemencie dialog.',
-    ['Skupia uwagę na krótkim zadaniu lub decyzji.', 'Zarządza otwarciem przez v-model:open.'],
-    'Stan otwarcia, dostępna etykieta oraz nagłówek i treść w slotach.',
+    ['Skupia uwagę na krótkim zadaniu lub decyzji.', 'Zarządza otwarciem przez model open.'],
+    'Stan otwarcia, dostępna etykieta oraz nagłówek i treść w slotach. Zmiana atrybutu slot w Web Components przenosi istniejący węzeł między nagłówkiem a treścią, zachowując jego zdarzenia.',
   ),
   PopoverButton: copy(
     'Przycisk otwierający zakotwiczone menu albo niewielki panel.',
@@ -633,7 +720,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Łączy wyzwalacz i popover w jedną kontrolkę.',
       'Obsługuje położenie oraz dopasowanie szerokości.',
     ],
-    'Treść przycisku i popovera w slotach oraz ustawienia wyglądu, placement i popupType.',
+    'Treść przycisku i popovera w slotach oraz ustawienia wyglądu, placement i popupType. Widoczny tekst nazywa przycisk także w Web Components. React wiąże dostępną nazwę panelu z wyzwalaczem. W panelu dialog Tab przechodzi pomiędzy kontrolkami bez zamykania. Hydratacja zachowuje zamknięty stan i natywne otwieranie panelu.',
   ),
   PopoverOverlayer: copy(
     'Niskopoziomowa warstwa popover pozycjonowana względem własnego wyzwalacza.',
@@ -642,7 +729,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Kontroluje pozycję, szerokość i odwrócenie panelu przy pionowej krawędzi viewportu.',
       'Zapewnia wspólną powierzchnię, odstęp i wymuszone kolory dla wszystkich opartych na nim pickerów.',
     ],
-    'Wyzwalacz i zawartość w slotach oraz placement, popupType i opcjonalne klasy.',
+    'Wyzwalacz i zawartość w slotach oraz placement, popupType i opcjonalne klasy. Natywny przycisk w slocie przejmuje aria-controls i aria-expanded; otaczający element nie tworzy drugiej kontrolki. Escape przywraca fokus do wyzwalacza, a Tab w dialogu przechodzi pomiędzy jego kontrolkami. Atrybut popover pozostaje zgodny pomiędzy SSR a hydratacją.',
   ),
 };
 

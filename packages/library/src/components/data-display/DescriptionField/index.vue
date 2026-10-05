@@ -44,7 +44,7 @@ const tooltipTestId = computed(() => (dataTestId ? `${dataTestId}-tooltip` : und
       :class="`${classNameComponent}__label`"
       :data-testid="labelTestId"
     >
-      <span v-html="label" />
+      <span>{{ label }}</span>
 
       <InfoTooltip v-if="slots.hint" placement="right" :data-test-id="tooltipTestId">
         <svg

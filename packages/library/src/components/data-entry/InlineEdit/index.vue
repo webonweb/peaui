@@ -67,7 +67,7 @@ import FormSelect from '@/components/form/FormSelect/index.vue';
 import FormTextarea from '@/components/form/FormTextarea/index.vue';
 import MessageText from '@/components/feedback/MessageText/index.vue';
 import { UIKIT_NAME } from '@/constants';
-import { computed, nextTick, ref, useAttrs, useId, useSlots, watch, type StyleValue } from 'vue';
+import { computed, nextTick, ref, useAttrs, useId, watch, type StyleValue } from 'vue';
 
 import {
   areInlineEditValuesEqual,
@@ -113,7 +113,6 @@ const valueModel = defineModel<InlineEditValue>('value', { required: true });
 const editingModel = defineModel<boolean>('editing', { default: false });
 
 const attrs = useAttrs();
-const slots = useSlots();
 const generatedId = useId().replaceAll(':', '');
 const root = `${UIKIT_NAME}-inline-edit`;
 const editorId = `${root}-${generatedId}-editor`;
@@ -122,6 +121,7 @@ const errorId = `${editorId}-error`;
 const statusId = `${editorId}-status`;
 const triggerReference = ref<HTMLElement | { $el?: HTMLElement }>();
 const editorReference = ref<HTMLElement>();
+type NumberEditorValue = InstanceType<typeof FormNumber>['$props']['value'];
 const draft = ref<InlineEditValue>(valueModel.value);
 const validationError = ref<string>();
 
@@ -318,6 +318,7 @@ function handleEditorKeydown(event: KeyboardEvent): void {
     :style="rootStyle"
   >
     <template v-if="!editingModel">
+      <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -- The adjacent native Edit button provides keyboard activation; clicking the text is a pointer shortcut. -->
       <span
         :class="`${root}__display`"
         :data-activatable="activation !== 'button' || undefined"
@@ -373,7 +374,7 @@ function handleEditorKeydown(event: KeyboardEvent): void {
           :is-range-visible="editorProps.isRangeVisible === true"
           :name="editorId"
           :readonly="readonly"
-          :value="draft as number | string | undefined"
+          :value="draft as NumberEditorValue"
           @update:value="updateDraft"
         />
 
@@ -413,7 +414,7 @@ function handleEditorKeydown(event: KeyboardEvent): void {
 
         <MessageText
           v-if="activeError"
-          :id="editorId"
+          :id="errorId"
           :class="`${root}__error`"
           role="alert"
           size="xs"

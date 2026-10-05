@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { createSSRApp, nextTick } from 'vue';
+import { renderToString } from 'vue/server-renderer';
 import Component from './index.vue';
 
 vi.mock('@/constants', () => ({ UIKIT_NAME: 'uikit' }));
@@ -9,18 +10,18 @@ vi.mock('./styles.scss', () => ({}));
 
 function patchDialogInstance(dialog: HTMLDialogElement) {
   Object.defineProperty(dialog, 'showModal', {
-    value: vi.fn(function (this: any) {
+    value: vi.fn(function (this: HTMLDialogElement) {
       this.open = true;
     }),
     configurable: true,
   });
   Object.defineProperty(dialog, 'close', {
-    value: vi.fn(function (this: any) {
+    value: vi.fn(function (this: HTMLDialogElement) {
       this.open = false;
     }),
     configurable: true,
   });
-  return dialog as any;
+  return dialog;
 }
 
 describe('DrawerPanel (index.vue)', () => {
@@ -31,20 +32,32 @@ describe('DrawerPanel (index.vue)', () => {
       finished: Promise.resolve(),
       cancel: vi.fn(),
       play: vi.fn(),
-    })) as any;
+    })) as unknown as typeof HTMLElement.prototype.animate;
 
-    vi.stubGlobal(
-      'matchMedia',
-      () =>
-        ({
-          matches: true,
-          addListener: vi.fn(),
-          removeListener: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-        }) as any,
-    );
+    vi.stubGlobal('matchMedia', () => ({
+      matches: true,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+  });
+
+  it('renders during SSR without a window global', async () => {
+    const clientWindow = globalThis.window;
+
+    try {
+      vi.stubGlobal('window', undefined);
+      const html = await renderToString(
+        createSSRApp(Component, { ariaLabel: 'Drawer', open: false }),
+      );
+
+      expect(html).toContain('<dialog');
+      expect(html).toContain('aria-label="Drawer"');
+    } finally {
+      vi.stubGlobal('window', clientWindow);
+    }
   });
 
   it('opens when open changes to true (without dialog.showModal crash)', async () => {

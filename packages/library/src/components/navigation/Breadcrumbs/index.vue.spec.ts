@@ -50,7 +50,7 @@ const RouterLinkStub = defineComponent({
 
 type BreadcrumbItem = {
   key?: string;
-  label: string | ((router: any) => string);
+  label: string | ((router: Record<string, unknown>) => string);
   path?: string;
 };
 
@@ -78,7 +78,7 @@ function factory(
     props: {
       items,
       ...props,
-    } as any,
+    },
     global: {
       components: options?.withRouterLink ? { RouterLink: RouterLinkStub } : undefined,
       mocks: {
@@ -361,5 +361,13 @@ describe('Breadcrumbs (index.vue)', () => {
 
     expect(wrapper.emitted('on:navigate')?.length).toBe(1);
     expect(menu.find('[aria-current="page"]').text()).toBe('Current page');
+  });
+
+  it('does not interpret HTML from breadcrumb labels', () => {
+    const label = '<img src=x onerror="alert(1)">Current';
+    const wrapper = factory({ items: [{ key: 'current', label }] });
+
+    expect(wrapper.get('.uikit-breadcrumbs__content [aria-current="page"]').text()).toBe(label);
+    expect(wrapper.find('img').exists()).toBe(false);
   });
 });

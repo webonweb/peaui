@@ -10,7 +10,6 @@ import type {
   TimePickerOption,
   TimePickerParser,
   TimePickerParts,
-  TimePickerPeriod,
   TimePickerSegment,
 } from './time-picker.shared';
 
@@ -95,6 +94,8 @@ export interface FormTimePickerProps {
 </script>
 
 <script setup lang="ts">
+import { getRequiredValueAttributes, focusInvalidValue } from '@/helpers/form-validation.helper';
+import { useFormControlReset } from '@/composables/useFormControlReset';
 import { UIKIT_NAME } from '@/constants';
 import {
   computed,
@@ -207,8 +208,7 @@ const attrs = useAttrs();
 const slots = useSlots();
 const classNameComponent = `${UIKIT_NAME}-form-time-picker`;
 const componentInstance = getCurrentInstance() as
-  | ({ ce?: HTMLElement; isCE?: boolean } & object)
-  | null;
+  ({ ce?: HTMLElement; isCE?: boolean } & object) | null;
 const hasSlot = (name: string): boolean =>
   Boolean(slots[name]) ||
   (componentInstance?.isCE === true &&
@@ -224,6 +224,11 @@ const popoverOpen = ref(false);
 const popoverPlacement = ref<FormTimePickerPlacement>(props.placement);
 const digitBuffer = ref<{ segment: TimePickerSegment; text: string; timestamp: number }>();
 let viewportListenersAttached = false;
+useFormControlReset(triggerReference, () => {
+  invalidReason.value = undefined;
+  digitBuffer.value = undefined;
+  syncFromModel();
+});
 
 const formatContext = computed<TimePickerFormatContext>(() => ({
   format: props.format,
@@ -555,13 +560,6 @@ function getSegmentLabel(segment: TimePickerSegment): string {
   }[segment];
 }
 
-function getSegmentStep(segment: TimePickerSegment): number {
-  if (segment === 'hour') return validationOptions.value.hourStep;
-  if (segment === 'minute') return validationOptions.value.minuteStep;
-  if (segment === 'second') return validationOptions.value.secondStep;
-  return 1;
-}
-
 function focusSegment(index: number): void {
   const segmentElements = Array.from(
     triggerReference.value?.querySelectorAll<HTMLElement>(
@@ -793,8 +791,11 @@ function getSegmentGroupBindings(fieldProps: Record<string, unknown>): Record<st
               type="text"
               role="combobox"
               aria-autocomplete="none"
+              :aria-controls="panelId"
+              :aria-expanded="popoverOpen"
+              aria-haspopup="dialog"
               autocomplete="off"
-              autocapitalize="off"
+              autocapitalize="none"
               :class="[fieldProps.class, `${classNameComponent}__input`]"
               :data-testid="elementTestId"
               data-type="time-picker"
@@ -858,7 +859,25 @@ function getSegmentGroupBindings(fieldProps: Record<string, unknown>): Record<st
               >
                 <SvgIcon name="clock" aria-hidden="true" />
               </button>
-              <input type="hidden" :name="props.name" :value="value" />
+              <input
+                type="hidden"
+                :name="props.name"
+                :value="value"
+                :disabled="props.disabled || props.loading"
+              />
+              <input
+                v-bind="
+                  getRequiredValueAttributes(
+                    Boolean(value),
+                    props.required,
+                    props.disabled || props.loading,
+                    props.readonly,
+                  )
+                "
+                @invalid="
+                  focusInvalidValue($event, triggerReference?.querySelector('[role=spinbutton]'))
+                "
+              />
             </div>
           </template>
 

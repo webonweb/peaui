@@ -130,8 +130,10 @@ describe('EditableColumn.vue', () => {
     await flushPromises();
 
     expect(onUpdate).not.toHaveBeenCalled();
-    expect((wrapper.vm as any).$?.setupState?.isEditActive).toBe(true);
-    expect(wrapper.text()).not.toContain('Pole jest wymagane');
+    expect(wrapper.find('button[aria-label="Zapisz zmiane w kolumnie"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Pole jest wymagane');
+    const input = wrapper.get('input[data-type="input"]');
+    expect(input.attributes('aria-describedby')).toBeTruthy();
   }, 15000);
 
   it('renders select field for editable select column', async () => {
@@ -178,7 +180,7 @@ describe('EditableColumn.vue', () => {
   }, 15000);
 
   it('resolves select options from function with current row record', async () => {
-    const options = vi.fn((currentRecord: Record<string, any>) =>
+    const options = vi.fn((currentRecord: Record<string, unknown>) =>
       Number(currentRecord.limit) >= 10
         ? [
             { label: 'Formalny', value: 'formalny' },
@@ -228,6 +230,8 @@ describe('EditableColumn.vue', () => {
       id: '1',
       limit: 12,
     });
+    await wrapper.get('input[data-type="select"]').trigger('keydown', { key: 'ArrowDown' });
+    await flushPromises();
     expect(wrapper.findAll('[role="option"]')).toHaveLength(2);
     expect(wrapper.text()).toContain('Formalny');
     expect(wrapper.text()).toContain('Techniczny');
@@ -348,7 +352,7 @@ describe('EditableInline.vue', () => {
     expect(wrapper.text()).not.toContain('Pole jest wymagane');
   });
 
-  it('renders select field for inline editable select column and emits selected option label', async () => {
+  it('renders select field for inline editable select column and emits selected option value', async () => {
     const wrapper = mount(EditableInline, {
       props: {
         column: {
@@ -386,6 +390,8 @@ describe('EditableInline.vue', () => {
 
     expect(wrapper.find('input[data-type="select"]').exists()).toBe(true);
 
+    await wrapper.get('input[data-type="select"]').trigger('keydown', { key: 'ArrowDown' });
+    await flushPromises();
     const options = wrapper.findAll('[role="option"]');
 
     await options[1]!.trigger('mousedown');
@@ -395,7 +401,7 @@ describe('EditableInline.vue', () => {
 
     expect(wrapper.emitted('on:update')?.at(-1)).toEqual([
       {
-        category: 'Techniczny',
+        category: 'techniczny',
       },
       {
         key: 'category',
@@ -416,7 +422,7 @@ describe('EditableInline.vue', () => {
   });
 
   it('resolves inline select options from function with current row record', async () => {
-    const options = vi.fn((currentRecord: Record<string, any>) =>
+    const options = vi.fn((currentRecord: Record<string, unknown>) =>
       Number(currentRecord.limit) >= 10
         ? [
             { label: 'Formalny', value: 'formalny' },
@@ -463,6 +469,8 @@ describe('EditableInline.vue', () => {
       id: '1',
       limit: 12,
     });
+    await wrapper.get('input[data-type="select"]').trigger('keydown', { key: 'ArrowDown' });
+    await flushPromises();
     expect(wrapper.findAll('[role="option"]')).toHaveLength(2);
     expect(wrapper.text()).toContain('Formalny');
     expect(wrapper.text()).toContain('Techniczny');

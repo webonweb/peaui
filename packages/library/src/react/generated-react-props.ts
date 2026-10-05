@@ -2,6 +2,16 @@
 // Źródłem kontraktu są publiczne propsy, modele, zdarzenia i sloty komponentów Vue.
 
 import type {
+  FormFileUploadValue,
+  FileUploadValueMode,
+} from '../components/form/FormFileUpload/file-upload.shared';
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ImgHTMLAttributes,
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+  HTMLAttributes,
   CSSProperties,
   FocusEvent as ReactFocusEvent,
   FocusEventHandler,
@@ -45,6 +55,7 @@ export type ReactComponentName =
   | 'TransferList'
   | 'EmptyState'
   | 'MessageText'
+  | 'NotificationCenter'
   | 'ProgressIndicator'
   | 'SkeletonLoading'
   | 'SpinnerLoader'
@@ -82,6 +93,7 @@ export type ReactComponentName =
   | 'ScrollArea'
   | 'SectionDivider'
   | 'Breadcrumbs'
+  | 'CommandPalette'
   | 'ContextMenu'
   | 'DropdownMenu'
   | 'ListLimitControl'
@@ -94,11 +106,16 @@ export type ReactComponentName =
   | 'NavigationTabs'
   | 'PaginationControl'
   | 'DrawerPanel'
+  | 'GuidedTour'
   | 'InfoTooltip'
   | 'ModalDialog'
   | 'PopoverButton'
   | 'PopoverOverlayer';
 
+import type { SelectLabels, SelectValueMode } from '../components/form/FormSelect/select.shared';
+export type PeauiSelectLabels = SelectLabels;
+
+import type { TableColumn } from '../components/data-display/TableList/table.types';
 export type PeauiReactBaseProps = {
   children?: ReactNode;
   className?: string;
@@ -216,10 +233,7 @@ export type PeauiFormPinInputInvalidDetail = {
   index: number;
 };
 export type PeauiFormPinInputTransform =
-  | 'none'
-  | 'uppercase'
-  | 'lowercase'
-  | ((character: string, index: number) => string);
+  'none' | 'uppercase' | 'lowercase' | ((character: string, index: number) => string);
 export type PeauiFormTagsInputItem = {
   id?: string | number;
   label: string;
@@ -276,21 +290,12 @@ export type PeauiContextMenuOpenDetail = {
   y: number;
 };
 export type PeauiContextMenuCloseReason =
-  | 'programmatic'
-  | 'dismiss'
-  | 'select'
-  | 'scroll'
-  | 'target-removed'
-  | 'disabled';
+  'programmatic' | 'dismiss' | 'select' | 'scroll' | 'target-removed' | 'disabled';
 export type PeauiContextMenuLongPressCancelReason =
-  | 'move'
-  | 'release'
-  | 'pointer-cancel'
-  | 'disabled'
-  | 'target-removed';
+  'move' | 'release' | 'pointer-cancel' | 'disabled' | 'target-removed';
 export type PeauiOption = {
   id?: string;
-  key?: string;
+  key?: string | number;
   label: string;
   value?: unknown;
   active?: boolean;
@@ -303,17 +308,7 @@ export type PeauiOption = {
   status?: 'default' | 'complete' | 'during' | 'disabled' | 'hidden';
   additional?: ReactNode;
 };
-export type PeauiTableColumn = PeauiRecord & {
-  key: string;
-  label?: string;
-  canSort?: boolean;
-  sortable?: boolean;
-  type?: string;
-  actionName?: string;
-  actionLabel?: string;
-  inline?: boolean;
-  manage?: PeauiRecord;
-};
+export type PeauiTableColumn = Omit<TableColumn, 'label'> & { label?: string; sortable?: boolean };
 export type PeauiTreeNode = PeauiRecord & {
   id?: string | number;
   label?: string;
@@ -324,6 +319,10 @@ export type PeauiLegacyRangeValue<Value> = { from?: Value; to?: Value; start?: V
 export type PeauiPickerRangeValue<Value> = [Value, Value] | PeauiLegacyRangeValue<Value>;
 /** @deprecated Prefer PeauiPickerRangeValue for picker models. */
 export type PeauiRangeValue<Value> = PeauiLegacyRangeValue<Value>;
+
+export type PeauiFileUploadModel =
+  | { valueMode?: 'object'; onFileChange?: (value: FormFileUploadValue | undefined) => void }
+  | { valueMode: 'file'; onFileChange?: (value: File | undefined) => void };
 
 export type ReactComponentPropsMap = {
   ImageView: PeauiReactBaseProps & {
@@ -397,8 +396,7 @@ export type ReactComponentPropsMap = {
     overflowMode?: 'count' | 'popover' | 'none';
     /** Pole lub funkcja zwracająca stabilny klucz elementu. */
     itemKey?:
-      | keyof PeauiAvatarGroupItem
-      | ((item: PeauiAvatarGroupItem, index: number) => string | number);
+      keyof PeauiAvatarGroupItem | ((item: PeauiAvatarGroupItem, index: number) => string | number);
     /** Dostępna nazwa listy widocznych osób. */
     ariaLabel?: string;
     /** Wyłącza wszystkie akcje grupy. */
@@ -413,9 +411,9 @@ export type ReactComponentPropsMap = {
     defaultOpen?: boolean;
     /** Callback React wywoływany po zmianie właściwości open. */
     onOpenChange?: (value: boolean) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    /** Zwraca wybraną osobę oraz jej indeks w źródłowej tablicy. */
     onSelect?: (item: PeauiAvatarGroupItem, index: number) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”. */
+    /** Informuje o aktywowaniu licznika nadmiaru. */
     onOverflowClick?: (items: PeauiAvatarGroupItem[]) => void;
     /** Treść osadzana w nazwanym slocie „item”. */
     renderItem?: (item: PeauiAvatarGroupItem, index: number) => ReactNode;
@@ -467,6 +465,10 @@ export type ReactComponentPropsMap = {
     isNavigationVisible?: boolean;
     /** Konfiguruje właściwość „with animation” komponentu. */
     withAnimation?: boolean;
+    /** Konfiguruje właściwość „pause label” komponentu. */
+    pauseLabel?: string;
+    /** Konfiguruje właściwość „resume label” komponentu. */
+    resumeLabel?: string;
   };
   CounterBadge: PeauiReactBaseProps & {
     /** Bieżąca wartość kontrolowana przez v-model. */
@@ -592,6 +594,10 @@ export type ReactComponentPropsMap = {
     records?: PeauiRecord[];
     /** Liczba rekordów wyświetlanych na jednej stronie. */
     rowsPerPage?: number;
+    /** Render one client-side page of records. Leave false for server-side pagination. */
+    paginate?: boolean;
+    /** Konfiguruje właściwość „pagination label” komponentu. */
+    paginationLabel?: string;
     /** Konfiguruje właściwość „current checked row” komponentu. */
     currentCheckedRow?: number | string;
     /** Konfiguruje właściwość „rows total” komponentu. */
@@ -616,13 +622,19 @@ export type ReactComponentPropsMap = {
     scroll?: boolean;
     /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
     dataTestId?: string;
+    /** Aktualna strona kontrolowana przez v-model:page. */
+    page?: number;
+    /** Początkowa niekontrolowana wartość właściwości page. */
+    defaultPage?: number;
+    /** Callback React wywoływany po zmianie właściwości page. */
+    onPageChange?: (value: number) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:action”. */
     onAction?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”. */
     onCreateRecord?: (...args: unknown[]) => void;
-    /** Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord. */
+    /** Prefer this correctly spelled event for row double-clicks. */
     onRowDoubleClick?: (...args: unknown[]) => void;
-    /** Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”. */
+    /** @deprecated Use `on:dblclick`. Kept for backwards compatibility. */
     onDbclick?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”. */
     onSelectRow?: (...args: unknown[]) => void;
@@ -636,6 +648,8 @@ export type ReactComponentPropsMap = {
     onSubmit?: (...args: unknown[]) => void;
     /** Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość. */
     onChangeValue?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „page”; przekaż nową wartość do v-model:page. */
+    onUpdatePage?: (...args: unknown[]) => void;
     /** Renderuje niestandardową zawartość komórki tabeli. */
     renderCell?: (columnKey: string, record: PeauiRecord, rowIndex: number) => ReactNode;
     /** Treść osadzana w nazwanym slocie „details-record”. */
@@ -646,13 +660,13 @@ export type ReactComponentPropsMap = {
     additionalRow?: ReactNode;
   };
   TableListFooter: PeauiReactBaseProps & {
-    /** Konfiguruje właściwość „rows number” komponentu. */
+    /** Total record count used to calculate the visible range and page count. */
     rowsNumber: number;
     /** Liczba rekordów wyświetlanych na jednej stronie. */
     rowsPerPage: number;
     /** Numer aktualnie wybranej strony. */
     page: number;
-    /** Łączna liczba elementów. */
+    /** Total page count; zero suppresses pagination. Pages are derived from rowsNumber/rowsPerPage. */
     total: number;
     /** Konfiguruje właściwość „under” komponentu. */
     under?: boolean;
@@ -702,6 +716,8 @@ export type ReactComponentPropsMap = {
     onCreate?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:export”. */
     onExport?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „filters-open”; przekaż nową wartość do v-model:filters-open. */
+    onUpdateFiltersOpen?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „filters-drawer”. */
     filtersDrawer?: ReactNode;
     /** Treść osadzana w nazwanym slocie „additional-buttons”. */
@@ -750,6 +766,8 @@ export type ReactComponentPropsMap = {
     onTreeChange?: (value: PeauiTreeNode | PeauiTreeNode[]) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „tree”; przekaż nową wartość do v-model:tree. */
+    onUpdateTree?: (...args: unknown[]) => void;
   };
   VirtualList: PeauiReactBaseProps & {
     /** Kolekcja danych. W DOM pozostaje wyłącznie widoczny zakres z overscanem. */
@@ -765,7 +783,7 @@ export type ReactComponentPropsMap = {
     /** Pole lub funkcja zwracająca domyślną widoczną etykietę. */
     itemLabel?: unknown;
     /** Semantyka neutralnej listy albo interaktywnego listboxa. */
-    semanticRole?: unknown;
+    semanticRole?: 'list' | 'listbox';
     /** Dostępna nazwa viewportu i listboxa. */
     ariaLabel?: string;
     /** Pokazuje początkowy albo przyrostowy stan ładowania. */
@@ -788,16 +806,18 @@ export type ReactComponentPropsMap = {
     defaultActiveIndex?: number | null;
     /** Callback React wywoływany po zmianie właściwości activeIndex. */
     onActiveIndexChange?: (value: number | null) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „visibleRangeChange”. */
+    /** Emitowane po zmianie renderowanego i rzeczywiście widocznego zakresu. */
     onVisibleRangeChange?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „reachEnd”. */
+    /** Emitowane raz dla danego rozmiaru kolekcji po dotarciu do końca z hasMore. */
     onReachEnd?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „scroll”. */
+    /** Emitowane podczas przewijania po obliczeniu nowego zakresu. */
     onScroll?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „itemFocus”. */
+    /** Emitowane, gdy element albo jego interaktywny potomek otrzyma fokus. */
     onItemFocus?: (...args: unknown[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „measureError”. */
+    /** Emitowane dla niepoprawnych parametrów pomiaru zastąpionych bezpiecznym fallbackiem. */
     onMeasureError?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „activeIndex”; przekaż nową wartość do v-model:activeIndex. */
+    onUpdateActiveIndex?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „item”. */
     item?: ReactNode;
     /** Treść osadzana w nazwanym slocie „empty”. */
@@ -907,19 +927,19 @@ export type ReactComponentPropsMap = {
   };
   InlineEdit: PeauiReactBaseProps & {
     /** Rodzaj wbudowanego edytora albo własna kontrolka ze slotu editor. */
-    editor?: unknown;
+    editor?: 'text' | 'number' | 'select' | 'textarea' | 'custom';
     /** Właściwości przekazywane do istniejącego komponentu formularza. */
     editorProps?: Record<string, unknown>;
     /** Dodatkowy sposób rozpoczęcia edycji; przycisk pozostaje zawsze dostępny. */
-    activation?: unknown;
+    activation?: 'button' | 'click' | 'dblclick';
     /** Widoczne przyciski, skróty klawiaturowe albo oba mechanizmy zapisu. */
-    actions?: unknown;
+    actions?: 'buttons' | 'keyboard' | 'both';
     /** Układ dopasowany do tekstu lub zajmujący pełną szerokość. */
-    display?: unknown;
+    display?: 'inline' | 'block';
     /** Zachowanie klawisza Tab podczas edycji. */
-    tabBehavior?: unknown;
+    tabBehavior?: 'commit' | 'cancel' | 'stay';
     /** Zapis lokalny albo asynchroniczny sterowany przez aplikację. */
-    saveMode?: unknown;
+    saveMode?: 'sync' | 'async';
     /** Synchroniczna walidacja szkicu przed zapisem. */
     validate?: unknown;
     /** Oczekiwanie na zewnętrzny zapis. */
@@ -954,10 +974,28 @@ export type ReactComponentPropsMap = {
     defaultEditing?: boolean;
     /** Callback React wywoływany po zmianie właściwości editing. */
     onEditingChange?: (value: boolean) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „edit”. */
+    onEdit?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „save”. */
+    onSave?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „cancel”. */
+    onCancel?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „invalid”. */
+    onInvalid?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „draftChange”. */
+    onDraftChange?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „editing”; przekaż nową wartość do v-model:editing. */
+    onUpdateEditing?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „empty”. */
     empty?: ReactNode;
   };
   InputSlider: PeauiReactBaseProps & {
+    /** Unikalny identyfikator elementu w dokumencie. */
+    id?: string;
+    /** Identyfikator natywnego formularza będącego właścicielem kontrolki. */
+    form?: string;
     /** Nazwa pola używana przez formularz lub nazwa zasobu. */
     name: string;
     /** Dostępna nazwa elementu przekazywana przez aria-label. */
@@ -972,6 +1010,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: number;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: number) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
   };
   SearchInput: PeauiReactBaseProps & {
     /** Dostępna nazwa elementu przekazywana przez aria-label. */
@@ -980,6 +1020,10 @@ export type ReactComponentPropsMap = {
     placeholder?: string;
     /** Konfiguruje właściwość „debounce time” komponentu. */
     debounceTime?: number;
+    /** Wyłącza komponent i blokuje jego interakcje. */
+    disabled?: boolean;
+    /** Ustawia komponent w trybie tylko do odczytu. */
+    readonly?: boolean;
     /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
     dataTestId?: string;
     /** Bieżąca wartość kontrolowana przez v-model:value. */
@@ -992,6 +1036,8 @@ export type ReactComponentPropsMap = {
     onSearch?: (...args: unknown[]) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
   };
   SegmentedControl: PeauiReactBaseProps & {
     /** Identyfikator grupy radio. */
@@ -1026,14 +1072,16 @@ export type ReactComponentPropsMap = {
     defaultValue?: PeauiSegmentedControlModelValue;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: PeauiSegmentedControlModelValue) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowany po skutecznym wyborze innego segmentu. */
     onChange?: (
       value: PeauiSegmentedControlValue,
       item: PeauiSegmentedControlItem,
       event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „focusChange”. */
+    /** Emitowany po przeniesieniu aktywnego fokusu. */
     onFocusChange?: (item: PeauiSegmentedControlItem, index: number) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „item”. */
     renderItem?: (
       item: PeauiSegmentedControlItem,
@@ -1110,9 +1158,9 @@ export type ReactComponentPropsMap = {
     defaultOpen?: boolean;
     /** Callback React wywoływany po zmianie właściwości open. */
     onOpenChange?: (value: boolean) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „primaryClick”. */
+    /** Emitowane wyłącznie po aktywowaniu lewej, głównej części. */
     onPrimaryClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    /** Emitowane po wyborze dostępnej pozycji menu. */
     onSelect?: (item: PeauiDropdownMenuItem, path: number[]) => void;
     /** Treść osadzana w nazwanym slocie „label”. */
     labelContent?: ReactNode;
@@ -1172,8 +1220,10 @@ export type ReactComponentPropsMap = {
     defaultValue?: boolean;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: boolean) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowane po zmianie wraz z nowym stanem i natywnym zdarzeniem. */
     onChange?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „icon”. */
     iconContent?: ReactNode;
     /** Treść osadzana w nazwanym slocie „pressed-icon”. */
@@ -1196,7 +1246,7 @@ export type ReactComponentPropsMap = {
     semanticRole?: 'toolbar' | 'group';
     /** Zachowanie grupy przy braku miejsca. */
     overflow?: 'wrap' | 'scroll';
-    /** Wymaga co najmniej jednej wybranej pozycji. */
+    /** Empty selection blocks native form submission; readonly and disabled are exempt. */
     required?: boolean;
     /** Pozwala wyłączyć ostatnią aktywną pozycję, gdy grupa nie jest wymagana. */
     allowEmpty?: boolean;
@@ -1226,14 +1276,16 @@ export type ReactComponentPropsMap = {
     defaultValue?: PeauiToggleGroupModelValue;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: PeauiToggleGroupModelValue) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowany po zaakceptowanej zmianie wyboru. */
     onChange?: (
       value: PeauiToggleGroupModelValue,
       item: PeauiToggleGroupItem,
       event: MouseEvent<HTMLButtonElement>,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „focusChange”. */
+    /** Emitowany po przeniesieniu aktywnego fokusu w grupie. */
     onFocusChange?: (item: PeauiToggleGroupItem, index: number) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „item”. */
     renderItem?: (
       item: PeauiToggleGroupItem,
@@ -1245,6 +1297,10 @@ export type ReactComponentPropsMap = {
     errorContent?: ReactNode;
   };
   TransferList: PeauiReactBaseProps & {
+    /** Render a bounded fixed-height window in each panel. */
+    virtual?: boolean;
+    /** Height of a virtual row, in pixels. */
+    optionHeight?: number;
     /** Stabilny identyfikator komponentu i jego relacji ARIA. */
     id?: string;
     /** Pełny katalog elementów. Pierwszy element o danym kluczu wygrywa. */
@@ -1268,9 +1324,9 @@ export type ReactComponentPropsMap = {
     /** Wyłącza wszystkie operacje i usuwa listy z kolejności Tab. */
     disabled?: boolean;
     /** Preferowany układ; horizontal automatycznie składa się na mobile. */
-    orientation?: unknown;
+    orientation?: 'horizontal' | 'vertical';
     /** Standardowa lub kompaktowa gęstość wierszy. */
-    size?: unknown;
+    size?: 'compact' | 'standard';
     /** Locale filtrowania i sortowania. */
     locale?: string;
     /** Dostępna nazwa całego przepływu. */
@@ -1303,6 +1359,12 @@ export type ReactComponentPropsMap = {
     onSearch?: (...args: unknown[]) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „selectionChange”. */
     onSelectionChange?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „sourceSelected”; przekaż nową wartość do v-model:sourceSelected. */
+    onUpdateSourceSelected?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „targetSelected”; przekaż nową wartość do v-model:targetSelected. */
+    onUpdateTargetSelected?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „source-header”. */
     sourceHeader?: ReactNode;
     /** Treść osadzana w nazwanym slocie „target-header”. */
@@ -1349,6 +1411,94 @@ export type ReactComponentPropsMap = {
     withIcon?: boolean;
     /** Konfiguruje właściwość „own icon” komponentu. */
     ownIcon?: string;
+  };
+  NotificationCenter: PeauiReactBaseProps & {
+    /** Notifications rendered in their supplied order. The component never mutates them. */
+    items: PeauiOption[];
+    /** Optional controlled unread count, useful when not all pages are loaded. */
+    unreadCount?: number;
+    /** Custom filter definitions. Defaults to All and Unread. */
+    filters?: unknown;
+    /** Groups visible notifications without changing their order. */
+    groupBy?: 'none' | 'date' | 'type';
+    /** Shows the initial loading state. */
+    loading?: boolean;
+    /** Shows the incremental loading state. */
+    loadingMore?: boolean;
+    /** Enables requesting another page. */
+    hasMore?: boolean;
+    /** Error message displayed without modifying the supplied items. */
+    error?: string | null;
+    /** Locale used by the default date formatter. */
+    locale?: string;
+    /** Optional application date formatter. */
+    formatDate?: unknown;
+    /** Accessible name of the notification center. */
+    ariaLabel?: string;
+    /** Stable test selector. */
+    dataTestId?: string;
+    /** Surface treatment for a panel, drawer body, or full page. */
+    variant?: 'panel' | 'drawer-content' | 'page';
+    /** Vertical spacing density. */
+    density?: 'compact' | 'comfortable';
+    /** How additional data is requested. */
+    paginationMode?: 'pagination' | 'infinite';
+    /** Disables the mark-all intent while the application processes it. */
+    markAllPending?: boolean;
+    /** Item identifiers with an application-side action in progress. */
+    pendingItemIds?: unknown;
+    /** Stable reference date for deterministic relative formatting. */
+    referenceDate?: string | number | Date;
+    /** User-facing text overrides. */
+    labels?: unknown;
+    /** Optional maximum height of the scrollable list. */
+    maxHeight?: string;
+    /** Wartość kontrolowana przez v-model:activeFilter. */
+    activeFilter?: string;
+    /** Początkowa niekontrolowana wartość właściwości activeFilter. */
+    defaultActiveFilter?: string;
+    /** Callback React wywoływany po zmianie właściwości activeFilter. */
+    onActiveFilterChange?: (value: string) => void;
+    /** Wartość kontrolowana przez v-model:selectedId. */
+    selectedId?: unknown;
+    /** Początkowa niekontrolowana wartość właściwości selectedId. */
+    defaultSelectedId?: unknown;
+    /** Callback React wywoływany po zmianie właściwości selectedId. */
+    onSelectedIdChange?: (value: unknown) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „update:activeFilter”. */
+    onUpdateActiveFilter?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „update:selectedId”. */
+    onUpdateSelectedId?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    onSelect?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „action”. */
+    onAction?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „markRead”. */
+    onMarkRead?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „markUnread”. */
+    onMarkUnread?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „markAllRead”. */
+    onMarkAllRead?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „loadMore”. */
+    onLoadMore?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „filterChange”. */
+    onFilterChange?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „retry”. */
+    onRetry?: (...args: unknown[]) => void;
+    /** Treść osadzana w nazwanym slocie „header”. */
+    header?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „empty”. */
+    empty?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „group-header”. */
+    groupHeader?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „item”. */
+    item?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „item-icon”. */
+    itemIcon?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „item-actions”. */
+    itemActions?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „footer”. */
+    footer?: ReactNode;
   };
   ProgressIndicator: PeauiReactBaseProps & {
     /** Konfiguruje właściwość „steps” komponentu. */
@@ -1421,6 +1571,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: boolean | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: boolean | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
   };
   FormButtonGroup: PeauiReactBaseProps & {
     /** Unikalny identyfikator elementu w dokumencie. */
@@ -1433,7 +1585,7 @@ export type ReactComponentPropsMap = {
     size?: 'xs' | 's' | 'm' | 'l';
     /** Konfiguruje właściwość „is toggle” komponentu. */
     isToggle?: boolean;
-    /** Oznacza wartość jako wymaganą. */
+    /** Empty selection blocks native form submission; readonly and disabled are exempt. */
     required?: boolean;
     /** Wyłącza komponent i blokuje jego interakcje. */
     disabled?: boolean;
@@ -1449,6 +1601,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: string | number | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: string | number | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „additionalHint”. */
@@ -1479,6 +1633,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: boolean | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: boolean | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
   };
   FormColorPicker: PeauiReactBaseProps & {
     /** Konfiguruje właściwość „alpha” komponentu. */
@@ -1503,7 +1659,7 @@ export type ReactComponentPropsMap = {
     id: string;
     /** Widoczna etykieta opisująca element lub pole formularza. */
     label?: string;
-    /** Wybiera natywną strategię ładowania obrazu. */
+    /** Włącza stan ładowania i informuje o trwającej operacji. */
     loading?: boolean;
     /** Dostępny komunikat opisujący trwającą operację. */
     loadingLabel?: string;
@@ -1553,6 +1709,8 @@ export type ReactComponentPropsMap = {
     onInvalid?: (detail: PeauiFormColorPickerInvalidDetail) => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „open”. */
     onOpen?: () => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „description”. */
     descriptionContent?: ReactNode;
     /** Treść osadzana w nazwanym slocie „error”. */
@@ -1617,7 +1775,7 @@ export type ReactComponentPropsMap = {
     label?: string;
     /** Nazwa ikony wyświetlanej przed treścią pola. */
     iconBefore?: string;
-    /** Oznacza wartość jako wymaganą. */
+    /** Empty selection blocks native form submission; readonly and disabled are exempt. */
     required?: boolean;
     /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
     placeholder?: string;
@@ -1645,6 +1803,8 @@ export type ReactComponentPropsMap = {
     onValueChange?: (value: string | PeauiPickerRangeValue<string> | undefined) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -1685,7 +1845,7 @@ export type ReactComponentPropsMap = {
     isDateDisabled?: (date: string) => boolean;
     /** Widoczna etykieta opisująca element lub pole formularza. */
     label?: string;
-    /** Wybiera natywną strategię ładowania obrazu. */
+    /** Włącza stan ładowania i informuje o trwającej operacji. */
     loading?: boolean;
     /** Dostępny komunikat opisujący trwającą operację. */
     loadingLabel?: string;
@@ -1751,6 +1911,8 @@ export type ReactComponentPropsMap = {
     onOpen?: () => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „startChange”. */
     onStartChange?: (value: string | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „day”. */
     day?: ReactNode;
     /** Treść osadzana w nazwanym slocie „footer”. */
@@ -1793,7 +1955,7 @@ export type ReactComponentPropsMap = {
     label?: string;
     /** Konfiguruje właściwość „layout” komponentu. */
     layout?: 'side-by-side' | 'stacked';
-    /** Wybiera natywną strategię ładowania obrazu. */
+    /** Włącza stan ładowania i informuje o trwającej operacji. */
     loading?: boolean;
     /** Dostępny komunikat opisujący trwającą operację. */
     loadingLabel?: string;
@@ -1855,6 +2017,8 @@ export type ReactComponentPropsMap = {
     onOpen?: () => void;
     /** Emitowane, gdy komponent zgłasza zdarzenie „timeChange”. */
     onTimeChange?: (time: string | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „date”. */
     renderDate?: (state: { date: string | undefined }) => ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -1883,6 +2047,8 @@ export type ReactComponentPropsMap = {
     before?: string;
     /** Pokazuje akcję pozwalającą wyczyścić bieżącą wartość. */
     canErase?: boolean;
+    /** Konfiguruje właściwość „clear label” komponentu. */
+    clearLabel?: string;
     /** Wyłącza komponent i blokuje jego interakcje. */
     disabled?: boolean;
     /** Nazwa ikony wyświetlanej za treścią pola. */
@@ -1936,26 +2102,34 @@ export type ReactComponentPropsMap = {
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
   };
-  FormFileUpload: PeauiReactBaseProps & {
-    /** Konfiguruje właściwość „allowed types” komponentu. */
-    allowedTypes?: string[];
-    /** Wyłącza komponent i blokuje jego interakcje. */
-    disabled?: boolean;
-    /** Konfiguruje właściwość „max file size” komponentu. */
-    maxFileSize?: number;
-    /** Wariant wizualny komponentu. */
-    variant?: 'primary' | 'danger';
-    /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
-    dataTestId?: string;
-    /** Wybrany plik kontrolowany przez v-model:file. */
-    file?: File | undefined;
-    /** Początkowa niekontrolowana wartość właściwości file. */
-    defaultFile?: File | undefined;
-    /** Callback React wywoływany po zmianie właściwości file. */
-    onFileChange?: (value: File | undefined) => void;
-    /** Emitowane po wybraniu akcji usunięcia. */
-    onRemove?: (...args: unknown[]) => void;
-  };
+  FormFileUpload: Omit<
+    PeauiReactBaseProps & {
+      /** Konfiguruje właściwość „allowed types” komponentu. */
+      allowedTypes?: string[];
+      /** Wyłącza komponent i blokuje jego interakcje. */
+      disabled?: boolean;
+      /** Konfiguruje właściwość „max file size” komponentu. */
+      maxFileSize?: number;
+      /** Wariant wizualny komponentu. */
+      variant?: 'primary' | 'danger';
+      /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
+      dataTestId?: string;
+      /** Konfiguruje właściwość „value mode” komponentu. */
+      valueMode?: FileUploadValueMode;
+      /** Wybrany plik kontrolowany przez v-model:file. */
+      file?: FormFileUploadValue | File | undefined;
+      /** Początkowa niekontrolowana wartość właściwości file. */
+      defaultFile?: FormFileUploadValue | File | undefined;
+      /** Callback React wywoływany po zmianie właściwości file. */
+      onFileChange?: (value: FormFileUploadValue | File | undefined) => void;
+      /** Emitowane po wybraniu akcji usunięcia. */
+      onRemove?: (...args: unknown[]) => void;
+      /** Emitowane po zmianie modelu „file”; przekaż nową wartość do v-model:file. */
+      onUpdateFile?: (...args: unknown[]) => void;
+    },
+    'valueMode' | 'onFileChange'
+  > &
+    PeauiFileUploadModel;
   FormFileUploadSimple: PeauiReactBaseProps & {
     /** Konfiguruje właściwość „allowed types” komponentu. */
     allowedTypes?: string[];
@@ -1975,6 +2149,8 @@ export type ReactComponentPropsMap = {
     defaultFiles?: File[];
     /** Callback React wywoływany po zmianie właściwości files. */
     onFilesChange?: (value: File[]) => void;
+    /** Emitowane po zmianie modelu „files”; przekaż nową wartość do v-model:files. */
+    onUpdateFiles?: (...args: unknown[]) => void;
   };
   FormInput: PeauiReactBaseProps & {
     /** Unikalny identyfikator elementu w dokumencie. */
@@ -2013,6 +2189,8 @@ export type ReactComponentPropsMap = {
     onValueChange?: (value: string | undefined) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2041,6 +2219,14 @@ export type ReactComponentPropsMap = {
     required?: boolean;
     /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
     placeholder?: string;
+    /** Konfiguruje właściwość „labels” komponentu. */
+    labels?: Partial<PeauiSelectLabels>;
+    /** Value is the default; label preserves the pre-3.0 Vue/WC model contract. */
+    valueMode?: SelectValueMode;
+    /** Render only visible fixed-height options for large lists. */
+    virtual?: boolean;
+    /** Row height in pixels when virtual is enabled (minimum 24). */
+    optionHeight?: number;
     /** Wyłącza komponent i blokuje jego interakcje. */
     disabled?: boolean;
     /** Ustawia komponent w trybie tylko do odczytu. */
@@ -2063,6 +2249,8 @@ export type ReactComponentPropsMap = {
     onValueChange?: (value: unknown[] | null | undefined) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2113,6 +2301,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: number | undefined | string;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: number | undefined | string) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2167,6 +2357,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: string | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: string | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2229,16 +2421,18 @@ export type ReactComponentPropsMap = {
     defaultValue?: string;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: string) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowane po każdej zaakceptowanej zmianie kodu. */
     onChange?: (value: string, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „complete”. */
+    /** Emitowane raz dla każdej nowej, kompletnej wartości. */
     onComplete?: (value: string, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „invalidInput”. */
+    /** Emitowane po odrzuceniu znaku, wzorca, transformacji lub nadmiaru. */
     onInvalidInput?: (detail: PeauiFormPinInputInvalidDetail, event: Event) => void;
-    /** Emitowane po ustawieniu fokusu na kontrolce. */
+    /** Emitowane po wejściu fokusu do komórki. */
     onFocus?: (event: ReactFocusEvent<HTMLInputElement>, index: number) => void;
-    /** Emitowane po opuszczeniu kontrolki przez fokus. */
+    /** Emitowane po opuszczeniu całej grupy komórek. */
     onBlur?: (event: ReactFocusEvent<HTMLDivElement>) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „label”. */
     labelContent?: ReactNode;
     /** Treść osadzana w nazwanym slocie „hint”. */
@@ -2271,6 +2465,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: string | number | boolean | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: string | number | boolean | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
   };
   FormRatingInput: PeauiReactBaseProps & {
     /** Unikalny identyfikator kontrolki. */
@@ -2289,7 +2485,7 @@ export type ReactComponentPropsMap = {
     readonly?: boolean;
     /** Wyłącza kontrolkę. */
     disabled?: boolean;
-    /** Oznacza ocenę jako wymaganą. */
+    /** Empty selection blocks native form submission; readonly and disabled are exempt. */
     required?: boolean;
     /** Mapa tekstowych opisów indeksowana wartością, np. `{ '4': 'Dobra' }`. */
     labels?: Readonly<Record<string, string>>;
@@ -2321,16 +2517,18 @@ export type ReactComponentPropsMap = {
     defaultValue?: number | null;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: number | null) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowane po zatwierdzeniu wartości. */
     onChange?: (value: number | null, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „previewChange”. */
+    /** Emitowane wyłącznie dla podglądu wskaźnikiem; null oznacza jego koniec. */
     onPreviewChange?: (value: number | null) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „clear”. */
+    /** Emitowane po jawnym wyczyszczeniu wartości. */
     onClear?: (event: Event) => void;
-    /** Emitowane po ustawieniu fokusu na kontrolce. */
+    /** Emitowane przy ustawieniu fokusu na pojedynczym suwaku. */
     onFocus?: (event: ReactFocusEvent<HTMLInputElement>) => void;
-    /** Emitowane po opuszczeniu kontrolki przez fokus. */
+    /** Emitowane po opuszczeniu pojedynczego suwaka. */
     onBlur?: (event: ReactFocusEvent<HTMLInputElement>) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „label”. */
     labelContent?: ReactNode;
     /** Treść osadzana w nazwanym slocie „icon”. */
@@ -2363,6 +2561,14 @@ export type ReactComponentPropsMap = {
     placement?: 'top' | 'bottom';
     /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
     placeholder?: string;
+    /** Konfiguruje właściwość „labels” komponentu. */
+    labels?: Partial<PeauiSelectLabels>;
+    /** Value is the default; label preserves the pre-3.0 Vue/WC model contract. */
+    valueMode?: SelectValueMode;
+    /** Render only visible fixed-height options for large lists. */
+    virtual?: boolean;
+    /** Row height in pixels when virtual is enabled (minimum 24). */
+    optionHeight?: number;
     /** Wyłącza komponent i blokuje jego interakcje. */
     disabled?: boolean;
     /** Ustawia komponent w trybie tylko do odczytu. */
@@ -2385,6 +2591,8 @@ export type ReactComponentPropsMap = {
     onValueChange?: (value: unknown) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2441,12 +2649,14 @@ export type ReactComponentPropsMap = {
     defaultValue?: unknown;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: unknown) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowane po zmianie wraz z nową wartością domenową i natywnym zdarzeniem. */
     onChange?: (...args: unknown[]) => void;
-    /** Emitowane po ustawieniu fokusu na kontrolce. */
+    /** Emitowane po ustawieniu fokusu na natywnej kontrolce. */
     onFocus?: (...args: unknown[]) => void;
-    /** Emitowane po opuszczeniu kontrolki przez fokus. */
+    /** Emitowane po opuszczeniu natywnej kontrolki. */
     onBlur?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „label”. */
     labelContent?: ReactNode;
     /** Treść osadzana w nazwanym slocie „thumb”. */
@@ -2531,23 +2741,27 @@ export type ReactComponentPropsMap = {
     defaultInputValue?: string;
     /** Callback React wywoływany po zmianie właściwości inputValue. */
     onInputValueChange?: (value: string) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „add”. */
+    /** Emitowane po dodaniu zaakceptowanego tagu. */
     onAdd?: (tag: PeauiFormTagsInputTag, index: number, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „remove”. */
+    /** Emitowane po usunięciu tagu. */
     onRemove?: (tag: PeauiFormTagsInputTag, index: number, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „edit”. */
+    /** Emitowane po zatwierdzeniu edycji tagu. */
     onEdit?: (
       previous: PeauiFormTagsInputTag,
       next: PeauiFormTagsInputTag,
       index: number,
       event: Event,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „invalidTag”. */
+    /** Emitowane dla każdej odrzuconej wartości. */
     onInvalidTag?: (detail: PeauiFormTagsInputInvalidDetail, event: Event) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „search”. */
+    /** Emitowane przy zmianie tekstu wyszukiwania. */
     onSearch?: (query: string, requestId: number) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „maxReached”. */
+    /** Emitowane, gdy próba dodania przekracza limit. */
     onMaxReached?: (max: number, event: Event) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „inputValue”; przekaż nową wartość do v-model:inputValue. */
+    onUpdateInputValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „label”. */
     renderLabel?: (state: { count: number }) => ReactNode;
     /** Treść osadzana w nazwanym slocie „hint”. */
@@ -2608,6 +2822,8 @@ export type ReactComponentPropsMap = {
     defaultValue?: string | undefined;
     /** Callback React wywoływany po zmianie właściwości value. */
     onValueChange?: (value: string | undefined) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2690,14 +2906,16 @@ export type ReactComponentPropsMap = {
     defaultOpen?: boolean;
     /** Callback React wywoływany po zmianie właściwości open. */
     onOpenChange?: (value: boolean) => void;
-    /** Emitowane po zmianie wartości przez użytkownika. */
+    /** Emitowane po zatwierdzeniu poprawnej wartości. */
     onChange?: (value: string | undefined, parts: PeauiTimePickerParts | undefined) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „invalid”. */
+    /** Emitowane po odrzuceniu pustej, błędnej, poza zakresem lub poza krokiem wartości. */
     onInvalid?: (detail: PeauiTimePickerInvalidDetail) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „open”. */
+    /** Emitowane po faktycznym otwarciu panelu. */
     onOpen?: () => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „close”. */
+    /** Emitowane po faktycznym zamknięciu panelu. */
     onClose?: () => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „trigger”. */
     renderTrigger?: (state: {
       displayValue: string;
@@ -2736,7 +2954,7 @@ export type ReactComponentPropsMap = {
     label?: string;
     /** Nazwa ikony wyświetlanej przed treścią pola. */
     iconBefore?: string;
-    /** Oznacza wartość jako wymaganą. */
+    /** Empty selection blocks native form submission; readonly and disabled are exempt. */
     required?: boolean;
     /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
     placeholder?: string;
@@ -2760,6 +2978,8 @@ export type ReactComponentPropsMap = {
     onValueChange?: (value: number | PeauiPickerRangeValue<number> | undefined) => void;
     /** Emitowane po wybraniu akcji usunięcia. */
     onRemove?: (...args: unknown[]) => void;
+    /** Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value. */
+    onUpdateValue?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „hint”. */
     hint?: ReactNode;
     /** Treść osadzana w nazwanym slocie „description”. */
@@ -2802,16 +3022,16 @@ export type ReactComponentPropsMap = {
   GridItem: PeauiReactBaseProps & {
     /** Konfiguruje właściwość „colspan” komponentu. */
     colspan?: number;
-    /** Definicje kolumn określające ich etykiety, klucze i sposób renderowania. */
-    columns?: PeauiTableColumn[];
+    /** Liczba kolumn: domyślnie 2; 0 dobiera liczbę do dzieci. */
+    columns?: number;
     /** Odstęp pomiędzy elementami układu. */
     gap?: number;
     /** Konfiguruje właściwość „grid” komponentu. */
     grid?: boolean;
   };
   GridSection: PeauiReactBaseProps & {
-    /** Definicje kolumn określające ich etykiety, klucze i sposób renderowania. */
-    columns?: PeauiTableColumn[];
+    /** Liczba kolumn siatki; domyślnie 4. */
+    columns?: number;
     /** Odstęp pomiędzy elementami układu. */
     gap?: number;
     /** Treść osadzana w nazwanym slocie „additional”. */
@@ -2844,7 +3064,7 @@ export type ReactComponentPropsMap = {
     scrollbarSize?: number;
     /** Opóźnienie ukrycia automatycznego paska w milisekundach, maksymalnie 10000. */
     autoHideDelay?: number;
-    /** Opcjonalny tabindex natywnego viewportu; bez niego komponent nie dodaje przystanku Tab. */
+    /** Nadpisuje tabindex viewportu. Tryb native domyślnie dodaje przystanek Tab (0). */
     tabindex?: number;
     /** Dostępna nazwa przewijanego regionu. */
     ariaLabel?: string;
@@ -2893,6 +3113,90 @@ export type ReactComponentPropsMap = {
     /** Emitowane, gdy komponent zgłasza zdarzenie „on:navigate”. */
     onNavigate?: (...args: unknown[]) => void;
   };
+  CommandPalette: PeauiReactBaseProps & {
+    /** Konfiguruje właściwość „commands” komponentu. */
+    commands?: unknown;
+    /** Konfiguruje właściwość „recent ids” komponentu. */
+    recentIds?: unknown;
+    /** Konfiguruje właściwość „shortcut” komponentu. */
+    shortcut?: unknown;
+    /** Konfiguruje właściwość „register shortcut” komponentu. */
+    registerShortcut?: boolean;
+    /** Konfiguruje właściwość „filter” komponentu. */
+    filter?: unknown;
+    /** Konfiguruje właściwość „groups” komponentu. */
+    groups?: unknown;
+    /** Włącza stan ładowania i informuje o trwającej operacji. */
+    loading?: boolean;
+    /** Tekst pomocniczy widoczny przed wprowadzeniem wartości. */
+    placeholder?: string;
+    /** Dostępna nazwa elementu przekazywana przez aria-label. */
+    ariaLabel?: string;
+    /** Konfiguruje właściwość „close on execute” komponentu. */
+    closeOnExecute?: boolean;
+    /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
+    dataTestId?: string;
+    /** Konfiguruje właściwość „mode” komponentu. */
+    mode?: 'modal' | 'embedded';
+    /** Konfiguruje właściwość „virtual” komponentu. */
+    virtual?: boolean;
+    /** Konfiguruje właściwość „virtual threshold” komponentu. */
+    virtualThreshold?: number;
+    /** Konfiguruje właściwość „virtual height” komponentu. */
+    virtualHeight?: number;
+    /** Konfiguruje właściwość „empty title” komponentu. */
+    emptyTitle?: string;
+    /** Konfiguruje właściwość „empty description” komponentu. */
+    emptyDescription?: string;
+    /** Stan otwarcia kontrolowany przez v-model:open. */
+    open?: boolean;
+    /** Początkowa niekontrolowana wartość właściwości open. */
+    defaultOpen?: boolean;
+    /** Callback React wywoływany po zmianie właściwości open. */
+    onOpenChange?: (value: boolean) => void;
+    /** Wartość kontrolowana przez v-model:query. */
+    query?: string;
+    /** Początkowa niekontrolowana wartość właściwości query. */
+    defaultQuery?: string;
+    /** Callback React wywoływany po zmianie właściwości query. */
+    onQueryChange?: (value: string) => void;
+    /** Wartość kontrolowana przez v-model:activeId. */
+    activeId?: string | null;
+    /** Początkowa niekontrolowana wartość właściwości activeId. */
+    defaultActiveId?: string | null;
+    /** Callback React wywoływany po zmianie właściwości activeId. */
+    onActiveIdChange?: (value: string | null) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „update:query”. */
+    onUpdateQuery?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „update:activeId”. */
+    onUpdateActiveId?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    onSelect?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „execute”. */
+    onExecute?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „executionSuccess”. */
+    onExecutionSuccess?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „executionError”. */
+    onExecutionError?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „levelChange”. */
+    onLevelChange?: (...args: unknown[]) => void;
+    /** Treść osadzana w nazwanym slocie „trigger”. */
+    trigger?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „header”. */
+    header?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „command”. */
+    command?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „group”. */
+    group?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „empty”. */
+    empty?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „error”. */
+    error?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „footer”. */
+    footer?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „breadcrumb”. */
+    breadcrumb?: ReactNode;
+  };
   ContextMenu: PeauiReactBaseProps & {
     /** Pozycje współdzielące pełny kontrakt semantyczny z DropdownMenu. */
     items?: PeauiDropdownMenuItem[];
@@ -2932,29 +3236,29 @@ export type ReactComponentPropsMap = {
     defaultOpen?: boolean;
     /** Callback React wywoływany po zmianie właściwości open. */
     onOpenChange?: (value: boolean) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „open”. */
+    /** Emitowane po skutecznym otwarciu menu. */
     onOpen?: (detail: PeauiContextMenuOpenDetail) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „close”. */
+    /** Emitowane po zamknięciu menu wraz z przyczyną. */
     onClose?: (reason: PeauiContextMenuCloseReason) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    /** Emitowane po aktywowaniu dostępnej pozycji. */
     onSelect?: (item: PeauiDropdownMenuItem, path: number[], context: unknown) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”. */
+    /** Emitowane po zmianie intencji pozycji checkbox lub radio. */
     onCheckedChange?: (
       item: PeauiDropdownMenuItem,
       checked: boolean,
       path: number[],
       context: unknown,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „valueChange”. */
+    /** Emitowane po wyborze pozycji posiadającej wartość. */
     onValueChange?: (
       item: PeauiDropdownMenuItem,
       value: unknown,
       path: number[],
       context: unknown,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „contextChange”. */
+    /** Emitowane, gdy aktywacja wskazuje nowy kontekst danych. */
     onContextChange?: (context: unknown) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „longPressCancel”. */
+    /** Emitowane, gdy oczekujący long press został świadomie anulowany. */
     onLongPressCancel?: (reason: PeauiContextMenuLongPressCancelReason) => void;
     /** Treść osadzana w nazwanym slocie „trigger”. */
     renderTarget?: (state: { open: boolean; disabled: boolean; context: unknown }) => ReactNode;
@@ -3002,15 +3306,15 @@ export type ReactComponentPropsMap = {
     defaultOpen?: boolean;
     /** Callback React wywoływany po zmianie właściwości open. */
     onOpenChange?: (value: boolean) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    /** Emitowane po aktywowaniu dostępnej pozycji. */
     onSelect?: (item: PeauiDropdownMenuItem, path: number[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”. */
+    /** Emitowane po zmianie intencji pozycji checkbox lub radio. */
     onCheckedChange?: (item: PeauiDropdownMenuItem, checked: boolean, path: number[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „valueChange”. */
+    /** Emitowane po wyborze pozycji posiadającej wartość. */
     onValueChange?: (item: PeauiDropdownMenuItem, value: unknown, path: number[]) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „escape”. */
+    /** Emitowane po zamknięciu klawiszem Escape. */
     onEscape?: () => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „outsideClick”. */
+    /** Emitowane po zamknięciu kliknięciem poza komponentem. */
     onOutsideClick?: () => void;
     /** Treść osadzana w nazwanym slocie „trigger”. */
     renderTrigger?: (state: { open: boolean; disabled: boolean }) => ReactNode;
@@ -3044,6 +3348,8 @@ export type ReactComponentPropsMap = {
     defaultLimit?: number;
     /** Callback React wywoływany po zmianie właściwości limit. */
     onLimitChange?: (value: number) => void;
+    /** Emitowane po zmianie modelu „limit”; przekaż nową wartość do v-model:limit. */
+    onUpdateLimit?: (...args: unknown[]) => void;
   };
   MenuBar: PeauiReactBaseProps & {
     /** Uporządkowane sekcje poziomego menu aplikacyjnego. */
@@ -3064,24 +3370,26 @@ export type ReactComponentPropsMap = {
     defaultOpenMenu?: string | number | null;
     /** Callback React wywoływany po zmianie właściwości openMenu. */
     onOpenMenuChange?: (value: string | number | null) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „select”. */
+    /** Emitowane po aktywowaniu pozycji wraz z sekcją nadrzędną. */
     onSelect?: (item: PeauiDropdownMenuItem, path: number[], menu: PeauiMenuBarMenu) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „focusChange”. */
+    /** Emitowane po przeniesieniu fokusu roving tabindex na inny trigger. */
     onFocusChange?: (menu: PeauiMenuBarMenu, index: number) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”. */
+    /** Przekazuje intencję zmiany pozycji checkbox lub radio. */
     onCheckedChange?: (
       item: PeauiDropdownMenuItem,
       checked: boolean,
       path: number[],
       menu: PeauiMenuBarMenu,
     ) => void;
-    /** Emitowane, gdy komponent zgłasza zdarzenie „valueChange”. */
+    /** Przekazuje wartość wybranej pozycji wraz z sekcją nadrzędną. */
     onValueChange?: (
       item: PeauiDropdownMenuItem,
       value: unknown,
       path: number[],
       menu: PeauiMenuBarMenu,
     ) => void;
+    /** Emitowane po zmianie modelu „openMenu”; przekaż nową wartość do v-model:openMenu. */
+    onUpdateOpenMenu?: (...args: unknown[]) => void;
     /** Treść osadzana w nazwanym slocie „menu-trigger”. */
     renderMenuTrigger?: (
       menu: PeauiMenuBarMenu,
@@ -3199,12 +3507,14 @@ export type ReactComponentPropsMap = {
     defaultPage?: number;
     /** Callback React wywoływany po zmianie właściwości page. */
     onPageChange?: (value: number) => void;
+    /** Emitowane po zmianie modelu „page”; przekaż nową wartość do v-model:page. */
+    onUpdatePage?: (...args: unknown[]) => void;
   };
   DrawerPanel: PeauiReactBaseProps & {
     /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
     dataTestId?: string;
     /** Dostępna nazwa elementu przekazywana przez aria-label. */
-    ariaLabel: string;
+    ariaLabel?: string;
     /** Stan otwarcia kontrolowany przez v-model:open. */
     open?: boolean;
     /** Początkowa niekontrolowana wartość właściwości open. */
@@ -3213,6 +3523,84 @@ export type ReactComponentPropsMap = {
     onOpenChange?: (value: boolean) => void;
     /** Treść osadzana w nazwanym slocie „header”. */
     header?: ReactNode;
+  };
+  GuidedTour: PeauiReactBaseProps & {
+    /** Konfiguruje właściwość „steps” komponentu. */
+    steps: unknown;
+    /** Konfiguruje właściwość „mode” komponentu. */
+    mode?: 'spotlight' | 'modal';
+    /** Konfiguruje właściwość „card variant” komponentu. */
+    cardVariant?: 'card' | 'tooltip';
+    /** Konfiguruje właściwość „linear” komponentu. */
+    linear?: boolean;
+    /** Konfiguruje właściwość „show mask” komponentu. */
+    showMask?: boolean;
+    /** Konfiguruje właściwość „allow skip” komponentu. */
+    allowSkip?: boolean;
+    /** Konfiguruje właściwość „close on escape” komponentu. */
+    closeOnEscape?: boolean;
+    /** Konfiguruje właściwość „scroll behavior” komponentu. */
+    scrollBehavior?: 'auto' | 'smooth';
+    /** Konfiguruje właściwość „target timeout” komponentu. */
+    targetTimeout?: number;
+    /** Konfiguruje właściwość „missing target strategy” komponentu. */
+    missingTargetStrategy?: 'skip' | 'block' | 'close';
+    /** Konfiguruje właściwość „spotlight padding” komponentu. */
+    spotlightPadding?: number;
+    /** Konfiguruje właściwość „pending” komponentu. */
+    pending?: boolean;
+    /** Konfiguruje właściwość „labels” komponentu. */
+    labels?: unknown;
+    /** Konfiguruje właściwość „persist” komponentu. */
+    persist?: unknown;
+    /** Dostępna nazwa elementu przekazywana przez aria-label. */
+    ariaLabel?: string;
+    /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
+    dataTestId?: string;
+    /** Stan otwarcia kontrolowany przez v-model:open. */
+    open?: boolean;
+    /** Początkowa niekontrolowana wartość właściwości open. */
+    defaultOpen?: boolean;
+    /** Callback React wywoływany po zmianie właściwości open. */
+    onOpenChange?: (value: boolean) => void;
+    /** Wartość kontrolowana przez v-model:step. */
+    step?: number;
+    /** Początkowa niekontrolowana wartość właściwości step. */
+    defaultStep?: number;
+    /** Callback React wywoływany po zmianie właściwości step. */
+    onStepChange?: (value: number) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „update:step”. */
+    onUpdateStep?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „start”. */
+    onStart?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „stepEnter”. */
+    onStepEnter?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „stepLeave”. */
+    onStepLeave?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „next”. */
+    onNext?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „back”. */
+    onBack?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „skip”. */
+    onSkip?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „complete”. */
+    onComplete?: (...args: unknown[]) => void;
+    /** Emitowane, gdy komponent zgłasza zdarzenie „targetMissing”. */
+    onTargetMissing?: (...args: unknown[]) => void;
+    /** Emitowane, gdy operacja komponentu kończy się błędem. */
+    onError?: (...args: unknown[]) => void;
+    /** Treść osadzana w nazwanym slocie „title”. */
+    title?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „progress”. */
+    progress?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „missing-target”. */
+    missingTarget?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „content”. */
+    content?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „description”. */
+    description?: ReactNode;
+    /** Treść osadzana w nazwanym slocie „actions”. */
+    actions?: ReactNode;
   };
   InfoTooltip: PeauiReactBaseProps & {
     /** Konfiguruje właściwość „placement” komponentu. */
@@ -3240,7 +3628,7 @@ export type ReactComponentPropsMap = {
     /** Stabilny identyfikator data-testid przeznaczony dla testów automatycznych. */
     dataTestId?: string;
     /** Dostępna nazwa elementu przekazywana przez aria-label. */
-    ariaLabel: string;
+    ariaLabel?: string;
     /** Stan otwarcia kontrolowany przez v-model:open. */
     open?: boolean;
     /** Początkowa niekontrolowana wartość właściwości open. */
@@ -3312,4 +3700,18 @@ export type ReactComponentPropsMap = {
   };
 };
 
-export type PeauiReactProps<Name extends ReactComponentName> = ReactComponentPropsMap[Name];
+export type PeauiReactProps<Name extends ReactComponentName> = ReactComponentPropsMap[Name] &
+  Omit<
+    Name extends 'ButtonAction'
+      ? ButtonHTMLAttributes<HTMLButtonElement>
+      : Name extends 'CardPanel' | 'NavigationLink' | 'NavigationCard' | 'NavigationIconCard'
+        ? AnchorHTMLAttributes<HTMLAnchorElement>
+        : Name extends 'ImageView'
+          ? ImgHTMLAttributes<HTMLImageElement>
+          : Name extends 'FormInput' | 'FormNumber' | 'FormPassword' | 'SearchInput' | 'InputSlider'
+            ? InputHTMLAttributes<HTMLInputElement>
+            : Name extends 'FormTextarea'
+              ? TextareaHTMLAttributes<HTMLTextAreaElement>
+              : HTMLAttributes<HTMLElement>,
+    keyof ReactComponentPropsMap[Name]
+  >;

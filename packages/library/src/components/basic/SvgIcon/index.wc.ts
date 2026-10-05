@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { loadCatalogIcon, type CatalogIconData } from '@/assets/icons/runtime/catalog/load-icon';
 import { hasLegacyIcon, loadLegacyIcon } from '@/assets/icons/runtime/load-icon';
@@ -68,6 +69,7 @@ export class SvgIconElement extends HTMLElement {
   #renderVersion = 0;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (!this.#mutationObserver) {
       this.#mutationObserver = new MutationObserver(() => {
         void this.render();

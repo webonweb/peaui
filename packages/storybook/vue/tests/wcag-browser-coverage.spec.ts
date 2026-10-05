@@ -54,7 +54,7 @@ const uncoveredBaseStories = getPublicBaseStories().filter(
 );
 
 for (const story of uncoveredBaseStories) {
-  test(`${story.componentName} base story is covered by browser axe audit`, async ({
+  test(`${story.componentName} base story is covered by browser accessibility checks`, async ({
     page,
   }) => {
     await gotoStory(page, story.id);

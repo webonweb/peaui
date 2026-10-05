@@ -21,7 +21,7 @@ peaui-segmented-control {
   border: 1px solid var(--peaui-color-grey-300);
   border-radius: 0.625rem;
   background: var(--peaui-color-grey-50);
-  gap: 0.25rem;
+  gap: var(--peaui-space-1);
   overflow: auto hidden;
   overscroll-behavior-inline: contain;
   scrollbar-width: thin;
@@ -104,7 +104,7 @@ peaui-segmented-control {
   line-height: 1.25;
   text-align: center;
   white-space: nowrap;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
   transition:
     color 140ms ease,
     background-color 140ms ease;
@@ -133,6 +133,21 @@ peaui-segmented-control {
 .peaui-segmented-control--disabled {
   cursor: not-allowed;
   opacity: 0.72;
+}
+
+// With no available segment, focus cannot reveal horizontally hidden labels.
+// Wrap these groups so every label remains readable without a new tab stop.
+.peaui-segmented-control--horizontal:not(:has(.peaui-segmented-control__item:enabled)) {
+  display: flex;
+  flex-wrap: wrap;
+
+  .peaui-segmented-control__item {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 .peaui-segmented-control--size-s .peaui-segmented-control__item {

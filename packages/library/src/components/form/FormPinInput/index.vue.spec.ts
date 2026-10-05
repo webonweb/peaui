@@ -1,5 +1,5 @@
 import { mount, type VueWrapper } from '@vue/test-utils';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import FormPinInput from './index.vue';
 
@@ -7,8 +7,7 @@ function mountControlled(
   props: Record<string, unknown> = {},
   slots: Record<string, string> = {},
 ): VueWrapper {
-  let wrapper: VueWrapper;
-  wrapper = mount(FormPinInput, {
+  const wrapper: VueWrapper = mount(FormPinInput, {
     attachTo: document.body,
     props: {
       dataTestId: 'pin',
@@ -23,6 +22,16 @@ function mountControlled(
 
 afterEach(() => {
   document.body.innerHTML = '';
+});
+
+it('scrolls an externally focused cell into view', async () => {
+  const wrapper = mountControlled({ length: 12 });
+  const last = wrapper.findAll('input').at(-1)!;
+  const scroll = vi.fn();
+  last.element.scrollIntoView = scroll;
+  await last.trigger('focus');
+  expect(scroll).toHaveBeenCalledWith({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+  wrapper.unmount();
 });
 
 describe('FormPinInput Vue', () => {

@@ -1,4 +1,5 @@
 import { Meta, Source } from "@storybook/blocks";
+import { componentImports } from "../../../library/src/component-imports";
 
 <Meta title="Wprowadzenie" />
 
@@ -33,25 +34,27 @@ import { Meta, Source } from "@storybook/blocks";
     <div className="intro-kicker">Design system i biblioteka komponentów</div>
     <h1>Buduj dostępne interfejsy szybciej.</h1>
     <p className="intro-lead">
-      PEAUI UI to produkcyjna biblioteka komponentów z głównym API dla Vue 3,
-      zestawem Web Components i eksperymentalną warstwą React. Ten katalog jest
-      żywą dokumentacją: pokazuje prawdziwy kod, zachowanie, warianty oraz kompletne API.
+      PEAUI to jeden system komponentów dla Vue 3, Reacta i Web Components.
+      Każda technologia ma własne implementacje i historie ze wspólnymi stylami
+      oraz odpowiadającymi sobie modelami, zdarzeniami i stanami.
     </p>
     <div className="intro-badges">
-      <span className="intro-badge primary">64 komponenty Vue</span>
-      <span className="intro-badge">19 Web Components</span>
-      <span className="intro-badge">680 testów</span>
+      <span className="intro-badge primary">{Object.keys(componentImports).length} komponentów</span>
+      <span className="intro-badge">Vue · React · Web Components</span>
+      <span className="intro-badge">Testy trzech implementacji</span>
       <span className="intro-badge">TypeScript</span>
-      <span className="intro-badge">WCAG</span>
+      <span className="intro-badge">Cel: WCAG 2.2 AA</span>
     </div>
   </section>
 
 <section className="intro-section">
   <h2>Co znajdziesz przy każdym komponencie?</h2>
   <p>
-    Dokumentacja jest generowana z tych samych historii, których używamy podczas
-    rozwoju i testów wizualnych. Dzięki temu przykłady nie rozmijają się z
-    implementacją.
+    Historie pokazują działanie komponentów i ich warianty. Pełne opisy,
+    wymagania instalacji oraz tabele propsów, modeli, zdarzeń i slotów
+    znajdziesz w{" "}
+    <a href="https://webonweb.github.io/peaui/">portalu dokumentacji</a>, po
+    wybraniu odpowiedniego frameworka.
   </p>
   <div className="intro-grid">
     <article className="intro-card">
@@ -97,19 +100,87 @@ import { Meta, Source } from "@storybook/blocks";
 </section>
 
   <section className="intro-section">
-    <h2>Instalacja</h2>
-    <Source language="bash" code={`npm install @peaui/ui`} />
+    <h2>Instalacja w Vue</h2>
+    <Source language="bash" code={`npm install @peaui/ui vue@^3.5.0`} />
     <Source
       language="vue"
       code={`<script setup lang="ts">
-import { ButtonAction, FormInput } from '@peaui/ui';
-import '@peaui/ui/styles.css';
+import { ref } from 'vue';
+import ButtonAction from '@peaui/ui/vue/data-entry/ButtonAction';
+import FormInput from '@peaui/ui/vue/form/FormInput';
+
+const name = ref('');
+
 </script>
 
 <template>
-  <FormInput id="name" name="name" label="Imię" />
-  <ButtonAction aria-label="Zapisz formularz">Zapisz</ButtonAction>
+  <form @submit.prevent>
+    <FormInput id="name" name="name" label="Imię" v-model:value="name" />
+    <ButtonAction type="submit">Zapisz</ButtonAction>
+  </form>
 </template>`}
     />
+    <h2>Instalacja w React</h2>
+    <Source language="bash" code={`npm install @peaui/ui react@^19.2.0 react-dom@^19.2.0`} />
+    <Source language="tsx" code={`import { useState } from 'react';
+import ButtonAction from '@peaui/ui/react/data-entry/ButtonAction';
+import FormInput from '@peaui/ui/react/form/FormInput';
+
+export function ProfileForm() {
+  const [name, setName] = useState<string | undefined>('');
+  return (
+    <form onSubmit={(event) => event.preventDefault()}>
+      <FormInput id="name" name="name" label="Imię"
+        value={name} onValueChange={setName} />
+      <ButtonAction type="submit">Zapisz</ButtonAction>
+    </form>
+  );
+}`} />
+    <h2>Instalacja Web Components</h2>
+    <Source language="bash" code={`npm install @peaui/ui vue@^3.5.0`} />
+    <p>
+      Część elementów ma natywną implementację DOM, a pozostałe korzystają z
+      runtime Vue. Ta instalacja pozwala korzystać z całego katalogu.
+      Import modułu w kodzie przeglądarkowym rejestruje element.
+    </p>
+    <Source language="ts" code={`import '@peaui/ui/wc/form/FormInput';
+
+const input = document.createElement('peaui-form-input');
+input.id = 'name';
+input.name = 'name';
+input.label = 'Imię';
+input.value = '';
+input.addEventListener('update:value', (event) => {
+console.log((event as CustomEvent<string>).detail);
+});
+document.body.append(input);`} />
+    <p>
+      Przykłady zakładają bundler obsługujący importy CSS. Każdy import
+      pojedynczego komponentu ładuje jego style i tokeny. Import
+      <code> @peaui/ui/styles.css </code> jest opcjonalnym pełnym arkuszem.
+      Przy SSR style dostarcza build klienta; Web Components rejestruj
+      po stronie przeglądarki. Obiekty, tablice, funkcje i dynamiczne flagi
+      WC ustawiaj przez właściwości elementu. Pusty atrybut włącza flagę,
+      a usunięcie atrybutu ją wyłącza.
+    </p>
+    <p>
+      Import <code>@peaui/ui</code> jest API Vue. React udostępnia również
+      nazwane eksporty <code>@peaui/ui/react</code>, a Vue —
+      <code> @peaui/ui/vue</code>. Zbiorcze wejścia ładują cały CSS;
+      opcjonalny plugin <code>peauiImports()</code> z
+      <code> @peaui/ui/vite</code> zamienia nazwane importy komponentów
+      na ścieżki pojedynczych komponentów.
+    </p>
+    <h2>Uruchomienie repozytorium</h2>
+    <p>Z katalogu głównego, z Node.js 22.12+ w linii 22 i npm 11.6.0:</p>
+    <Source language="bash" code={`npm ci
+npm run library:build
+npm run storybook`} />
+<p>
+Katalog zbiorczy: localhost:6009; React: 6006, Vue: 6007, WC: 6008.
+Portal dokumentacji uruchomisz przez <code>npm run docs</code>
+na porcie 4174.
+</p>
+
   </section>
 </div>

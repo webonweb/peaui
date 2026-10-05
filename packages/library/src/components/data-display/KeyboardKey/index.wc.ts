@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -11,10 +12,12 @@ import type {
   KeyboardKeySize,
 } from './keyboard-key.shared';
 
-const KeyboardKeyVueElement = createVueCustomElement(
-  KeyboardKeyVueComponent,
-  `${UIKIT_NAME}-keyboard-key`,
-);
+const KeyboardKeyVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(KeyboardKeyVueComponent, `${UIKIT_NAME}-keyboard-key`);
 
 /** Light-DOM representation of a key or shortcut with Vue-equivalent semantics. */
 export class KeyboardKeyElement extends KeyboardKeyVueElement {

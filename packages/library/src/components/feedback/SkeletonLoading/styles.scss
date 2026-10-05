@@ -31,7 +31,7 @@ $sizes: (
   display: block;
   width: 100%;
   overflow: hidden;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background: linear-gradient(
     90deg,
     var(--peaui-color-grey-100) 0%,

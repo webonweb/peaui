@@ -2,8 +2,10 @@ import { createStoryContent } from '@peaui/storybook-shell/src/components';
 import type { Meta, StoryObj } from '@storybook/web-components';
 
 import { CardCarouselElement, defineCardCarousel } from './index.wc';
+import { ButtonActionElement, defineButtonAction } from '../../data-entry/ButtonAction/index.wc';
 
 defineCardCarousel();
+defineButtonAction();
 
 const demoCards = [
   {
@@ -119,7 +121,7 @@ function getSettings(storyMeta: Meta<CardCarouselStoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };
@@ -135,7 +137,6 @@ function getSettings(storyMeta: Meta<CardCarouselStoryArgs>) {
 
 function createCard(card: (typeof demoCards)[number]): HTMLElement {
   const article = document.createElement('article');
-  const badge = document.createElement('span');
   const title = document.createElement('strong');
   const content = document.createElement('p');
 
@@ -291,5 +292,28 @@ export const WithAnimation: Story = {
     isNavigationDotsVisible: true,
     isNavigationVisible: true,
     withAnimation: true,
+  },
+};
+
+export const DynamicSlides: Story = {
+  render: () => {
+    const wrapper = document.createElement('div');
+    const carousel = new CardCarouselElement();
+    carousel.defaultVisibleSlides = 1;
+    const cards = ['A', 'B', 'C', 'X'].map((key) => {
+      const article = document.createElement('article');
+      article.textContent = `Karta ${key}`;
+      return article;
+    });
+    carousel.append(...cards.slice(0, 3));
+    const update = new ButtonActionElement();
+    update.textContent = 'Zaktualizuj karty';
+    update.addEventListener('click', () => {
+      cards[1]!.remove();
+      cards[2]!.remove();
+      carousel.append(cards[3]!);
+    });
+    wrapper.append(update, carousel);
+    return wrapper;
   },
 };

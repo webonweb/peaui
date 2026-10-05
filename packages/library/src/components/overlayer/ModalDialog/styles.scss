@@ -17,7 +17,7 @@
 .peaui-modal-dialog__inner {
   background-color: var(--peaui-color-grey-0);
   border: 1px solid var(--peaui-color-grey-300);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   padding: 1.5rem;
   will-change: transform, opacity;
 }

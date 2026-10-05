@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildPublicRoutes,
   parseGeneratedArraySource,
+  parseGeneratedValueSource,
   renderNotFoundHtml,
   renderRobots,
   renderRouteHtml,
@@ -16,6 +17,17 @@ const routes = buildPublicRoutes({
 });
 
 describe('static SEO files', () => {
+  it('builds routes from the lightweight catalog independently of API row storage', () => {
+    const catalog = parseGeneratedValueSource(
+      `export const catalog = {
+      vue: [{ category: 'form', name: 'FormInput' }],
+      react: [{ category: 'form', name: 'FormInput' }],
+      'web-components': [{ category: 'form', name: 'FormInput' }],
+    } as const;`,
+      'catalog',
+    );
+    expect(buildPublicRoutes(catalog)).toEqual(routes);
+  });
   it('reads Prettier-formatted TypeScript arrays without relying on JSON syntax', () => {
     const source = `
       export const generated = [

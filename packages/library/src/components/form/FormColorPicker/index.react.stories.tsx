@@ -155,7 +155,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState('#287BB5');
     const [open, setOpen] = useState(false);
     return (

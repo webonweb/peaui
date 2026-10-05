@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { ListLimitControlRenderer } from '@/react/renderer-entries/list-limit-control.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type ListLimitControlProps = PeauiReactProps<'ListLimitControl'>;
 
-const ListLimitControl = createPeauiReactComponent('ListLimitControl');
+const ListLimitControl = createDirectReactComponent('ListLimitControl', ListLimitControlRenderer);
 
 export default ListLimitControl;

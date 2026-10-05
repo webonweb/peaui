@@ -2,7 +2,8 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, nextTick, useAttrs } from 'vue';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -24,11 +25,10 @@ const {
   dataTestId?: string;
 }>();
 
-const slots = useSlots();
 const attrs = useAttrs();
 const classNameComponent = `${UIKIT_NAME}-form-field-radio`;
 const modelValue = defineModel<string | number | boolean | undefined>('value', { required: true });
-const hasDefaultSlot = computed(() => !!slots.default);
+const hasDefaultSlot = useSlotPresence('default');
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -52,6 +52,7 @@ const bindings = computed(() => {
     'aria-invalid': !isValid,
     'aria-label': inputAriaLabel.value,
     'aria-required': required || false,
+    required: required || undefined,
     id,
     name,
     type: 'radio',
@@ -79,12 +80,15 @@ function handleSelect(): void {
   modelValue.value = optionValue;
 }
 
-function handleOnChange(event: Event): void {
+async function handleOnChange(event: Event): Promise<void> {
   if (!(event.target instanceof HTMLInputElement) || !event.target.checked) {
     return;
   }
 
+  const input = event.target;
   handleSelect();
+  await nextTick();
+  input.checked = isChecked.value;
 }
 
 function handleOnKeydown(event: KeyboardEvent): void {

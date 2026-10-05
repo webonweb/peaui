@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
@@ -142,6 +143,7 @@ export class MessageTextElement extends HTMLElement {
   #rootElement = document.createElement('div');
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -159,7 +161,8 @@ export class MessageTextElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -320,7 +323,7 @@ export class MessageTextElement extends HTMLElement {
       const icon =
         this.#iconElement instanceof SvgIconElement
           ? this.#iconElement
-          : (document.createElement(SvgIconElement.tagName) as SvgIconElement);
+          : document.createElement(SvgIconElement.tagName);
 
       icon.name = ownIcon;
       icon.dataTestId = this.#iconTestId;

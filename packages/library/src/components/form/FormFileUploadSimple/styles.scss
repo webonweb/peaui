@@ -9,7 +9,7 @@
   display: flex;
   width: 100%;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
   border: 1px solid var(--peaui-color-grey-200);
 
   @include set-param(border-radius, 0.5rem);
@@ -84,7 +84,7 @@
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 1rem;
+  gap: var(--peaui-space-4);
 
   @include set-param(min-height, 3rem);
 }

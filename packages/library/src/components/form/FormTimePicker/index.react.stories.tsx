@@ -119,7 +119,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>();
     const [open, setOpen] = useState(false);
     return (
@@ -164,5 +164,21 @@ export const MobileAndLongLabel: Story = {
         name="timeMobile"
       />
     </div>
+  ),
+};
+
+export const NativeRequiredAndReset: Story = {
+  render: () => (
+    <form onSubmit={(event) => event.preventDefault()}>
+      <FormTimePicker
+        id="native-time"
+        name="value"
+        label="Required value"
+        variant="segmented"
+        required
+      />
+      <button type="submit">Validate</button>
+      <button type="reset">Reset</button>
+    </form>
   ),
 };

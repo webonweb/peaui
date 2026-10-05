@@ -132,6 +132,7 @@ function handleToggle(): void {
 }
 
 function handleRemove(): void {
+  if (disabled) return;
   emit('on:remove', id ?? '');
 }
 
@@ -194,6 +195,7 @@ function getChildTestId(index: number): string | undefined {
         v-if="canRemove"
         type="button"
         :class="`${classNameComponent}__remove`"
+        :disabled="disabled"
         :data-testid="removeButtonTestId"
         :aria-label="removeButtonAriaLabel"
         @click.stop="handleRemove"
@@ -218,11 +220,12 @@ function getChildTestId(index: number): string | undefined {
         >
           <li
             v-for="([childrenKey, child], index) in childEntries"
-            :key="child.label"
+            :key="childrenKey"
             :class="`${classNameComponent}__child`"
           >
             <TreeList
               :canRemove="canRemove"
+              :disabled="disabled"
               :dataTestId="getChildTestId(index)"
               :id="childrenKey"
               :isLast="index === childEntries.length - 1"

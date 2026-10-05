@@ -53,7 +53,7 @@ export const VariantsAndSizes: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState(false);
     return (
       <div style={{ display: 'grid', gap: '.75rem', justifyItems: 'start' }}>

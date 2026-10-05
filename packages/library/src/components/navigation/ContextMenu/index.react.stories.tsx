@@ -127,7 +127,7 @@ export const DynamicContext: Story = {
 };
 
 export const RemovedTarget: Story = {
-  render: () => {
+  render: function Render() {
     const [show, setShow] = useState(true);
     return (
       <div style={{ display: 'grid', gap: '1rem' }}>

@@ -10,6 +10,35 @@ import { avatarGroupDemoItems } from './avatar-group.demo';
 afterEach(cleanup);
 
 describe('AvatarGroup React', () => {
+  it('keeps closed overflow content independent of the hidden member count', () => {
+    const many = Array.from({ length: 1000 }, (_, id) => ({ id, name: `Person ${id}` }));
+    const { container } = render(
+      <AvatarGroup items={many} maxVisible={3} overflowMode="popover" />,
+    );
+    expect(container.querySelectorAll('.peaui-avatar-group__popover-button')).toHaveLength(0);
+    expect(container.querySelectorAll('*').length).toBeLessThan(60);
+    expect(container.querySelector('[role="dialog"]')?.id).toBe(
+      container
+        .querySelector('.peaui-avatar-group__overflow-button')
+        ?.getAttribute('aria-controls'),
+    );
+  });
+
+  it.each(['disabled', 'loading'] as const)('preserves focus on a dynamic %s update', (state) => {
+    const props = { items: avatarGroupDemoItems, maxVisible: 1, overflowMode: 'popover' as const };
+    const { container, rerender } = render(<AvatarGroup {...props} />);
+    fireEvent.click(container.querySelector('.peaui-avatar-group__overflow-button')!);
+    expect(screen.getByRole('dialog').contains(document.activeElement)).toBe(true);
+    rerender(<AvatarGroup {...props} {...{ [state]: true }} />);
+    if (state === 'disabled') {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(document.activeElement).toBe(container.querySelector('.peaui-avatar-group'));
+    } else {
+      expect(screen.getByRole('dialog')).toHaveFocus();
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    }
+  });
   it('renderuje semantyczną listę, limit i stabilną kolejność osób', () => {
     const { container } = render(
       <AvatarGroup
@@ -74,9 +103,11 @@ describe('AvatarGroup React', () => {
   });
 
   it('nie renderuje licznika w trybie none i wspiera render props', () => {
-    const renderItem = vi.fn((item: (typeof avatarGroupDemoItems)[number]) => (
-      <span>{item.initials ?? item.name}</span>
-    ));
+    const renderItem = vi.fn(
+      (item: import('@/react/generated-react-props').PeauiAvatarGroupItem) => (
+        <span>{item.initials ?? item.name}</span>
+      ),
+    );
     const { container, rerender } = render(
       <AvatarGroup
         items={avatarGroupDemoItems}
@@ -99,6 +130,7 @@ describe('AvatarGroup React', () => {
         renderOverflow={(count) => <span>Pozostało {count}</span>}
       />,
     );
+    fireEvent.click(container.querySelector('.peaui-avatar-group__overflow-button')!);
     expect(screen.getByText('Pełny skład')).toBeInTheDocument();
     expect(screen.getByText('Pozostało 3')).toBeInTheDocument();
   });

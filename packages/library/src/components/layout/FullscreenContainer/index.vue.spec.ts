@@ -95,8 +95,12 @@ describe('FullscreenContainerComponent', () => {
     expect(
       wrapper.get('[data-testid="fullscreen-container-icon"]').attributes('data-icon-name'),
     ).toBe('compressArrows');
-    expect(document.body.style.overflow).toBe('hidden');
-    expect(document.documentElement.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains('peaui-fullscreen-container--scroll-hidden')).toBe(
+      true,
+    );
+    expect(
+      document.documentElement.classList.contains('peaui-fullscreen-container--scroll-hidden'),
+    ).toBe(true);
 
     await toggle.trigger('click');
 
@@ -131,8 +135,12 @@ describe('FullscreenContainerComponent', () => {
 
     await wrapper.get('[data-testid="fullscreen-container-toggle"]').trigger('click');
 
-    expect(document.body.style.overflow).toBe('hidden');
-    expect(document.documentElement.style.overflow).toBe('hidden');
+    expect(document.body.classList.contains('peaui-fullscreen-container--scroll-hidden')).toBe(
+      true,
+    );
+    expect(
+      document.documentElement.classList.contains('peaui-fullscreen-container--scroll-hidden'),
+    ).toBe(true);
 
     wrapper.unmount();
 

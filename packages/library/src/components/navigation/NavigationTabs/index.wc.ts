@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import NavigationTabsVueComponent from './index.ce.vue';
 
-export const NavigationTabsElement = createVueCustomElement(
-  NavigationTabsVueComponent,
-  `${UIKIT_NAME}-navigation-tabs`,
-);
+export const NavigationTabsElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(NavigationTabsVueComponent, `${UIKIT_NAME}-navigation-tabs`);
 
 export function defineNavigationTabs(): void {
   definePeauiCustomElement(NavigationTabsElement);

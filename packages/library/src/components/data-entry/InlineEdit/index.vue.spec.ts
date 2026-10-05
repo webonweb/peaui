@@ -96,10 +96,10 @@ describe('InlineEdit Vue', () => {
 
     expect(wrapper.emitted('save')?.[0]?.[0]).toEqual({ previousValue: 2, value: 3 });
     expect(wrapper.emitted('update:value')).toBeUndefined();
-    expect(wrapper.get('[data-state="editing-dirty"]').exists()).toBe(true);
+    expect(wrapper.find('[data-state="editing-dirty"]').exists()).toBe(true);
 
     await wrapper.setProps({ loading: true });
-    expect(wrapper.get('[aria-busy="true"]').exists()).toBe(true);
+    expect(wrapper.find('[aria-busy="true"]').exists()).toBe(true);
     expect(wrapper.get('[role="status"]').text()).toContain('Zapisywanie');
   });
 
@@ -115,7 +115,7 @@ describe('InlineEdit Vue', () => {
     expect(wrapper.text()).toContain('Do weryfikacji');
     expect(wrapper.get('button').attributes('aria-label')).toBe('Edytuj wartość');
     await wrapper.get('.peaui-inline-edit__display').trigger('dblclick');
-    expect(wrapper.get('[role="combobox"]').exists()).toBe(true);
+    expect(wrapper.find('[role="combobox"]').exists()).toBe(true);
   });
 
   it('does not expose activation for readonly and blocks disabled editing', async () => {
@@ -125,6 +125,6 @@ describe('InlineEdit Vue', () => {
     const disabledWrapper = mount(InlineEdit, { props: { disabled: true, value: 'Wyłączone' } });
     await disabledWrapper.get('button').trigger('click');
     expect(disabledWrapper.find('input').exists()).toBe(false);
-    expect(disabledWrapper.get('[aria-disabled="true"]').exists()).toBe(true);
+    expect(disabledWrapper.find('[aria-disabled="true"]').exists()).toBe(true);
   });
 });

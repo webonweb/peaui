@@ -39,8 +39,8 @@ describe('ToggleGroup Vue', () => {
 
   it('emituje model przed change i zachowuje typ wartości single', async () => {
     const order: string[] = [];
-    const onValueChange = vi.fn(() => order.push('value'));
-    const onChange = vi.fn(() => order.push('change'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('value'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
     render(ToggleGroup, {
       props: { items, onChange, 'onUpdate:value': onValueChange },
     });

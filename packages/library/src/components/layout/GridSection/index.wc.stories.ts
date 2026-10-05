@@ -60,7 +60,7 @@ function getSettings(storyMeta: Meta<GridSectionStoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };

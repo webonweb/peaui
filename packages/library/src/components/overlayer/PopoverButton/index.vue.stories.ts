@@ -9,14 +9,7 @@ type ButtonSize = 'xs' | 's' | 'm' | 'l';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 const meta: Meta<typeof PopoverButtonComponent> = {
   title: '8. Overlayer/PopoverButton',
@@ -203,5 +196,13 @@ export const Variants: Story = {
         </div>
       </StoryContent>
     `,
+  }),
+};
+
+export const KeyboardBetweenControls: Story = {
+  render: () => ({
+    components: { PopoverButtonComponent },
+    template:
+      '<PopoverButtonComponent aria-label="Open panel">Open panel<template #content><button type="button">First action</button><button type="button">Second action</button></template></PopoverButtonComponent>',
   }),
 };

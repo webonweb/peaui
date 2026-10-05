@@ -51,7 +51,7 @@ $sizes: (
   align-items: center;
   justify-content: flex-start;
   border: 1px solid var(--peaui-color-grey-200);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background-color: var(--peaui-color-grey-0);
   color: var(--peaui-color-primary-800);
   user-select: none;
@@ -85,7 +85,7 @@ $sizes: (
   cursor: not-allowed;
   border-color: var(--peaui-color-grey-200);
   background-color: var(--peaui-color-grey-50);
-  color: var(--peaui-color-grey-400);
+  color: var(--peaui-color-grey-600);
 }
 
 .peaui-form-button-checkbox__label--disabled:hover {
@@ -107,7 +107,7 @@ $sizes: (
   position: relative;
   flex: 0 0 auto;
   border: 1px solid var(--peaui-color-primary-700);
-  border-radius: 0.25rem;
+  border-radius: var(--peaui-radius-sm);
   background-color: var(--peaui-color-grey-0);
 
   @include transition(background-color, border-color, box-shadow);

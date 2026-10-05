@@ -1,8 +1,5 @@
 <script lang="ts">
-export interface FormFileUploadValue {
-  file: File;
-  image: string;
-}
+export type { FormFileUploadValue, FileUploadValueMode } from './file-upload.shared';
 
 export type FormFileUploadVariant = 'primary' | 'danger';
 </script>
@@ -14,7 +11,14 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 import { UIKIT_NAME } from '@/constants';
 import { ERROR_MESSAGES } from '@/constants/error.const';
-import { computed, nextTick, ref, useAttrs, useId } from 'vue';
+import { computed, nextTick, ref, useAttrs, useId, onBeforeUnmount, watch } from 'vue';
+import {
+  getUploadFile,
+  readUploadImage,
+  validateUploadFile,
+  type FormFileUploadValue,
+  type FileUploadValueMode,
+} from './file-upload.shared';
 
 defineOptions({
   inheritAttrs: false,
@@ -29,6 +33,7 @@ const props = withDefaults(
     maxFileSize?: number;
     variant?: FormFileUploadVariant;
     dataTestId?: string;
+    valueMode?: FileUploadValueMode;
   }>(),
   {
     allowedTypes: () => ['image/jpeg', 'image/png', 'image/jpg'],
@@ -36,6 +41,7 @@ const props = withDefaults(
     maxFileSize: 5 * 1024 * 1024,
     variant: 'primary',
     dataTestId: undefined,
+    valueMode: 'object',
   },
 );
 
@@ -46,9 +52,41 @@ const parsedFileToImage = ref<string | null>(null);
 const validationError = ref<string | null>(null);
 
 const classNameComponent = `${UIKIT_NAME}-form-file-upload`;
-const modelValueImage = defineModel<FormFileUploadValue | undefined>('file', {
+const fileModel = defineModel<FormFileUploadValue | File | undefined>('file', {
   required: false,
 });
+let imageRequest = 0;
+let previewFile: File | undefined;
+onBeforeUnmount(() => {
+  imageRequest += 1;
+});
+const modelValueImage = computed(() => {
+  const file = getUploadFile(fileModel.value);
+  if (!file) return undefined;
+  return {
+    file,
+    image:
+      fileModel.value && 'image' in fileModel.value
+        ? fileModel.value.image
+        : (parsedFileToImage.value ?? ''),
+  };
+});
+watch(
+  fileModel,
+  async (value) => {
+    if (typeof File === 'undefined' || !(value instanceof File) || value === previewFile) return;
+    previewFile = value;
+    parsedFileToImage.value = null;
+    const request = ++imageRequest;
+    try {
+      const image = await readUploadImage(value);
+      if (request === imageRequest) parsedFileToImage.value = image;
+    } catch {
+      /* The file remains usable even when its preview cannot be decoded. */
+    }
+  },
+  { immediate: true },
+);
 
 const emit = defineEmits<{
   (e: 'on:remove'): void;
@@ -133,36 +171,29 @@ const handleFileUpload = async (event: Event) => {
     return;
   }
 
-  if (!props.allowedTypes.includes(document.type)) {
-    validationError.value = ERROR_MESSAGES.photoFormat;
-    return;
-  }
+  validationError.value =
+    validateUploadFile(document, props.allowedTypes, props.maxFileSize, true) ?? null;
+  if (validationError.value) return;
 
-  if (document.size > props.maxFileSize) {
-    validationError.value = ERROR_MESSAGES.photoSize;
-    return;
-  }
-
-  nextTick(() => transferFileToImage(document));
+  void nextTick(() => transferFileToImage(document));
 
   if (inputElement.value) {
     inputElement.value.value = '';
   }
 };
 
-const transferFileToImage = (file: File) => {
+const transferFileToImage = async (file: File) => {
+  const request = ++imageRequest;
   parsedFileToImage.value = null;
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    parsedFileToImage.value = reader.result as string;
-    modelValueImage.value = {
-      file,
-      image: reader.result as string,
-    };
-  };
-
-  reader.readAsDataURL(file);
+  try {
+    const image = await readUploadImage(file);
+    if (request !== imageRequest || props.disabled) return;
+    previewFile = file;
+    parsedFileToImage.value = image;
+    fileModel.value = props.valueMode === 'file' ? file : { file, image };
+  } catch {
+    if (request === imageRequest) validationError.value = ERROR_MESSAGES.photoFormat;
+  }
 };
 
 const handleRemoveFile = () => {

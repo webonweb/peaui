@@ -125,7 +125,7 @@ function getSettings(storyMeta: Meta<StoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };
@@ -354,5 +354,34 @@ export const WithHeader: Story = {
     borderColor: 'grey',
     size: 'm',
     dataTestId: 'card-panel-header',
+  },
+};
+
+export const Link: Story = {
+  render: () => {
+    const element = new CardPanelElement();
+    element.setAttribute('as', 'a');
+    element.setAttribute('href', '#orders');
+    element.textContent = 'Wszystkie zamówienia';
+    return element;
+  },
+};
+
+export const DynamicHeaderSlot: Story = {
+  render: () => {
+    const container = document.createElement('div');
+    const toggle = document.createElement('button');
+    const panel = new CardPanelElement();
+    const heading = document.createElement('strong');
+    toggle.textContent = 'Move heading between header and content';
+    heading.textContent = 'Account';
+    heading.slot = 'header';
+    panel.append(heading, document.createTextNode('Account details'));
+    toggle.addEventListener('click', () => {
+      if (heading.hasAttribute('slot')) heading.removeAttribute('slot');
+      else heading.slot = 'header';
+    });
+    container.append(toggle, panel);
+    return container;
   },
 };

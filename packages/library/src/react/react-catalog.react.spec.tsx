@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import '@testing-library/jest-dom/vitest';
 
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createElement, type ComponentType } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -44,8 +44,8 @@ afterEach(cleanup);
 
 describe('katalog komponentów React', () => {
   it('udostępnia natywny komponent React dla każdego komponentu Vue', () => {
-    expect(reactComponentCatalog).toHaveLength(84);
-    expect(Object.keys(componentModules)).toHaveLength(84);
+    expect(reactComponentCatalog).toHaveLength(87);
+    expect(Object.keys(componentModules)).toHaveLength(87);
 
     for (const definition of reactComponentCatalog) {
       const modulePath = `../components/${definition.category}/${definition.sourceName}/index.tsx`;
@@ -165,7 +165,7 @@ describe('katalog komponentów React', () => {
     expect(document.querySelector('.peaui-avatar__image')).toHaveAttribute('alt', '');
   });
 
-  it('łączy trigger InfoTooltip z dymkiem i obsługuje mysz oraz fokus', () => {
+  it('łączy trigger InfoTooltip z dymkiem i obsługuje mysz oraz fokus', async () => {
     const { container } = render(
       <InfoTooltip dataTestId="info-tooltip" description="Treść podpowiedzi" title="Podpowiedź">
         Najedź albo ustaw fokus
@@ -182,7 +182,7 @@ describe('katalog komponentów React', () => {
     fireEvent.mouseEnter(trigger);
     expect(trigger).toHaveAttribute('data-open', 'true');
     fireEvent.mouseLeave(trigger);
-    expect(trigger).not.toHaveAttribute('data-open');
+    await waitFor(() => expect(trigger).not.toHaveAttribute('data-open'));
     fireEvent.focus(trigger);
     expect(trigger).toHaveAttribute('data-open', 'true');
     fireEvent.blur(trigger);
@@ -403,7 +403,7 @@ describe('katalog komponentów React', () => {
 
     expect(container.querySelector('.peaui-navigation-card--interactive')).toBeInTheDocument();
     expect(container.querySelector('.peaui-navigation-card__content')).toBeInTheDocument();
-    expect(container.querySelector('.peaui-navigation-card__title--size-m')).toBeInTheDocument();
+    expect(container.querySelector('.peaui-navigation-card__title--size-s')).toBeInTheDocument();
     expect(
       container.querySelector('.peaui-navigation-card__icon--variant-during'),
     ).toBeInTheDocument();
@@ -475,7 +475,9 @@ describe('katalog komponentów React', () => {
           name="description"
           value="Tekst"
         />
-        <FormContainer showCancelButton>Treść formularza</FormContainer>
+        <FormContainer label="Formularz" showCancelButton>
+          Treść formularza
+        </FormContainer>
         <FormFileUploadSimple />
       </>,
     );

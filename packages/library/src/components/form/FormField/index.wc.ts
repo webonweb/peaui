@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
 import { MessageTextElement, defineMessageText } from '@/components/feedback/MessageText/index.wc';
 import {
@@ -58,12 +59,12 @@ function getBooleanAttributeValue(element: HTMLElement, name: string, fallback =
 }
 
 function setBooleanAttribute(element: HTMLElement, name: string, value: boolean | undefined) {
-  if (value === undefined) {
+  if (value !== true) {
     element.removeAttribute(name);
     return;
   }
 
-  element.setAttribute(name, String(value));
+  element.setAttribute(name, '');
 }
 
 function getNumberAttributeValue(element: HTMLElement, name: string): number | undefined {
@@ -129,6 +130,7 @@ export class FormFieldElement extends HTMLElement {
       'after',
       'before',
       'can-erase',
+      'clear-label',
       'class',
       'data-testid',
       'disabled',
@@ -145,6 +147,8 @@ export class FormFieldElement extends HTMLElement {
       'value',
       'aria-label',
       'aria-labelledby',
+      'aria-describedby',
+      'aria-invalid',
     ];
   }
 
@@ -155,31 +159,25 @@ export class FormFieldElement extends HTMLElement {
   #boundFieldElement: HTMLElement | null = null;
   #contentElement = document.createElement('div');
   #defaultNodes: Node[] = [];
-  #descriptionMessageElement = document.createElement(
-    MessageTextElement.tagName,
-  ) as MessageTextElement;
+  #descriptionMessageElement = document.createElement(MessageTextElement.tagName);
   #descriptionNodes: Node[] = [];
   #eraseButtonElement = document.createElement('button');
-  #eraseIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
-  #errorMessageElement = document.createElement(MessageTextElement.tagName) as MessageTextElement;
+  #eraseIconElement = document.createElement(SvgIconElement.tagName);
+  #errorMessageElement = document.createElement(MessageTextElement.tagName);
   #errorNodes: Node[] = [];
-  #formFieldLabelElement = document.createElement(
-    FormFieldLabelElement.tagName,
-  ) as FormFieldLabelElement;
+  #formFieldLabelElement = document.createElement(FormFieldLabelElement.tagName);
   #hintNodes: Node[] = [];
-  #iconAfterElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
-  #iconBeforeElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
+  #iconAfterElement = document.createElement(SvgIconElement.tagName);
+  #iconBeforeElement = document.createElement(SvgIconElement.tagName);
   #generatedFieldId = getNextGeneratedFieldId();
   #isMounted = false;
   #isSyncingDom = false;
   #managedControlAttributeNames = new Set<string>();
   #managedControlClassNames = new Set<string>();
-  #maxLengthMessageElement = document.createElement(
-    MessageTextElement.tagName,
-  ) as MessageTextElement;
+  #maxLengthMessageElement = document.createElement(MessageTextElement.tagName);
   #mutationObserver: MutationObserver | null = null;
   #rootElement = document.createElement('div');
-  #successMessageElement = document.createElement(MessageTextElement.tagName) as MessageTextElement;
+  #successMessageElement = document.createElement(MessageTextElement.tagName);
   #successNodes: Node[] = [];
   #valueOverride = false;
   #valueProp: FormFieldValue = undefined;
@@ -196,6 +194,7 @@ export class FormFieldElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -213,7 +212,8 @@ export class FormFieldElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -247,6 +247,14 @@ export class FormFieldElement extends HTMLElement {
 
   set canErase(value: boolean) {
     setBooleanAttribute(this, 'can-erase', value);
+  }
+
+  get clearLabel(): string {
+    return this.getAttribute('clear-label') ?? 'Usun wartosc pola';
+  }
+
+  set clearLabel(value: string) {
+    this.setAttribute('clear-label', value);
   }
 
   get disabled(): boolean {
@@ -594,7 +602,10 @@ export class FormFieldElement extends HTMLElement {
     const describedById = this.#describedById;
 
     nextAttributes.set('aria-disabled', String(this.disabled));
-    nextAttributes.set('aria-invalid', String(this.#hasErrorSlot));
+    nextAttributes.set(
+      'aria-invalid',
+      String(this.#hasErrorSlot || this.getAttribute('aria-invalid') === 'true'),
+    );
     nextAttributes.set('aria-required', String(this.required || false));
     nextAttributes.set('data-disabled', String(this.disabled));
     nextAttributes.set('id', this.#resolvedFieldId);
@@ -634,6 +645,10 @@ export class FormFieldElement extends HTMLElement {
   }
 
   #syncControlState(fieldElement: HTMLElement): void {
+    if ('required' in fieldElement) {
+      (fieldElement as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).required =
+        this.required;
+    }
     fieldElement.style.setProperty('--pr', this.#paddingRightValue);
     fieldElement.style.setProperty('--pl', this.#paddingLeftValue);
 
@@ -741,6 +756,7 @@ export class FormFieldElement extends HTMLElement {
     }
 
     if (this.#isEraseButtonVisible) {
+      this.#eraseButtonElement.setAttribute('aria-label', this.clearLabel);
       if (this.#eraseButtonTestId) {
         this.#eraseButtonElement.setAttribute('data-testid', this.#eraseButtonTestId);
       } else {
@@ -964,11 +980,13 @@ export class FormFieldElement extends HTMLElement {
   }
 
   get #fieldAriaLabelledBy(): string | undefined {
-    return this.label ? undefined : this.#explicitAriaLabelledBy;
+    return this.#explicitAriaLabelledBy;
   }
 
   get #describedById(): string | undefined {
-    const describedByIds = new Set<string>();
+    const describedByIds = new Set(
+      (this.getAttribute('aria-describedby') ?? '').split(/\s+/).filter(Boolean),
+    );
 
     if (this.#visibleMessageElement === this.#errorMessageElement) {
       describedByIds.add(this.#errorMessageId);
@@ -1014,6 +1032,7 @@ export class FormFieldElement extends HTMLElement {
   }
 
   get #isEraseButtonVisible(): boolean {
+    if (this.readonly || this.disabled) return false;
     const value = this.value;
 
     if (typeof value === 'object') {
@@ -1040,7 +1059,7 @@ export class FormFieldElement extends HTMLElement {
   }
 
   get #resolvedFieldId(): string {
-    return getNormalizedAttributeValue(this.id) ?? this.#generatedFieldId;
+    return `${getNormalizedAttributeValue(this.id) ?? this.#generatedFieldId}-control`;
   }
 
   get #visibleMessageElement(): MessageTextElement | null {
@@ -1122,6 +1141,7 @@ export class FormFieldElement extends HTMLElement {
   #handleEraseClick = (event: MouseEvent): void => {
     event.preventDefault();
     event.stopPropagation();
+    if (this.disabled || this.readonly) return;
     this.dispatchEvent(new CustomEvent('on:remove', { bubbles: true, composed: true }));
   };
 }

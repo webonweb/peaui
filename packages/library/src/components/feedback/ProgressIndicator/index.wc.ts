@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import ProgressIndicatorVueComponent from './index.ce.vue';
 
-export const ProgressIndicatorElement = createVueCustomElement(
-  ProgressIndicatorVueComponent,
-  `${UIKIT_NAME}-progress-indicator`,
-);
+export const ProgressIndicatorElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ProgressIndicatorVueComponent, `${UIKIT_NAME}-progress-indicator`);
 
 export function defineProgressIndicator(): void {
   definePeauiCustomElement(ProgressIndicatorElement);

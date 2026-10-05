@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { FormTextareaRenderer } from '@/react/renderer-entries/form-textarea.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type FormTextareaProps = PeauiReactProps<'FormTextarea'>;
 
-const FormTextarea = createPeauiReactComponent('FormTextarea');
+const FormTextarea = createDirectReactComponent('FormTextarea', FormTextareaRenderer);
 
 export default FormTextarea;

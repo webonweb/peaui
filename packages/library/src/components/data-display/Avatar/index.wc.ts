@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
@@ -91,7 +92,7 @@ export class AvatarElement extends HTMLElement {
   #fallback = document.createElement('span');
   #initialsElement = document.createElement('span');
   #iconWrapper = document.createElement('span');
-  #icon = document.createElement(SvgIconElement.tagName) as SvgIconElement;
+  #icon = document.createElement(SvgIconElement.tagName);
   #statusElement = document.createElement('span');
   #statusLabelElement = document.createElement('span');
   #image: HTMLImageElement | null = null;
@@ -102,6 +103,7 @@ export class AvatarElement extends HTMLElement {
   readonly #statusId = `${CLASS_NAME}-status-${++nextAvatarId}`;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#connected) {
       this.render();
       return;
@@ -294,12 +296,14 @@ export class AvatarElement extends HTMLElement {
     this.#image.addEventListener('load', (event) => {
       this.#imageState = 'loaded';
       this.render();
-      this.dispatchEvent(new CustomEvent('load', { detail: event }));
+      this.dispatchEvent(new CustomEvent('load', { bubbles: true, composed: true, detail: event }));
     });
     this.#image.addEventListener('error', (event) => {
       this.#imageState = 'error';
       this.render();
-      this.dispatchEvent(new CustomEvent('error', { detail: event }));
+      this.dispatchEvent(
+        new CustomEvent('error', { bubbles: true, composed: true, detail: event }),
+      );
     });
   }
 
@@ -485,7 +489,10 @@ export class AvatarElement extends HTMLElement {
 
   get #accessibleName(): string {
     return (
-      this.ariaLabel ?? this.alt ?? this.name ?? (this.#resolvedInitials || 'Awatar użytkownika')
+      this.ariaLabel ??
+      (this.alt || undefined) ??
+      this.name ??
+      (this.#resolvedInitials || 'Awatar użytkownika')
     );
   }
 }

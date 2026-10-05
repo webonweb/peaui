@@ -21,7 +21,7 @@ test("FormTimePicker WC zachowuje ARIA, listboxy i pełną obsługę klawiatury"
   await expect(input).toHaveAttribute("aria-expanded", "false");
   await expect(input).toHaveAttribute(
     "aria-controls",
-    "appointment-time-time-panel",
+    "appointment-time-control-time-panel",
   );
   await input.focus();
   await page.keyboard.press("ArrowDown");

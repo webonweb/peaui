@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import SearchInputVueComponent from './index.ce.vue';
 
-export const SearchInputElement = createVueCustomElement(
-  SearchInputVueComponent,
-  `${UIKIT_NAME}-search-input`,
-);
+export const SearchInputElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(SearchInputVueComponent, `${UIKIT_NAME}-search-input`);
 
 export function defineSearchInput(): void {
   definePeauiCustomElement(SearchInputElement);

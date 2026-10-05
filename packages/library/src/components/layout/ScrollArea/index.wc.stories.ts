@@ -15,12 +15,14 @@ defineScrollArea();
 function renderArea(
   args: VueCustomElementStoryArgs,
   mode: 'cards' | 'horizontal' | 'both' | 'short' = 'cards',
+  idPrefix = 'scroll-area',
 ): HTMLElement {
   const element = document.createElement(ScrollAreaElement.tagName) as ScrollAreaElement &
     Record<string, unknown>;
   for (const [name, value] of Object.entries(args)) {
     if (value !== undefined) element[name] = value;
   }
+  element.id = idPrefix;
   Object.assign(element.style, {
     blockSize: mode === 'short' ? '12rem' : '18rem',
     maxInlineSize: '40rem',
@@ -36,7 +38,7 @@ function renderArea(
       mode === 'horizontal'
         ? 'display:flex;inline-size:max-content;gap:.75rem;padding:.75rem'
         : 'display:grid;gap:.625rem;padding:.75rem';
-    element.innerHTML = `<div style="${style}">${items.map((item) => `<article id="${item.id}" style="${mode === 'horizontal' ? 'inline-size:14rem;' : ''}padding:.875rem;border:1px solid #dfe5eb;border-radius:.625rem"><strong>${item.title}</strong><p>${item.description}</p></article>`).join('')}</div>`;
+    element.innerHTML = `<div style="${style}">${items.map((item) => `<article id="${idPrefix}-${item.id}" style="${mode === 'horizontal' ? 'inline-size:14rem;' : ''}padding:.875rem;border:1px solid #dfe5eb;border-radius:.625rem"><strong>${item.title}</strong><p>${item.description}</p></article>`).join('')}</div>`;
   }
   return element;
 }
@@ -72,7 +74,7 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Vertical: Story = {};
-export const Native: Story = { args: { type: 'native' } };
+export const Native: Story = { args: { type: 'native', tabindex: undefined } };
 export const AlwaysVisible: Story = { args: { scrollbarVisibility: 'always' } };
 export const HoverVisible: Story = { args: { scrollbarVisibility: 'hover' } };
 export const NoOverflow: Story = { render: (args) => renderArea(args, 'short') };
@@ -104,7 +106,7 @@ export const DynamicAndNarrow: Story = {
 };
 export const Nested: Story = {
   render: (args) => {
-    const outer = renderArea(args);
+    const outer = renderArea(args, 'cards', 'outer-scroll-area');
     const inner = renderArea(
       {
         ...args,
@@ -113,6 +115,7 @@ export const Nested: Story = {
         scrollbarVisibility: 'always',
       },
       'horizontal',
+      'inner-scroll-area',
     );
     inner.style.blockSize = '9rem';
     outer.append(inner);

@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { isCustomElementNode, syncNodeChildren } from '@/helpers/dom.helper';
 
@@ -111,6 +112,7 @@ export class NavigationLinkElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;

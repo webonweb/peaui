@@ -31,4 +31,19 @@ describe('NavigationCard (index.wc.ts)', () => {
 
     expect(element.childNodes.length).toBeGreaterThan(0);
   });
+
+  it('does not interpret HTML from the description property', async () => {
+    const description = '<img src=x onerror="alert(1)">Description';
+    const element = document.createElement(NavigationCardElement.tagName) as InstanceType<
+      typeof NavigationCardElement
+    >;
+    element.title = 'Title';
+    element.description = description;
+    document.body.appendChild(element);
+    await nextTick();
+    await Promise.resolve();
+
+    expect(element.querySelector('p')?.textContent?.trim()).toBe(description);
+    expect(element.querySelector('p img')).toBeNull();
+  });
 });

@@ -251,3 +251,74 @@ export const FormMultiSelect: Story = {
     dataTestId: 'form-multiselect',
   },
 };
+
+export const Localized: Story = {
+  ...FormMultiSelect,
+  args: {
+    ...FormMultiSelect.args,
+    id: 'localized',
+    name: 'localized',
+    label: 'Choice',
+    labels: {
+      placeholder: 'Choose',
+      searchPlaceholder: 'Search',
+      selectPlaceholder: 'Choose an option',
+      empty: 'No matches',
+      emptyWritable: 'No matches. Type a value.',
+      clear: 'Clear selection',
+      selectAll: 'Select all',
+      deselectAll: 'Deselect all',
+    },
+    options: [],
+    withSelectAll: true,
+  },
+};
+
+export const Virtualized: Story = {
+  ...FormMultiSelect,
+  args: {
+    ...FormMultiSelect.args,
+    virtual: true,
+    optionHeight: 48,
+    options: Array.from({ length: 5000 }, (_, value) => ({
+      key: value,
+      value,
+      label: `Option ${value}`,
+    })),
+    id: 'virtual-options',
+    name: 'virtual-options',
+    value: [],
+  },
+};
+
+export const LabelMigration: Story = {
+  ...FormMultiSelect,
+  args: {
+    ...FormMultiSelect.args,
+    id: 'label-migration',
+    name: 'label-migration',
+    valueMode: 'label',
+    options: [
+      { label: 'Alpha', value: 'a' },
+      { label: 'Beta', value: 'b' },
+    ],
+    value: ['Alpha'],
+  },
+};
+
+export const RequiredSelectOnly: Story = {
+  ...FormMultiSelect,
+  args: { ...FormMultiSelect.args, searchable: false, required: true, value: [] },
+};
+
+export const RequiredSearch: Story = {
+  ...FormMultiSelect,
+  args: {
+    ...FormMultiSelect.args,
+    searchable: true,
+    required: true,
+    canErase: true,
+    value: ['a'],
+    options: [{ label: 'Alpha', value: 'a' }],
+  },
+};

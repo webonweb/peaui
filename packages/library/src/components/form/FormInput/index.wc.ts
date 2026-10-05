@@ -1,3 +1,5 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
+import { connectFormReset } from '@/helpers/form-reset.helper';
 import { FormFieldElement, defineFormField } from '@/components/form/FormField/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
@@ -67,12 +69,12 @@ function getBooleanAttributeValue(element: HTMLElement, name: string, fallback =
 }
 
 function setBooleanAttribute(element: HTMLElement, name: string, value: boolean | undefined) {
-  if (value === undefined) {
+  if (value !== true) {
     element.removeAttribute(name);
     return;
   }
 
-  element.setAttribute(name, String(value));
+  element.setAttribute(name, '');
 }
 
 function getNumberAttributeValue(element: HTMLElement, name: string): number | undefined {
@@ -113,6 +115,7 @@ function normalizeNodes(nodes: Node[]): Node[] {
 defineFormField();
 
 export class FormInputElement extends HTMLElement {
+  #disconnectFormReset?: () => void;
   static readonly tagName = FORM_INPUT_TAG_NAME;
 
   static get observedAttributes(): string[] {
@@ -132,11 +135,27 @@ export class FormInputElement extends HTMLElement {
       'readonly',
       'required',
       'value',
+      'type',
+      'autocomplete',
+      'pattern',
+      'form',
+      'inputmode',
+      'minlength',
+      'maxlength',
+      'multiple',
+      'size',
+      'spellcheck',
+      'autocapitalize',
+      'enterkeyhint',
+      'title',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
     ];
   }
 
   #descriptionNodes: Node[] = [];
-  #fieldElement = document.createElement(FormFieldElement.tagName) as FormFieldElement;
+  #fieldElement = document.createElement(FormFieldElement.tagName);
   #forwardedInputAttributeNames = new Set<string>();
   #hintNodes: Node[] = [];
   #inputElement = document.createElement('input');
@@ -155,6 +174,9 @@ export class FormInputElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
+    this.#disconnectFormReset?.();
+    this.#disconnectFormReset = connectFormReset(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -167,12 +189,14 @@ export class FormInputElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#disconnectFormReset?.();
     this.#isMounted = false;
     this.#mutationObserver?.disconnect();
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -344,6 +368,7 @@ export class FormInputElement extends HTMLElement {
 
     this.#mutationObserver.observe(this, {
       childList: true,
+      attributes: true,
     });
   }
 
@@ -353,6 +378,15 @@ export class FormInputElement extends HTMLElement {
     }
 
     return records.every((record) => {
+      if (record.type === 'attributes') {
+        const name = record.attributeName!;
+        // Declared attributes already render synchronously; arbitrary native
+        // attributes still need to reach the inner control after connection.
+        return (
+          FormInputElement.observedAttributes.includes(name) ||
+          NON_FORWARDED_INPUT_ATTRIBUTES.has(name)
+        );
+      }
       const changedNodes: Node[] = [
         ...Array.from(record.addedNodes),
         ...Array.from(record.removedNodes),
@@ -439,7 +473,7 @@ export class FormInputElement extends HTMLElement {
   #syncInput(): void {
     const nextAttributes = new Map<string, string>();
 
-    this.#inputElement.type = 'text';
+    this.#inputElement.type = this.getAttribute('type') || 'text';
     this.#inputElement.className = FORM_INPUT_CLASS_NAME;
     this.#inputElement.setAttribute('data-type', 'input');
 
@@ -491,7 +525,12 @@ export class FormInputElement extends HTMLElement {
     this.#fieldElement.disabled = this.disabled;
     this.#fieldElement.iconAfter = this.iconAfter;
     this.#fieldElement.iconBefore = this.iconBefore;
-    this.#fieldElement.id = this.id;
+    this.#fieldElement.id = this.id ? `${this.id}-field` : '';
+    for (const name of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
+      const value = this.getAttribute(name);
+      if (value === null) this.#fieldElement.removeAttribute(name);
+      else this.#fieldElement.setAttribute(name, value);
+    }
     this.#fieldElement.label = this.label;
     this.#fieldElement.maxLength = this.maxLength;
     this.#fieldElement.name = this.name;

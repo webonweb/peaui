@@ -12,14 +12,7 @@ type ButtonSize = 'xs' | 's' | 'm' | 'l';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonType = 'button' | 'submit' | 'reset';
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -165,7 +158,7 @@ const onHandlePopoverToggle = (event: Event) => {
     return;
   }
 
-  nextTick(() => {
+  void nextTick(() => {
     focusFirstOption();
   });
 };
@@ -184,12 +177,12 @@ const handleCancelExportRecords = () => {
   typeExportFile.value = undefined;
 };
 
-const onHandleExportRecords = async (type?: string, force = false) => {
+const onHandleExportRecords = (type?: string, force = false) => {
   if (!selectedItemsCount && !force && !forceExport) {
     isModalExportPromptOpen.value = true;
     typeExportFile.value = type;
   } else {
-    await emit('on:export', <string>type);
+    emit('on:export', type as string);
     handleCancelExportRecords();
   }
 };

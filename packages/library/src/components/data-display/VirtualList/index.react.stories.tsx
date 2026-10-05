@@ -44,14 +44,14 @@ export const LargeDataset: Story = {};
 
 export const ListboxKeyboard: Story = {
   args: { semanticRole: 'listbox' },
-  render: (args) => {
+  render: function Render(args) {
     const [activeIndex, setActiveIndex] = useState<number | null>(0);
     return <VirtualList {...args} activeIndex={activeIndex} onActiveIndexChange={setActiveIndex} />;
   },
 };
 
 export const Programmatic: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const list = createRef<VirtualListHandle>();
     return (
       <div style={{ display: 'grid', gap: '0.75rem' }}>
@@ -70,7 +70,7 @@ export const LoadingMore: Story = { args: { hasMore: true, loading: true } };
 export const Error: Story = { args: { error: 'Nie udało się pobrać kolejnej strony.' } };
 
 export const DynamicCollection: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [count, setCount] = useState(100);
     return (
       <div style={{ display: 'grid', gap: '0.75rem' }}>

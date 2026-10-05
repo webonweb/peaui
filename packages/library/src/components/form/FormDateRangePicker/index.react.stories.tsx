@@ -126,7 +126,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<DateRangeValue>();
     const [open, setOpen] = useState(false);
     return (

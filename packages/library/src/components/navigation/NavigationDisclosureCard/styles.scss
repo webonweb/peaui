@@ -2,7 +2,7 @@
 
 .peaui-navigation-disclosure-card {
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background-color: var(--peaui-color-grey-0);
   @include transition(border-color, box-shadow, background-color);
 }
@@ -87,7 +87,7 @@
 .peaui-navigation-disclosure-card__action--link {
   @include set-param(width, 2rem);
   @include set-param(height, 2rem);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background-color: var(--peaui-color-primary-700);
   color: var(--peaui-color-grey-0);
 }

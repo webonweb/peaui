@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Controlled: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [open, setOpen] = useState(true);
     return <DropdownMenu {...args} open={open} onOpenChange={setOpen} />;
   },

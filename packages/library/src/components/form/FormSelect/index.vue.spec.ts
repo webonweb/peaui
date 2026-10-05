@@ -156,16 +156,15 @@ const mountComponent = (
   props: Record<string, unknown> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormSelect, {
+  const wrapper = mount(FormSelect, {
     props: {
       id: 'region',
       name: 'region',
       value: '',
       options: defaultOptions,
+      valueMode: 'label',
       dataTestId: 'form-select',
-      'onUpdate:value': async (value: string | null | undefined) => {
+      'onUpdate:value': async (value: unknown) => {
         await wrapper.setProps({ value });
       },
       ...props,
@@ -185,6 +184,18 @@ const mountComponent = (
 };
 
 describe('FormSelect (index.vue)', () => {
+  it('returns option values by default and offers the label migration mode', async () => {
+    for (const valueMode of [undefined, 'label'] as const) {
+      const wrapper = mountComponent({ valueMode, options: [{ label: 'Alpha', value: 'a' }] });
+      await wrapper.get('input').trigger('keydown', { key: 'ArrowDown' });
+      await wrapper.get('[role="option"]').trigger('click');
+      expect(wrapper.emitted('update:value')?.at(-1)).toEqual([
+        valueMode === 'label' ? 'Alpha' : 'a',
+      ]);
+      wrapper.unmount();
+    }
+  });
+
   it('renders combobox input with derived data-testid and base aria attrs', () => {
     const wrapper = mountComponent({
       value: 'mazowieckie',
@@ -230,10 +241,10 @@ describe('FormSelect (index.vue)', () => {
 
     const options = wrapper.findAll('[role="option"]');
     expect(options).toHaveLength(1);
-    expect(options[0].text()).toContain('Malopolskie');
+    expect(options[0]!.text()).toContain('Malopolskie');
 
-    await options[0].trigger('mousedown');
-    await options[0].trigger('click');
+    await options[0]!.trigger('mousedown');
+    await options[0]!.trigger('click');
     await nextTick();
 
     expect(wrapper.emitted('update:value')?.at(-1)).toEqual(['Malopolskie']);

@@ -23,7 +23,7 @@ export interface ScrollAreaProps {
   scrollbarSize?: number;
   /** Opóźnienie ukrycia automatycznego paska w milisekundach, maksymalnie 10000. */
   autoHideDelay?: number;
-  /** Opcjonalny tabindex natywnego viewportu; bez niego komponent nie dodaje przystanku Tab. */
+  /** Nadpisuje tabindex viewportu. Tryb native domyślnie dodaje przystanek Tab (0). */
   tabindex?: number;
   /** Dostępna nazwa przewijanego regionu. */
   ariaLabel?: string;
@@ -115,13 +115,16 @@ let controller: ScrollAreaController | undefined;
 
 const resolvedId = computed(() => props.id?.trim() || `${classNameComponent}-${generatedId}`);
 const viewportId = computed(() => `${resolvedId.value}-viewport`);
+const viewportTabindex = computed(
+  () => props.tabindex ?? (props.type === 'native' ? 0 : undefined),
+);
 const externalLabel = computed(() => `${attrs['aria-label'] ?? ''}`.trim() || undefined);
 const externalLabelledBy = computed(() => `${attrs['aria-labelledby'] ?? ''}`.trim() || undefined);
 const resolvedLabel = computed(
   () =>
     props.ariaLabel?.trim() ||
     externalLabel.value ||
-    (props.tabindex !== undefined ? 'Obszar przewijania' : undefined),
+    (viewportTabindex.value !== undefined ? 'Obszar przewijania' : undefined),
 );
 const restoreKey = computed(() =>
   props.restorePosition && props.id?.trim() ? props.id.trim() : undefined,
@@ -273,7 +276,7 @@ watch(
       :aria-labelledby="externalLabelledBy"
       :data-testid="viewportTestId"
       :role="resolvedLabel || externalLabelledBy ? 'region' : undefined"
-      :tabindex="tabindex"
+      :tabindex="viewportTabindex"
     >
       <div ref="contentRef" :class="`${classNameComponent}__content`">
         <slot />
@@ -286,7 +289,9 @@ watch(
       :aria-controls="viewportId"
       :aria-label="`${resolvedLabel || 'Obszar przewijania'}: przewijanie poziome`"
       aria-orientation="horizontal"
+      aria-valuemax="0"
       aria-valuemin="0"
+      aria-valuenow="0"
       role="scrollbar"
     >
       <div ref="horizontalThumbRef" :class="`${classNameComponent}__thumb`">
@@ -300,7 +305,9 @@ watch(
       :aria-controls="viewportId"
       :aria-label="`${resolvedLabel || 'Obszar przewijania'}: przewijanie pionowe`"
       aria-orientation="vertical"
+      aria-valuemax="0"
       aria-valuemin="0"
+      aria-valuenow="0"
       role="scrollbar"
     >
       <div ref="verticalThumbRef" :class="`${classNameComponent}__thumb`">

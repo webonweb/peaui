@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import AvatarGroup from './index.vue';
 import type { AvatarGroupItem } from './index.vue';
@@ -15,6 +15,42 @@ const items: AvatarGroupItem[] = [
 afterEach(() => document.body.replaceChildren());
 
 describe('AvatarGroup', () => {
+  it('keeps a closed overflow list independent of the hidden item count', () => {
+    const many = Array.from({ length: 1000 }, (_, id) => ({ id, name: `Person ${id}` }));
+    const wrapper = mount(AvatarGroup, {
+      props: { items: many, maxVisible: 3, overflowMode: 'popover' },
+    });
+    expect(wrapper.findAll('.peaui-avatar-group__popover-button')).toHaveLength(0);
+    expect(wrapper.element.querySelectorAll('*').length).toBeLessThan(60);
+    expect(wrapper.get('[role="dialog"]').attributes('id')).toBe(
+      wrapper.get('.peaui-avatar-group__overflow-button').attributes('aria-controls'),
+    );
+    wrapper.unmount();
+  });
+
+  it.each(['disabled', 'loading'] as const)(
+    'preserves a usable focus location when %s changes while open',
+    async (state) => {
+      const wrapper = mount(AvatarGroup, {
+        attachTo: document.body,
+        props: { items, maxVisible: 1, overflowMode: 'popover' },
+      });
+      await wrapper.get('.peaui-avatar-group__overflow-button').trigger('click');
+      expect(wrapper.get('[role="dialog"]').element.contains(document.activeElement)).toBe(true);
+      await wrapper.setProps({ [state]: true });
+      await wrapper.vm.$nextTick();
+      if (state === 'disabled') {
+        expect(wrapper.get('[role="dialog"]').isVisible()).toBe(false);
+        expect(document.activeElement).toBe(wrapper.element);
+        expect(wrapper.emitted('update:open')?.at(-1)).toEqual([false]);
+      } else {
+        expect(document.activeElement).toBe(wrapper.get('[role="dialog"]').element);
+        await wrapper.get('[role="dialog"]').trigger('keydown', { key: 'Escape' });
+        expect(wrapper.get('[role="dialog"]').isVisible()).toBe(false);
+      }
+      wrapper.unmount();
+    },
+  );
   it('ogranicza widoczne elementy, zachowuje kolejność DOM i wylicza nadmiar', () => {
     const wrapper = mount(AvatarGroup, {
       props: { ariaLabel: 'Zespół', dataTestId: 'team', items, maxVisible: 3 },

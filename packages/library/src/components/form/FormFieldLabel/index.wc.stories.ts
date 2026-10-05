@@ -45,7 +45,7 @@ const meta = {
     text: {
       control: { type: 'text' },
       table: { type: { summary: 'string' }, defaultValue: { summary: undefined } },
-      description: 'Tekst etykiety (renderowany przez innerHTML).',
+      description: 'Tekst etykiety (renderowany bez interpretowania HTML).',
     },
     readonly: {
       control: { type: 'boolean' },
@@ -81,7 +81,7 @@ function getSettings(storyMeta: Meta<StoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };

@@ -22,13 +22,16 @@ const enCopy = (description: string, purpose: string[], input: string): Componen
 export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ImageView: enCopy(
     'A responsive image container with size, maximum-width and accessible alternative-text handling.',
-    ['Presents images in consistent sizes.', 'Provides a safe alternative-text fallback.'],
-    'An image URL, alternative text and an optional size variant.',
+    [
+      'Presents images in consistent sizes.',
+      'Forwards image attributes such as loading, srcset and sizes to the image.',
+    ],
+    'Provide src and a meaningful alt for informative images, or alt="" for decoration. Optional size and max control layout. An omitted alt uses a fallback; it cannot replace a description written for the image context.',
   ),
   SvgIcon: enCopy(
     'A lightweight renderer for SVG icons included with PEAUI.',
     ['Loads an icon by name.', 'Keeps decorative graphics hidden from screen readers.'],
-    'An icon filename without its extension, for example check, edit or search.',
+    'Use a category/icon-name from the icon catalog or a supported legacy name such as check, edit or search. Icons are decorative by default; supply aria-label or aria-labelledby when the icon conveys information without accompanying text.',
   ),
   Avatar: enCopy(
     'A user avatar with an image, initials or icon fallback and an optional presence status.',
@@ -46,6 +49,8 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Presents a team in overlapping or spaced layouts without changing DOM order.',
       'Exposes every person and the overflow counter as native keyboard actions.',
       'Optionally shows only hidden people in a popover and restores focus when it closes.',
+      'Removing the focused person moves focus to another person or the trigger. Disabling an open panel closes it; loading moves focus to the panel while preserving Escape dismissal.',
+      'Small images retain their visual size while their interaction areas remain large enough to activate.',
       'Uses the same classes, tokens and behavior in Vue, React and Web Components.',
     ],
     'An array of people with identifiers and names, plus an optional limit, size, shape, direction, overflow mode and controlled open state.',
@@ -124,14 +129,27 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     ],
     'A key or ordered token combination, plus optional platform, symbol/text format, size, inline/block presentation, separator, muted appearance and custom accessible label.',
   ),
+  CommandPalette: enCopy(
+    'A global or embedded palette for quickly finding and executing application commands.',
+    [
+      'Provides deterministic fuzzy search, stable ranking, groups, recent history and dynamic command registry updates.',
+      'Supports synchronous and asynchronous actions, prevents duplicate execution and exposes loading, empty and error states.',
+      'Provides nested levels, controlled open/query/activeId state and navigation adapters through execute callbacks.',
+      'Implements the dialog, combobox and listbox pattern with aria-activedescendant, groups, disabled state, live status and complete keyboard support.',
+      'Restores focus, ignores the global shortcut in editable fields and can use VirtualList for tens of thousands of commands.',
+      'Uses an equivalent contract, appearance and behavior in Vue, native React and Web Components.',
+    ],
+    'A command array with id and label, optional keywords, group, shortcut, disabled, children, execute and metadata, plus controlled open, query and activeId state.',
+  ),
   ScrollArea: enCopy(
     'A responsive native-overflow scrolling region with optional PeaUI scrollbars and a consistent programmatic API.',
     [
       'Preserves native wheel, touch, keyboard and momentum scrolling without intercepting gestures.',
       'Provides vertical, horizontal and two-axis viewports in native or styled mode.',
+      'Native mode defaults to tabindex=0 even for text-only content; an explicit tabindex/tabIndex overrides it.',
       'Styled bars implement the ARIA scrollbar pattern, complete keyboard control, dragging and logical RTL coordinates.',
       'Deduplicates edge events, batches measurements by animation frame and removes observers on unmount.',
-      'Uses identical markup, appearance, events and public methods in Vue, React and Web Components.',
+      'Uses aligned semantics, appearance, events and public methods in Vue, React and Web Components.',
     ],
     'Slot content or React children, with optional axes, scrollbar type and visibility, an accessible name and a stable id for position restoration.',
   ),
@@ -142,7 +160,8 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Composes the existing ScrollArea, EmptyState and SpinnerLoader with shared PeaUI tokens.',
       'Provides list and listbox semantics, complete aria-setsize/aria-posinset metadata and Arrow, Home, End, PageUp and PageDown navigation.',
       'Keeps the focused row mounted, deduplicates reachEnd and preserves position when data is appended or prepended.',
-      'Uses the same range, markup, appearance, events and scrolling methods in Vue, React and Web Components.',
+      'Anchors the visible record by its stable key. reachEnd fires once for an item count, independently of focus or callback identity changes.',
+      'Uses the same rendered range, appearance, events and scrolling methods in Vue, React and Web Components.',
     ],
     'An item array, fixed itemSize and viewport height, with optional overscan, key and label resolvers, listbox semanticRole, loading, hasMore and controlled activeIndex.',
   ),
@@ -154,7 +173,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Scrolls horizontally on narrow screens, keeps the focused trigger visible and never silently changes into a hamburger.',
       'Uses the same markup, tokens and behavior in Vue, React and Web Components.',
     ],
-    'An ordered menu-section array with identifiers, labels and DropdownMenu items, plus optional density, loop and controlled open-menu state.',
+    'An ordered menus array with identifiers, labels and DropdownMenu items, plus optional variant, loop and controlled openMenu state.',
   ),
   FormSwitchToggle: enCopy(
     'An accessible boolean or domain-value setting switch built on a native checkbox with the switch role.',
@@ -172,6 +191,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Exposes one native slider with unambiguous aria-valuetext instead of several unnamed buttons.',
       'Keeps pointer preview separate from the committed model and supports explicit clearing.',
       'Supports arrows, Home, End, Delete and Backspace, plus a non-tabbable read-only presentation.',
+      'The form property associates submission and reset with a form even when the control is outside it.',
       'Provides 44px minimum touch targets, wraps large scales and looks identical in Vue, React and Web Components.',
     ],
     'A number or null value, positive max, step 1 or 0.5, and optional value labels, custom icon, field label, description, error and form states.',
@@ -208,7 +228,11 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   CalculationResults: enCopy(
     'A calculation result panel with an optional recalculate action.',
-    ['Highlights a result and its label.', 'Supports loading, disabled and simplified states.'],
+    [
+      'Associates the result with its label and announces updates through a live status.',
+      'Shows the calculate action by default, disables it while loading and supports a simplified presentation.',
+      'Renders string values without executing supplied HTML.',
+    ],
     'A label and result text, with optional state and button-visibility flags.',
   ),
   CardCarousel: enCopy(
@@ -216,6 +240,8 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Organizes a larger card set in limited space.',
       'Adapts the visible slide count to the viewport.',
+      'Adding, removing or reordering cards updates slides and pagination. Web Components preserve existing node identity and event listeners.',
+      'Includes a pause control, pauses on hover, and stops on keyboard focus until explicitly resumed. Respects reduced motion. Customize pauseLabel and resumeLabel for your locale.',
     ],
     'Cards in the default content area plus navigation, animation and visible-slide settings.',
   ),
@@ -226,32 +252,40 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   DescriptionField: enCopy(
     'A description field combining a fixed label with arbitrary content.',
-    ['Creates a readable label–value pair.', 'Fits summaries and read-only views.'],
+    [
+      'Creates a readable label–value pair.',
+      'Fits summaries and read-only views.',
+      'Treats the label as text; formatted content belongs in a slot or children.',
+    ],
     'A label and content passed through the default content area.',
   ),
   DisclosurePanel: enCopy(
     'An expandable panel that reveals or hides additional content.',
     ['Saves space for detailed information.', 'Exposes a controlled open state.'],
-    'A title, panel content and open state; it may also be disabled or permanently open.',
+    'A title, panel content and open state; it may be disabled or permanently open. Without a title, ariaLabel names the summary control in every framework. A dynamically added title replaces that fallback name.',
   ),
   SectionHeading: enCopy(
     'A section heading with independent visual size, HTML element and color variant controls.',
     ['Builds a clear content hierarchy.', 'Separates HTML semantics from visual size.'],
-    'Heading content plus size, element and variant properties.',
+    'Heading content plus size, as and variant properties. Place secondary headings on var(--peaui-color-grey-900) so inverted foreground and background adapt together to the active theme.',
   ),
   TableList: enCopy(
     'An advanced data table with sorting, row selection, editing and column management.',
     [
       'Presents records through declarative columns.',
+      'Plain text cells keep compact markup. Pass a new records array after updating a record or formatter to refresh the display.',
       'Handles empty, loading and record-action states.',
       'Provides keyboard support and consistent selection, editing and row double-click events.',
+      'Renders column and step labels as text without executing HTML from data.',
+      'Columns with type="editable" validate before saving and pass the updated record to manage.onUpdate. Column hints are keyboard accessible.',
+      'Editing follows a unique record id after reordering, or object identity without an id. Submit uses the current records index. Removal, a duplicate key or pagination hiding the record cancels editing.',
     ],
-    'A records array and column definitions, with optional sorting, selection, editing and pagination settings.',
+    'Pass records and columns. For large collections enable paginate and set rowsPerPage. Control page with v-model:page (Vue), page/onPageChange (React), or the page property and update:page event (WC). Select-all affects the current page. Keep paginate=false with server pagination.',
   ),
   TableListFooter: enCopy(
     'A table footer showing record range and page information.',
     ['Summarizes visible data.', 'Supports standard and flexible layouts.'],
-    'Record count, page size, current page and total record count.',
+    'rowsNumber is the total record count; rowsPerPage is the page size, page is the current page and total is the page count (zero hides pagination). Shared page-size options are 5, 10, 25 and 50.',
   ),
   TableListHeader: enCopy(
     'A table toolbar with search, filters, export and record creation actions.',
@@ -271,7 +305,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ButtonAction: enCopy(
     'The primary PEAUI action button.',
     ['Triggers user actions.', 'Supports visual variants, sizes and the disabled state.'],
-    'Button content plus optional size, variant, type and accessible label.',
+    'Button content plus size, variant, type and ariaLabel. In Web Components id names the host and the native button uses an id with a -control suffix. Point an external label at that native ID, or provide aria-labelledby. The host is not itself a native form control.',
   ),
   ButtonExport: enCopy(
     'An export button with a menu for selecting the data range.',
@@ -286,7 +320,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   SearchInput: enCopy(
     'A search field with debounced updates and a clear action.',
     ['Collects a search phrase.', 'Limits update frequency with debounce.'],
-    'A controlled search phrase, placeholder and optional debounce delay.',
+    'Provide a controlled search phrase and an accessible label. Searches require 3 characters; Enter submits immediately. debounceTime defaults to 1000 ms. Clearing, delay changes, disabled, readonly and unmounting cancel pending searches.',
   ),
   SelectableCard: enCopy(
     'A clickable selection card with active, disabled and read-only states.',
@@ -301,11 +335,14 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   MessageText: enCopy(
     'A semantic message for information, success, warning or error feedback.',
     ['Keeps messages visually consistent.', 'Can automatically add a variant-matched icon.'],
-    'An identifier, message content, variant, size and icon settings.',
+    'An identifier, message content, variant, size and icon settings. Place the white variant on var(--peaui-color-grey-900) so the inverted foreground and background adapt together to the active theme.',
   ),
   ProgressIndicator: enCopy(
     'A circular progress indicator divided into steps.',
-    ['Shows a position within a process.', 'Supports custom size and stroke width.'],
+    [
+      'Shows a position within a process; active defaults to 0 in every framework.',
+      'Supports custom size and stroke width.',
+    ],
     'The total and active step plus optional dimensions.',
   ),
   SkeletonLoading: enCopy(
@@ -323,13 +360,29 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Reports an operation result without blocking the view.',
       'Distinguishes semantic message variants.',
+      'Connects the title and description to a status/alert region and includes the title in the close-button name. Border and shadow are disabled by default.',
+      'Treats title and description as text so notification data cannot execute HTML.',
     ],
     'A title, description, variant and optional size, border, shadow and close settings.',
   ),
+  NotificationCenter: enCopy(
+    'A controlled notification center with filtering, grouping, actions and incremental loading.',
+    [
+      'Presents read state and priority without mutating application-owned data.',
+      'Supports panel, drawer-content and full-page presentations in Vue, React and Web Components.',
+      'Exposes accessible loading, empty and error states plus retry and loadMore requests.',
+      'Group headings are unique to each instance. loadMore locks immediately after a request until loadingMore completes, the item count changes or resetLoadRequest is called.',
+    ],
+    'Notification items, optional count, filters, grouping, controlled selection, request states, localized labels and date formatting.',
+  ),
   FormFieldLabel: enCopy(
     'An accessible form label with required and read-only indicators.',
-    ['Connects label text to a control.', 'Communicates whether the field is required.'],
-    'A target control ID, label text and optional required and read-only flags.',
+    [
+      'Connects label text to a control.',
+      'Communicates whether the field is required.',
+      'Treats the text prop as text; formatted content belongs in a slot or children.',
+    ],
+    'The native control ID in for, label text and optional required and readonly flags. In Web Components an explicit id belongs to the host; the internal label receives a -control suffix to keep IDs unique.',
   ),
   FormButtonCheckbox: enCopy(
     'A checkbox presented as a prominent selection button.',
@@ -338,7 +391,11 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormButtonGroup: enCopy(
     'A group of buttons used to select one of the available options.',
-    ['Presents a small option set side by side.', 'Works as a single-choice group or toggle.'],
+    [
+      'Presents a small option set side by side.',
+      'Works as a single-choice group or toggle.',
+      'Without a model, the first active option establishes the initial selection and form value. An explicitly empty value remains empty; clearing a selection does not reactivate the initial option.',
+    ],
     'An options list, field identifiers and a controlled value.',
   ),
   FormCheckbox: enCopy(
@@ -348,8 +405,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormContainer: enCopy(
     'A form container with a heading, loading state and action set.',
-    ['Organizes fields into a complete form.', 'Handles submit, cancel and action placement.'],
-    'A form label and fields plus optional action labels and visibility settings.',
+    [
+      'Organizes fields into a complete form.',
+      'Handles submit, cancel and action placement.',
+      'disabled also blocks Enter submission; sizeButton controls both actions.',
+    ],
+    'A form label and fields plus optional action labels and visibility settings. Native reset restores defaultValue for uncontrolled React controls. The form owner resets controlled value or v-model state; a canceled reset leaves the model unchanged.',
   ),
   FormDatePicker: enCopy(
     'A date or date-range field with a calendar.',
@@ -368,12 +429,17 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Combines a label, control, hint and validation.',
       'Provides consistent disabled, read-only and required states.',
+      'canErase reserves a separate action area with a 32 × 32px clear target, preventing overlap with text, icons and other controls.',
     ],
     'ID, name, custom control content and optional labels, icons and messages.',
   ),
   FormFileUpload: enCopy(
     'A single-file upload field with type and size validation.',
-    ['Selects or removes an attachment.', 'Returns the selected file through its model.'],
+    [
+      'Selects or removes an attachment.',
+      'The default model is { file: File, image: string } in every framework. Set valueMode="file" to preserve the previous React File payload.',
+      'Invalid input announces an error and preserves the previous valid selection.',
+    ],
     'A controlled file, accepted types, size limit and presentation variant.',
   ),
   FormFileUploadSimple: enCopy(
@@ -383,13 +449,18 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormInput: enCopy(
     'A single-line text input inside the complete PEAUI form-field wrapper.',
-    ['Collects short text data.', 'Supports a label, icons, clearing and validation messages.'],
+    [
+      'Collects short text data.',
+      'Supports native input attributes, labels, icons, clearing and validation messages.',
+      'Native reset restores uncontrolled React defaultValue. The form owner resets controlled value or v-model state.',
+    ],
     'ID, name, controlled text, label, placeholder and field states.',
   ),
   FormMultiSelect: enCopy(
     'A multiple-choice field with search and select-all behavior.',
     [
       'Collects multiple values in one field.',
+      'FormData includes one entry per option value under the same name. valueMode="label" is a migration mode. Required fields participate in native validation even without search.',
       'Filters long option lists.',
       'Keeps its panel inside the viewport on the shared PEAUI overlay surface.',
     ],
@@ -397,7 +468,10 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   FormNumber: enCopy(
     'A numeric field with range, step and optional slider controls.',
-    ['Collects numeric values.', 'Enforces minimum, maximum and step constraints.'],
+    [
+      'Collects numeric values.',
+      'Commits on blur: empty input becomes undefined, step sets decimal precision, and min/max clamp the result including zero bounds. Arrow keys apply the step.',
+    ],
     'ID, name, controlled number, range, step, label and field states.',
   ),
   FormPassword: enCopy(
@@ -422,7 +496,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   FormTextarea: enCopy(
     'A multiline text field with a label and character count.',
     ['Collects longer text.', 'Supports character limits and validation messages.'],
-    'ID, name, controlled text, row count, limit and field states.',
+    'ID, name, controlled text, row count (5 by default), character limit and field states.',
   ),
   FormYearPicker: enCopy(
     'A field for selecting a year or year range.',
@@ -441,6 +515,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Synchronizes text and selection with a locale-independent HH:mm[:ss] model.',
       'Supports 12/24-hour formats, seconds, explicit steps, min/max limits and an off-step policy.',
+      'Segmented input participates in native required validation, omits disabled values from submission and respects readonly.',
       'Implements combobox, listbox and spinbutton patterns with complete keyboard and focus behavior.',
       'Keeps a readable minimum 320px panel for fields as narrow as 200px without compressed or overlapping controls.',
       'Keeps the panel inside the viewport, provides 44px touch targets and preserves Vue, React and Web Component parity.',
@@ -452,6 +527,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Keeps date and time in one explicit model without implicit time-zone conversion.',
       'Supports single or split input, horizontal or stacked layout, and immediate or confirmed updates.',
+      'split-input submits date and time under the same name: FormData.getAll(name) returns [date, time]. required covers both controls, including React without the older -date/-time suffixes.',
       'Validates partial values, whole date-time bounds, disabled moments, and time steps.',
       'Provides a keyboard-operable calendar grid and spinbuttons with clear accessible names, a 44px height and a minimum 24 × 24px target even in the narrowest panel.',
       'Defines the shared picker day states for hover, today, selection and disabled dates.',
@@ -490,6 +566,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Supports numeric or alphanumeric input, masking, transformation, visual grouping and native one-time-code autocomplete.',
       'Distributes pasted text, rejects invalid characters and safely supports editing in the middle of the code.',
       'Provides one Tab entry point, arrow-key navigation, unambiguous cell labels and 44 px touch targets.',
+      'The form property associates its cells, validation and submitted value with the named form even outside its DOM subtree.',
     ],
     'Provide id, name and the controlled string; optionally configure length, type, masking, pattern, transformation, grouping, autocomplete and form states.',
   ),
@@ -500,33 +577,50 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Supports freeform and suggestions-only modes, object values and cancellable asynchronous suggestions.',
       'Provides combobox/listbox semantics, named remove buttons, stable focus with a subtle two-pixel ring and complete keyboard support.',
       'Uses the shared PEAUI popover layer for light dismiss, placement and trigger-width matching.',
+      'The form property identifies the owner for submission and validation. Selected-key indexing avoids repeatedly comparing each suggestion with every tag.',
       'Wraps long values without overflow and preserves identical behavior and appearance across Vue, React and Web Components.',
     ],
     'Provide id, name and controlled value/inputValue; optionally configure suggestions, provider, separators, normalization, validation, keys, serialization, limits and field states.',
   ),
   CardPanel: enCopy(
     'A general-purpose card panel for grouping related content.',
-    ['Creates visual interface sections.', 'Offers background, border, size and shadow variants.'],
+    [
+      'Groups content in a div by default, with hover enabled and shadow disabled.',
+      'Supports a dynamic header and as="a" with native href, target, rel and download attributes in every framework.',
+      'Changing or removing a child slot attribute in Web Components moves the same node between header and body, preserving its event listeners.',
+    ],
     'Panel content plus optional appearance and HTML-element settings.',
   ),
   FullscreenContainer: enCopy(
     'A container that can expand its content into fullscreen mode.',
-    ['Increases the workspace for complex views.', 'Provides enter and exit fullscreen actions.'],
+    [
+      'Increases the workspace within the page in every framework.',
+      'Tab and Shift+Tab stay within the expanded view. Escape closes it and restores focus. Instances share the document scroll lock.',
+    ],
     'Content, an accessible label and optional button labels.',
   ),
   GridItem: enCopy(
     'A grid item controlling its width and optional nested grid.',
-    ['Places one content fragment in a grid.', 'Controls the number of occupied columns.'],
+    [
+      'Places one content fragment in a grid.',
+      'Uses a nested grid with 2 columns and gap=6 by default. columns=0 derives the column count from children; colspan sets occupied parent columns.',
+    ],
     'Content plus colspan, column, gap and nested-grid settings.',
   ),
   GridSection: enCopy(
     'A responsive section built with CSS Grid.',
-    ['Arranges items into columns.', 'Keeps spacing between children consistent.'],
+    [
+      'Arranges children into 4 columns with gap=6 by default in every framework.',
+      'Keeps spacing between children consistent.',
+    ],
     'Child elements plus column-count and gap settings.',
   ),
   PageLayout: enCopy(
     'A page skeleton with areas for headers, content and supporting elements.',
-    ['Standardizes application view layouts.', 'Can keep the header visible while scrolling.'],
+    [
+      'Provides semantic header, main and footer regions; ariaLabel names the header.',
+      'Can keep the header visible while scrolling.',
+    ],
     'Page sections plus an accessible label and sticky-header option.',
   ),
   SectionDivider: enCopy(
@@ -536,8 +630,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   Breadcrumbs: enCopy(
     'Breadcrumb navigation showing the current page position in a hierarchy.',
-    ['Explains the site structure.', 'Provides quick access to parent levels.'],
-    'An item array with labels and paths plus an optional separator.',
+    [
+      'Explains the site structure.',
+      'Provides quick access to parent levels.',
+      'Renders labels as text without interpreting HTML from route data.',
+    ],
+    'An items array with labels and paths plus an optional separator. On narrow screens, a button opens the parent-level list; selection returns the original item. Web Components preserve native navigation semantics.',
   ),
   ListLimitControl: enCopy(
     'A control for selecting the number of items displayed per page.',
@@ -549,8 +647,9 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Promotes an important destination or feature.',
       'Combines context with a large activation area.',
+      'Renders the description as text without interpreting HTML from data.',
     ],
-    'Title, description, path, size, variant and accessible label.',
+    'Title, description, path, size, variant and ariaLabel. Title size defaults to s. Native target, rel and download attributes reach the link in React too.',
   ),
   NavigationDisclosureCard: enCopy(
     'A navigation card with expandable content.',
@@ -560,12 +659,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   NavigationIconCard: enCopy(
     'A compact icon-based navigation card with short text.',
     ['Creates a visual shortcut to a feature.', 'Provides a large, readable activation area.'],
-    'Icon name, text, path and optional accessible label.',
+    'Icon name, text, path, accessible label and native target, rel and download attributes. An empty path produces an unavailable link with its name and aria-disabled, without href or a Tab stop.',
   ),
   NavigationLink: enCopy(
     'A consistent PEAUI navigation link with size and color variants.',
     ['Navigates to a target path.', 'Styles text or custom content consistently.'],
-    'A path, link content, accessible label, size and variant.',
+    'A path, link content, ariaLabel, size and variant. size defaults to s in all frameworks. Native target, rel and download attributes also reach the link in React.',
   ),
   NavigationStepper: enCopy(
     'Horizontal process-step navigation with statuses and keyboard support.',
@@ -573,12 +672,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Shows progress through a multi-step process.',
       'Allows navigation to completed or active steps.',
     ],
-    'An options array describing step numbers, labels and statuses.',
+    'An options array with step numbers, labels and statuses. Left/Right arrows and Home/End move focus between available steps. Scroll controls respect logical RTL direction and react to container-width changes.',
   ),
   NavigationTabs: enCopy(
     'A tab bar for switching between related views.',
     ['Organizes content into parallel sections.', 'Emits the selected active tab.'],
-    'A tabs array and an accessible label for the navigation.',
+    'A tabs array and an accessible navigation label. Left/Right arrows and Home/End skip disabled items; Enter or Space selects. Selection returns the original tab object, including its key, in every framework.',
   ),
   PaginationControl: enCopy(
     'Pagination for choosing the previous, next or a specific page.',
@@ -591,12 +690,21 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Shows a form or details without leaving the page.',
       'Controls visibility through its open model.',
     ],
-    'Open state, accessible label and header/body content.',
+    'Open state, accessible label and header/body content. In Web Components, changing a child slot attribute moves the existing node between header and body while preserving its event listeners.',
+  ),
+  GuidedTour: enCopy(
+    'A step-by-step guide that highlights interface elements and explains successive actions.',
+    [
+      'Coordinates step transitions, panel placement and focus restoration.',
+      'Escape closes a nested popover or dialog first. Tab remains in the tour; a nested native modal dialog manages its own focus.',
+      'Respects preventDefault in child controls and accepts localized action labels.',
+    ],
+    'A steps array with stable IDs, targets and content; controlled open and step state, plus optional placement, mask, navigation and missing-target behavior.',
   ),
   InfoTooltip: enCopy(
     'A tooltip containing short contextual information.',
     ['Explains an icon, label or concept.', 'Supports multiple placements and variants.'],
-    'Trigger and tooltip content plus placement, variant and disabled state.',
+    'Trigger and tooltip content plus placement, variant and disabled state. Hover or focus reveals the aria-describedby description. Escape dismisses it without moving focus; hovering the tooltip keeps it visible. Keep interactive controls out of tooltips.',
   ),
   ModalDialog: enCopy(
     'A modal dialog built on the native dialog element.',
@@ -604,12 +712,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Focuses attention on a short task or decision.',
       'Controls visibility through its open model.',
     ],
-    'Open state, accessible label and header/body content.',
+    'Open state, accessible label and header/body content. In Web Components, changing a child slot attribute moves the existing node between header and body while preserving its event listeners.',
   ),
   PopoverButton: enCopy(
     'A button that opens an anchored menu or compact panel.',
     ['Combines a trigger and popover.', 'Supports placement and trigger-width matching.'],
-    'Button and popover content plus appearance, placement and popup-type settings.',
+    'Button and panel content plus appearance, placement and popupType. Visible text names the trigger in Web Components; React connects the panel name to its trigger. Tab moves between controls in a dialog panel without closing it. Hydration preserves the closed state and native popup behavior.',
   ),
   PopoverOverlayer: enCopy(
     'A low-level popover layer positioned relative to its trigger.',
@@ -618,7 +726,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Controls content position, width and vertical fallback at viewport edges.',
       'Provides one shared surface, offset and forced-colors treatment for the pickers built on it.',
     ],
-    'Trigger and popover content plus placement, popup type and optional classes.',
+    'Trigger and panel content plus placement, popupType and classes. A native slotted button receives aria-controls and aria-expanded without a second wrapper control. Escape restores trigger focus; Tab moves between dialog controls. The popover attribute remains consistent across SSR and hydration.',
   ),
 };
 
@@ -658,13 +766,13 @@ const propDescriptions: Record<string, string> = {
   required: 'Marks the value as required.',
   rowsPerPage: 'Number of records displayed on one page.',
   selected: 'Defines the current selection.',
-  selectedRows: 'Identifiers of the currently selected rows.',
+  selectedRows: 'Currently selected row values; use the shape shown in the type.',
   size: 'Component size variant.',
   src: 'Source URL of an image or another resource.',
   status: 'Visual and semantic component state.',
   step: 'Numeric value increment.',
   title: 'Main title displayed in the component.',
-  total: 'Total number of items.',
+  total: 'Total count used by this component; see its usage guide for the unit.',
   totalPages: 'Total number of pages available in pagination.',
   type: 'Functional or visual component variant.',
   value: 'Current controlled value.',
@@ -672,35 +780,6 @@ const propDescriptions: Record<string, string> = {
 };
 
 const modelNames = new Set(['file', 'files', 'image', 'limit', 'open', 'page', 'tree', 'value']);
-
-const defaultValuesEnglish: Record<string, string> = {
-  'Edytor zdjęcia': 'Image editor',
-  'Tabela danych': 'Data table',
-  Dodaj: 'Add',
-  'Czy na pewno chcesz usunąć wybrany rekord?':
-    'Are you sure you want to delete the selected record?',
-  'Usunięcie spowoduje trwałe usunięcie rekordu.':
-    'This action will permanently delete the record.',
-  'Dodaj rekord': 'Add record',
-  'Pole wyszukiwania': 'Search field',
-  'Wpisz czego szukasz': 'Enter a search phrase',
-  'Trwa ladowanie tresci.': 'Content is loading.',
-  Zapisz: 'Save',
-  Anuluj: 'Cancel',
-  'wybierz date': 'select a date',
-  wpisz: 'enter a value',
-  'wybierz/wyszukaj': 'select/search',
-  'Pokaz haslo': 'Show password',
-  'Ukryj haslo': 'Hide password',
-  'Kopiuj haslo': 'Copy password',
-  'Haslo skopiowano do schowka.': 'Password copied to the clipboard.',
-  'Nie udalo sie skopiowac hasla.': 'The password could not be copied.',
-  'wybierz rok': 'select a year',
-  'Otwórz tryb pełnoekranowy': 'Open fullscreen mode',
-  'Zamknij tryb pełnoekranowy': 'Close fullscreen mode',
-  'Ścieżka nawigacji': 'Navigation path',
-  'Nawigacja kroków': 'Step navigation',
-};
 
 function camelCase(value: string): string {
   return value.replace(/[-:]([a-z])/g, (_, character: string) => character.toUpperCase());
@@ -715,19 +794,35 @@ function humanize(value: string): string {
     .toLocaleLowerCase('en');
 }
 
-function englishInputDescription(entry: ApiEntry, framework: FrameworkId): string {
+function englishInputDescription(
+  entry: ApiEntry,
+  framework: FrameworkId,
+  entries: readonly (ApiEntry | NamedApiEntry)[],
+): string {
   const propertyName = camelCase(entry.name === 'data-testid' ? 'dataTestId' : entry.name);
-  const base = modelNames.has(propertyName)
+  let base = modelNames.has(propertyName)
     ? `The controlled ${humanize(propertyName)} value.`
     : (propDescriptions[propertyName] ??
       `Configures the component's ${humanize(propertyName)} property.`);
 
+  if (propertyName === 'loading') {
+    base = entry.type.includes('boolean')
+      ? 'Indicates an operation in progress.'
+      : 'Image loading strategy; use one of the values shown in the type.';
+  }
+  if (/^default[A-Z]/.test(propertyName)) {
+    base = `Initial ${humanize(propertyName.slice(7))} for uncontrolled use; later changes do not replace controlled state.`;
+  }
+
   if (framework === 'web-components') {
-    return `${base} Use the kebab-case HTML attribute; assign complex values as element properties.`;
+    return `${base} Assign objects, arrays and callbacks as element properties; use attributes only for supported primitive values.`;
   }
   if (framework === 'react' && modelNames.has(propertyName)) {
     const capitalized = propertyName.charAt(0).toUpperCase() + propertyName.slice(1);
-    return `${base} React supports ${propertyName}, default${capitalized} and on${capitalized}Change.`;
+    const defaultName = `default${capitalized}`;
+    return entries.some((candidate) => candidate.name === defaultName)
+      ? `${base} ${defaultName} is available for uncontrolled initialization.`
+      : base;
   }
   return base;
 }
@@ -742,14 +837,14 @@ function englishNamedDescription(
     if (entry.name === 'default') return 'Primary content passed to the component.';
     if (entry.name === 'renderCell') return 'A render function for custom table-cell content.';
     return framework === 'react'
-      ? `ReactNode content passed through the ${entry.name} prop.`
+      ? `Content or a render callback passed through ${entry.name}; follow the declared type and arguments.`
       : `Content placed in the named “${entry.name}” slot.`;
   }
 
   const eventName = humanize(entry.name);
   if (framework === 'react') return `Callback invoked when the component reports ${eventName}.`;
   if (framework === 'web-components') {
-    return `Native CustomEvent emitted when the component reports ${eventName}; data is available in event.detail.`;
+    return `CustomEvent for ${eventName}. event.detail contains the single argument or an array of multiple arguments in the declared order.`;
   }
   return `Emitted when the component reports ${eventName}.`;
 }
@@ -780,12 +875,9 @@ export function localizeApiEntries(
   if (locale.value === 'pl') return entries;
   return entries.map((entry) => ({
     ...entry,
-    ...('default' in entry && entry.default !== undefined
-      ? { default: defaultValuesEnglish[entry.default] ?? entry.default }
-      : {}),
     description:
       kind === 'input'
-        ? englishInputDescription(entry as ApiEntry, framework)
+        ? englishInputDescription(entry as ApiEntry, framework, entries)
         : englishNamedDescription(entry, kind, framework),
   }));
 }

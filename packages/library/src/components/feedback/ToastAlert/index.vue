@@ -108,15 +108,17 @@ const closeIconTestId = computed(() =>
         :class="`${classNameComponent}__title ${classNameComponent}__title--size-${size}`"
         :id="titleId"
         :data-testid="titleTestId"
-        v-html="title"
-      />
+      >
+        {{ title }}
+      </strong>
       <p
         v-if="description"
         :class="`${classNameComponent}__description ${classNameComponent}__description--size-${size}`"
         :id="descId"
         :data-testid="descriptionTestId"
-        v-html="description"
-      />
+      >
+        {{ description }}
+      </p>
     </div>
 
     <button

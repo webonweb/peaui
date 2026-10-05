@@ -55,6 +55,7 @@ export interface ToggleGroupProps {
   /** Zachowanie grupy przy braku miejsca. */
   overflow?: ToggleGroupOverflow;
   /** Wymaga co najmniej jednej wybranej pozycji. */
+  /** Empty selection blocks native form submission; readonly and disabled are exempt. */
   required?: boolean;
   /** Pozwala wyłączyć ostatnią aktywną pozycję, gdy grupa nie jest wymagana. */
   allowEmpty?: boolean;
@@ -83,6 +84,7 @@ export interface ToggleGroupProps {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
+import { getRequiredValueAttributes, focusInvalidValue } from '@/helpers/form-validation.helper';
 import { computed, nextTick, ref, useAttrs, useId, watch, type CSSProperties } from 'vue';
 
 import ToggleButton from '../ToggleButton/index.vue';
@@ -463,11 +465,24 @@ function getItemProps(item: ToggleGroupItem, index: number): Record<string, unkn
       </template>
     </div>
 
+    <input
+      v-bind="
+        getRequiredValueAttributes(
+          selectedValues.length > 0,
+          required,
+          disabled,
+          readonly,
+          typeof attrs.form === 'string' ? attrs.form : undefined,
+        )
+      "
+      @invalid="focusInvalidValue($event, root?.querySelector('button:not(:disabled)'))"
+    />
     <template v-if="name">
       <input
         v-for="selectedValue in selectedValues"
         :key="getStableKey(selectedValue)"
         type="hidden"
+        :form="typeof attrs.form === 'string' ? attrs.form : undefined"
         :name="name"
         :value="selectedValue"
         :disabled="disabled"

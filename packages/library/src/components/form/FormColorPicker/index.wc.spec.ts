@@ -94,7 +94,7 @@ describe('FormColorPicker Web Component', () => {
     const input = getInput(element);
     expect(input).toHaveAccessibleName(/^Kolor marki/);
     expect(input).toHaveAttribute('aria-haspopup', 'dialog');
-    expect(input).toHaveAttribute('aria-controls', 'brand-color-wc-panel');
+    expect(input).toHaveAttribute('aria-controls', 'brand-color-wc-control-panel');
     expect(input).toHaveValue('#4C9A2A');
   });
 

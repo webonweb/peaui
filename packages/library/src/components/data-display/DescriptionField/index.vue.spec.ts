@@ -112,4 +112,12 @@ describe('DescriptionField (index.vue)', () => {
     expect(wrapper.find('[data-testid="desc-tooltip-tooltip"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="desc-tooltip-description"]').text()).toBe('Hint content');
   });
+
+  it('does not interpret HTML from the label prop', () => {
+    const label = '<img src=x onerror="alert(1)">Label';
+    const wrapper = mount(Component, { props: { label } });
+
+    expect(wrapper.get('dt').text()).toBe(label);
+    expect(wrapper.find('dt img').exists()).toBe(false);
+  });
 });

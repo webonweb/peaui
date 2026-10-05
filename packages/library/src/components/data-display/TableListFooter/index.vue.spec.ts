@@ -230,7 +230,7 @@ describe('TableListFooter (index.vue)', () => {
     const wrapper = factory({ under: true, page: 4 });
 
     expect(wrapper.find('[data-testid="table-list-footer-pagination"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="table-list-footer-placeholder"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="table-list-footer-placeholder"]').exists()).toBe(true);
 
     const underPagination = wrapper.get('[data-testid="table-list-footer-pagination-under"]');
     expect(underPagination.classes()).toContain('peaui-table-list-footer__pagination--under');
@@ -249,7 +249,7 @@ describe('TableListFooter (index.vue)', () => {
       'peaui-table-list-footer--flex',
     );
     expect(wrapper.find('[data-testid="table-list-footer-pagination"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="table-list-footer-placeholder"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="table-list-footer-placeholder"]').exists()).toBe(true);
   });
 
   it('does not render footer when rowsNumber is zero', () => {

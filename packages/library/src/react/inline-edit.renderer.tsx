@@ -172,7 +172,7 @@ export function InlineEditRenderer(props: InlineEditRuntimeProps): ReactElement 
       setValidationError(undefined);
       triggerRef.current?.focus();
     }
-  }, [editing]);
+  }, [editing, value]);
 
   const updateDraft = (next: InlineEditValue): void => {
     if (loading) return;
@@ -338,6 +338,7 @@ export function InlineEditRenderer(props: InlineEditRuntimeProps): ReactElement 
     >
       {!editing ? (
         <>
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events -- The adjacent native Edit button provides keyboard activation; text clicks are a pointer shortcut. */}
           <span
             className={`${root}__display`}
             data-activatable={activation !== 'button' ? 'true' : undefined}

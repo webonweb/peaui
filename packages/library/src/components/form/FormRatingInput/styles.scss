@@ -58,7 +58,7 @@ peaui-form-rating-input {
   box-sizing: border-box;
   max-inline-size: 100%;
   min-inline-size: 0;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   gap: 0.125rem;
 }
 
@@ -71,7 +71,7 @@ peaui-form-rating-input {
   min-inline-size: 2.75rem;
   inline-size: var(--peaui-rating-item-size);
   block-size: var(--peaui-rating-item-size);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   cursor: pointer;
   touch-action: manipulation;
   transition: background-color 140ms ease;

@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { isCustomElementNode, syncNodeChildren } from '@/helpers/dom.helper';
 
@@ -162,6 +163,7 @@ export class InfoTooltipElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -207,7 +209,8 @@ export class InfoTooltipElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (this.#isSyncingDom) {
       return;
     }
@@ -356,7 +359,15 @@ export class InfoTooltipElement extends HTMLElement {
     const nextTitleNodes: Node[] = [];
     const nextDescriptionNodes: Node[] = [];
 
-    for (const element of Array.from(this.children)) {
+    // Slotted title/description nodes are moved into the sibling popup during rendering.
+    // Keep those owned nodes on subsequent renders; detached nodes are intentionally dropped.
+    const slottedElements = new Set([
+      ...Array.from(this.children),
+      ...this.#titleNodes.filter((node) => this.#titleElement.contains(node)),
+      ...this.#descriptionNodes.filter((node) => this.#descriptionElement.contains(node)),
+    ]);
+    for (const element of slottedElements) {
+      if (!(element instanceof Element)) continue;
       const slotName = element.getAttribute('slot');
 
       if (slotName === 'title') {
@@ -685,6 +696,8 @@ export class InfoTooltipElement extends HTMLElement {
   }
 
   #setTooltipVisible(value: boolean): void {
+    if (value) this.ownerDocument.addEventListener('keydown', this.#handleTooltipEscape, true);
+    else this.ownerDocument.removeEventListener('keydown', this.#handleTooltipEscape, true);
     this.#isTooltipVisible = value;
     this.#setManagedHostAttribute('data-open', value ? 'true' : undefined);
   }
@@ -961,6 +974,15 @@ export class InfoTooltipElement extends HTMLElement {
       this.#isTemporarilyDismissed = true;
       this.#syncTooltipVisibilityState();
     }
+  };
+
+  #handleTooltipEscape = (event: KeyboardEvent): void => {
+    if (event.key !== 'Escape' || !this.#isTooltipVisible) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.#isOwnTriggerActivated = false;
+    this.#isTemporarilyDismissed = true;
+    this.#syncTooltipVisibilityState();
   };
 
   #handleManagedTriggerKeyup = (event: KeyboardEvent): void => {

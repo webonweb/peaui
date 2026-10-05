@@ -158,7 +158,7 @@ describe('SectionHeading (index.wc.ts)', () => {
     expect(title?.getAttribute('class')).not.toMatch(/__title--large\b/);
   });
 
-  it('renders title as h5 for size=s and adds small modifier', async () => {
+  it('renders title as strong for size=s and adds small modifier', async () => {
     const element = mountSectionHeading({
       size: 's',
       title: 'Hello',
@@ -166,7 +166,7 @@ describe('SectionHeading (index.wc.ts)', () => {
 
     await syncSectionHeadingState();
 
-    const title = getWrapper(element).querySelector('h5');
+    const title = getWrapper(element).querySelector('strong');
     const className = title?.getAttribute('class') ?? '';
 
     expect(title).not.toBeNull();

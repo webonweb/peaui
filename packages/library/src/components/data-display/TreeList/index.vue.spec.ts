@@ -90,7 +90,7 @@ describe('TreeList (index.vue)', () => {
     await trigger.trigger('click');
 
     expect(trigger.attributes('aria-expanded')).toBe('true');
-    expect(wrapper.get('[data-testid="tree-list-content"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="tree-list-content"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="tree-list-child-0-trigger"]').text()).toContain('Krakowski');
   });
 

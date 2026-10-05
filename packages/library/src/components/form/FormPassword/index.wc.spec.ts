@@ -68,7 +68,7 @@ vi.mock('@/components/form/FormField/index.wc', () => {
       const input = this.querySelector<HTMLInputElement>('input');
 
       if (input) {
-        input.id = this.id;
+        input.id = `${this.id}-control`;
         input.setAttribute('name', this.getAttribute('name') ?? '');
         input.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
         input.style.setProperty('--pl', '12px');
@@ -167,11 +167,11 @@ type MountOptions = {
   canCopy?: boolean;
   canVisible?: boolean;
   dataTestId?: string;
-  description?: Node | string;
+  description?: HTMLElement | string;
   disabled?: boolean;
   enablePasswordStrengthMeter?: boolean;
-  error?: Node | string;
-  hint?: Node | string;
+  error?: HTMLElement | string;
+  hint?: HTMLElement | string;
   iconBefore?: string;
   id?: string;
   label?: string;
@@ -180,14 +180,14 @@ type MountOptions = {
   placeholder?: string;
   readonly?: boolean;
   required?: boolean;
-  success?: Node | string;
+  success?: HTMLElement | string;
   value?: string;
 };
 
 function appendSlottedNode(
   element: FormPasswordElement,
   slotName: 'description' | 'error' | 'hint' | 'success',
-  content: Node | string | undefined,
+  content: HTMLElement | string | undefined,
 ) {
   if (content === undefined) {
     return;
@@ -327,13 +327,13 @@ describe('FormPassword (index.wc.ts)', () => {
     );
 
     expect(input?.getAttribute('type')).toBe('password');
-    expect(input?.getAttribute('id')).toBe('user-password');
+    expect(input?.getAttribute('id')).toBe('user-password-field-control');
     expect(input?.getAttribute('name')).toBe('userPassword');
     expect(input?.getAttribute('placeholder')).toBe('Wpisz haslo');
     expect(input?.getAttribute('title')).toBe('Pole hasla');
     expect(input?.classList.contains('field-element')).toBe(true);
     expect(input?.getAttribute('style')).toContain('--pr: 5.75rem;');
-    expect(toggleButton?.getAttribute('aria-controls')).toBe('user-password');
+    expect(toggleButton?.getAttribute('aria-controls')).toBe('user-password-field-control');
     expect(copyButton?.getAttribute('aria-label')).toBe('Kopiuj haslo');
   });
 
@@ -418,7 +418,7 @@ describe('FormPassword (index.wc.ts)', () => {
       '[data-testid="form-password-toggle-button"]',
     );
 
-    expect(input?.getAttribute('id')).toMatch(/^peaui-form-field-password-\d+$/);
+    expect(input?.getAttribute('id')).toMatch(/^peaui-form-field-password-\d+-field-control$/);
     expect(toggleButton?.getAttribute('aria-controls')).toBe(input?.getAttribute('id'));
   });
 

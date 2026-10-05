@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -16,10 +17,12 @@ import type {
   InlineEditValue,
 } from './inline-edit.shared';
 
-const InlineEditVueElement = createVueCustomElement(
-  InlineEditVueComponent,
-  `${UIKIT_NAME}-inline-edit`,
-);
+const InlineEditVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(InlineEditVueComponent, `${UIKIT_NAME}-inline-edit`);
 
 /** Light-DOM adapter with controlled value and editing properties. */
 export class InlineEditElement extends InlineEditVueElement {

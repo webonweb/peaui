@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useFormReset } from './renderers/runtime.shared';
 import {
   useEffect,
   useId,
@@ -16,7 +17,7 @@ import {
 } from 'react';
 
 import {
-  areTagsInputTagsEqual,
+  createTagsInputMatcher,
   commitTagsInput,
   getTagsInputKey,
   getTagsInputLabel,
@@ -36,7 +37,9 @@ import {
   type FormTagsInputTag,
   type FormTagsInputValidator,
 } from '../components/form/FormTagsInput/tags-input.shared';
-import { reactIconData } from './generated-icon-data';
+import type { ReactIconData } from './generated-icon-data';
+import { iconCross } from './generated-static-icons';
+const controlIcons: Readonly<Record<string, ReactIconData>> = { cross: iconCross };
 import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 
 type RuntimeProps = Record<string, unknown> & {
@@ -69,7 +72,7 @@ const hasContent = (value: unknown): boolean =>
   value !== undefined && value !== null && value !== false && value !== '';
 
 function TagsInputIcon({ className, name }: { className: string; name: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  const icon = controlIcons[name] ?? controlIcons.info;
   return (
     <svg
       aria-hidden="true"
@@ -127,8 +130,7 @@ export function FormTagsInputRenderer({
   const getTagKey = props.getTagKey as FormTagsInputKeyGetter | undefined;
   const serializeTag = props.serializeTag as FormTagsInputSerializer | undefined;
   const suggestionProvider = props.suggestionProvider as
-    | FormTagsInputSuggestionProvider
-    | undefined;
+    FormTagsInputSuggestionProvider | undefined;
   const baseTestId = text(props, 'dataTestId') || text(props, 'data-testid') || undefined;
   const isValueControlled = Object.prototype.hasOwnProperty.call(props, 'value');
   const isInputControlled = Object.prototype.hasOwnProperty.call(props, 'inputValue');
@@ -154,6 +156,15 @@ export function FormTagsInputRenderer({
   const rootRef = useRef<HTMLDivElement>(null);
   const controlRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const initialResetTags = useRef([...internalTags]);
+  const initialResetInput = useRef(internalInput);
+  useFormReset(inputRef, () => {
+    if (!isValueControlled) setInternalTags([...initialResetTags.current]);
+    if (!isInputControlled) setInternalInput(initialResetInput.current);
+    setSelectedTagIndex(-1);
+    setEditingTagIndex(-1);
+    setPanelOpen(false);
+  });
   const tagButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const requestIdRef = useRef(0);
   const inputFocusFrameRef = useRef<number | null>(null);
@@ -176,18 +187,19 @@ export function FormTagsInputRenderer({
   const liveId = `${id}-status`;
   const anchorName = `--anchor-peaui-form-tags-input-${generatedId}`;
 
+  const matchesSelectedTag = useMemo(
+    () => createTagsInputMatcher(tags, getTagKey),
+    [tags, getTagKey],
+  );
   const filteredSuggestions = useMemo(() => {
     const query = inputValue.trim().toLocaleLowerCase();
     return sourceSuggestions.filter((suggestion) => {
-      if (
-        !allowDuplicates &&
-        tags.some((tag) => areTagsInputTagsEqual(tag, suggestion, getTagKey))
-      ) {
+      if (!allowDuplicates && matchesSelectedTag(suggestion)) {
         return false;
       }
       return !query || getTagsInputLabel(suggestion).toLocaleLowerCase().includes(query);
     });
-  }, [allowDuplicates, getTagKey, inputValue, sourceSuggestions, tags]);
+  }, [allowDuplicates, inputValue, sourceSuggestions, matchesSelectedTag]);
 
   const describedIds = new Set(
     text(props, 'aria-describedby')
@@ -485,6 +497,10 @@ export function FormTagsInputRenderer({
     call(props, 'onBlur', event);
   };
 
+  const onSearch = props.onSearch as ((query: string, requestId: number) => void) | undefined;
+  const onInvalidTag = props.onInvalidTag as
+    ((detail: FormTagsInputInvalidDetail, event: Event) => void) | undefined;
+
   useEffect(() => {
     tagButtonRefs.current.length = tags.length;
     if (selectedTagIndex >= tags.length) setSelectedTagIndex(-1);
@@ -506,7 +522,7 @@ export function FormTagsInputRenderer({
     const requestId = ++requestIdRef.current;
     const controller = new AbortController();
     setInternalLoading(true);
-    call(props, 'onSearch', inputValue, requestId);
+    onSearch?.(inputValue, requestId);
     void suggestionProvider(inputValue, controller.signal)
       .then((result) => {
         if (requestId === requestIdRef.current && !controller.signal.aborted) {
@@ -525,14 +541,14 @@ export function FormTagsInputRenderer({
               : 'Nie udało się pobrać sugestii.',
           reason: 'invalid',
         };
-        call(props, 'onInvalidTag', detail, new Event('suggestion-error'));
+        onInvalidTag?.(detail, new Event('suggestion-error'));
         setAnnouncement(detail.message);
       })
       .finally(() => {
         if (requestId === requestIdRef.current) setInternalLoading(false);
       });
     return () => controller.abort();
-  }, [focused, inputValue, props.onInvalidTag, props.onSearch, suggestionProvider]);
+  }, [focused, inputValue, onInvalidTag, onSearch, suggestionProvider]);
 
   const renderTag = props.renderTag;
   const renderTagContent = props.renderTagContent;
@@ -622,6 +638,7 @@ export function FormTagsInputRenderer({
           'peaui-form-tags-input__overlayer',
         )}
       >
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events -- Clicking the wrapper only focuses the native input, which is reachable with Tab. */}
         <div
           aria-busy={effectiveLoading || undefined}
           aria-disabled={disabled || undefined}
@@ -732,7 +749,7 @@ export function FormTagsInputRenderer({
             aria-labelledby={labelledBy}
             aria-readonly={readonly || undefined}
             aria-required={required || undefined}
-            autoCapitalize="off"
+            autoCapitalize="none"
             autoComplete="off"
             className="peaui-form-tags-input__input"
             data-testid={baseTestId ? `${baseTestId}-input` : undefined}
@@ -757,6 +774,7 @@ export function FormTagsInputRenderer({
               inputRef.current = element;
               assignRef(forwardedRef, element);
             }}
+            form={text(props, 'form') || undefined}
             required={required && tags.length === 0}
             role="combobox"
             spellCheck={false}
@@ -818,6 +836,7 @@ export function FormTagsInputRenderer({
                 );
                 const active = activeSuggestionIndex === index;
                 return (
+                  // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- The combobox input owns focus and keyboard selection with aria-activedescendant.
                   <li
                     aria-disabled={suggestionDisabled || undefined}
                     aria-selected={active}

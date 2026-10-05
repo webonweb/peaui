@@ -18,12 +18,7 @@ export type FormDateTimePickerLayout = 'side-by-side' | 'stacked';
 export type FormDateTimePickerPlacement = 'top' | 'bottom';
 export type FormDateTimePickerDateFormat = 'iso' | 'locale';
 export type FormDateTimePickerInvalidReason =
-  | 'empty'
-  | 'partial'
-  | 'date'
-  | 'time'
-  | 'range'
-  | 'disabled';
+  'empty' | 'partial' | 'date' | 'time' | 'range' | 'disabled';
 export type FormDateTimePickerSection = 'date' | 'time' | 'value';
 
 export type FormDateTimePickerInvalidDetail = {

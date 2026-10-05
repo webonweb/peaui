@@ -1,4 +1,6 @@
 /** @jsxImportSource react */
+import { getRequiredValueAttributes, focusInvalidValue } from '../helpers/form-validation.helper';
+import { useFormReset } from './renderers/runtime.shared';
 import {
   useId,
   useRef,
@@ -25,7 +27,8 @@ import {
   type RatingLabels,
   type RatingValue,
 } from '../components/form/FormRatingInput/rating-input.shared';
-import { reactIconData } from './generated-icon-data';
+import { iconCoreStar } from './generated-static-icons';
+import { useReactIcon } from './renderers/svg.renderer';
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -63,19 +66,23 @@ function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
 }
 
 function RatingIcon({ name }: { name: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData['core/star'];
+  const { icon: resolvedIcon } = useReactIcon(
+    name,
+    name === 'core/star' ? iconCoreStar : undefined,
+  );
+  const icon = resolvedIcon ?? iconCoreStar;
   return (
     <svg
       aria-hidden="true"
       className="peaui-svg-icon"
-      dangerouslySetInnerHTML={{ __html: icon?.body ?? '' }}
-      fill={icon?.fill ?? 'none'}
+      dangerouslySetInnerHTML={{ __html: icon.body }}
+      fill={icon.fill ?? 'none'}
       focusable="false"
-      stroke={icon?.stroke ?? 'currentColor'}
-      strokeLinecap={icon?.strokeLinecap}
-      strokeLinejoin={icon?.strokeLinejoin}
-      strokeWidth={icon?.strokeWidth}
-      viewBox={icon?.viewBox ?? '0 0 24 24'}
+      stroke={icon.stroke ?? 'currentColor'}
+      strokeLinecap={icon.strokeLinecap}
+      strokeLinejoin={icon.strokeLinejoin}
+      strokeWidth={icon.strokeWidth}
+      viewBox={icon.viewBox}
     />
   );
 }
@@ -100,6 +107,13 @@ export function FormRatingInputRenderer({
   const [previewValue, setPreviewValue] = useState<RatingValue>(null);
   const displayedValue = previewValue ?? committedValue;
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const initialResetValue = useRef(initialValue);
+  useFormReset(inputRef, () => {
+    if (!controlled) {
+      setInternalValue(initialResetValue.current);
+      setPreviewValue(null);
+    }
+  });
   const disabled = bool(props, 'disabled');
   const readonly = bool(props, 'readonly');
   const required = bool(props, 'required');
@@ -292,6 +306,7 @@ export function FormRatingInputRenderer({
                 assignRef(forwardedRef as ForwardedRef<HTMLInputElement>, element);
               }}
               step={step}
+              form={text(props, 'form') || undefined}
               type="range"
               value={committedValue ?? 0}
               onBlur={(event) => call(props, 'onBlur', event)}
@@ -366,6 +381,17 @@ export function FormRatingInputRenderer({
           </output>
         ) : null}
       </div>
+      <input
+        {...getRequiredValueAttributes(
+          committedValue !== null,
+          required,
+          disabled,
+          readonly,
+          text(props, 'form') || undefined,
+        )}
+        onChange={() => undefined}
+        onInvalid={(event) => focusInvalidValue(event.nativeEvent, inputRef.current)}
+      />
       {text(props, 'name') && committedValue !== null && !disabled ? (
         <input
           form={text(props, 'form') || undefined}

@@ -117,7 +117,7 @@ describe('FormCheckbox (index.vue)', () => {
     expect(input.attributes('aria-required')).toBe('true');
   });
 
-  it('forces unchecked state and disabled attr when disabled=true', () => {
+  it('preserves checked state and sets disabled attr when disabled=true', () => {
     const wrapper = mount(FormCheckbox, {
       props: {
         id: 'agreement',
@@ -130,7 +130,7 @@ describe('FormCheckbox (index.vue)', () => {
     const input = wrapper.get('input');
 
     expect(input.attributes()).toHaveProperty('disabled');
-    expect((input.element as HTMLInputElement).checked).toBe(false);
+    expect((input.element as HTMLInputElement).checked).toBe(true);
   });
 
   it('applies medium label class when checkbox is checked', () => {

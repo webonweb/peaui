@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -15,10 +16,12 @@ import type {
   TransferListSort,
 } from './transfer-list.shared';
 
-const TransferListVueElement = createVueCustomElement(
-  TransferListVueComponent,
-  `${UIKIT_NAME}-transfer-list`,
-);
+const TransferListVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(TransferListVueComponent, `${UIKIT_NAME}-transfer-list`);
 
 /** Light-DOM adapter preserving all three controlled collections and native named slots. */
 export class TransferListElement extends TransferListVueElement {

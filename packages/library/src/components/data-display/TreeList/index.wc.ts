@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import TreeListVueComponent from './index.ce.vue';
 
-export const TreeListElement = createVueCustomElement(
-  TreeListVueComponent,
-  `${UIKIT_NAME}-tree-list`,
-);
+export const TreeListElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(TreeListVueComponent, `${UIKIT_NAME}-tree-list`);
 
 export function defineTreeList(): void {
   definePeauiCustomElement(TreeListElement);

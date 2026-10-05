@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -7,10 +8,12 @@ import {
 import FormDateRangePickerVueComponent from './index.ce.vue';
 import type { DateRangeValue } from './date-range-picker.shared';
 
-const FormDateRangePickerVueElement = createVueCustomElement(
-  FormDateRangePickerVueComponent,
-  `${UIKIT_NAME}-form-date-range-picker`,
-);
+const FormDateRangePickerVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormDateRangePickerVueComponent, `${UIKIT_NAME}-form-date-range-picker`);
 
 /** Light-DOM custom element preserving the Vue FormDateRangePicker contract. */
 export class FormDateRangePickerElement extends FormDateRangePickerVueElement {

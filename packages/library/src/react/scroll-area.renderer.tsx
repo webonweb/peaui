@@ -101,7 +101,7 @@ export function ScrollAreaRenderer({
   const visibility = props.scrollbarVisibility ?? 'auto';
   const disabled = props.disabled ?? false;
   const restorePosition = props.restorePosition ?? false;
-  const tabIndex = props.tabIndex ?? props.tabindex;
+  const tabIndex = props.tabIndex ?? props.tabindex ?? (type === 'native' ? 0 : undefined);
   const externalLabel = props['aria-label']?.trim();
   const labelledBy = props['aria-labelledby']?.trim();
   const resolvedLabel =
@@ -135,6 +135,7 @@ export function ScrollAreaRenderer({
     }),
     [disabled, orientation, props.autoHideDelay, props.id, restorePosition, type],
   );
+  const initialOptionsRef = useRef(options);
 
   useEffect(() => {
     if (!rootRef.current || !viewportRef.current || !contentRef.current) return;
@@ -148,7 +149,7 @@ export function ScrollAreaRenderer({
         verticalBar: verticalBarRef.current,
         verticalThumb: verticalThumbRef.current,
       },
-      options,
+      initialOptionsRef.current,
     );
     return () => {
       controllerRef.current?.destroy();
@@ -229,7 +230,9 @@ export function ScrollAreaRenderer({
         aria-controls={viewportId}
         aria-label={`${resolvedLabel || 'Obszar przewijania'}: przewijanie poziome`}
         aria-orientation="horizontal"
+        aria-valuemax={0}
         aria-valuemin={0}
+        aria-valuenow={0}
         className="peaui-scroll-area__scrollbar peaui-scroll-area__scrollbar--horizontal"
         ref={horizontalBarRef}
         role="scrollbar"
@@ -243,7 +246,9 @@ export function ScrollAreaRenderer({
         aria-controls={viewportId}
         aria-label={`${resolvedLabel || 'Obszar przewijania'}: przewijanie pionowe`}
         aria-orientation="vertical"
+        aria-valuemax={0}
         aria-valuemin={0}
+        aria-valuenow={0}
         className="peaui-scroll-area__scrollbar peaui-scroll-area__scrollbar--vertical"
         ref={verticalBarRef}
         role="scrollbar"

@@ -1,7 +1,7 @@
 import { watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { findFrameworkComponent } from './data/catalog';
+import { findCatalogComponent } from './data/catalog-summary';
 import { getCategoryLabel } from './data/localized-content';
 import { locale, translateForLocale, type Locale } from './i18n';
 import { stripLocaleRoutePrefix } from './router';
@@ -143,7 +143,7 @@ export function useRouteSeo(): void {
     const categorySlug = typeof route.params.category === 'string' ? route.params.category : '';
     const componentSlug = typeof route.params.component === 'string' ? route.params.component : '';
     const definition = framework
-      ? findFrameworkComponent(framework, categorySlug, componentSlug)
+      ? findCatalogComponent(framework, categorySlug, componentSlug)
       : undefined;
     const category = categorySlug
       ? getCategoryLabel(categorySlug, definition?.categoryLabel ?? categorySlug)

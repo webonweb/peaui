@@ -14,3 +14,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const ExplicitLinkName: Story = {
+  args: {
+    id: 'named-card',
+    title: '',
+    description: '',
+    path: '#account',
+    ariaLabel: 'Account details',
+  },
+};

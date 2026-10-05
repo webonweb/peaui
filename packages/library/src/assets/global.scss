@@ -15,15 +15,26 @@
 
   --transition-standard: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
+  // Shared dimensions. Defaults preserve the established component geometry.
+  --peaui-target-min: 24px;
+  --peaui-radius-sm: 0.25rem;
+  --peaui-radius-md: 0.5rem;
+  --peaui-radius-lg: 0.75rem;
+  --peaui-radius-xl: 1rem;
+  --peaui-space-1: 0.25rem;
+  --peaui-space-2: 0.5rem;
+  --peaui-space-3: 0.75rem;
+  --peaui-space-4: 1rem;
+
   // SEMANTIC SURFACES - shared by popovers, picker panels and menus
   --peaui-overlay-background: var(--peaui-color-grey-0);
   --peaui-overlay-border-color: var(--peaui-color-grey-200);
   --peaui-overlay-border-width: 1px;
-  --peaui-overlay-radius: 0.75rem;
-  --peaui-overlay-padding: 1rem;
-  --peaui-overlay-offset: 0.5rem;
-  --peaui-overlay-viewport-gap: 0.5rem;
-  --peaui-overlay-viewport-inset: 1rem;
+  --peaui-overlay-radius: var(--peaui-radius-lg);
+  --peaui-overlay-padding: var(--peaui-space-4);
+  --peaui-overlay-offset: var(--peaui-space-2);
+  --peaui-overlay-viewport-gap: var(--peaui-space-2);
+  --peaui-overlay-viewport-inset: var(--peaui-space-4);
   --peaui-picker-overlay-min-width: 20rem;
   --peaui-overlay-shadow:
     0 1.125rem 3rem rgb(from var(--peaui-color-grey-900) r g b / 0.16),
@@ -31,8 +42,8 @@
 
   // CALENDAR STATES - shared by date-based picker components
   --peaui-calendar-cell-min-height: 2.75rem;
-  --peaui-calendar-cell-radius: 0.5rem;
-  --peaui-calendar-grid-gap: 0.25rem;
+  --peaui-calendar-cell-radius: var(--peaui-radius-md);
+  --peaui-calendar-grid-gap: var(--peaui-space-1);
   --peaui-calendar-weekday-min-height: 2rem;
   --peaui-calendar-hover-background: var(--peaui-color-primary-50);
   --peaui-calendar-hover-color: var(--peaui-color-primary-900);

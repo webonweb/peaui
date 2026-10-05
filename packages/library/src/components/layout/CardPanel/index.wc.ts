@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
 
@@ -93,6 +94,11 @@ export class CardPanelElement extends HTMLElement {
       'border-color',
       'data-testid',
       'href',
+      'download',
+      'hreflang',
+      'referrerpolicy',
+      'ping',
+      'type',
       'is-hover-enabled',
       'is-shadow-enabled',
       'rel',
@@ -111,6 +117,7 @@ export class CardPanelElement extends HTMLElement {
   #rootElement: HTMLElement = document.createElement('div');
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -128,7 +135,8 @@ export class CardPanelElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -157,7 +165,8 @@ export class CardPanelElement extends HTMLElement {
   }
 
   set isShadowEnabled(value: boolean) {
-    this.setAttribute('is-shadow-enabled', String(value));
+    if (value) this.setAttribute('is-shadow-enabled', '');
+    else this.removeAttribute('is-shadow-enabled');
   }
 
   get isHoverEnabled(): boolean {
@@ -214,11 +223,13 @@ export class CardPanelElement extends HTMLElement {
     const wasSyncingDom = this.#isSyncingDom;
 
     this.#isSyncingDom = true;
+    this.#mutationObserver?.disconnect();
 
     try {
       return callback();
     } finally {
       this.#isSyncingDom = wasSyncingDom;
+      if (!wasSyncingDom && this.#isMounted) this.#observeMutations();
     }
   }
 
@@ -236,8 +247,15 @@ export class CardPanelElement extends HTMLElement {
       this.render();
     });
 
-    this.#mutationObserver.observe(this, {
+    this.#observeMutations();
+  }
+
+  #observeMutations(): void {
+    this.#mutationObserver?.observe(this, {
       childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['slot'],
     });
   }
 
@@ -325,6 +343,11 @@ export class CardPanelElement extends HTMLElement {
   }
 
   #syncAnchorAttributes(): void {
+    for (const name of ['download', 'hreflang', 'referrerpolicy', 'ping', 'type']) {
+      const value = this.as === 'a' ? this.getAttribute(name) : null;
+      if (value === null) this.#rootElement.removeAttribute(name);
+      else this.#rootElement.setAttribute(name, value);
+    }
     if (this.as !== 'a') {
       this.#rootElement.removeAttribute('href');
       this.#rootElement.removeAttribute('target');

@@ -203,9 +203,7 @@ const mountComponent = (
   props: Record<string, unknown> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormDatePicker, {
+  const wrapper = mount(FormDatePicker, {
     props: {
       id: 'date',
       name: 'date',

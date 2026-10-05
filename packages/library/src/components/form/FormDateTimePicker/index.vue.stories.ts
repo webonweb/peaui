@@ -14,6 +14,7 @@ import type { LocalDateTimeValue } from './date-time-picker.shared';
 const meta = {
   title: '5. Form/FormDateTimePicker',
   component: FormDateTimePickerComponent,
+  args: { ...formDateTimePickerDemoProps },
   parameters: {
     name: 'FormDateTimePicker',
     description:
@@ -139,5 +140,14 @@ export const MobileAndLongLabel: Story = {
         <FormDateTimePickerComponent id="date-time-mobile" name="dateTimeMobile" :label="formDateTimePickerLongLabel" :value="formDateTimePickerDemoValue" variant="split-input" data-test-id="form-date-time-picker-mobile" />
       </div>
     `,
+  }),
+};
+
+export const NativeRequiredAndReset: Story = {
+  render: () => ({
+    components: { FormDateTimePickerComponent },
+    setup: () => ({ value: ref<LocalDateTimeValue | undefined>(undefined) }),
+    template:
+      '<form @submit.prevent @reset="value = undefined"><FormDateTimePickerComponent id="native-datetime" name="value" label="Required value" variant="split-input" required v-model:value="value" /><button type="submit">Validate</button><button type="reset">Reset</button></form>',
   }),
 };

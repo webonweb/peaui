@@ -22,7 +22,7 @@ function factory(props?: Partial<InstanceType<typeof Component>['$props']>) {
       dataTestId: 'card-carousel',
       defaultVisibleSlides: 4,
       ...props,
-    } as any,
+    },
     slots: {
       default: `
         <article data-testid="card-a">A</article>
@@ -193,7 +193,7 @@ describe('CardCarousel (index.vue)', () => {
         defaultVisibleSlides: 4,
         isNavigationDotsVisible: false,
         isNavigationVisible: false,
-      } as any,
+      },
       slots: {
         default: `
           <article>A</article>
@@ -223,7 +223,7 @@ describe('CardCarousel (index.vue)', () => {
     const wrapper = mount(Component, {
       props: {
         ariaLabel: 'Karuzela z jednym slajdem',
-      } as any,
+      },
       slots: {
         default: `
           <article>Jedna karta</article>
@@ -240,7 +240,7 @@ describe('CardCarousel (index.vue)', () => {
       props: {
         ariaLabel: 'Karuzela z aliasem',
         defualtVisibleSlides: 3,
-      } as any,
+      },
       slots: {
         default: `
           <article>A</article>

@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -19,10 +20,12 @@ import {
   type VirtualListRole,
 } from './virtual-list.shared';
 
-const VirtualListVueElement = createVueCustomElement(
-  VirtualListVueComponent,
-  `${UIKIT_NAME}-virtual-list`,
-);
+const VirtualListVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(VirtualListVueComponent, `${UIKIT_NAME}-virtual-list`);
 
 /** Light-DOM adapter exposing property-based data and the same imperative scroll API. */
 export class VirtualListElement extends VirtualListVueElement implements VirtualListHandle {

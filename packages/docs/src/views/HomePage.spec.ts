@@ -39,7 +39,7 @@ describe('HomePage', () => {
   it('renders the English value proposition, dynamic version and all main CTAs', async () => {
     const wrapper = await mountHome();
 
-    expect(wrapper.get('h1').text()).toBe('One UI system. Three native integrations.');
+    expect(wrapper.get('h1').text()).toBe('One UI system for Vue, React and Web Components.');
     expect(wrapper.text()).toContain(`Documentation v${libraryPackage.version}`);
     expect(wrapper.text()).toContain('Browse components');
     expect(wrapper.text()).toContain('Get started');
@@ -55,7 +55,7 @@ describe('HomePage', () => {
     setLocale('pl', false);
     const wrapper = await mountHome();
 
-    expect(wrapper.get('h1').text()).toBe('Jeden system UI. Trzy natywne integracje.');
+    expect(wrapper.get('h1').text()).toBe('Jeden system UI dla Vue, React i Web Components.');
     expect(wrapper.text()).toContain('Przeglądaj komponenty');
     expect(wrapper.text()).toContain('Zobacz w npm');
     expect(wrapper.text()).toContain(`Dokumentacja v${libraryPackage.version}`);

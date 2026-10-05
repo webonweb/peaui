@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormTimePickerVueComponent from './index.ce.vue';
 
-const FormTimePickerVueElement = createVueCustomElement(
-  FormTimePickerVueComponent,
-  `${UIKIT_NAME}-form-time-picker`,
-);
+const FormTimePickerVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormTimePickerVueComponent, `${UIKIT_NAME}-form-time-picker`);
 
 /** Light-DOM custom element preserving the Vue FormTimePicker contract. */
 export class FormTimePickerElement extends FormTimePickerVueElement {

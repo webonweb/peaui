@@ -159,3 +159,27 @@ export const MobileAndLongLabel: Story = {
     return wrapper;
   },
 };
+
+export const NativeRequiredAndReset: Story = {
+  render: () => {
+    const form = document.createElement('form');
+    form.addEventListener('submit', (event) => event.preventDefault());
+    form.append(
+      renderTimePicker({
+        id: 'native-time',
+        name: 'value',
+        label: 'Required value',
+        variant: 'segmented',
+        required: true,
+        value: undefined,
+      }),
+    );
+    for (const type of ['submit', 'reset'] as const) {
+      const button = document.createElement('button');
+      button.type = type;
+      button.textContent = type === 'submit' ? 'Validate' : 'Reset';
+      form.append(button);
+    }
+    return form;
+  },
+};

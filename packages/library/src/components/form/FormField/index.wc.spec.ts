@@ -195,11 +195,11 @@ type MountOptions = {
   before?: string;
   canErase?: boolean;
   dataTestId?: string;
-  description?: Node | string;
+  description?: HTMLElement | string;
   disabled?: boolean;
-  error?: Node | string;
+  error?: HTMLElement | string;
   field?: HTMLElement;
-  hint?: Node | string;
+  hint?: HTMLElement | string;
   iconAfter?: string;
   iconBefore?: string;
   id?: string;
@@ -210,14 +210,14 @@ type MountOptions = {
   readonly?: boolean;
   required?: boolean;
   rightErasePosition?: number;
-  success?: Node | string;
+  success?: HTMLElement | string;
   value?: number | string | string[] | null;
 };
 
 function appendSlottedNode(
   element: FormFieldElement,
   slotName: string,
-  content: Node | string | undefined,
+  content: HTMLElement | string | undefined,
 ) {
   if (content === undefined) {
     return;
@@ -358,7 +358,7 @@ describe('FormField (index.wc.ts)', () => {
 
     const input = element.querySelector<HTMLInputElement>('[data-testid="field-element"]');
 
-    expect(input?.getAttribute('id')).toBe('first-name');
+    expect(input?.getAttribute('id')).toBe('first-name-control');
     expect(input?.getAttribute('name')).toBe('firstName');
     expect(input?.getAttribute('placeholder')).toBe('Wpisz imie');
     expect(input?.getAttribute('maxlength')).toBe('20');
@@ -531,7 +531,7 @@ describe('FormField (index.wc.ts)', () => {
     ).toContain('Opis pola');
     expect(
       element.querySelector('[data-testid="field-element"]')?.getAttribute('aria-describedby'),
-    ).toBe('first-name-help-description');
+    ).toBe('first-name-control-help-description');
   });
 
   it('generates a fallback control id when the host id is empty', async () => {
@@ -545,7 +545,7 @@ describe('FormField (index.wc.ts)', () => {
     const input = element.querySelector<HTMLInputElement>('[data-testid="field-element"]');
     const label = element.querySelector('peaui-form-field-label');
 
-    expect(input?.getAttribute('id')).toMatch(/^peaui-form-field-\d+$/);
+    expect(input?.getAttribute('id')).toMatch(/^peaui-form-field-\d+-control$/);
     expect(label?.getAttribute('for')).toBe(input?.getAttribute('id'));
   });
 
@@ -566,7 +566,7 @@ describe('FormField (index.wc.ts)', () => {
     expect(element.querySelector('[data-testid="form-field-help-description"]')).toBeNull();
     expect(input?.getAttribute('aria-invalid')).toBe('true');
     expect(input?.getAttribute('aria-describedby')).toBe(
-      'first-name-error first-name-assistive-description',
+      'first-name-control-error first-name-control-assistive-description',
     );
     expect(input?.classList.contains('peaui-form-field__element--error')).toBe(true);
   });
@@ -585,8 +585,8 @@ describe('FormField (index.wc.ts)', () => {
     const input = element.querySelector('[data-testid="field-element"]');
     const describedBy = input?.getAttribute('aria-describedby')?.split(' ') ?? [];
 
-    expect(describedBy).toContain('first-name-error');
-    expect(describedBy).toContain('first-name-assistive-description');
+    expect(describedBy).toContain('first-name-control-error');
+    expect(describedBy).toContain('first-name-control-assistive-description');
     expect(
       element.querySelector('[data-testid="form-field-assistive-description"]')?.textContent,
     ).toContain('Opis pola');
@@ -612,6 +612,6 @@ describe('FormField (index.wc.ts)', () => {
     expect(message?.getAttribute('aria-live')).toBe('polite');
     expect(
       element.querySelector('[data-testid="field-element"]')?.getAttribute('aria-describedby'),
-    ).toBe('first-name-help-max-length-description');
+    ).toBe('first-name-control-help-max-length-description');
   });
 });

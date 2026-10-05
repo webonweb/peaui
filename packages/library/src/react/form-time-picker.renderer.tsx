@@ -1,4 +1,10 @@
 /** @jsxImportSource react */
+import { getRequiredValueAttributes, focusInvalidValue } from '../helpers/form-validation.helper';
+import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
+import { renderSvgMarkup } from './renderers/svg-markup.renderer';
+import { iconHint } from './generated-static-icons';
+import { useModel, useFormControlModel } from './renderers/runtime.shared';
+import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 import {
   useEffect,
   useId,
@@ -8,7 +14,6 @@ import {
   type CSSProperties,
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type ReactElement,
   type ReactNode,
 } from 'react';
@@ -45,17 +50,17 @@ import {
   type TimePickerSegment,
   type TimePickerValidationOptions,
 } from '../components/form/FormTimePicker/time-picker.shared';
-import { reactIconData } from './generated-icon-data';
+import type { ReactIconData } from './generated-icon-data';
+import { iconClock, iconCross } from './generated-static-icons';
+const controlIcons: Readonly<Record<string, ReactIconData>> = {
+  clock: iconClock,
+  cross: iconCross,
+};
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
-};
-
-type NativePopoverElement = HTMLDivElement & {
-  hidePopover?: () => void;
-  showPopover?: () => void;
 };
 
 const cx = (...values: Array<string | false | null | undefined>): string =>
@@ -83,52 +88,13 @@ const call = (props: RuntimeProps, name: string, ...args: unknown[]): void => {
   if (typeof handler === 'function') (handler as (...values: unknown[]) => void)(...args);
 };
 
-function useRuntimeModel<T>(
-  props: RuntimeProps,
-  name: string,
-  fallback: T,
-): readonly [T, (value: T) => void] {
-  const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-  const isControlled = Object.prototype.hasOwnProperty.call(props, name);
-  const controlled = props[name] as T | undefined;
-  const defaultValue = props[`default${capitalized}`] as T | undefined;
-  const [internal, setInternal] = useState<T>(defaultValue ?? fallback);
-  const value = isControlled ? (controlled as T) : internal;
-  const update = (next: T): void => {
-    if (!isControlled) setInternal(next);
-    call(props, `on${capitalized}Change`, next);
-  };
-  return [value, update] as const;
-}
-
-function useNativePopover(open: boolean): MutableRefObject<NativePopoverElement | null> {
-  const ref = useRef<NativePopoverElement | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (typeof element.showPopover !== 'function' || typeof element.hidePopover !== 'function') {
-      element.hidden = !open;
-      return;
-    }
-    element.hidden = false;
-    try {
-      const isOpen = element.matches(':popover-open');
-      if (open && !isOpen) element.showPopover();
-      if (!open && isOpen) element.hidePopover();
-    } catch {
-      element.hidden = !open;
-    }
-  }, [open]);
-  return ref;
-}
-
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
   else if (ref) ref.current = value;
 }
 
 function Icon({ name, className }: { name: string; className?: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  const icon = controlIcons[name] ?? controlIcons.info;
   return (
     <svg
       aria-hidden="true"
@@ -194,33 +160,42 @@ export function FormTimePickerRenderer({
     () => ({ format, locale, showSeconds }),
     [format, locale, showSeconds],
   );
+  const allowOffStep = bool(props, 'allowOffStep');
+  const hourStep = normalizeStep(num(props, 'hourStep', 1), 24);
+  const maximum = text(props, 'max') || undefined;
+  const minimum = text(props, 'min') || undefined;
+  const minuteStep = normalizeStep(num(props, 'minuteStep', 5), 60);
+  const secondStep = normalizeStep(num(props, 'secondStep', 5), 60);
   const validationOptions = useMemo<TimePickerValidationOptions>(
     () => ({
       ...formatContext,
-      allowOffStep: bool(props, 'allowOffStep'),
-      hourStep: normalizeStep(num(props, 'hourStep', 1), 24),
-      minuteStep: normalizeStep(num(props, 'minuteStep', 5), 60),
-      secondStep: normalizeStep(num(props, 'secondStep', 5), 60),
-      min: text(props, 'min') || undefined,
-      max: text(props, 'max') || undefined,
+      allowOffStep,
+      hourStep,
+      minuteStep,
+      secondStep,
+      min: minimum,
+      max: maximum,
     }),
-    [
-      formatContext,
-      props.allowOffStep,
-      props.hourStep,
-      props.max,
-      props.min,
-      props.minuteStep,
-      props.secondStep,
-    ],
+    [allowOffStep, formatContext, hourStep, maximum, minimum, minuteStep, secondStep],
   );
-  const [modelValue, setModelValue] = useRuntimeModel<string | undefined>(
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [modelValue, setModelValue] = useFormControlModel<string | undefined>(
     props,
     'value',
     undefined,
+    rootRef,
+    true,
+    (next) => {
+      const parsed = parseModelTime(next);
+      const nextReason = modelInvalidReason(next, parsed, validationOptions);
+      setActiveParts(parsed ?? getFirstValidTime(validationOptions) ?? { ...DEFAULT_TIME_PARTS });
+      setDraft(parsed ? formatForDisplay(parsed) : String(next ?? ''));
+      setReason(nextReason);
+      digitBufferRef.current = undefined;
+    },
   );
   const valueControlled = Object.prototype.hasOwnProperty.call(props, 'value');
-  const [open, setOpen] = useRuntimeModel<boolean>(props, 'open', false);
+  const [open, setOpen] = useModel<boolean>(props, 'open', false, true);
   const initialParts = parseModelTime(modelValue);
   const initialReason = modelInvalidReason(modelValue, initialParts, validationOptions);
   const [activeParts, setActiveParts] = useState<TimePickerParts>(
@@ -245,7 +220,6 @@ export function FormTimePickerRenderer({
   );
   const [reason, setReason] = useState<TimePickerInvalidReason | undefined>(initialReason);
   const [placement, setPlacement] = useState<FormTimePickerPlacement>(preferredPlacement);
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const triggerHostRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -287,13 +261,19 @@ export function FormTimePickerRenderer({
       })),
     [activeParts, periodLabels, validationOptions],
   );
+  const synchronizationRef = useRef({ focusPanelSegment, formatForDisplay, updateOpen });
+  synchronizationRef.current = { focusPanelSegment, formatForDisplay, updateOpen };
 
   useEffect(() => {
     const parsed = parseModelTime(modelValue);
     const nextReason = modelInvalidReason(modelValue, parsed, validationOptions);
     if (parsed !== undefined && nextReason === undefined) setActiveParts(parsed);
     else setActiveParts(getFirstValidTime(validationOptions) ?? { ...DEFAULT_TIME_PARTS });
-    setDraft(parsed !== undefined ? formatForDisplay(parsed) : String(modelValue ?? ''));
+    setDraft(
+      parsed !== undefined
+        ? synchronizationRef.current.formatForDisplay(parsed)
+        : String(modelValue ?? ''),
+    );
     setReason((current) =>
       (modelValue === undefined || modelValue.length === 0) && current === 'empty'
         ? 'empty'
@@ -305,11 +285,11 @@ export function FormTimePickerRenderer({
     if (!open || !pendingFocusRef.current) return;
     const segment = pendingFocusRef.current;
     pendingFocusRef.current = null;
-    queueMicrotask(() => focusPanelSegment(segment));
+    queueMicrotask(() => synchronizationRef.current.focusPanelSegment(segment));
   }, [open, panelMode]);
 
   useEffect(() => {
-    if (blocked && open) updateOpen(false);
+    if (blocked && open) synchronizationRef.current.updateOpen(false);
   }, [blocked, open]);
 
   const getOptions = (segment: Exclude<TimePickerSegment, 'period'>): TimePickerOption[] => {
@@ -539,16 +519,14 @@ export function FormTimePickerRenderer({
   const anchorName = `--anchor-${id.replaceAll(':', '')}`;
   const renderOption = (segment: TimePickerSegment, option: TimePickerOption): ReactNode => {
     const renderer = props[`render${segment.charAt(0).toUpperCase()}${segment.slice(1)}Option`] as
-      | ((option: TimePickerOption, selected: boolean) => ReactNode)
-      | undefined;
+      ((option: TimePickerOption, selected: boolean) => ReactNode) | undefined;
     return renderer?.(option, isSelected(segment, option)) ?? option.label;
   };
   const triggerAriaLabel =
     text(props, 'triggerAriaLabel') || `Wybierz czas${label ? `: ${label}` : ''}`;
   const panelAriaLabel = text(props, 'panelAriaLabel') || `Wybór czasu${label ? `: ${label}` : ''}`;
   const customTrigger = props.renderTrigger as
-    | ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode)
-    | undefined;
+    ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode) | undefined;
   const currentFieldClass = cx(
     'peaui-form-field__element',
     draft.length > 0 ? 'peaui-form-field__element--medium' : 'peaui-form-field__element--normal',
@@ -569,7 +547,13 @@ export function FormTimePickerRenderer({
             ) : null}
           </span>
           {hasContent(props.hint) ? (
-            <span className="peaui-info-tooltip">{props.hint as ReactNode}</span>
+            <InfoTooltipRenderer
+              description={props.hint}
+              placement="right"
+              ariaLabel="Dodatkowa informacja"
+            >
+              {renderSvgMarkup({ className: 'peaui-form-label__hint', data: iconHint })}
+            </InfoTooltipRenderer>
           ) : null}
         </label>
       ) : null}
@@ -582,11 +566,13 @@ export function FormTimePickerRenderer({
             aria-expanded={open}
             aria-haspopup="dialog"
             aria-invalid={hasError || undefined}
-            aria-label={text(props, 'ariaLabel') || (!label ? name : undefined)}
+            aria-label={
+              text(props, 'aria-label') || text(props, 'ariaLabel') || (!label ? name : undefined)
+            }
             aria-labelledby={label ? `label-${id}` : undefined}
             aria-readonly={readonly || undefined}
             aria-autocomplete="none"
-            autoCapitalize="off"
+            autoCapitalize="none"
             autoComplete="off"
             className={cx(currentFieldClass, `${root}__input`)}
             data-testid={baseTestId ? `${baseTestId}-element` : undefined}
@@ -687,7 +673,27 @@ export function FormTimePickerRenderer({
             >
               <Icon name="clock" />
             </button>
-            <input name={name} type="hidden" value={modelValue ?? ''} />
+            <input
+              name={name}
+              type="hidden"
+              value={modelValue ?? ''}
+              disabled={disabled || loading}
+            />
+            <input
+              {...getRequiredValueAttributes(
+                Boolean(modelValue),
+                required,
+                disabled || loading,
+                readonly,
+              )}
+              onChange={() => undefined}
+              onInvalid={(event) =>
+                focusInvalidValue(
+                  event.nativeEvent,
+                  rootRef.current?.querySelector('[role=spinbutton]'),
+                )
+              }
+            />
           </div>
         )}
         {variant === 'input' ? (
@@ -817,12 +823,7 @@ export function FormTimePickerRenderer({
         )}
         data-testid={baseTestId ? `${baseTestId}-popover-content` : undefined}
         hidden={!open}
-        popover={
-          typeof HTMLElement !== 'undefined' &&
-          typeof HTMLElement.prototype.showPopover === 'function'
-            ? 'auto'
-            : undefined
-        }
+        popover={getNativePopoverValue()}
         ref={popoverRef}
         style={
           {

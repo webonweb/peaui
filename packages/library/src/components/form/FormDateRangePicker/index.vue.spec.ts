@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick, ref } from 'vue';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/assets/global.scss', () => ({}));
 vi.mock('./styles.scss', () => ({}));
@@ -83,14 +83,20 @@ const PickerNavigationStub = defineComponent({
 import FormDateRangePicker from './index.vue';
 import type { DateRangeValue } from './date-range-picker.shared';
 
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date(2026, 7, 1, 12));
+});
+
+afterEach(() => vi.useRealTimers());
+
 afterEach(() => {
   document.body.replaceChildren();
   vi.restoreAllMocks();
 });
 
 function mountPicker(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-  wrapper = mount(FormDateRangePicker, {
+  const wrapper = mount(FormDateRangePicker, {
     attachTo: document.body,
     props: {
       id: 'report-range',

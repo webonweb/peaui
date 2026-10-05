@@ -6,14 +6,7 @@ import { InfoTooltipElement, defineInfoTooltip } from './index.wc';
 defineInfoTooltip();
 
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 type Variant = 'default' | 'disabled';
 
@@ -104,7 +97,7 @@ function getSettings(storyMeta: Meta<InfoTooltipStoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };

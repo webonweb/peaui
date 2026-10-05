@@ -2,12 +2,7 @@
 export type DropdownMenuAlign = 'start' | 'center' | 'end';
 export type DropdownMenuDensity = 'compact' | 'comfortable';
 export type DropdownMenuItemType =
-  | 'item'
-  | 'checkbox'
-  | 'radio'
-  | 'separator'
-  | 'group'
-  | 'submenu';
+  'item' | 'checkbox' | 'radio' | 'separator' | 'group' | 'submenu';
 export type DropdownMenuItemVariant = 'default' | 'danger';
 export type DropdownMenuPlacement = 'top' | 'right' | 'bottom' | 'left';
 

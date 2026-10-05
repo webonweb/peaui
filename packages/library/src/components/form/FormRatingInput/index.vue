@@ -25,6 +25,7 @@ export interface FormRatingInputProps {
   /** Wyłącza kontrolkę. */
   disabled?: boolean;
   /** Oznacza ocenę jako wymaganą. */
+  /** Empty selection blocks native form submission; readonly and disabled are exempt. */
   required?: boolean;
   /** Mapa tekstowych opisów indeksowana wartością, np. `{ '4': 'Dobra' }`. */
   labels?: RatingLabels;
@@ -66,7 +67,9 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import MessageText from '@/components/feedback/MessageText/index.vue';
 import FormFieldLabel from '@/components/form/FormFieldLabel/index.vue';
 import { UIKIT_NAME } from '@/constants';
-import { computed, ref, useAttrs, useId, useSlots, type CSSProperties } from 'vue';
+import { getRequiredValueAttributes, focusInvalidValue } from '@/helpers/form-validation.helper';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, ref, useAttrs, useId, type CSSProperties } from 'vue';
 
 import {
   getRatingDescription,
@@ -116,7 +119,9 @@ const emit = defineEmits<{
 }>();
 
 const attrs = useAttrs();
-const slots = useSlots();
+const labelSlot = useSlotPresence('label');
+const descriptionSlot = useSlotPresence('description');
+const errorSlot = useSlotPresence('error');
 const generatedId = useId();
 const classNameComponent = `${UIKIT_NAME}-form-rating-input`;
 const inputRef = ref<HTMLInputElement>();
@@ -129,9 +134,9 @@ const committedValue = computed(() =>
 );
 const displayedValue = computed(() => previewValue.value ?? committedValue.value);
 const items = computed(() => Array.from({ length: normalizedMax.value }, (_, index) => index));
-const hasLabel = computed(() => Boolean(slots.label || props.label.trim()));
-const hasDescription = computed(() => Boolean(slots.description || props.description.trim()));
-const hasError = computed(() => Boolean(slots.error || props.error.trim()));
+const hasLabel = computed(() => Boolean(labelSlot.value || props.label.trim()));
+const hasDescription = computed(() => Boolean(descriptionSlot.value || props.description.trim()));
+const hasError = computed(() => Boolean(errorSlot.value || props.error.trim()));
 const labelId = computed(() => `${resolvedId.value}-label-text`);
 const descriptionId = computed(() => `${resolvedId.value}-default`);
 const errorId = computed(() => `${resolvedId.value}-error`);
@@ -316,6 +321,7 @@ function handleNativeInput(event: Event): void {
           v-bind="controlAttrs"
           :id="resolvedId"
           ref="inputRef"
+          :form="form"
           :class="`${classNameComponent}__input`"
           :min="0"
           :max="normalizedMax"
@@ -404,6 +410,12 @@ function handleNativeInput(event: Event): void {
     </div>
 
     <input
+      v-bind="
+        getRequiredValueAttributes(committedValue !== null, required, disabled, readonly, form)
+      "
+      @invalid="focusInvalidValue($event, inputRef)"
+    />
+    <input
       v-if="name && committedValue !== null && !disabled"
       :name
       :form
@@ -413,7 +425,7 @@ function handleNativeInput(event: Event): void {
 
     <MessageText
       v-if="hasDescription"
-      :id="resolvedId"
+      :id="descriptionId"
       :data-test-id="dataTestId ? `${dataTestId}-description` : undefined"
       size="xs"
       variant="default"
@@ -423,7 +435,7 @@ function handleNativeInput(event: Event): void {
     </MessageText>
     <MessageText
       v-if="hasError"
-      :id="resolvedId"
+      :id="errorId"
       :data-test-id="dataTestId ? `${dataTestId}-error` : undefined"
       aria-live="polite"
       size="xs"

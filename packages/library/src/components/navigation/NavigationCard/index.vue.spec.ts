@@ -44,7 +44,7 @@ function factory(props?: Partial<InstanceType<typeof Component>['$props']>) {
       title: 'Example',
       description: 'Navigation card description',
       ...props,
-    } as any,
+    },
     global: {
       stubs: {
         SvgIcon: SvgIconStub,
@@ -143,6 +143,14 @@ describe('NavigationCard (index.vue)', () => {
     expect(wrapper.find('article').exists()).toBe(true);
     expect(wrapper.find('a').exists()).toBe(false);
     expect(wrapper.get('article').classes()).toContain('uikit-navigation-card--static');
+  });
+
+  it('does not interpret HTML from the description prop', () => {
+    const description = '<img src=x onerror="alert(1)">Description';
+    const wrapper = factory({ description });
+
+    expect(wrapper.get('p').text()).toBe(description);
+    expect(wrapper.find('p img').exists()).toBe(false);
   });
 });
 

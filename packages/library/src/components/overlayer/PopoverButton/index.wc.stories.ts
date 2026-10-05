@@ -38,3 +38,14 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const KeyboardBetweenControls: Story = {
+  render: () => {
+    const element = renderVueCustomElementStory(PopoverButtonElement.tagName, {
+      ariaLabel: 'Open panel',
+    });
+    element.innerHTML =
+      'Open panel<span slot="content"><button type="button">First action</button><button type="button">Second action</button></span>';
+    return element;
+  },
+};

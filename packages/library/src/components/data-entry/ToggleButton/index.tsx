@@ -1,12 +1,14 @@
 import type { ForwardRefExoticComponent, PropsWithoutRef, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { ToggleButtonRenderer } from '@/react/renderer-entries/toggle-button.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type ToggleButtonProps = PeauiReactProps<'ToggleButton'>;
 
-const ToggleButton = createPeauiReactComponent(
+const ToggleButton = createDirectReactComponent(
   'ToggleButton',
+  ToggleButtonRenderer,
 ) as unknown as ForwardRefExoticComponent<
   PropsWithoutRef<ToggleButtonProps> & RefAttributes<HTMLButtonElement>
 >;

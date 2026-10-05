@@ -46,6 +46,7 @@
 }
 
 .peaui-button-export__content-button {
+  min-block-size: var(--peaui-target-min, 24px);
   cursor: pointer;
   background: none;
   border: 0;

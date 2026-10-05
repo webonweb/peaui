@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import AvatarGroupVueComponent from './index.vue';
 
-export const AvatarGroupElement = createVueCustomElement(
-  AvatarGroupVueComponent,
-  `${UIKIT_NAME}-avatar-group`,
-);
+export const AvatarGroupElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(AvatarGroupVueComponent, `${UIKIT_NAME}-avatar-group`);
 
 export function defineAvatarGroup(): typeof AvatarGroupElement {
   definePeauiCustomElement(AvatarGroupElement);

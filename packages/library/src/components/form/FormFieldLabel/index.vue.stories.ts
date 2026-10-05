@@ -42,7 +42,7 @@ const meta: Meta<typeof FormLabelComponent> = {
     text: {
       control: { type: 'text' },
       table: { type: { summary: 'string' }, defaultValue: { summary: undefined } },
-      description: 'Tekst etykiety (renderowany przez v-html).',
+      description: 'Tekst etykiety (renderowany bez interpretowania HTML).',
     },
     readonly: {
       control: { type: 'boolean' },

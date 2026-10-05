@@ -41,7 +41,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const renderVertical = (args: Record<string, unknown>) => ({
+const renderVertical = (args: InstanceType<typeof ScrollArea>['$props']) => ({
   components: { ScrollArea, StoryContent },
   setup() {
     const settings = getSettings(meta);
@@ -67,7 +67,10 @@ const renderVertical = (args: Record<string, unknown>) => ({
 });
 
 export const Vertical: Story = { render: renderVertical };
-export const Native: Story = { args: { type: 'native' }, render: renderVertical };
+export const Native: Story = {
+  args: { type: 'native', tabindex: undefined },
+  render: renderVertical,
+};
 export const AlwaysVisible: Story = {
   args: { scrollbarVisibility: 'always' },
   render: renderVertical,

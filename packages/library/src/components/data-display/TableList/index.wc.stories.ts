@@ -9,15 +9,19 @@ import {
 
 import TableListVueComponent from './index.ce.vue';
 import { TableListElement, defineTableList } from './index.wc';
+import { ButtonActionElement, defineButtonAction } from '../../data-entry/ButtonAction/index.wc';
 import {
   tableListAllTypeColumns,
   tableListEditableColumns,
   tableListStoryColumns,
   tableListStoryRecords,
   tableListWorkflowColumns,
+  tableListReorderColumns,
+  tableListReorderRecords,
 } from './story-fixtures';
 
 defineTableList();
+defineButtonAction();
 
 const meta = {
   title: '2. Data Display/TableList',
@@ -49,6 +53,47 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const ReorderDuringEditing: Story = {
+  render: () => {
+    let records = [...tableListReorderRecords];
+    const wrapper = document.createElement('div');
+    const hint = document.createElement('p');
+    hint.textContent =
+      'Rozpocznij edycję Alice, zmień tekst i odwróć kolejność. Zapis nadal dotyczy Alice.';
+    const table = new TableListElement();
+    Object.assign(table, {
+      records,
+      columns: tableListReorderColumns,
+      editable: true,
+      canCreate: false,
+      canSelectRows: false,
+    });
+    const reverse = new ButtonActionElement();
+    reverse.textContent = 'Odwróć kolejność';
+    reverse.addEventListener('click', () => {
+      records = [...records].reverse();
+      Object.assign(table, { records });
+    });
+    table.addEventListener('on:submit', (event) => {
+      const values = (event as CustomEvent<Record<string, unknown>>).detail;
+      records = records.map((record, index) =>
+        index === Number(values.id) ? { ...record, name: String(values.name) } : record,
+      );
+      Object.assign(table, { records });
+    });
+    wrapper.append(hint, reverse, table);
+    return wrapper;
+  },
+};
+
+export const EditableColumns: Story = {
+  args: {
+    columns: tableListEditableColumns.map((column) => ({ ...column, type: 'editable' })),
+    records: tableListStoryRecords,
+    canSelectRows: false,
+  },
+};
 
 export const SelectableRows: Story = {
   args: { canSelectRows: true, selectedRows: ['2'] },
@@ -105,4 +150,21 @@ export const EmptyState: Story = {
 
 export const Loading: Story = {
   args: { isLoading: true, scroll: true },
+};
+
+/** The same large-data scenario across all adapters, limited to 20 DOM rows. */
+export const PaginatedLargeData: Story = {
+  args: {
+    columns: [{ key: 'name', label: 'Nazwa' }],
+    records: Array.from({ length: 5000 }, (_, index) => ({
+      id: String(index),
+      name: `Rekord ${index + 1}`,
+    })),
+    paginate: true,
+    page: 1,
+    rowsPerPage: 20,
+    paginationLabel: 'Strony rekordow',
+    canSelectRows: true,
+    canCheckRows: false,
+  },
 };

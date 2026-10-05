@@ -14,3 +14,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const SixPagesAtSecondPage: Story = { args: { totalPages: 6, page: 2, ariaLabel: 'Pages' } };

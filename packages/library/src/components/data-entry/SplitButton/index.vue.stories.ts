@@ -9,6 +9,7 @@ import { splitButtonDemoItems, splitButtonDemoProps } from './split-button.demo'
 const meta = {
   title: '3. Data Entry/SplitButton',
   component: SplitButtonComponent,
+  args: { ...splitButtonDemoProps },
   parameters: {
     name: 'SplitButton',
     description:

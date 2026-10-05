@@ -139,7 +139,7 @@ export default meta;
 type Story = StoryObj<typeof TableListHeaderComponent>;
 
 function createRender(withDescription = false) {
-  return (args: Record<string, unknown>) => ({
+  return (args: InstanceType<typeof TableListHeaderComponent>['$props']) => ({
     components: {
       StoryContent,
       TableListHeaderComponent,

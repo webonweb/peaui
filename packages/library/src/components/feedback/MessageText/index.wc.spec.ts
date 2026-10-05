@@ -11,16 +11,7 @@ type MountOptions = {
   id?: string;
   ownIcon?: string;
   size?:
-    | 'xxs'
-    | 'xs'
-    | 's'
-    | 'm'
-    | 'l'
-    | 'xl'
-    | 'heading-xs'
-    | 'heading-s'
-    | 'heading-m'
-    | 'heading-l';
+    'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | 'heading-s' | 'heading-m' | 'heading-l';
   variant?: 'info' | 'error' | 'success' | 'danger' | 'default' | 'white';
   withIcon?: boolean;
 };

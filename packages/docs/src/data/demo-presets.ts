@@ -3,6 +3,8 @@ import { avatarDemoImage } from '../../../library/src/components/data-display/Av
 import { avatarGroupDemoItems } from '../../../library/src/components/data-display/AvatarGroup/avatar-group.demo';
 import { keyboardKeyDemoProps } from '../../../library/src/components/data-display/KeyboardKey/keyboard-key.demo';
 import { virtualListDemoItems } from '../../../library/src/components/data-display/VirtualList/virtual-list.demo';
+import { commandPaletteDemoProps } from '../../../library/src/components/navigation/CommandPalette/command-palette.demo';
+import { notificationCenterDemoProps } from '../../../library/src/components/feedback/NotificationCenter/notification-center.demo';
 import { inlineEditDemoProps } from '../../../library/src/components/data-entry/InlineEdit/inline-edit.demo';
 import { copyButtonDemoProps } from '../../../library/src/components/data-entry/CopyButton/copy-button.demo';
 import { toggleButtonDemoProps } from '../../../library/src/components/data-entry/ToggleButton/toggle-button.demo';
@@ -42,6 +44,29 @@ const selectOptions = [
 
 const formIdentity = { id: 'example-field', name: 'exampleField' };
 const docsComponentsPath = `${import.meta.env.BASE_URL}vue/components`;
+const guidedTourDocsSteps = [
+  {
+    id: 'navigation',
+    target: '[data-guided-tour-demo="navigation"]',
+    title: 'Nawigacja po projekcie',
+    description: 'Tutaj przełączasz najważniejsze obszary aplikacji.',
+    placement: 'right',
+  },
+  {
+    id: 'search',
+    target: '[data-guided-tour-demo="search"]',
+    title: 'Szybkie wyszukiwanie',
+    description: 'Znajdź projekt, raport albo członka zespołu bez opuszczania bieżącego widoku.',
+    placement: 'bottom',
+  },
+  {
+    id: 'profile',
+    target: '[data-guided-tour-demo="profile"]',
+    title: 'Profil i ustawienia',
+    description: 'Z tego miejsca zarządzasz kontem oraz preferencjami użytkownika.',
+    placement: 'left',
+  },
+];
 
 const componentPresets: Record<string, DemoPreset> = {
   ImageView: {
@@ -116,6 +141,19 @@ const componentPresets: Record<string, DemoPreset> = {
   },
   KeyboardKey: {
     props: { ...keyboardKeyDemoProps, platform: 'generic' },
+  },
+  CommandPalette: {
+    props: { ...commandPaletteDemoProps },
+  },
+  GuidedTour: {
+    props: {
+      allowSkip: true,
+      labels: { back: 'Wstecz', complete: 'Zakończ', next: 'Dalej', skip: 'Pomiń' },
+      mode: 'spotlight',
+      open: false,
+      step: 0,
+      steps: guidedTourDocsSteps,
+    },
   },
   VirtualList: {
     props: {
@@ -258,6 +296,9 @@ const componentPresets: Record<string, DemoPreset> = {
       canClose: true,
       withShadow: true,
     },
+  },
+  NotificationCenter: {
+    props: { ...notificationCenterDemoProps },
   },
   FormFieldLabel: { props: { for: 'demo-name', text: 'Nazwa inwestycji', required: true } },
   FormButtonCheckbox: {
@@ -539,7 +580,14 @@ function parseDefault(entry: ApiEntry): unknown {
   if (entry.default === 'false') return false;
   if (entry.default === 'undefined' || entry.default === 'null') return undefined;
   if (/^-?\d+(\.\d+)?$/.test(entry.default)) return Number(entry.default);
-  if (entry.default === '[]') return [];
+  if (/^[\[{]/.test(entry.default)) {
+    try {
+      return JSON.parse(entry.default) as unknown;
+    } catch {
+      return undefined;
+    }
+  }
+  if (/^(?:new |\()/.test(entry.default) || /=>/.test(entry.default)) return undefined;
   return entry.default;
 }
 
@@ -655,38 +703,94 @@ export function getDemoVariants(component: DemoDefinition): DemoVariant[] {
 }
 
 export function getExampleCode(component: DemoDefinition, props: Record<string, unknown>): string {
+  if (component.name === 'GuidedTour') {
+    return `<script setup lang="ts">
+import { ref } from 'vue';
+import GuidedTour from '@peaui/ui/vue/overlayer/GuidedTour';
+import type { GuidedTourStep } from '@peaui/ui';
+
+const open = ref(false);
+const step = ref(0);
+const steps: GuidedTourStep[] = ${serializeDemoValue(guidedTourDocsSteps)};
+<\/script>
+
+<template>
+  <nav data-guided-tour-demo="navigation">Project navigation</nav>
+  <label data-guided-tour-demo="search">
+    Search workspace
+    <input type="search" />
+  </label>
+  <button type="button" data-guided-tour-demo="profile">User profile</button>
+  <button type="button" @click="open = true">Start guided tour</button>
+
+  <GuidedTour
+    v-model:open="open"
+    v-model:step="step"
+    :steps="steps"
+    :labels="{ back: 'Previous', complete: 'Finish', next: 'Continue', skip: 'Not now' }"
+  />
+</template>`;
+  }
+
   const modelNames = new Set(component.models.map((model) => model.name));
   const scriptModels = component.models
     .filter((model) => props[model.name] !== undefined)
-    .map((model) => `const ${model.name} = ref(${JSON.stringify(props[model.name], null, 2)});`)
+    .map(
+      (model) =>
+        `const ${modelVariableName(model.name)} = ref(${serializeDemoValue(props[model.name])});`,
+    )
     .join('\n');
   const attributes = Object.entries(props)
     .filter(([name, value]) => value !== undefined && !modelNames.has(name))
-    .slice(0, component.name === 'TableList' ? undefined : 8)
     .map(([name, value]) => {
       const kebabName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
       if (value === true) return `  ${kebabName}`;
-      if (typeof value === 'string') return `  ${kebabName}="${value}"`;
-      return `  :${kebabName}='${serializeDemoValue(value)}'`;
+      if (typeof value === 'string') return `  ${kebabName}="${escapeMarkup(value)}"`;
+      return `  :${kebabName}="${escapeMarkup(serializeDemoValue(value))}"`;
     });
   const models = component.models
     .filter((model) => props[model.name] !== undefined)
-    .map((model) => `  v-model:${model.name}="${model.name}"`);
-  const hasContent = Boolean(getDemoPreset(component).defaultSlot);
+    .map(
+      (model) =>
+        `  v-model${model.name === 'modelValue' ? '' : `:${model.name}`}="${modelVariableName(model.name)}"`,
+    );
+  const preset = getDemoPreset(component);
+  const content = [
+    ...(Array.isArray(preset.defaultSlot)
+      ? preset.defaultSlot.map((value) => `  <div>${escapeMarkup(value)}</div>`)
+      : preset.defaultSlot
+        ? [`  ${escapeMarkup(preset.defaultSlot)}`]
+        : []),
+    ...Object.entries(preset.slots).map(
+      ([name, value]) => `  <template #${name}>${escapeMarkup(value)}</template>`,
+    ),
+  ].join('\n');
   const opening = `<${component.name}${
     [...models, ...attributes].length ? `\n${[...models, ...attributes].join('\n')}\n` : ''
   }>`;
-  const template = hasContent
-    ? `${opening}\n  ${getDemoPreset(component).defaultSlot}\n</${component.name}>`
+  const template = content
+    ? `${opening}\n${content}\n</${component.name}>`
     : opening.replace(/>$/, ' />');
 
-  return `<script setup lang="ts">\nimport { ${component.name} } from '@peaui/ui';${
+  return `<script setup lang="ts">\nimport ${component.name} from '${component.importPath}';${
     scriptModels ? `\nimport { ref } from 'vue';\n\n${scriptModels}` : ''
   }\n<\/script>\n\n<template>\n${template}\n</template>`;
 }
 
+function escapeMarkup(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+}
+
+function modelVariableName(name: string): string {
+  return name.replace(/[-:]([a-z])/g, (_, character: string) => character.toUpperCase());
+}
+
 function reactPropValue(value: unknown): string {
-  if (typeof value === 'string') return JSON.stringify(value);
   return `{${serializeDemoValue(value)}}`;
 }
 
@@ -694,21 +798,56 @@ export function getReactExampleCode(
   component: DemoDefinition,
   props: Record<string, unknown>,
 ): string {
+  if (component.name === 'GuidedTour') {
+    return `import GuidedTour, { type GuidedTourStep } from '@peaui/ui/react/overlayer/GuidedTour';
+import { useState } from 'react';
+
+const steps: GuidedTourStep[] = ${serializeDemoValue(guidedTourDocsSteps)};
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(0);
+
+  return (
+    <>
+      <nav data-guided-tour-demo="navigation">Project navigation</nav>
+      <label data-guided-tour-demo="search">
+        Search workspace
+        <input type="search" />
+      </label>
+      <button type="button" data-guided-tour-demo="profile">User profile</button>
+      <button type="button" onClick={() => setOpen(true)}>Start guided tour</button>
+
+      <GuidedTour
+        open={open}
+        onOpenChange={setOpen}
+        step={step}
+        onStepChange={setStep}
+        steps={steps}
+        labels={{ back: 'Previous', complete: 'Finish', next: 'Continue', skip: 'Not now' }}
+      />
+    </>
+  );
+}`;
+  }
+
   const modelNames = new Set(component.models.map((model) => model.name));
   const activeModels = component.models.filter((model) => props[model.name] !== undefined);
   const state = activeModels
     .map((model) => {
       const capitalized = model.name.charAt(0).toUpperCase() + model.name.slice(1);
-      return `  const [${model.name}, set${capitalized}] = useState(${JSON.stringify(
-        props[model.name],
-        null,
-        2,
-      )});`;
+      return `  const [${model.name}, set${capitalized}] = useState<ComponentProps<typeof ${component.name}>['${model.name}']>(${serializeDemoValue(props[model.name])});`;
     })
     .join('\n');
   const attributes = Object.entries(props)
-    .filter(([name, value]) => value !== undefined && !modelNames.has(name))
-    .slice(0, component.name === 'TableList' ? undefined : 8)
+    .filter(
+      ([name, value]) =>
+        value !== undefined &&
+        !modelNames.has(name) &&
+        !activeModels.some(
+          (model) => name === `default${model.name.charAt(0).toUpperCase()}${model.name.slice(1)}`,
+        ),
+    )
     .map(([name, value]) => `      ${name}=${reactPropValue(value)}`);
   const models = activeModels.flatMap((model) => {
     const capitalized = model.name.charAt(0).toUpperCase() + model.name.slice(1);
@@ -726,8 +865,12 @@ export function getReactExampleCode(
   );
   const allAttributes = [...models, ...attributes, ...namedSlots];
   const content = Array.isArray(preset.defaultSlot)
-    ? preset.defaultSlot.join('\n')
-    : preset.defaultSlot;
+    ? preset.defaultSlot
+        .map((value) => `<div>{${serializeDemoValue(value)}}</div>`)
+        .join('\n      ')
+    : preset.defaultSlot
+      ? `{${serializeDemoValue(preset.defaultSlot)}}`
+      : '';
   const opening = `<${component.name}${
     allAttributes.length ? `\n${allAttributes.join('\n')}\n    ` : ''
   }>`;
@@ -736,6 +879,6 @@ export function getReactExampleCode(
     : opening.replace(/>$/, ' />');
 
   return `import ${component.name} from '${component.importPath}';${
-    activeModels.length ? "\nimport { useState } from 'react';" : ''
+    activeModels.length ? "\nimport { useState, type ComponentProps } from 'react';" : ''
   }\n\nexport function Example() {${state ? `\n${state}\n` : ''}\n  return (\n    ${jsx}\n  );\n}`;
 }

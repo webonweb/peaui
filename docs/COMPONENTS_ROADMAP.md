@@ -2,6 +2,8 @@
 
 > Ten dokument jest źródłem prawdy dla planowania nowych komponentów PeaUI. Nie jest specyfikacją zamrożonego API: proponowane interfejsy należy potwierdzić przed rozpoczęciem implementacji, zachowując stałe identyfikatory komponentów.
 
+Aktualne instrukcje użycia znajdują się w [portalu dokumentacji](https://webonweb.github.io/peaui/) i [przewodniku instalacji oraz kontraktów](IMPORTY_I_KONTRAKTY.md). Sekcje „Proponowane API” zachowują założenia planistyczne, także przy pozycjach `DONE`; nie należy kopiować ich zamiast zweryfikowanego API komponentu. Datowane wyniki walidacji w notatkach implementacyjnych opisują tamten zakres i nie zastępują kontroli bieżącego kodu.
+
 ## Spis treści
 
 - [1. Cel dokumentu](#1-cel-dokumentu)
@@ -110,12 +112,12 @@ Komponenty powinny być realizowane pojedynczo albo w małych, jawnie wskazanych
 - Źródłowe komponenty powstają jako Vue 3 SFC z TypeScript, Composition API i `<script setup lang="ts">`. Publiczne API Vue wykorzystuje `defineProps`, `defineEmits`, nazwane `defineModel` (np. `value`, `open`, `page`) oraz, gdy potrzebne, `defineSlots`.
 - Nazwy komponentów i katalogów stosują `PascalCase`; pliki komponentu mają zwykle nazwy `index.vue`, `styles.scss`, `index.vue.spec.ts`, `index.vue.stories.ts`, `index.wc.ts`, `index.wc.spec.ts`, `index.wc.stories.ts`, `index.tsx` i `index.react.stories.tsx`.
 - Style są wspólne dla trzech targetów, używają BEM z prefiksem `peaui-`, zmiennej `UIKIT_NAME`, lokalnych `styles.scss`, mixinów z `assets/mixins.scss` i tokenów CSS `--peaui-*`. Palety obsługują `light-dark()` oraz klasę `body.dark-mode`; nie należy dodawać kolorów produktowych na sztywno.
-- Domyślnym API paczki jest Vue. React 19 ma natywne, generowane entry pointy z idiomatycznymi callbackami i trybem controlled/uncontrolled. Web Components są adapterami Custom Elements `peaui-*`, przekazują dane złożone przez właściwości DOM, sloty przez standard HTML, a eventy jako `CustomEvent.detail`.
+- Domyślnym API paczki jest Vue; `@peaui/ui/vue` stanowi jego jawny alias, a `@peaui/ui/react` udostępnia natywnego Reacta. React korzysta z modułowych rendererów oraz własnych implementacji i idiomatycznych callbacków. Katalog WC obejmuje 23 natywne elementy DOM i 64 adaptery Vue, rejestrowane jako `peaui-*`; dane złożone przekazuje się przez właściwości DOM, zawartość przez atrybut `slot`, a eventy jako `CustomEvent.detail`. Elementy renderują light DOM.
 - Eksporty zbiorcze są definiowane w `src/index.ts`, a build Vite tworzy osobne entry pointy Vue, React i WC. Każdy przyszły komponent musi zachować parytet publicznego API i dokumentacji dla wszystkich trzech środowisk.
 - Testy Vue są współlokowane i używają Vitest oraz Vue Test Utils. WC mają osobne testy adaptera, React korzysta z Testing Library i testów katalogu. Storybook/Playwright obejmuje renderowanie, interakcje, klawiaturę, axe i mobilne przepełnienia.
-- Repozytorium nie ma obecnie wydzielonego katalogu composables. Dostępne helpery dotyczą tablic, dat, DOM, funkcji, liczb, obiektów, stringów, notyfikacji oraz adapterów WC. Nowy composable lub utility powinien powstać tylko wtedy, gdy logika jest rzeczywiście wielokrotnego użytku.
-- Istniejące zależności funkcjonalne obejmują VeeValidate/Yup. Nowe komponenty nie powinny wiązać neutralnego API PeaUI z konkretnym backendem, routerem, magazynem stanu ani transportem sieciowym.
-- Katalog zawiera już 73 komponenty. Podobieństwa należy traktować jako możliwość kompozycji: `FormDatePicker` dla wyborów daty, `FormTimePicker` dla wyborów czasu, `PopoverOverlayer` dla warstw, `TableList` dla danych tabelarycznych, `TreeList` dla hierarchii, `NavigationStepper` dla kroków, `ImageView` dla mediów i `FullscreenContainer` dla dużych obszarów roboczych. Żadna z tych pozycji nie jest ponownie planowana jako nowy komponent.
+- Katalog `src/composables` zawiera `useVirtualListWindow`, `useSlotPresence` i `useFormControlReset`. Dostępne helpery obejmują daty, dane, DOM, formularze, fokus, warstwy, wirtualizację i adaptery WC. Najpierw sprawdź istniejące helpery i współdzielone moduły komponentów; nowe abstrahowanie wymaga rzeczywistego ponownego użycia.
+- Paczka biblioteki nie wymaga VeeValidate ani Yup. Korzysta z natywnych formularzy i współdzielonej walidacji; opcjonalne integracje z narzędziami aplikacji nie powinny wiązać neutralnego API PeaUI z konkretnym backendem, routerem, magazynem stanu ani transportem sieciowym.
+- Bieżący katalog zawiera 87 komponentów w każdym z trzech środowisk. Podobieństwa należy traktować jako możliwość kompozycji: `FormDatePicker` dla wyborów daty, `FormTimePicker` dla wyborów czasu, `PopoverOverlayer` dla warstw, `TableList` dla danych tabelarycznych, `TreeList` dla hierarchii, `NavigationStepper` dla kroków, `ImageView` dla mediów i `FullscreenContainer` dla dużych obszarów roboczych. Żadna z tych pozycji nie jest ponownie planowana jako nowy komponent.
 
 ## 7. Globalne standardy nowych komponentów
 
@@ -147,7 +149,7 @@ Operacje drag and drop zawsze wymagają równoważnej alternatywy klawiaturowej.
 
 Rejestr obejmuje 341 unikalnych pozycji: 200 zachowanych komponentów wcześniejszych rund i 141 nowych komponentów `PEA-COMP-201`–`PEA-COMP-341`. Statusy wszystkich istniejących pozycji pozostają bez zmian; wszystkie pozycje z bieżącego rozszerzenia rozpoczynają ze statusem `TODO`.
 
-Statystyki bieżącego rozszerzenia: statusy — `TODO: 141`; priorytety — `P0: 17`, `P1: 80`, `P2: 44`, `P3: 0`; złożoność — `S: 7`, `M: 59`, `L: 55`, `XL: 20`. Cała roadmapa ma 23 pozycje `DONE` i 318 pozycji `TODO`.
+Statystyki bieżącego rozszerzenia: statusy — `TODO: 141`; priorytety — `P0: 17`, `P1: 80`, `P2: 44`, `P3: 0`; złożoność — `S: 7`, `M: 59`, `L: 55`, `XL: 20`. Cała roadmapa ma 26 pozycji `DONE` i 315 pozycji `TODO`. Ukończone pozycje obejmują Avatar–NotificationCenter (`PEA-COMP-001`–`PEA-COMP-026`); następny jest KeyboardShortcutMap.
 
 | ID           | Komponent                    | Etap | Status      | Priorytet | Złożoność | Zależności                                                                  |
 | ------------ | ---------------------------- | ---: | ----------- | --------- | --------- | --------------------------------------------------------------------------- |
@@ -174,9 +176,9 @@ Statystyki bieżącego rozszerzenia: statusy — `TODO: 141`; priorytety — `P0
 | PEA-COMP-021 | InlineEdit                   |    1 | DONE        | P1        | M         | FormInput/FormNumber/FormSelect/FormTextarea                                |
 | PEA-COMP-022 | CopyButton                   |    1 | DONE        | P1        | S         | ButtonAction, SvgIcon, ToastAlert/MessageText                               |
 | PEA-COMP-023 | KeyboardKey                  |    1 | DONE        | P1        | S         | Brak                                                                        |
-| PEA-COMP-024 | CommandPalette               |    2 | TODO        | P1        | XL        | ModalDialog, SearchInput, KeyboardKey, VirtualList                          |
-| PEA-COMP-025 | GuidedTour                   |    2 | TODO        | P2        | XL        | PopoverOverlayer, ButtonAction, ProgressIndicator                           |
-| PEA-COMP-026 | NotificationCenter           |    2 | TODO        | P2        | L         | ScrollArea, CounterBadge, EmptyState                                        |
+| PEA-COMP-024 | CommandPalette               |    2 | DONE        | P1        | XL        | ModalDialog, SearchInput, KeyboardKey, VirtualList                          |
+| PEA-COMP-025 | GuidedTour                   |    2 | DONE        | P2        | XL        | PopoverOverlayer, ButtonAction, ProgressIndicator                           |
+| PEA-COMP-026 | NotificationCenter           |    2 | DONE        | P2        | L         | ScrollArea, CounterBadge, EmptyState                                        |
 | PEA-COMP-027 | KeyboardShortcutMap          |    2 | TODO        | P2        | M         | KeyboardKey, ModalDialog, SearchInput                                       |
 | PEA-COMP-028 | ContextActionBar             |    2 | TODO        | P2        | M         | ButtonAction, DropdownMenu                                                  |
 | PEA-COMP-029 | UndoRedoTimeline             |    2 | TODO        | P2        | L         | ButtonAction, KeyboardKey, ScrollArea                                       |
@@ -2469,7 +2471,7 @@ Brak domyślnego v-model; dwukierunkowy model pozycji powodowałby pętle. Pozyc
 
 #### Obsługa klawiatury
 
-Jeśli viewport jest fokusowalny i nazwany: strzałki, PageUp/PageDown, Home/End działają natywnie. Nie dodawać tab stopu, gdy zawartość ma własne fokusowalne elementy i region nie wymaga osobnej nawigacji.
+W natywnym wariancie viewport domyślnie ma `tabindex="0"`: strzałki, PageUp/PageDown, Home/End działają natywnie. Jawny `tabindex`/`tabIndex`, także `-1`, ma pierwszeństwo. Stylowane suwaki udostępniają własne sterowanie klawiaturą.
 
 #### Dostępność i ARIA
 
@@ -2499,9 +2501,9 @@ Scroll snapping layout engine, synchronizacja wielu viewportów i wirtualizacja 
 
 - Zrealizowany zakres/kamień milowy: kompletny `ScrollArea` dla Vue, natywnego Reacta i Web Components z natywnym viewportem, wariantami `native | styled`, trzema orientacjami, trzema trybami widoczności pasków, logiczną pozycją RTL, wskaźnikami krawędzi, przywracaniem pozycji oraz publicznym API `scrollTo`, `scrollBy`, `scrollIntoView` i `getPosition`.
 - Najważniejsze decyzje: jeden współdzielony kontroler DOM odpowiada za geometrię, eventy i sprzątanie zasobów; przewijanie wheel/touch pozostaje natywne; `ResizeObserver`, `MutationObserver` i aktualizacje przez `requestAnimationFrame` ograniczają koszt layoutu; rozwiązanie nie dodaje zewnętrznej zależności.
-- Dostępność i responsywność: viewport staje się regionem wyłącznie po nadaniu dostępnej nazwy i nie otrzymuje domyślnego tab stopu; jawny `tabindex` obsługuje przypadki bez fokusowalnej treści. Stylowane paski implementują `role="scrollbar"`, pełne `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, `aria-orientation`, `aria-controls`, klawiaturę, pointer drag, cele dotykowe, forced colors i reduced motion. Układ zachowuje się poprawnie przy wąskim kontenerze i w RTL.
+- Dostępność i responsywność: viewport staje się regionem po nadaniu dostępnej nazwy. Aktualny wariant natywny domyślnie otrzymuje `tabindex="0"`, również gdy `disabled` blokuje sterowanie programowe; jawny `tabindex` ma pierwszeństwo. Stylowane paski implementują `role="scrollbar"`, pełne `aria-valuemin`, `aria-valuemax`, `aria-valuenow`, `aria-orientation`, `aria-controls`, klawiaturę, pointer drag, cele dotykowe, forced colors i reduced motion. Układ zachowuje się poprawnie przy wąskim kontenerze i w RTL.
 - Utworzone lub zmienione pliki: `packages/library/src/components/layout/ScrollArea/*`, `packages/library/src/react/scroll-area.renderer.tsx`, eksporty i generatory biblioteki, dane oraz generowane API dokumentacji, katalogi trzech frameworków, smoke test paczki i changeset minor.
-- Wyniki testów i buildów: 14 dedykowanych testów jednostkowych i modelu; pełny `npm run release:check`; 245 testów Chromium Vue, 145 React i 141 Web Components z audytami axe oraz kontrolą mobile overflow; build biblioteki, dokumentacji i czterech Storybooków; walidacja paczki obejmującej po 80 komponentów Vue/React/WC, smoke test typów i `npm pack --dry-run`.
+- Wyniki testów i buildów w chwili implementacji: 14 dedykowanych testów jednostkowych i modelu; pełny `npm run release:check`; 245 testów Chromium Vue, 145 React i 141 Web Components z kontrolami axe oraz kontrolą mobile overflow; build biblioteki, dokumentacji i czterech Storybooków; walidacja paczki obejmującej wtedy po 80 komponentów Vue/React/WC, smoke test typów i `npm pack --dry-run`.
 - Ograniczenia: pierwsza wersja nie zawiera silnika scroll snapping, synchronizacji wielu viewportów ani wirtualizacji danych; są to osobne odpowiedzialności kolejnych komponentów.
 - Potencjalne rozszerzenia: integracja z `VirtualList`, opcjonalna synchronizacja pozycji i kompozycyjne zachowania snapping bez zmiany bazowego kontraktu.
 
@@ -2867,7 +2869,7 @@ Etap łączy fundamenty w większe wzorce aplikacyjne. Komponenty nadal pozostaj
 
 ### CommandPalette
 
-- Status: TODO
+- Status: DONE
 - Priorytet: P1
 - Złożoność: XL
 - Kategoria: Productivity / Navigation
@@ -2944,9 +2946,17 @@ Globalny listener nie przechwytuje pól edycyjnych w niewłaściwych sytuacjach,
 
 Rozpoznawanie języka naturalnego, makra, synchronizacja recent między urządzeniami i bezpośrednia zależność od konkretnego routera.
 
+#### Notatka implementacyjna (2026-08-10)
+
+- Stan: implementacja Vue, natywnego Reacta i Web Components, wspólny scorer, style, testy, stories, dokumentacja i changeset zostały ukończone.
+- Najważniejsze decyzje: ranking i obsługa skrótu są bezstanowe i współdzielone; Vue komponuje istniejące ModalDialog, SearchInput, KeyboardKey, VirtualList, EmptyState i SpinnerLoader; React zachowuje natywny lifecycle i kontrolowane modele; WC używa light DOM i property-based registry.
+- Dostępność: wzorzec dialog + combobox + listbox, aria-activedescendant, grupy, disabled, live status, ArrowUp/ArrowDown, Home/End, Enter, Escape, Backspace i przywracanie fokusu.
+- Walidacja: lint, format, typecheck, testy Vue/React/Web Components i dokumentacji oraz buildy biblioteki, dokumentacji i wszystkich Storybooków zakończone powodzeniem.
+
 ### GuidedTour
 
-- Status: TODO
+- Status: DONE
+- Implementacja: Vue, React i Web Components wraz z testami, stories i dokumentacją; pełna walidacja zakończona powodzeniem.
 - Priorytet: P2
 - Złożoność: XL
 - Kategoria: Productivity / Overlays
@@ -3025,7 +3035,7 @@ Edytor wizualny tourów, analityka, zdalna konfiguracja i automatyczne podejmowa
 
 ### NotificationCenter
 
-- Status: TODO
+- Status: DONE
 - Priorytet: P2
 - Złożoność: L
 - Kategoria: Feedback / Productivity
@@ -30805,5 +30815,5 @@ Notatkę dodaje się dopiero po rozpoczęciu rzeczywistej implementacji; nie nal
 - Nowa pozycja otrzymuje kolejny wolny ID, pełny opis w tym samym formacie, wpis w tabeli i mapie zależności.
 - Zmiana nazwy zachowuje ID i dodaje notatkę migracyjną. Połączenie pozycji wskazuje następcę; nie usuwa historii.
 - Status w tabeli i sekcji komponentu musi być zawsze identyczny.
-- Aktualnym pierwszym etapem jest Etap 2. Pierwszym kandydatem bez nieukończonych nowych zależności jest `PEA-COMP-024 CommandPalette`; wybór zawsze wymaga polecenia użytkownika.
+- Aktualnym pierwszym etapem jest Etap 2. Następną pozycją do realizacji jest `PEA-COMP-027 KeyboardShortcutMap`.
 - Roadmapę należy aktualizować w tym samym zadaniu, w którym ukończono komponent lub milestone, ale nie należy zmieniać zakresów niezwiązanych z tym zadaniem.

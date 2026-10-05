@@ -33,7 +33,8 @@ test("CopyButton WC kopiuje, utrzymuje focus i przechodzi axe", async ({
   await gotoStory(page, "icon-and-text");
   const root = page.locator(".peaui-copy-button");
   const button = root.getByRole("button", { name: "Kopiuj identyfikator" });
-  await button.click();
+  await button.focus();
+    await page.keyboard.press('Enter');
 
   await expect(root).toHaveAttribute("data-status", "copied");
   await expect(button).toBeFocused();

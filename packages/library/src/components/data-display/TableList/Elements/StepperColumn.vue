@@ -11,7 +11,7 @@ import { TABLE_LIST_CLASS } from '../shared';
 const props = defineProps<{
   manage?: TableManageColumn;
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   isExpanded?: boolean;
 }>();
@@ -68,7 +68,7 @@ function handleStepAction(step: TableStepperStep): void {
           :aria-label="`${step.label}. Status ${step.status}`"
           @click.prevent="handleStepAction(step)"
         >
-          <span :class="`${TABLE_LIST_CLASS}__stepper-label`" v-html="step.label" />
+          <span :class="`${TABLE_LIST_CLASS}__stepper-label`">{{ step.label }}</span>
 
           <ProgressIndicator
             v-if="step.collapse"

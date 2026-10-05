@@ -15,7 +15,7 @@ async function expectOpenPickerIsAccessible(
   const accessibility = await new AxeBuilder({ page })
     .include(`.${rootClass}`)
     .include(`.${rootClass}__popover-content`)
-    .withTags(["wcag2a", "wcag2aa"])
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .analyze();
   expect(accessibility.violations).toEqual([]);
 }

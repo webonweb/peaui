@@ -1,18 +1,10 @@
 export type FormPinInputType = 'numeric' | 'alphanumeric';
 export type FormPinInputSize = 's' | 'm' | 'l';
 export type FormPinInputInputMode =
-  | 'none'
-  | 'text'
-  | 'decimal'
-  | 'numeric'
-  | 'tel'
-  | 'search'
-  | 'email'
-  | 'url';
+  'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
 export type FormPinInputTransformMode = 'none' | 'uppercase' | 'lowercase';
 export type FormPinInputTransform =
-  | FormPinInputTransformMode
-  | ((character: string, index: number) => string);
+  FormPinInputTransformMode | ((character: string, index: number) => string);
 export type FormPinInputInvalidReason = 'character' | 'pattern' | 'transform' | 'overflow';
 
 export type FormPinInputInvalidDetail = {

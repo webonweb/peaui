@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { getReactStoryArgs } from '@/react/story-args';
 import TableList from './index';
+import ButtonAction from '../../data-entry/ButtonAction';
 import {
   tableListAllTypeColumns,
   tableListEditableColumns,
   tableListStoryColumns,
   tableListStoryRecords,
   tableListWorkflowColumns,
+  tableListReorderColumns,
+  tableListReorderRecords,
 } from './story-fixtures';
 
 const meta = {
@@ -21,6 +25,41 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const ReorderDuringEditing: Story = {
+  render: function ReorderDuringEditing() {
+    const [records, setRecords] = useState(tableListReorderRecords);
+    return (
+      <div>
+        <p>Rozpocznij edycję Alice, zmień tekst i odwróć kolejność. Zapis nadal dotyczy Alice.</p>
+        <ButtonAction onClick={() => setRecords((current) => [...current].reverse())}>
+          Odwróć kolejność
+        </ButtonAction>
+        <TableList
+          records={records}
+          columns={tableListReorderColumns}
+          editable
+          canCreate={false}
+          canSelectRows={false}
+          onSubmit={(values) => {
+            if (
+              typeof values !== 'object' ||
+              values === null ||
+              !('id' in values) ||
+              !('name' in values) ||
+              typeof values.name !== 'string'
+            )
+              return;
+            const { id, name } = values;
+            setRecords((current) =>
+              current.map((record, index) => (index === Number(id) ? { ...record, name } : record)),
+            );
+          }}
+        />
+      </div>
+    );
+  },
+};
 
 export const SelectableRows: Story = {
   args: { canSelectRows: true, selectedRows: ['2'] },
@@ -74,10 +113,39 @@ export const Editable: Story = {
   },
 };
 
+export const EditableColumns: Story = {
+  args: {
+    columns: tableListEditableColumns.map((column) => ({ ...column, type: 'editable' })),
+    records: tableListStoryRecords,
+    canSelectRows: false,
+  },
+};
+
 export const EmptyState: Story = {
   args: { canCreate: true, emptyDescriptionInline: 'Brak rekordów.', records: [] },
 };
 
 export const Loading: Story = {
   args: { isLoading: true, scroll: true },
+};
+
+/** The same large-data scenario across all adapters, limited to 20 DOM rows. */
+export const PaginatedLargeData: Story = {
+  args: {
+    columns: [{ key: 'name', label: 'Nazwa' }],
+    records: Array.from({ length: 5000 }, (_, index) => ({
+      id: String(index),
+      name: `Rekord ${index + 1}`,
+    })),
+    paginate: true,
+    page: 1,
+    rowsPerPage: 20,
+    paginationLabel: 'Strony rekordow',
+    canSelectRows: true,
+    canCheckRows: false,
+  },
+  render: function Render(args) {
+    const [page, setPage] = useState(1);
+    return <TableList {...args} page={page} onPageChange={setPage} />;
+  },
 };

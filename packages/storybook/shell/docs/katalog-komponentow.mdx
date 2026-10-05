@@ -1,4 +1,5 @@
 import { Meta } from "@storybook/blocks";
+import { componentImports } from "../../../library/src/component-imports";
 
 <Meta title="Komponenty/Katalog" />
 
@@ -23,62 +24,64 @@ import { Meta } from "@storybook/blocks";
 export const categories = [
   {
     name: "Basic",
-    count: 3,
+    path: "basic",
     description:
-      "Obrazy, ikony SVG i edycja zdjęć — podstawowe elementy używane przez pozostałe komponenty.",
+      "Responsywne obrazy z tekstem alternatywnym i natywnymi atrybutami obrazu oraz ikony SVG.",
   },
   {
     name: "Data Display",
-    count: 13,
+    path: "data-display",
     description:
-      "Tabele, karty, nagłówki, etykiety i drzewa do czytelnej prezentacji danych.",
+      "Tabele z edycją i paginacją, listy wirtualne, awatary, karuzele, nagłówki, etykiety i drzewa.",
   },
   {
     name: "Data Entry",
-    count: 5,
+    path: "data-entry",
     description:
-      "Przyciski, wyszukiwarki, suwaki i karty wyboru zbierające akcje użytkownika.",
+      "Przyciski, wyszukiwanie, kopiowanie, edycja w miejscu, suwaki, przełączniki i przenoszenie elementów między listami.",
   },
   {
     name: "Feedback",
-    count: 6,
+    path: "feedback",
     description:
       "Komunikaty, powiadomienia, postęp i stany ładowania informujące o wyniku operacji.",
   },
   {
     name: "Form",
-    count: 17,
+    path: "form",
     description:
-      "Kompletny zestaw pól formularza, walidacji, wyborów, dat i przesyłania plików.",
+      "Pola tekstowe i liczbowe, wybór jednej lub wielu wartości, daty, czas, kolory, oceny, PIN, tagi i przesyłanie plików.",
   },
   {
     name: "Layout",
-    count: 6,
+    path: "layout",
     description:
-      "Kontenery, siatka i podziały strony odpowiedzialne za responsywną strukturę widoku.",
+      "Kontenery, siatka, panele, przewijanie, podziały strony i powiększanie widoku wewnątrz strony.",
   },
   {
     name: "Navigation",
-    count: 9,
+    path: "navigation",
     description:
-      "Linki, breadcrumbs, zakładki, paginacja i kroki prowadzące użytkownika przez aplikację.",
+      "Linki, breadcrumbs, zakładki, paginacja, kroki, menu i paleta poleceń prowadzące użytkownika przez aplikację.",
   },
   {
     name: "Overlayer",
-    count: 5,
+    path: "overlayer",
     description:
-      "Dialogi, szuflady, popovery i tooltipy wyświetlane nad główną treścią.",
+      "Dialogi, panele boczne, popovery, tooltipy i przewodnik po interfejsie z zarządzaniem fokusem.",
   },
 ];
 
 <div className="catalog">
   <header className="catalog-header">
-    <div className="catalog-kicker">64 komponenty Vue</div>
+    <div className="catalog-kicker">{Object.keys(componentImports).length} komponentów · Vue · React · Web Components</div>
     <h1>Katalog komponentów</h1>
     <p>
       Komponenty są uporządkowane według roli w interfejsie. Otwórz sekcję
-      <strong> Vue komponenty</strong> w lewym panelu, aby przejść do działających przykładów,
-      wariantów oraz kompletnego API.
+      <strong> Vue komponenty</strong>, <strong>React komponenty</strong> lub
+      <strong> Web komponenty</strong> w lewym panelu, aby przejść do przykładów
+      i wariantów wybranej implementacji. Kategorie i liczby odpowiadają
+      publicznym eksportom paczki.
     </p>
   </header>
 
@@ -87,7 +90,13 @@ export const categories = [
     <article className="catalog-card" key={category.name}>
       <div className="catalog-card__top">
         <h2>{category.name}</h2>
-        <span className="catalog-count">{category.count}</span>
+        <span className="catalog-count">
+          {
+            Object.values(componentImports).filter((path) =>
+              path.startsWith(`${category.path}/`),
+            ).length
+          }
+        </span>
       </div>
       <p>{category.description}</p>
     </article>

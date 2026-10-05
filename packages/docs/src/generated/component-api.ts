@@ -8,7 +8,7 @@ export const generatedComponentApi = [
     name: 'ImageView',
     category: 'basic',
     categoryLabel: 'Podstawowe',
-    importPath: '@peaui/ui/basic/ImageView',
+    importPath: '@peaui/ui/vue/basic/ImageView',
     props: [
       {
         name: 'alt',
@@ -50,7 +50,7 @@ export const generatedComponentApi = [
     name: 'SvgIcon',
     category: 'basic',
     categoryLabel: 'Podstawowe',
-    importPath: '@peaui/ui/basic/SvgIcon',
+    importPath: '@peaui/ui/vue/basic/SvgIcon',
     props: [
       {
         name: 'dataTestId',
@@ -73,7 +73,7 @@ export const generatedComponentApi = [
     name: 'Avatar',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/Avatar',
+    importPath: '@peaui/ui/vue/data-display/Avatar',
     props: [
       {
         name: 'src',
@@ -171,10 +171,12 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'load',
+        type: '(nativeEvent: Event) => void',
         description: 'Emitowane po poprawnym załadowaniu obrazu.',
       },
       {
         name: 'error',
+        type: '(nativeEvent: Event) => void',
         description: 'Emitowane, gdy operacja komponentu kończy się błędem.',
       },
     ],
@@ -193,7 +195,7 @@ export const generatedComponentApi = [
     name: 'AvatarGroup',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/AvatarGroup',
+    importPath: '@peaui/ui/vue/data-display/AvatarGroup',
     props: [
       {
         name: 'items',
@@ -291,11 +293,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'select',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+        type: '(item: AvatarGroupItem, index: number) => void',
+        description: 'Zwraca wybraną osobę oraz jej indeks w źródłowej tablicy.',
       },
       {
         name: 'overflowClick',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „overflowClick”.',
+        type: '(hiddenItems: AvatarGroupItem[]) => void',
+        description: 'Informuje o aktywowaniu licznika nadmiaru.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -325,7 +334,7 @@ export const generatedComponentApi = [
     name: 'CalculationResults',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/CalculationResults',
+    importPath: '@peaui/ui/vue/data-display/CalculationResults',
     props: [
       {
         name: 'isLoading',
@@ -377,6 +386,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:simulate',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:simulate”.',
       },
     ],
@@ -395,7 +405,7 @@ export const generatedComponentApi = [
     name: 'CardCarousel',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/CardCarousel',
+    importPath: '@peaui/ui/vue/data-display/CardCarousel',
     props: [
       {
         name: 'ariaLabel',
@@ -449,6 +459,20 @@ export const generatedComponentApi = [
         default: 'false',
         description: 'Konfiguruje właściwość „with animation” komponentu.',
       },
+      {
+        name: 'pauseLabel',
+        type: 'string',
+        required: false,
+        default: 'Zatrzymaj automatyczne przewijanie',
+        description: 'Konfiguruje właściwość „pause label” komponentu.',
+      },
+      {
+        name: 'resumeLabel',
+        type: 'string',
+        required: false,
+        default: 'Wznów automatyczne przewijanie',
+        description: 'Konfiguruje właściwość „resume label” komponentu.',
+      },
     ],
     models: [],
     events: [],
@@ -458,7 +482,7 @@ export const generatedComponentApi = [
     name: 'CounterBadge',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/CounterBadge',
+    importPath: '@peaui/ui/vue/data-display/CounterBadge',
     props: [
       {
         name: 'value',
@@ -495,7 +519,7 @@ export const generatedComponentApi = [
     name: 'DescriptionField',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/DescriptionField',
+    importPath: '@peaui/ui/vue/data-display/DescriptionField',
     props: [
       {
         name: 'label',
@@ -535,7 +559,7 @@ export const generatedComponentApi = [
     name: 'DisclosurePanel',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/DisclosurePanel',
+    importPath: '@peaui/ui/vue/data-display/DisclosurePanel',
     props: [
       {
         name: 'title',
@@ -586,7 +610,13 @@ export const generatedComponentApi = [
         description: 'Stan otwarcia kontrolowany przez v-model:open.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
+      },
+    ],
     slots: [
       {
         name: 'title',
@@ -606,7 +636,7 @@ export const generatedComponentApi = [
     name: 'KeyboardKey',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/KeyboardKey',
+    importPath: '@peaui/ui/vue/data-display/KeyboardKey',
     props: [
       {
         name: 'keys',
@@ -617,7 +647,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'platform',
-        type: 'KeyboardKeyPlatform',
+        type: "'auto' | 'windows' | 'mac' | 'linux' | 'generic'",
         required: false,
         default: 'auto',
         description:
@@ -625,14 +655,14 @@ export const generatedComponentApi = [
       },
       {
         name: 'format',
-        type: 'KeyboardKeyFormat',
+        type: "'symbol' | 'text'",
         required: false,
         default: 'symbol',
         description: 'Symbole skracają zapis wizualny; pełne nazwy pozostają dostępne dla AT.',
       },
       {
         name: 'size',
-        type: 'KeyboardKeySize',
+        type: "'xs' | 's' | 'm'",
         required: false,
         default: 's',
         description: 'Rozmiar keycapów zgodny ze skalą kompaktowych komponentów PeaUI.',
@@ -691,7 +721,7 @@ export const generatedComponentApi = [
     name: 'SectionHeading',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/SectionHeading',
+    importPath: '@peaui/ui/vue/data-display/SectionHeading',
     props: [
       {
         name: 'size',
@@ -742,13 +772,12 @@ export const generatedComponentApi = [
     name: 'TableList',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/TableList',
+    importPath: '@peaui/ui/vue/data-display/TableList',
     props: [
       {
         name: 'id',
         type: 'string',
         required: false,
-        default: 'list',
         description: 'Unikalny identyfikator elementu w dokumencie.',
       },
       {
@@ -772,7 +801,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'additional',
-        type: 'Record<string, any>',
+        type: 'Record<string, unknown>',
         required: false,
         description: 'Konfiguruje właściwość „additional” komponentu.',
       },
@@ -813,7 +842,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'columns',
-        type: 'TableColumn[] | any[]',
+        type: 'TableColumn[]',
         required: false,
         default: '[]',
         description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
@@ -839,7 +868,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'records',
-        type: 'any[]',
+        type: 'Record<string, unknown>[]',
         required: false,
         default: '[]',
         description: 'Kolekcja rekordów prezentowanych przez komponent.',
@@ -850,6 +879,21 @@ export const generatedComponentApi = [
         required: false,
         default: '10',
         description: 'Liczba rekordów wyświetlanych na jednej stronie.',
+      },
+      {
+        name: 'paginate',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description:
+          'Render one client-side page of records. Leave false for server-side pagination.',
+      },
+      {
+        name: 'paginationLabel',
+        type: 'string',
+        required: false,
+        default: 'Strony tabeli',
+        description: 'Konfiguruje właściwość „pagination label” komponentu.',
       },
       {
         name: 'currentCheckedRow',
@@ -886,7 +930,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'sortType',
-        type: 'TableSortDirection',
+        type: "'ASC' | 'DESC'",
         required: false,
         default: 'DESC',
         description: 'Konfiguruje właściwość „sort type” komponentu.',
@@ -933,49 +977,71 @@ export const generatedComponentApi = [
         description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
     ],
-    models: [],
+    models: [
+      {
+        name: 'page',
+        type: 'number',
+        required: false,
+        default: '1',
+        description: 'Aktualna strona kontrolowana przez v-model:page.',
+      },
+    ],
     events: [
       {
         name: 'on:action',
+        type: '(record: string | number | undefined, action: string, currentRecord?: Record<string, unknown>) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:action”.',
       },
       {
         name: 'on:createRecord',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:createRecord”.',
       },
       {
         name: 'on:dblclick',
-        description:
-          'Emitowane po dwukrotnym kliknięciu wiersza; przekazuje identyfikator i rekord.',
+        type: '(record: string | number | undefined, currentRecord?: Record<string, unknown>) => void',
+        description: 'Prefer this correctly spelled event for row double-clicks.',
       },
       {
         name: 'on:dbclick',
-        description: 'Przestarzała nazwa zdarzenia dwukrotnego kliknięcia. Użyj „on:dblclick”.',
+        type: '(record: string | number | undefined, currentRecord?: Record<string, unknown>) => void',
+        description: '@deprecated Use `on:dblclick`. Kept for backwards compatibility.',
       },
       {
         name: 'on:select:row',
+        type: '(records: string[]) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:select:row”.',
       },
       {
         name: 'on:sort',
+        type: '(column: string) => void | (columns: TableSortState[]) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:sort”.',
       },
       {
         name: 'on:cancel',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”.',
       },
       {
         name: 'on:check:row',
+        type: '(record: Record<string, unknown>) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:check:row”.',
       },
       {
         name: 'on:submit',
+        type: '(record: Record<string, unknown>) => void',
         description: 'Emitowane po zatwierdzeniu danych.',
       },
       {
         name: 'on:changeValue',
+        type: '(recordId: string | number | undefined, value: string | number | undefined) => void',
         description:
           'Emitowane po zmianie wartości komórki; przekazuje identyfikator rekordu i nową wartość.',
+      },
+      {
+        name: 'update:page',
+        type: '(value: number) => void',
+        description: 'Emitowane po zmianie modelu „page”; przekaż nową wartość do v-model:page.',
       },
     ],
     slots: [
@@ -1001,13 +1067,13 @@ export const generatedComponentApi = [
     name: 'TableListFooter',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/TableListFooter',
+    importPath: '@peaui/ui/vue/data-display/TableListFooter',
     props: [
       {
         name: 'rowsNumber',
         type: 'number',
         required: true,
-        description: 'Konfiguruje właściwość „rows number” komponentu.',
+        description: 'Total record count used to calculate the visible range and page count.',
       },
       {
         name: 'rowsPerPage',
@@ -1025,7 +1091,8 @@ export const generatedComponentApi = [
         name: 'total',
         type: 'number',
         required: true,
-        description: 'Łączna liczba elementów.',
+        description:
+          'Total page count; zero suppresses pagination. Pages are derived from rowsNumber/rowsPerPage.',
       },
       {
         name: 'under',
@@ -1052,10 +1119,12 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:change:page',
+        type: '(page: number) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:change:page”.',
       },
       {
         name: 'on:change:limit',
+        type: '(limit: number) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:change:limit”.',
       },
     ],
@@ -1065,7 +1134,7 @@ export const generatedComponentApi = [
     name: 'TableListHeader',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/TableListHeader',
+    importPath: '@peaui/ui/vue/data-display/TableListHeader',
     props: [
       {
         name: 'buttonCreateLabel',
@@ -1147,19 +1216,29 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:search',
+        type: '(pharse: string) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:search”.',
       },
       {
         name: 'on:reset-filters',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:reset-filters”.',
       },
       {
         name: 'on:create',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:create”.',
       },
       {
         name: 'on:export',
+        type: '(type: string) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:export”.',
+      },
+      {
+        name: 'update:filters-open',
+        type: '(value: boolean) => void',
+        description:
+          'Emitowane po zmianie modelu „filters-open”; przekaż nową wartość do v-model:filters-open.',
       },
     ],
     slots: [
@@ -1193,7 +1272,7 @@ export const generatedComponentApi = [
     name: 'TagChip',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/TagChip',
+    importPath: '@peaui/ui/vue/data-display/TagChip',
     props: [
       {
         name: 'size',
@@ -1244,7 +1323,7 @@ export const generatedComponentApi = [
     name: 'TreeList',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/TreeList',
+    importPath: '@peaui/ui/vue/data-display/TreeList',
     props: [
       {
         name: 'id',
@@ -1292,14 +1371,20 @@ export const generatedComponentApi = [
         name: 'tree',
         type: 'TreeListType',
         required: false,
-        default: "({ children: {}, label: '' })",
+        default: "{ children: {}, label: '' }",
         description: 'Dane drzewa kontrolowane przez v-model:tree.',
       },
     ],
     events: [
       {
         name: 'on:remove',
+        type: '(id: string) => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:tree',
+        type: '(value: TreeListType) => void',
+        description: 'Emitowane po zmianie modelu „tree”; przekaż nową wartość do v-model:tree.',
       },
     ],
     slots: [
@@ -1313,7 +1398,7 @@ export const generatedComponentApi = [
     name: 'VirtualList',
     category: 'data-display',
     categoryLabel: 'Prezentacja danych',
-    importPath: '@peaui/ui/data-display/VirtualList',
+    importPath: '@peaui/ui/vue/data-display/VirtualList',
     props: [
       {
         name: 'items',
@@ -1359,7 +1444,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'semanticRole',
-        type: 'VirtualListRole',
+        type: "'list' | 'listbox'",
         required: false,
         default: 'list',
         description: 'Semantyka neutralnej listy albo interaktywnego listboxa.',
@@ -1433,23 +1518,35 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'visibleRangeChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „visibleRangeChange”.',
+        type: '(detail: VirtualListRange) => void',
+        description: 'Emitowane po zmianie renderowanego i rzeczywiście widocznego zakresu.',
       },
       {
         name: 'reachEnd',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachEnd”.',
+        type: '(detail: VirtualListReachEndDetail) => void',
+        description: 'Emitowane raz dla danego rozmiaru kolekcji po dotarciu do końca z hasMore.',
       },
       {
         name: 'scroll',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „scroll”.',
+        type: '(detail: VirtualListScrollDetail) => void',
+        description: 'Emitowane podczas przewijania po obliczeniu nowego zakresu.',
       },
       {
         name: 'itemFocus',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „itemFocus”.',
+        type: '(detail: VirtualListItemFocusDetail) => void',
+        description: 'Emitowane, gdy element albo jego interaktywny potomek otrzyma fokus.',
       },
       {
         name: 'measureError',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „measureError”.',
+        type: '(detail: VirtualListMeasureErrorDetail) => void',
+        description:
+          'Emitowane dla niepoprawnych parametrów pomiaru zastąpionych bezpiecznym fallbackiem.',
+      },
+      {
+        name: 'update:activeIndex',
+        type: '(value: number | null) => void',
+        description:
+          'Emitowane po zmianie modelu „activeIndex”; przekaż nową wartość do v-model:activeIndex.',
       },
     ],
     slots: [
@@ -1483,7 +1580,7 @@ export const generatedComponentApi = [
     name: 'ButtonAction',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/ButtonAction',
+    importPath: '@peaui/ui/vue/data-entry/ButtonAction',
     props: [
       {
         name: 'size',
@@ -1546,7 +1643,7 @@ export const generatedComponentApi = [
     name: 'ButtonExport',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/ButtonExport',
+    importPath: '@peaui/ui/vue/data-entry/ButtonExport',
     props: [
       {
         name: 'size',
@@ -1583,7 +1680,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        type: "'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
         required: false,
         default: 'bottom',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -1620,6 +1717,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:export',
+        type: '(type: string) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:export”.',
       },
     ],
@@ -1634,7 +1732,7 @@ export const generatedComponentApi = [
     name: 'CopyButton',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/CopyButton',
+    importPath: '@peaui/ui/vue/data-entry/CopyButton',
     props: [
       {
         name: 'text',
@@ -1751,18 +1849,22 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'copy',
+        type: '(detail: CopyButtonCopyDetail) => void',
         description: 'Emitowane po rozwiązaniu dokładnego tekstu i przed próbą zapisu do schowka.',
       },
       {
         name: 'success',
+        type: '(detail: CopyButtonSuccessDetail) => void',
         description: 'Emitowane po poprawnym zakończeniu operacji komponentu.',
       },
       {
         name: 'error',
+        type: '(detail: CopyButtonErrorDetail) => void',
         description: 'Emitowane, gdy operacja komponentu kończy się błędem.',
       },
       {
         name: 'statusChange',
+        type: '(status: CopyButtonStatus) => void',
         description: 'Emitowane po każdej wewnętrznej zmianie statusu operacji.',
       },
     ],
@@ -1789,11 +1891,11 @@ export const generatedComponentApi = [
     name: 'InlineEdit',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/InlineEdit',
+    importPath: '@peaui/ui/vue/data-entry/InlineEdit',
     props: [
       {
         name: 'editor',
-        type: 'InlineEditEditor',
+        type: "'text' | 'number' | 'select' | 'textarea' | 'custom'",
         required: false,
         default: 'text',
         description: 'Rodzaj wbudowanego edytora albo własna kontrolka ze slotu editor.',
@@ -1807,35 +1909,35 @@ export const generatedComponentApi = [
       },
       {
         name: 'activation',
-        type: 'InlineEditActivation',
+        type: "'button' | 'click' | 'dblclick'",
         required: false,
         default: 'button',
         description: 'Dodatkowy sposób rozpoczęcia edycji; przycisk pozostaje zawsze dostępny.',
       },
       {
         name: 'actions',
-        type: 'InlineEditActions',
+        type: "'buttons' | 'keyboard' | 'both'",
         required: false,
         default: 'both',
         description: 'Widoczne przyciski, skróty klawiaturowe albo oba mechanizmy zapisu.',
       },
       {
         name: 'display',
-        type: 'InlineEditDisplay',
+        type: "'inline' | 'block'",
         required: false,
         default: 'inline',
         description: 'Układ dopasowany do tekstu lub zajmujący pełną szerokość.',
       },
       {
         name: 'tabBehavior',
-        type: 'InlineEditTabBehavior',
+        type: "'commit' | 'cancel' | 'stay'",
         required: false,
         default: 'commit',
         description: 'Zachowanie klawisza Tab podczas edycji.',
       },
       {
         name: 'saveMode',
-        type: 'InlineEditSaveMode',
+        type: "'sync' | 'async'",
         required: false,
         default: 'sync',
         description: 'Zapis lokalny albo asynchroniczny sterowany przez aplikację.',
@@ -1930,7 +2032,44 @@ export const generatedComponentApi = [
         description: 'Wartość kontrolowana przez v-model:editing.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'edit',
+        type: '[value: InlineEditValue]',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „edit”.',
+      },
+      {
+        name: 'save',
+        type: '[detail: InlineEditSaveDetail]',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „save”.',
+      },
+      {
+        name: 'cancel',
+        type: '[value: InlineEditValue]',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „cancel”.',
+      },
+      {
+        name: 'invalid',
+        type: '[detail: InlineEditInvalidDetail]',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+      },
+      {
+        name: 'draftChange',
+        type: '[value: InlineEditValue]',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „draftChange”.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: InlineEditValue) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:editing',
+        type: '(value: boolean) => void',
+        description:
+          'Emitowane po zmianie modelu „editing”; przekaż nową wartość do v-model:editing.',
+      },
+    ],
     slots: [
       {
         name: 'display',
@@ -1958,8 +2097,20 @@ export const generatedComponentApi = [
     name: 'InputSlider',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/InputSlider',
+    importPath: '@peaui/ui/vue/data-entry/InputSlider',
     props: [
+      {
+        name: 'id',
+        type: 'string',
+        required: false,
+        description: 'Unikalny identyfikator elementu w dokumencie.',
+      },
+      {
+        name: 'form',
+        type: 'string',
+        required: false,
+        description: 'Identyfikator natywnego formularza będącego właścicielem kontrolki.',
+      },
       {
         name: 'name',
         type: 'string',
@@ -1995,14 +2146,20 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: number) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [],
   },
   {
     name: 'SearchInput',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/SearchInput',
+    importPath: '@peaui/ui/vue/data-entry/SearchInput',
     props: [
       {
         name: 'ariaLabel',
@@ -2026,6 +2183,20 @@ export const generatedComponentApi = [
         description: 'Konfiguruje właściwość „debounce time” komponentu.',
       },
       {
+        name: 'disabled',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Wyłącza komponent i blokuje jego interakcje.',
+      },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Ustawia komponent w trybie tylko do odczytu.',
+      },
+      {
         name: 'dataTestId',
         type: 'string',
         required: false,
@@ -2043,11 +2214,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:search',
+        type: '(phrase: string) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:search”.',
       },
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [],
@@ -2056,7 +2234,7 @@ export const generatedComponentApi = [
     name: 'SegmentedControl',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/SegmentedControl',
+    importPath: '@peaui/ui/vue/data-entry/SegmentedControl',
     props: [
       {
         name: 'id',
@@ -2161,11 +2339,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: SegmentedControlValue, item: SegmentedControlItem, nativeEvent: MouseEvent | KeyboardEvent) => void',
+        description: 'Emitowany po skutecznym wyborze innego segmentu.',
       },
       {
         name: 'focusChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+        type: '(item: SegmentedControlItem, index: number) => void',
+        description: 'Emitowany po przeniesieniu aktywnego fokusu.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: SegmentedControlValue | null) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -2187,7 +2372,7 @@ export const generatedComponentApi = [
     name: 'SelectableCard',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/SelectableCard',
+    importPath: '@peaui/ui/vue/data-entry/SelectableCard',
     props: [
       {
         name: 'disabled',
@@ -2248,7 +2433,7 @@ export const generatedComponentApi = [
     name: 'SplitButton',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/SplitButton',
+    importPath: '@peaui/ui/vue/data-entry/SplitButton',
     props: [
       {
         name: 'label',
@@ -2385,11 +2570,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'primaryClick',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „primaryClick”.',
+        type: '(nativeEvent: MouseEvent) => void',
+        description: 'Emitowane wyłącznie po aktywowaniu lewej, głównej części.',
       },
       {
         name: 'select',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+        type: '(item: DropdownMenuItem, path: number[]) => void',
+        description: 'Emitowane po wyborze dostępnej pozycji menu.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -2439,7 +2631,7 @@ export const generatedComponentApi = [
     name: 'ToggleButton',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/ToggleButton',
+    importPath: '@peaui/ui/vue/data-entry/ToggleButton',
     props: [
       {
         name: 'id',
@@ -2564,11 +2756,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: boolean, nativeEvent: MouseEvent) => void',
+        description: 'Emitowane po zmianie wraz z nowym stanem i natywnym zdarzeniem.',
       },
       {
         name: 'click',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „click”.',
+        type: '(nativeEvent: MouseEvent) => void',
+        description: 'Emitowane raz po skutecznej aktywacji kontrolki.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -2590,7 +2789,7 @@ export const generatedComponentApi = [
     name: 'ToggleGroup',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/ToggleGroup',
+    importPath: '@peaui/ui/vue/data-entry/ToggleGroup',
     props: [
       {
         name: 'id',
@@ -2652,7 +2851,8 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         default: 'false',
-        description: 'Wymaga co najmniej jednej wybranej pozycji.',
+        description:
+          'Empty selection blocks native form submission; readonly and disabled are exempt.',
       },
       {
         name: 'allowEmpty',
@@ -2744,11 +2944,18 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: ToggleGroupModelValue, item: ToggleGroupItem, nativeEvent: MouseEvent) => void',
+        description: 'Emitowany po zaakceptowanej zmianie wyboru.',
       },
       {
         name: 'focusChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+        type: '(item: ToggleGroupItem, index: number) => void',
+        description: 'Emitowany po przeniesieniu aktywnego fokusu w grupie.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: ToggleGroupModelValue) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -2774,8 +2981,20 @@ export const generatedComponentApi = [
     name: 'TransferList',
     category: 'data-entry',
     categoryLabel: 'Wprowadzanie danych',
-    importPath: '@peaui/ui/data-entry/TransferList',
+    importPath: '@peaui/ui/vue/data-entry/TransferList',
     props: [
+      {
+        name: 'virtual',
+        type: 'boolean',
+        required: false,
+        description: 'Render a bounded fixed-height window in each panel.',
+      },
+      {
+        name: 'optionHeight',
+        type: 'number',
+        required: false,
+        description: 'Height of a virtual row, in pixels.',
+      },
       {
         name: 'id',
         type: 'string',
@@ -2842,7 +3061,7 @@ export const generatedComponentApi = [
         name: 'labels',
         type: 'Partial<TransferListLabels>',
         required: false,
-        default: '({})',
+        default: '{}',
         description: 'Lokalizowane teksty interfejsu.',
       },
       {
@@ -2854,14 +3073,14 @@ export const generatedComponentApi = [
       },
       {
         name: 'orientation',
-        type: 'TransferListOrientation',
+        type: "'horizontal' | 'vertical'",
         required: false,
         default: 'horizontal',
         description: 'Preferowany układ; horizontal automatycznie składa się na mobile.',
       },
       {
         name: 'size',
-        type: 'TransferListSize',
+        type: "'compact' | 'standard'",
         required: false,
         default: 'standard',
         description: 'Standardowa lub kompaktowa gęstość wierszy.',
@@ -2920,15 +3139,35 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'move',
+        type: '(detail: TransferListMoveDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „move”.',
       },
       {
         name: 'search',
+        type: '(detail: TransferListSearchDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „search”.',
       },
       {
         name: 'selectionChange',
+        type: '(detail: TransferListSelectionDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „selectionChange”.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: TransferListKey[]) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:sourceSelected',
+        type: '(value: TransferListKey[]) => void',
+        description:
+          'Emitowane po zmianie modelu „sourceSelected”; przekaż nową wartość do v-model:sourceSelected.',
+      },
+      {
+        name: 'update:targetSelected',
+        type: '(value: TransferListKey[]) => void',
+        description:
+          'Emitowane po zmianie modelu „targetSelected”; przekaż nową wartość do v-model:targetSelected.',
       },
     ],
     slots: [
@@ -2966,7 +3205,7 @@ export const generatedComponentApi = [
     name: 'EmptyState',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/EmptyState',
+    importPath: '@peaui/ui/vue/feedback/EmptyState',
     props: [
       {
         name: 'dataTestId',
@@ -3000,7 +3239,7 @@ export const generatedComponentApi = [
     name: 'MessageText',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/MessageText',
+    importPath: '@peaui/ui/vue/feedback/MessageText',
     props: [
       {
         name: 'id',
@@ -3016,7 +3255,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'size',
-        type: "| 'xxs'\n    | 'xs'\n    | 's'\n    | 'm'\n    | 'l'\n    | 'xl'\n    | 'heading-xs'\n    | ' heading-s'\n    | 'heading-m'\n    | 'heading-l'",
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | ' heading-s' | 'heading-m' | 'heading-l'",
         required: false,
         default: 's',
         description: 'Wariant rozmiaru komponentu.',
@@ -3052,10 +3291,262 @@ export const generatedComponentApi = [
     ],
   },
   {
+    name: 'NotificationCenter',
+    category: 'feedback',
+    categoryLabel: 'Informacje zwrotne',
+    importPath: '@peaui/ui/vue/feedback/NotificationCenter',
+    props: [
+      {
+        name: 'items',
+        type: 'readonly NotificationCenterItem[]',
+        required: true,
+        description:
+          'Notifications rendered in their supplied order. The component never mutates them.',
+      },
+      {
+        name: 'unreadCount',
+        type: 'number',
+        required: false,
+        description: 'Optional controlled unread count, useful when not all pages are loaded.',
+      },
+      {
+        name: 'filters',
+        type: 'readonly NotificationCenterFilter[]',
+        required: false,
+        description: 'Custom filter definitions. Defaults to All and Unread.',
+      },
+      {
+        name: 'groupBy',
+        type: "'none' | 'date' | 'type'",
+        required: false,
+        default: 'none',
+        description: 'Groups visible notifications without changing their order.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Shows the initial loading state.',
+      },
+      {
+        name: 'loadingMore',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Shows the incremental loading state.',
+      },
+      {
+        name: 'hasMore',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Enables requesting another page.',
+      },
+      {
+        name: 'error',
+        type: 'string | null',
+        required: false,
+        default: 'null',
+        description: 'Error message displayed without modifying the supplied items.',
+      },
+      {
+        name: 'locale',
+        type: 'string',
+        required: false,
+        default: 'en',
+        description: 'Locale used by the default date formatter.',
+      },
+      {
+        name: 'formatDate',
+        type: '(date: NotificationCenterDate, item: NotificationCenterItem) => string',
+        required: false,
+        description: 'Optional application date formatter.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Notifications',
+        description: 'Accessible name of the notification center.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stable test selector.',
+      },
+      {
+        name: 'variant',
+        type: "'panel' | 'drawer-content' | 'page'",
+        required: false,
+        default: 'panel',
+        description: 'Surface treatment for a panel, drawer body, or full page.',
+      },
+      {
+        name: 'density',
+        type: "'compact' | 'comfortable'",
+        required: false,
+        default: 'comfortable',
+        description: 'Vertical spacing density.',
+      },
+      {
+        name: 'paginationMode',
+        type: "'pagination' | 'infinite'",
+        required: false,
+        default: 'pagination',
+        description: 'How additional data is requested.',
+      },
+      {
+        name: 'markAllPending',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Disables the mark-all intent while the application processes it.',
+      },
+      {
+        name: 'pendingItemIds',
+        type: 'readonly NotificationCenterItemId[]',
+        required: false,
+        description: 'Item identifiers with an application-side action in progress.',
+      },
+      {
+        name: 'referenceDate',
+        type: 'string | number | Date',
+        required: false,
+        default: 'new Date()',
+        description: 'Stable reference date for deterministic relative formatting.',
+      },
+      {
+        name: 'labels',
+        type: 'Partial<NotificationCenterLabels>',
+        required: false,
+        description: 'User-facing text overrides.',
+      },
+      {
+        name: 'maxHeight',
+        type: 'string',
+        required: false,
+        default: '32rem',
+        description: 'Optional maximum height of the scrollable list.',
+      },
+    ],
+    models: [
+      {
+        name: 'activeFilter',
+        type: 'string',
+        required: false,
+        default: 'all',
+        description: 'Wartość kontrolowana przez v-model:activeFilter.',
+      },
+      {
+        name: 'selectedId',
+        type: 'NotificationCenterItemId | null',
+        required: false,
+        default: 'null',
+        description: 'Wartość kontrolowana przez v-model:selectedId.',
+      },
+    ],
+    events: [
+      {
+        name: 'update:activeFilter',
+        type: '(value: string) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:activeFilter”.',
+      },
+      {
+        name: 'update:selectedId',
+        type: '(value: NotificationCenterItemId) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:selectedId”.',
+      },
+      {
+        name: 'select',
+        type: '(payload: NotificationCenterSelectPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+      {
+        name: 'action',
+        type: '(payload: NotificationCenterActionPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „action”.',
+      },
+      {
+        name: 'markRead',
+        type: '(item: NotificationCenterItem) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „markRead”.',
+      },
+      {
+        name: 'markUnread',
+        type: '(item: NotificationCenterItem) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „markUnread”.',
+      },
+      {
+        name: 'markAllRead',
+        type: '() => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „markAllRead”.',
+      },
+      {
+        name: 'loadMore',
+        type: '(payload: NotificationCenterLoadMorePayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „loadMore”.',
+      },
+      {
+        name: 'filterChange',
+        type: '(filterId: string) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „filterChange”.',
+      },
+      {
+        name: 'retry',
+        type: '() => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „retry”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'header',
+        description: 'Treść osadzana w nazwanym slocie „header”.',
+      },
+      {
+        name: 'filters',
+        description: 'Treść osadzana w nazwanym slocie „filters”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'group-header',
+        description: 'Treść osadzana w nazwanym slocie „group-header”.',
+      },
+      {
+        name: 'item',
+        description: 'Treść osadzana w nazwanym slocie „item”.',
+      },
+      {
+        name: 'item-icon',
+        description: 'Treść osadzana w nazwanym slocie „item-icon”.',
+      },
+      {
+        name: 'item-actions',
+        description: 'Treść osadzana w nazwanym slocie „item-actions”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+    ],
+  },
+  {
     name: 'ProgressIndicator',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/ProgressIndicator',
+    importPath: '@peaui/ui/vue/feedback/ProgressIndicator',
     props: [
       {
         name: 'steps',
@@ -3102,7 +3593,7 @@ export const generatedComponentApi = [
     name: 'SkeletonLoading',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/SkeletonLoading',
+    importPath: '@peaui/ui/vue/feedback/SkeletonLoading',
     props: [
       {
         name: 'size',
@@ -3140,7 +3631,7 @@ export const generatedComponentApi = [
     name: 'SpinnerLoader',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/SpinnerLoader',
+    importPath: '@peaui/ui/vue/feedback/SpinnerLoader',
     props: [
       {
         name: 'dataTestId',
@@ -3157,7 +3648,7 @@ export const generatedComponentApi = [
     name: 'ToastAlert',
     category: 'feedback',
     categoryLabel: 'Informacje zwrotne',
-    importPath: '@peaui/ui/feedback/ToastAlert',
+    importPath: '@peaui/ui/vue/feedback/ToastAlert',
     props: [
       {
         name: 'variant',
@@ -3217,6 +3708,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:close',
+        type: '() => void',
         description: 'Emitowane podczas zamykania komponentu.',
       },
     ],
@@ -3226,7 +3718,7 @@ export const generatedComponentApi = [
     name: 'FormButtonCheckbox',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormButtonCheckbox',
+    importPath: '@peaui/ui/vue/form/FormButtonCheckbox',
     props: [
       {
         name: 'id',
@@ -3287,7 +3779,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: boolean | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'default',
@@ -3299,7 +3797,7 @@ export const generatedComponentApi = [
     name: 'FormButtonGroup',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormButtonGroup',
+    importPath: '@peaui/ui/vue/form/FormButtonGroup',
     props: [
       {
         name: 'id',
@@ -3339,7 +3837,8 @@ export const generatedComponentApi = [
         name: 'required',
         type: 'boolean',
         required: false,
-        description: 'Oznacza wartość jako wymaganą.',
+        description:
+          'Empty selection blocks native form submission; readonly and disabled are exempt.',
       },
       {
         name: 'disabled',
@@ -3376,7 +3875,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: string | number | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'hint',
@@ -3404,7 +3909,7 @@ export const generatedComponentApi = [
     name: 'FormCheckbox',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormCheckbox',
+    importPath: '@peaui/ui/vue/form/FormCheckbox',
     props: [
       {
         name: 'id',
@@ -3452,7 +3957,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: boolean | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'default',
@@ -3464,7 +3975,7 @@ export const generatedComponentApi = [
     name: 'FormColorPicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormColorPicker',
+    importPath: '@peaui/ui/vue/form/FormColorPicker',
     props: [
       {
         name: 'alpha',
@@ -3494,7 +4005,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'density',
-        type: 'FormColorPickerDensity',
+        type: "'compact' | 'full'",
         required: false,
         default: 'full',
         description: 'Konfiguruje właściwość „density” komponentu.',
@@ -3519,7 +4030,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'format',
-        type: 'FormColorPickerFormat',
+        type: "'hex' | 'rgb' | 'hsl'",
         required: false,
         default: 'hex',
         description: 'Konfiguruje właściwość „format” komponentu.',
@@ -3541,7 +4052,7 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         default: 'false',
-        description: 'Wybiera natywną strategię ładowania obrazu.',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
         name: 'loadingLabel',
@@ -3565,7 +4076,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: 'FormColorPickerPlacement',
+        type: "'top' | 'bottom'",
         required: false,
         default: 'bottom',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -3612,7 +4123,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'variant',
-        type: 'FormColorPickerVariant',
+        type: "'popover' | 'inline'",
         required: false,
         default: 'popover',
         description: 'Wariant wizualny komponentu.',
@@ -3637,31 +4148,48 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
+        type: '(value: string) => void',
         description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
         name: 'close',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
       },
       {
         name: 'commit',
+        type: '(value: string) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „commit”.',
       },
       {
         name: 'eyedropperError',
+        type: '(detail: FormColorPickerEyedropperErrorDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „eyedropperError”.',
       },
       {
         name: 'eyedropperStart',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „eyedropperStart”.',
       },
       {
         name: 'invalid',
+        type: '(detail: FormColorPickerInvalidDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
       },
       {
         name: 'open',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -3703,7 +4231,7 @@ export const generatedComponentApi = [
     name: 'FormContainer',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormContainer',
+    importPath: '@peaui/ui/vue/form/FormContainer',
     props: [
       {
         name: 'label',
@@ -3784,10 +4312,12 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:cancel',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:cancel”.',
       },
       {
         name: 'on:submit',
+        type: '() => void',
         description: 'Emitowane po zatwierdzeniu danych.',
       },
     ],
@@ -3810,7 +4340,7 @@ export const generatedComponentApi = [
     name: 'FormDatePicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormDatePicker',
+    importPath: '@peaui/ui/vue/form/FormDatePicker',
     props: [
       {
         name: 'id',
@@ -3859,7 +4389,8 @@ export const generatedComponentApi = [
         name: 'required',
         type: 'boolean',
         required: false,
-        description: 'Oznacza wartość jako wymaganą.',
+        description:
+          'Empty selection blocks native form submission; readonly and disabled are exempt.',
       },
       {
         name: 'placeholder',
@@ -3928,7 +4459,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string | DatePickerRangeValue | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -3954,7 +4491,7 @@ export const generatedComponentApi = [
     name: 'FormDateRangePicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormDateRangePicker',
+    importPath: '@peaui/ui/vue/form/FormDateRangePicker',
     props: [
       {
         name: 'ariaLabel',
@@ -3964,7 +4501,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'calendars',
-        type: 'FormDateRangePickerCalendars',
+        type: '1 | 2',
         required: false,
         default: '2',
         description: 'Konfiguruje właściwość „calendars” komponentu.',
@@ -4057,7 +4594,7 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         default: 'false',
-        description: 'Wybiera natywną strategię ładowania obrazu.',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
         name: 'loadingLabel',
@@ -4106,7 +4643,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: 'FormDateRangePickerPlacement',
+        type: "'top' | 'bottom'",
         required: false,
         default: 'bottom',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -4139,7 +4676,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'selectionOrder',
-        type: 'FormDateRangePickerSelectionOrder',
+        type: "'swap' | 'reject' | 'resetEnd'",
         required: false,
         default: 'swap',
         description: 'Konfiguruje właściwość „selection order” komponentu.',
@@ -4167,7 +4704,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'variant',
-        type: 'FormDateRangePickerVariant',
+        type: "'single-input' | 'two-inputs'",
         required: false,
         default: 'two-inputs',
         description: 'Wariant wizualny komponentu.',
@@ -4191,39 +4728,58 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'apply',
+        type: '(value: [string, string]) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „apply”.',
       },
       {
         name: 'cancel',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „cancel”.',
       },
       {
         name: 'change',
+        type: '(value: DateRangeValue | undefined) => void',
         description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
         name: 'close',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
       },
       {
         name: 'endChange',
+        type: '(value: string | undefined) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „endChange”.',
       },
       {
         name: 'invalid',
+        type: '(detail: FormDateRangePickerInvalidDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
       },
       {
         name: 'monthChange',
+        type: '(value: { month: number; year: number }) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „monthChange”.',
       },
       {
         name: 'open',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
       },
       {
         name: 'startChange',
+        type: '(value: string | undefined) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „startChange”.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: DateRangeValue | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -4269,7 +4825,7 @@ export const generatedComponentApi = [
     name: 'FormDateTimePicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormDateTimePicker',
+    importPath: '@peaui/ui/vue/form/FormDateTimePicker',
     props: [
       {
         name: 'allowOffStep',
@@ -4306,7 +4862,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'dateFormat',
-        type: 'FormDateTimePickerDateFormat',
+        type: "'iso' | 'locale'",
         required: false,
         default: 'locale',
         description: 'Konfiguruje właściwość „date format” komponentu.',
@@ -4331,7 +4887,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'format',
-        type: 'FormTimePickerFormat',
+        type: "'12h' | '24h'",
         required: false,
         default: '24h',
         description: 'Konfiguruje właściwość „format” komponentu.',
@@ -4363,7 +4919,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'layout',
-        type: 'FormDateTimePickerLayout',
+        type: "'side-by-side' | 'stacked'",
         required: false,
         default: 'side-by-side',
         description: 'Konfiguruje właściwość „layout” komponentu.',
@@ -4373,7 +4929,7 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         default: 'false',
-        description: 'Wybiera natywną strategię ładowania obrazu.',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
       },
       {
         name: 'loadingLabel',
@@ -4430,7 +4986,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: 'FormDateTimePickerPlacement',
+        type: "'top' | 'bottom'",
         required: false,
         default: 'bottom',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -4476,7 +5032,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'variant',
-        type: 'FormDateTimePickerVariant',
+        type: "'single-input' | 'split-input'",
         required: false,
         default: 'single-input',
         description: 'Wariant wizualny komponentu.',
@@ -4500,35 +5056,53 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'apply',
+        type: '(value: LocalDateTimeValue) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „apply”.',
       },
       {
         name: 'cancel',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „cancel”.',
       },
       {
         name: 'change',
+        type: '(value: LocalDateTimeValue | undefined) => void',
         description: 'Emitowane po zmianie wartości przez użytkownika.',
       },
       {
         name: 'close',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
       },
       {
         name: 'dateChange',
+        type: '(date: string | undefined) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „dateChange”.',
       },
       {
         name: 'invalid',
+        type: '(detail: FormDateTimePickerInvalidDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
       },
       {
         name: 'open',
+        type: '() => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
       },
       {
         name: 'timeChange',
+        type: '(time: string | undefined) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „timeChange”.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: LocalDateTimeValue | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -4570,7 +5144,7 @@ export const generatedComponentApi = [
     name: 'FormField',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormField',
+    importPath: '@peaui/ui/vue/form/FormField',
     props: [
       {
         name: 'after',
@@ -4589,6 +5163,13 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         description: 'Pokazuje akcję pozwalającą wyczyścić bieżącą wartość.',
+      },
+      {
+        name: 'clearLabel',
+        type: 'string',
+        required: false,
+        default: 'Usuń wartość pola',
+        description: 'Konfiguruje właściwość „clear label” komponentu.',
       },
       {
         name: 'disabled',
@@ -4673,6 +5254,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
       },
     ],
@@ -4707,7 +5289,7 @@ export const generatedComponentApi = [
     name: 'FormFieldLabel',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormFieldLabel',
+    importPath: '@peaui/ui/vue/form/FormFieldLabel',
     props: [
       {
         name: 'for',
@@ -4758,7 +5340,7 @@ export const generatedComponentApi = [
     name: 'FormFileUpload',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormFileUpload',
+    importPath: '@peaui/ui/vue/form/FormFileUpload',
     props: [
       {
         name: 'allowedTypes',
@@ -4795,11 +5377,18 @@ export const generatedComponentApi = [
         default: 'undefined',
         description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
       },
+      {
+        name: 'valueMode',
+        type: "'object' | 'file'",
+        required: false,
+        default: 'object',
+        description: 'Konfiguruje właściwość „value mode” komponentu.',
+      },
     ],
     models: [
       {
         name: 'file',
-        type: 'FormFileUploadValue | undefined',
+        type: 'FormFileUploadValue | File | undefined',
         required: false,
         description: 'Wybrany plik kontrolowany przez v-model:file.',
       },
@@ -4807,7 +5396,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:file',
+        type: '(value: FormFileUploadValue | File | undefined) => void',
+        description: 'Emitowane po zmianie modelu „file”; przekaż nową wartość do v-model:file.',
       },
     ],
     slots: [],
@@ -4816,7 +5411,7 @@ export const generatedComponentApi = [
     name: 'FormFileUploadSimple',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormFileUploadSimple',
+    importPath: '@peaui/ui/vue/form/FormFileUploadSimple',
     props: [
       {
         name: 'allowedTypes',
@@ -4870,14 +5465,20 @@ export const generatedComponentApi = [
         description: 'Lista wybranych plików kontrolowana przez v-model:files.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:files',
+        type: '(value: File[]) => void',
+        description: 'Emitowane po zmianie modelu „files”; przekaż nową wartość do v-model:files.',
+      },
+    ],
     slots: [],
   },
   {
     name: 'FormInput',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormInput',
+    importPath: '@peaui/ui/vue/form/FormInput',
     props: [
       {
         name: 'id',
@@ -4976,7 +5577,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '[]',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -5002,7 +5609,7 @@ export const generatedComponentApi = [
     name: 'FormMultiSelect',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormMultiSelect',
+    importPath: '@peaui/ui/vue/form/FormMultiSelect',
     props: [
       {
         name: 'id',
@@ -5056,8 +5663,34 @@ export const generatedComponentApi = [
         name: 'placeholder',
         type: 'string',
         required: false,
-        default: 'wybierz/wyszukaj',
         description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'labels',
+        type: 'Partial<SelectLabels>',
+        required: false,
+        description: 'Konfiguruje właściwość „labels” komponentu.',
+      },
+      {
+        name: 'valueMode',
+        type: "'value' | 'label'",
+        required: false,
+        default: 'value',
+        description: 'Value is the default; label preserves the pre-3.0 Vue/WC model contract.',
+      },
+      {
+        name: 'virtual',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Render only visible fixed-height options for large lists.',
+      },
+      {
+        name: 'optionHeight',
+        type: 'number',
+        required: false,
+        default: '48',
+        description: 'Row height in pixels when virtual is enabled (minimum 24).',
       },
       {
         name: 'disabled',
@@ -5093,7 +5726,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'options',
-        type: 'MultiSelectFieldOption[]',
+        type: 'MultiSelectFieldOption<unknown>[]',
         required: true,
         description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
       },
@@ -5115,7 +5748,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: unknown[] | null | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -5141,7 +5780,7 @@ export const generatedComponentApi = [
     name: 'FormNumber',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormNumber',
+    importPath: '@peaui/ui/vue/form/FormNumber',
     props: [
       {
         name: 'id',
@@ -5256,7 +5895,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: number | undefined | string) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'hint',
@@ -5280,7 +5925,7 @@ export const generatedComponentApi = [
     name: 'FormPassword',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormPassword',
+    importPath: '@peaui/ui/vue/form/FormPassword',
     props: [
       {
         name: 'id',
@@ -5414,7 +6059,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: string | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'hint',
@@ -5438,7 +6089,7 @@ export const generatedComponentApi = [
     name: 'FormPinInput',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormPinInput',
+    importPath: '@peaui/ui/vue/form/FormPinInput',
     props: [
       {
         name: 'id',
@@ -5467,7 +6118,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'type',
-        type: 'FormPinInputType',
+        type: "'numeric' | 'alphanumeric'",
         required: false,
         default: 'numeric',
         description: 'Zbiór znaków akceptowanych przez komponent.',
@@ -5481,7 +6132,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'size',
-        type: 'FormPinInputSize',
+        type: "'s' | 'm' | 'l'",
         required: false,
         default: 'm',
         description: 'Rozmiar wizualny komórek; cel dotykowy zawsze ma minimum 44 px.',
@@ -5515,7 +6166,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'inputmode',
-        type: 'FormPinInputInputMode',
+        type: "'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'",
         required: false,
         description: 'Podpowiedź klawiatury ekranowej. Domyślnie wynika z typu.',
       },
@@ -5608,23 +6259,33 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: string, nativeEvent: Event) => void',
+        description: 'Emitowane po każdej zaakceptowanej zmianie kodu.',
       },
       {
         name: 'complete',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „complete”.',
+        type: '(value: string, nativeEvent: Event) => void',
+        description: 'Emitowane raz dla każdej nowej, kompletnej wartości.',
       },
       {
         name: 'invalidInput',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalidInput”.',
+        type: '(detail: FormPinInputInvalidDetail, nativeEvent: Event) => void',
+        description: 'Emitowane po odrzuceniu znaku, wzorca, transformacji lub nadmiaru.',
       },
       {
         name: 'focus',
-        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+        type: '(nativeEvent: FocusEvent, index: number) => void',
+        description: 'Emitowane po wejściu fokusu do komórki.',
       },
       {
         name: 'blur',
-        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+        type: '(nativeEvent: FocusEvent) => void',
+        description: 'Emitowane po opuszczeniu całej grupy komórek.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -5654,7 +6315,7 @@ export const generatedComponentApi = [
     name: 'FormRadio',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormRadio',
+    importPath: '@peaui/ui/vue/form/FormRadio',
     props: [
       {
         name: 'id',
@@ -5708,7 +6369,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: string | number | boolean | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'default',
@@ -5720,7 +6387,7 @@ export const generatedComponentApi = [
     name: 'FormRatingInput',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormRatingInput',
+    importPath: '@peaui/ui/vue/form/FormRatingInput',
     props: [
       {
         name: 'id',
@@ -5749,7 +6416,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'step',
-        type: 'FormRatingInputStep',
+        type: '0.5 | 1',
         required: false,
         default: '1',
         description: 'Precyzja pełnej lub połówkowej oceny.',
@@ -5780,13 +6447,14 @@ export const generatedComponentApi = [
         type: 'boolean',
         required: false,
         default: 'false',
-        description: 'Oznacza ocenę jako wymaganą.',
+        description:
+          'Empty selection blocks native form submission; readonly and disabled are exempt.',
       },
       {
         name: 'labels',
         type: 'RatingLabels',
         required: false,
-        default: '({})',
+        default: '{}',
         description: "Mapa tekstowych opisów indeksowana wartością, np. `{ '4': 'Dobra' }`.",
       },
       {
@@ -5804,7 +6472,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'size',
-        type: 'FormRatingInputSize',
+        type: "'s' | 'm' | 'l'",
         required: false,
         default: 'm',
         description: 'Rozmiar wizualny ikon; cel dotykowy zachowuje co najmniej 44 px.',
@@ -5877,23 +6545,33 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: RatingValue, nativeEvent: Event) => void',
+        description: 'Emitowane po zatwierdzeniu wartości.',
       },
       {
         name: 'previewChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „previewChange”.',
+        type: '(value: RatingValue) => void',
+        description: 'Emitowane wyłącznie dla podglądu wskaźnikiem; null oznacza jego koniec.',
       },
       {
         name: 'clear',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „clear”.',
+        type: '(nativeEvent: Event) => void',
+        description: 'Emitowane po jawnym wyczyszczeniu wartości.',
       },
       {
         name: 'focus',
-        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+        type: '(nativeEvent: FocusEvent) => void',
+        description: 'Emitowane przy ustawieniu fokusu na pojedynczym suwaku.',
       },
       {
         name: 'blur',
-        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+        type: '(nativeEvent: FocusEvent) => void',
+        description: 'Emitowane po opuszczeniu pojedynczego suwaka.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: number | null) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -5923,7 +6601,7 @@ export const generatedComponentApi = [
     name: 'FormSelect',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormSelect',
+    importPath: '@peaui/ui/vue/form/FormSelect',
     props: [
       {
         name: 'id',
@@ -5984,8 +6662,34 @@ export const generatedComponentApi = [
         name: 'placeholder',
         type: 'string',
         required: false,
-        default: 'wybierz/wyszukaj',
         description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'labels',
+        type: 'Partial<SelectLabels>',
+        required: false,
+        description: 'Konfiguruje właściwość „labels” komponentu.',
+      },
+      {
+        name: 'valueMode',
+        type: "'value' | 'label'",
+        required: false,
+        default: 'value',
+        description: 'Value is the default; label preserves the pre-3.0 Vue/WC model contract.',
+      },
+      {
+        name: 'virtual',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Render only visible fixed-height options for large lists.',
+      },
+      {
+        name: 'optionHeight',
+        type: 'number',
+        required: false,
+        default: '48',
+        description: 'Row height in pixels when virtual is enabled (minimum 24).',
       },
       {
         name: 'disabled',
@@ -6027,7 +6731,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'options',
-        type: 'SelectFieldOption[]',
+        type: 'SelectFieldOption<unknown>[]',
         required: true,
         description: 'Lista opcji dostępnych do wyświetlenia lub wyboru.',
       },
@@ -6043,7 +6747,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: unknown) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -6069,7 +6779,7 @@ export const generatedComponentApi = [
     name: 'FormSwitchToggle',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormSwitchToggle',
+    importPath: '@peaui/ui/vue/form/FormSwitchToggle',
     props: [
       {
         name: 'id',
@@ -6219,15 +6929,23 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: Value, nativeEvent: Event) => void',
+        description: 'Emitowane po zmianie wraz z nową wartością domenową i natywnym zdarzeniem.',
       },
       {
         name: 'focus',
-        description: 'Emitowane po ustawieniu fokusu na kontrolce.',
+        type: '(nativeEvent: FocusEvent) => void',
+        description: 'Emitowane po ustawieniu fokusu na natywnej kontrolce.',
       },
       {
         name: 'blur',
-        description: 'Emitowane po opuszczeniu kontrolki przez fokus.',
+        type: '(nativeEvent: FocusEvent) => void',
+        description: 'Emitowane po opuszczeniu natywnej kontrolki.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: Value) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -6261,7 +6979,7 @@ export const generatedComponentApi = [
     name: 'FormTagsInput',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormTagsInput',
+    importPath: '@peaui/ui/vue/form/FormTagsInput',
     props: [
       {
         name: 'id',
@@ -6318,14 +7036,14 @@ export const generatedComponentApi = [
       },
       {
         name: 'layout',
-        type: 'FormTagsInputLayout',
+        type: "'inline' | 'stacked'",
         required: false,
         default: 'inline',
         description: 'Układ tagów i edytora.',
       },
       {
         name: 'mode',
-        type: 'FormTagsInputMode',
+        type: "'freeform' | 'suggestions-only'",
         required: false,
         default: 'freeform',
         description: 'Tryb swobodny albo ograniczony do sugestii.',
@@ -6379,7 +7097,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: 'FormTagsInputPlacement',
+        type: "'auto' | 'top' | 'bottom'",
         required: false,
         default: 'auto',
         description: 'Położenie panelu sugestii.',
@@ -6476,27 +7194,44 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'add',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „add”.',
+        type: '(tag: FormTagsInputTag, index: number, nativeEvent: Event) => void',
+        description: 'Emitowane po dodaniu zaakceptowanego tagu.',
       },
       {
         name: 'remove',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „remove”.',
+        type: '(tag: FormTagsInputTag, index: number, nativeEvent: Event) => void',
+        description: 'Emitowane po usunięciu tagu.',
       },
       {
         name: 'edit',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „edit”.',
+        type: '(previous: FormTagsInputTag, next: FormTagsInputTag, index: number, nativeEvent: Event) => void',
+        description: 'Emitowane po zatwierdzeniu edycji tagu.',
       },
       {
         name: 'invalidTag',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalidTag”.',
+        type: '(detail: FormTagsInputInvalidDetail, nativeEvent: Event) => void',
+        description: 'Emitowane dla każdej odrzuconej wartości.',
       },
       {
         name: 'search',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „search”.',
+        type: '(query: string, requestId: number) => void',
+        description: 'Emitowane przy zmianie tekstu wyszukiwania.',
       },
       {
         name: 'maxReached',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „maxReached”.',
+        type: '(max: number, nativeEvent: Event) => void',
+        description: 'Emitowane, gdy próba dodania przekracza limit.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: FormTagsInputTag[]) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:inputValue',
+        type: '(value: string) => void',
+        description:
+          'Emitowane po zmianie modelu „inputValue”; przekaż nową wartość do v-model:inputValue.',
       },
     ],
     slots: [
@@ -6550,7 +7285,7 @@ export const generatedComponentApi = [
     name: 'FormTextarea',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormTextarea',
+    importPath: '@peaui/ui/vue/form/FormTextarea',
     props: [
       {
         name: 'id',
@@ -6623,7 +7358,13 @@ export const generatedComponentApi = [
         description: 'Bieżąca wartość kontrolowana przez v-model:value.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:value',
+        type: '(value: string | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+    ],
     slots: [
       {
         name: 'hint',
@@ -6647,7 +7388,7 @@ export const generatedComponentApi = [
     name: 'FormTimePicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormTimePicker',
+    importPath: '@peaui/ui/vue/form/FormTimePicker',
     props: [
       {
         name: 'id',
@@ -6688,21 +7429,21 @@ export const generatedComponentApi = [
       },
       {
         name: 'variant',
-        type: 'FormTimePickerVariant',
+        type: "'input' | 'segmented'",
         required: false,
         default: 'input',
         description: 'Edytowalne pole tekstowe albo zestaw dostępnych segmentów.',
       },
       {
         name: 'panelMode',
-        type: 'FormTimePickerPanelMode',
+        type: "'dropdown' | 'spinbutton'",
         required: false,
         default: 'dropdown',
         description: 'Lista opcji albo kompaktowe kontrolki spinbutton w panelu.',
       },
       {
         name: 'placement',
-        type: 'FormTimePickerPlacement',
+        type: "'top' | 'bottom'",
         required: false,
         default: 'bottom',
         description:
@@ -6710,7 +7451,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'format',
-        type: 'FormTimePickerFormat',
+        type: "'12h' | '24h'",
         required: false,
         default: '24h',
         description: 'Format prezentacji. Model zawsze pozostaje wartością 24-godzinną.',
@@ -6868,19 +7609,34 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'change',
-        description: 'Emitowane po zmianie wartości przez użytkownika.',
+        type: '(value: string | undefined, parts: TimePickerParts | undefined) => void',
+        description: 'Emitowane po zatwierdzeniu poprawnej wartości.',
       },
       {
         name: 'invalid',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „invalid”.',
+        type: '(detail: TimePickerInvalidDetail) => void',
+        description:
+          'Emitowane po odrzuceniu pustej, błędnej, poza zakresem lub poza krokiem wartości.',
       },
       {
         name: 'open',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+        type: '() => void',
+        description: 'Emitowane po faktycznym otwarciu panelu.',
       },
       {
         name: 'close',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+        type: '() => void',
+        description: 'Emitowane po faktycznym zamknięciu panelu.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: string | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -6926,7 +7682,7 @@ export const generatedComponentApi = [
     name: 'FormYearPicker',
     category: 'form',
     categoryLabel: 'Formularze',
-    importPath: '@peaui/ui/form/FormYearPicker',
+    importPath: '@peaui/ui/vue/form/FormYearPicker',
     props: [
       {
         name: 'id',
@@ -6975,7 +7731,8 @@ export const generatedComponentApi = [
         name: 'required',
         type: 'boolean',
         required: false,
-        description: 'Oznacza wartość jako wymaganą.',
+        description:
+          'Empty selection blocks native form submission; readonly and disabled are exempt.',
       },
       {
         name: 'placeholder',
@@ -7032,7 +7789,13 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:remove',
+        type: '() => void',
         description: 'Emitowane po wybraniu akcji usunięcia.',
+      },
+      {
+        name: 'update:value',
+        type: '(value: number | YearPickerRangeValue | undefined) => void',
+        description: 'Emitowane po zmianie modelu „value”; przekaż nową wartość do v-model:value.',
       },
     ],
     slots: [
@@ -7058,7 +7821,7 @@ export const generatedComponentApi = [
     name: 'CardPanel',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/CardPanel',
+    importPath: '@peaui/ui/vue/layout/CardPanel',
     props: [
       {
         name: 'ariaLabel',
@@ -7132,7 +7895,7 @@ export const generatedComponentApi = [
     name: 'FullscreenContainer',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/FullscreenContainer',
+    importPath: '@peaui/ui/vue/layout/FullscreenContainer',
     props: [
       {
         name: 'ariaLabel',
@@ -7174,7 +7937,7 @@ export const generatedComponentApi = [
     name: 'GridItem',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/GridItem',
+    importPath: '@peaui/ui/vue/layout/GridItem',
     props: [
       {
         name: 'colspan',
@@ -7187,7 +7950,7 @@ export const generatedComponentApi = [
         type: 'number',
         required: false,
         default: '2',
-        description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
+        description: 'Liczba kolumn: domyślnie 2; 0 dobiera liczbę do dzieci.',
       },
       {
         name: 'gap',
@@ -7217,14 +7980,14 @@ export const generatedComponentApi = [
     name: 'GridSection',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/GridSection',
+    importPath: '@peaui/ui/vue/layout/GridSection',
     props: [
       {
         name: 'columns',
         type: 'number',
         required: false,
         default: '4',
-        description: 'Definicje kolumn określające ich etykiety, klucze i sposób renderowania.',
+        description: 'Liczba kolumn siatki; domyślnie 4.',
       },
       {
         name: 'gap',
@@ -7251,7 +8014,7 @@ export const generatedComponentApi = [
     name: 'PageLayout',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/PageLayout',
+    importPath: '@peaui/ui/vue/layout/PageLayout',
     props: [
       {
         name: 'dataTestId',
@@ -7298,7 +8061,7 @@ export const generatedComponentApi = [
     name: 'ScrollArea',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/ScrollArea',
+    importPath: '@peaui/ui/vue/layout/ScrollArea',
     props: [
       {
         name: 'id',
@@ -7309,21 +8072,21 @@ export const generatedComponentApi = [
       },
       {
         name: 'type',
-        type: 'ScrollAreaType',
+        type: "'native' | 'styled'",
         required: false,
         default: 'styled',
         description: 'Natywne paski systemowe albo dostępne paski stylowane przez PeaUI.',
       },
       {
         name: 'orientation',
-        type: 'ScrollAreaOrientation',
+        type: "'vertical' | 'horizontal' | 'both'",
         required: false,
         default: 'vertical',
         description: 'Osie, na których zawartość może być przewijana.',
       },
       {
         name: 'scrollbarVisibility',
-        type: 'ScrollAreaScrollbarVisibility',
+        type: "'auto' | 'always' | 'hover'",
         required: false,
         default: 'auto',
         description: 'Sposób widoczności stylowanych pasków przewijania.',
@@ -7347,7 +8110,7 @@ export const generatedComponentApi = [
         type: 'number',
         required: false,
         description:
-          'Opcjonalny tabindex natywnego viewportu; bez niego komponent nie dodaje przystanku Tab.',
+          'Nadpisuje tabindex viewportu. Tryb native domyślnie dodaje przystanek Tab (0).',
       },
       {
         name: 'ariaLabel',
@@ -7381,26 +8144,32 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'scroll',
+        type: '(detail: ScrollAreaPosition) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „scroll”.',
       },
       {
         name: 'scrollStart',
+        type: '(detail: ScrollAreaPosition) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „scrollStart”.',
       },
       {
         name: 'scrollEnd',
+        type: '(detail: ScrollAreaPosition) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „scrollEnd”.',
       },
       {
         name: 'reachStart',
+        type: '(detail: ScrollAreaEdgeDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachStart”.',
       },
       {
         name: 'reachEnd',
+        type: '(detail: ScrollAreaEdgeDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „reachEnd”.',
       },
       {
         name: 'resize',
+        type: '(detail: ScrollAreaResizeDetail) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „resize”.',
       },
     ],
@@ -7427,7 +8196,7 @@ export const generatedComponentApi = [
     name: 'SectionDivider',
     category: 'layout',
     categoryLabel: 'Układ',
-    importPath: '@peaui/ui/layout/SectionDivider',
+    importPath: '@peaui/ui/vue/layout/SectionDivider',
     props: [
       {
         name: 'dataTestId',
@@ -7458,7 +8227,7 @@ export const generatedComponentApi = [
     name: 'Breadcrumbs',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/Breadcrumbs',
+    importPath: '@peaui/ui/vue/navigation/Breadcrumbs',
     props: [
       {
         name: 'items',
@@ -7492,16 +8261,242 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:navigate',
+        type: '(item: BreadcrumbItem) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „on:navigate”.',
       },
     ],
     slots: [],
   },
   {
+    name: 'CommandPalette',
+    category: 'navigation',
+    categoryLabel: 'Nawigacja',
+    importPath: '@peaui/ui/vue/navigation/CommandPalette',
+    props: [
+      {
+        name: 'commands',
+        type: 'readonly CommandPaletteCommand[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „commands” komponentu.',
+      },
+      {
+        name: 'recentIds',
+        type: 'readonly string[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „recent ids” komponentu.',
+      },
+      {
+        name: 'shortcut',
+        type: 'CommandPaletteShortcut',
+        required: false,
+        default: "['Mod', 'K']",
+        description: 'Konfiguruje właściwość „shortcut” komponentu.',
+      },
+      {
+        name: 'registerShortcut',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „register shortcut” komponentu.',
+      },
+      {
+        name: 'filter',
+        type: 'CommandPaletteFilter',
+        required: false,
+        description: 'Konfiguruje właściwość „filter” komponentu.',
+      },
+      {
+        name: 'groups',
+        type: 'readonly CommandPaletteGroup[]',
+        required: false,
+        default: '[]',
+        description: 'Konfiguruje właściwość „groups” komponentu.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Włącza stan ładowania i informuje o trwającej operacji.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        required: false,
+        default: 'Type a command',
+        description: 'Tekst pomocniczy widoczny przed wprowadzeniem wartości.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Command palette',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'closeOnExecute',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „close on execute” komponentu.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+      {
+        name: 'mode',
+        type: "'modal' | 'embedded'",
+        required: false,
+        default: 'modal',
+        description: 'Konfiguruje właściwość „mode” komponentu.',
+      },
+      {
+        name: 'virtual',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „virtual” komponentu.',
+      },
+      {
+        name: 'virtualThreshold',
+        type: 'number',
+        required: false,
+        default: '200',
+        description: 'Konfiguruje właściwość „virtual threshold” komponentu.',
+      },
+      {
+        name: 'virtualHeight',
+        type: 'number',
+        required: false,
+        default: '384',
+        description: 'Konfiguruje właściwość „virtual height” komponentu.',
+      },
+      {
+        name: 'emptyTitle',
+        type: 'string',
+        required: false,
+        default: 'No commands found',
+        description: 'Konfiguruje właściwość „empty title” komponentu.',
+      },
+      {
+        name: 'emptyDescription',
+        type: 'string',
+        required: false,
+        default: 'Try another phrase.',
+        description: 'Konfiguruje właściwość „empty description” komponentu.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+      {
+        name: 'query',
+        type: 'string',
+        required: false,
+        description: 'Wartość kontrolowana przez v-model:query.',
+      },
+      {
+        name: 'activeId',
+        type: 'string | null',
+        required: false,
+        description: 'Wartość kontrolowana przez v-model:activeId.',
+      },
+    ],
+    events: [
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:open”.',
+      },
+      {
+        name: 'update:query',
+        type: '(value: string) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:query”.',
+      },
+      {
+        name: 'update:activeId',
+        type: '(value: string | null) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:activeId”.',
+      },
+      {
+        name: 'select',
+        type: '(value: CommandPaletteCommand) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+      },
+      {
+        name: 'execute',
+        type: '(value: CommandPaletteCommand) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „execute”.',
+      },
+      {
+        name: 'executionSuccess',
+        type: '(value: CommandPaletteExecutionSuccessDetail) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „executionSuccess”.',
+      },
+      {
+        name: 'executionError',
+        type: '(value: CommandPaletteExecutionErrorDetail) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „executionError”.',
+      },
+      {
+        name: 'levelChange',
+        type: '(value: CommandPaletteLevelChangeDetail) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „levelChange”.',
+      },
+    ],
+    slots: [
+      {
+        name: 'trigger',
+        description: 'Treść osadzana w nazwanym slocie „trigger”.',
+      },
+      {
+        name: 'header',
+        description: 'Treść osadzana w nazwanym slocie „header”.',
+      },
+      {
+        name: 'command',
+        description: 'Treść osadzana w nazwanym slocie „command”.',
+      },
+      {
+        name: 'group',
+        description: 'Treść osadzana w nazwanym slocie „group”.',
+      },
+      {
+        name: 'empty',
+        description: 'Treść osadzana w nazwanym slocie „empty”.',
+      },
+      {
+        name: 'loading',
+        description: 'Treść osadzana w nazwanym slocie „loading”.',
+      },
+      {
+        name: 'error',
+        description: 'Treść osadzana w nazwanym slocie „error”.',
+      },
+      {
+        name: 'footer',
+        description: 'Treść osadzana w nazwanym slocie „footer”.',
+      },
+      {
+        name: 'breadcrumb',
+        description: 'Treść osadzana w nazwanym slocie „breadcrumb”.',
+      },
+    ],
+  },
+  {
     name: 'ContextMenu',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/ContextMenu',
+    importPath: '@peaui/ui/vue/navigation/ContextMenu',
     props: [
       {
         name: 'items',
@@ -7627,31 +8622,43 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'open',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „open”.',
+        type: '(detail: ContextMenuOpenDetail) => void',
+        description: 'Emitowane po skutecznym otwarciu menu.',
       },
       {
         name: 'close',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „close”.',
+        type: '(reason: ContextMenuCloseReason) => void',
+        description: 'Emitowane po zamknięciu menu wraz z przyczyną.',
       },
       {
         name: 'select',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+        type: '(item: DropdownMenuItem, path: number[], context: unknown) => void',
+        description: 'Emitowane po aktywowaniu dostępnej pozycji.',
       },
       {
         name: 'checkedChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+        type: '(item: DropdownMenuItem, checked: boolean, path: number[], context: unknown) => void',
+        description: 'Emitowane po zmianie intencji pozycji checkbox lub radio.',
       },
       {
         name: 'valueChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+        type: '(item: DropdownMenuItem, value: unknown, path: number[], context: unknown) => void',
+        description: 'Emitowane po wyborze pozycji posiadającej wartość.',
       },
       {
         name: 'contextChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „contextChange”.',
+        type: '(context: unknown) => void',
+        description: 'Emitowane, gdy aktywacja wskazuje nowy kontekst danych.',
       },
       {
         name: 'longPressCancel',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „longPressCancel”.',
+        type: '(reason: ContextMenuLongPressCancelReason) => void',
+        description: 'Emitowane, gdy oczekujący long press został świadomie anulowany.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -7693,7 +8700,7 @@ export const generatedComponentApi = [
     name: 'DropdownMenu',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/DropdownMenu',
+    importPath: '@peaui/ui/vue/navigation/DropdownMenu',
     props: [
       {
         name: 'items',
@@ -7792,27 +8799,38 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'select',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+        type: '(item: DropdownMenuItem, path: number[]) => void',
+        description: 'Emitowane po aktywowaniu dostępnej pozycji.',
       },
       {
         name: 'checkedChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+        type: '(item: DropdownMenuItem, checked: boolean, path: number[]) => void',
+        description: 'Emitowane po zmianie intencji pozycji checkbox lub radio.',
       },
       {
         name: 'valueChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+        type: '(item: DropdownMenuItem, value: unknown, path: number[]) => void',
+        description: 'Emitowane po wyborze pozycji posiadającej wartość.',
       },
       {
         name: 'openChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „openChange”.',
+        type: '(value: boolean) => void',
+        description: 'Emitowane przy każdej intencji otwarcia lub zamknięcia.',
       },
       {
         name: 'escape',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „escape”.',
+        type: '() => void',
+        description: 'Emitowane po zamknięciu klawiszem Escape.',
       },
       {
         name: 'outsideClick',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „outsideClick”.',
+        type: '() => void',
+        description: 'Emitowane po zamknięciu kliknięciem poza komponentem.',
+      },
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
       },
     ],
     slots: [
@@ -7854,7 +8872,7 @@ export const generatedComponentApi = [
     name: 'ListLimitControl',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/ListLimitControl',
+    importPath: '@peaui/ui/vue/navigation/ListLimitControl',
     props: [
       {
         name: 'id',
@@ -7898,7 +8916,13 @@ export const generatedComponentApi = [
         description: 'Wybrany limit elementów kontrolowany przez v-model:limit.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:limit',
+        type: '(value: number) => void',
+        description: 'Emitowane po zmianie modelu „limit”; przekaż nową wartość do v-model:limit.',
+      },
+    ],
     slots: [
       {
         name: 'default',
@@ -7910,7 +8934,7 @@ export const generatedComponentApi = [
     name: 'MenuBar',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/MenuBar',
+    importPath: '@peaui/ui/vue/navigation/MenuBar',
     props: [
       {
         name: 'menus',
@@ -7966,19 +8990,29 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'select',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „select”.',
+        type: '(item: DropdownMenuItem, path: number[], menu: MenuBarMenu) => void',
+        description: 'Emitowane po aktywowaniu pozycji wraz z sekcją nadrzędną.',
       },
       {
         name: 'focusChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „focusChange”.',
+        type: '(menu: MenuBarMenu, index: number) => void',
+        description: 'Emitowane po przeniesieniu fokusu roving tabindex na inny trigger.',
       },
       {
         name: 'checkedChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „checkedChange”.',
+        type: '(item: DropdownMenuItem, checked: boolean, path: number[], menu: MenuBarMenu) => void',
+        description: 'Przekazuje intencję zmiany pozycji checkbox lub radio.',
       },
       {
         name: 'valueChange',
-        description: 'Emitowane, gdy komponent zgłasza zdarzenie „valueChange”.',
+        type: '(item: DropdownMenuItem, value: unknown, path: number[], menu: MenuBarMenu) => void',
+        description: 'Przekazuje wartość wybranej pozycji wraz z sekcją nadrzędną.',
+      },
+      {
+        name: 'update:openMenu',
+        type: '(value: string | number | null) => void',
+        description:
+          'Emitowane po zmianie modelu „openMenu”; przekaż nową wartość do v-model:openMenu.',
       },
     ],
     slots: [
@@ -8004,7 +9038,7 @@ export const generatedComponentApi = [
     name: 'NavigationCard',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationCard',
+    importPath: '@peaui/ui/vue/navigation/NavigationCard',
     props: [
       {
         name: 'title',
@@ -8059,7 +9093,7 @@ export const generatedComponentApi = [
     name: 'NavigationDisclosureCard',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationDisclosureCard',
+    importPath: '@peaui/ui/vue/navigation/NavigationDisclosureCard',
     props: [
       {
         name: 'title',
@@ -8126,7 +9160,7 @@ export const generatedComponentApi = [
     name: 'NavigationIconCard',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationIconCard',
+    importPath: '@peaui/ui/vue/navigation/NavigationIconCard',
     props: [
       {
         name: 'icon',
@@ -8170,7 +9204,7 @@ export const generatedComponentApi = [
     name: 'NavigationLink',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationLink',
+    importPath: '@peaui/ui/vue/navigation/NavigationLink',
     props: [
       {
         name: 'path',
@@ -8218,7 +9252,7 @@ export const generatedComponentApi = [
     name: 'NavigationStepper',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationStepper',
+    importPath: '@peaui/ui/vue/navigation/NavigationStepper',
     props: [
       {
         name: 'options',
@@ -8245,6 +9279,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:select',
+        type: '(element: NavStepper) => void',
         description: 'Emitowane po wybraniu elementu.',
       },
     ],
@@ -8254,7 +9289,7 @@ export const generatedComponentApi = [
     name: 'NavigationTabs',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/NavigationTabs',
+    importPath: '@peaui/ui/vue/navigation/NavigationTabs',
     props: [
       {
         name: 'tabs',
@@ -8287,6 +9322,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'on:select',
+        type: '(tab: Tab) => void',
         description: 'Emitowane po wybraniu elementu.',
       },
     ],
@@ -8301,7 +9337,7 @@ export const generatedComponentApi = [
     name: 'PaginationControl',
     category: 'navigation',
     categoryLabel: 'Nawigacja',
-    importPath: '@peaui/ui/navigation/PaginationControl',
+    importPath: '@peaui/ui/vue/navigation/PaginationControl',
     props: [
       {
         name: 'ariaLabel',
@@ -8331,14 +9367,20 @@ export const generatedComponentApi = [
         description: 'Aktualna strona kontrolowana przez v-model:page.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:page',
+        type: '(value: number) => void',
+        description: 'Emitowane po zmianie modelu „page”; przekaż nową wartość do v-model:page.',
+      },
+    ],
     slots: [],
   },
   {
     name: 'DrawerPanel',
     category: 'overlayer',
     categoryLabel: 'Warstwy i okna',
-    importPath: '@peaui/ui/overlayer/DrawerPanel',
+    importPath: '@peaui/ui/vue/overlayer/DrawerPanel',
     props: [
       {
         name: 'dataTestId',
@@ -8349,7 +9391,7 @@ export const generatedComponentApi = [
       {
         name: 'ariaLabel',
         type: 'string',
-        required: true,
+        required: false,
         description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
     ],
@@ -8361,7 +9403,13 @@ export const generatedComponentApi = [
         description: 'Stan otwarcia kontrolowany przez v-model:open.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
+      },
+    ],
     slots: [
       {
         name: 'header',
@@ -8374,14 +9422,232 @@ export const generatedComponentApi = [
     ],
   },
   {
+    name: 'GuidedTour',
+    category: 'overlayer',
+    categoryLabel: 'Warstwy i okna',
+    importPath: '@peaui/ui/vue/overlayer/GuidedTour',
+    props: [
+      {
+        name: 'steps',
+        type: 'GuidedTourStep[]',
+        required: true,
+        description: 'Konfiguruje właściwość „steps” komponentu.',
+      },
+      {
+        name: 'mode',
+        type: "'spotlight' | 'modal'",
+        required: false,
+        default: 'spotlight',
+        description: 'Konfiguruje właściwość „mode” komponentu.',
+      },
+      {
+        name: 'cardVariant',
+        type: "'card' | 'tooltip'",
+        required: false,
+        default: 'card',
+        description: 'Konfiguruje właściwość „card variant” komponentu.',
+      },
+      {
+        name: 'linear',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „linear” komponentu.',
+      },
+      {
+        name: 'showMask',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „show mask” komponentu.',
+      },
+      {
+        name: 'allowSkip',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „allow skip” komponentu.',
+      },
+      {
+        name: 'closeOnEscape',
+        type: 'boolean',
+        required: false,
+        default: 'true',
+        description: 'Konfiguruje właściwość „close on escape” komponentu.',
+      },
+      {
+        name: 'scrollBehavior',
+        type: "'auto' | 'smooth'",
+        required: false,
+        default: 'smooth',
+        description: 'Konfiguruje właściwość „scroll behavior” komponentu.',
+      },
+      {
+        name: 'targetTimeout',
+        type: 'number',
+        required: false,
+        default: '2000',
+        description: 'Konfiguruje właściwość „target timeout” komponentu.',
+      },
+      {
+        name: 'missingTargetStrategy',
+        type: "'skip' | 'block' | 'close'",
+        required: false,
+        default: 'block',
+        description: 'Konfiguruje właściwość „missing target strategy” komponentu.',
+      },
+      {
+        name: 'spotlightPadding',
+        type: 'number',
+        required: false,
+        default: '8',
+        description: 'Konfiguruje właściwość „spotlight padding” komponentu.',
+      },
+      {
+        name: 'pending',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Konfiguruje właściwość „pending” komponentu.',
+      },
+      {
+        name: 'labels',
+        type: 'Partial<GuidedTourLabels>',
+        required: false,
+        default: '{}',
+        description: 'Konfiguruje właściwość „labels” komponentu.',
+      },
+      {
+        name: 'persist',
+        type: '(state: GuidedTourPersistState) => void | Promise<void>',
+        required: false,
+        default: 'undefined',
+        description: 'Konfiguruje właściwość „persist” komponentu.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        required: false,
+        default: 'Guided tour',
+        description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
+      },
+      {
+        name: 'dataTestId',
+        type: 'string',
+        required: false,
+        default: 'undefined',
+        description: 'Stabilny identyfikator data-testid przeznaczony dla testów automatycznych.',
+      },
+    ],
+    models: [
+      {
+        name: 'open',
+        type: 'boolean',
+        required: false,
+        default: 'false',
+        description: 'Stan otwarcia kontrolowany przez v-model:open.',
+      },
+      {
+        name: 'step',
+        type: 'number',
+        required: false,
+        default: '0',
+        description: 'Wartość kontrolowana przez v-model:step.',
+      },
+    ],
+    events: [
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:open”.',
+      },
+      {
+        name: 'update:step',
+        type: '(value: number) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:step”.',
+      },
+      {
+        name: 'start',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „start”.',
+      },
+      {
+        name: 'stepEnter',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „stepEnter”.',
+      },
+      {
+        name: 'stepLeave',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „stepLeave”.',
+      },
+      {
+        name: 'next',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „next”.',
+      },
+      {
+        name: 'back',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „back”.',
+      },
+      {
+        name: 'skip',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „skip”.',
+      },
+      {
+        name: 'complete',
+        type: '(payload: GuidedTourStepPayload) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „complete”.',
+      },
+      {
+        name: 'targetMissing',
+        type: '(payload: { step: GuidedTourStep; index: number }) => void',
+        description: 'Emitowane, gdy komponent zgłasza zdarzenie „targetMissing”.',
+      },
+      {
+        name: 'error',
+        type: '(payload: GuidedTourErrorPayload) => void',
+        description: 'Emitowane, gdy operacja komponentu kończy się błędem.',
+      },
+    ],
+    slots: [
+      {
+        name: 'title',
+        description: 'Treść osadzana w nazwanym slocie „title”.',
+      },
+      {
+        name: 'progress',
+        description: 'Treść osadzana w nazwanym slocie „progress”.',
+      },
+      {
+        name: 'missing-target',
+        description: 'Treść osadzana w nazwanym slocie „missing-target”.',
+      },
+      {
+        name: 'content',
+        description: 'Treść osadzana w nazwanym slocie „content”.',
+      },
+      {
+        name: 'description',
+        description: 'Treść osadzana w nazwanym slocie „description”.',
+      },
+      {
+        name: 'actions',
+        description: 'Treść osadzana w nazwanym slocie „actions”.',
+      },
+    ],
+  },
+  {
     name: 'InfoTooltip',
     category: 'overlayer',
     categoryLabel: 'Warstwy i okna',
-    importPath: '@peaui/ui/overlayer/InfoTooltip',
+    importPath: '@peaui/ui/vue/overlayer/InfoTooltip',
     props: [
       {
         name: 'placement',
-        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        type: "'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
         required: false,
         default: 'top',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -8428,7 +9694,7 @@ export const generatedComponentApi = [
     name: 'ModalDialog',
     category: 'overlayer',
     categoryLabel: 'Warstwy i okna',
-    importPath: '@peaui/ui/overlayer/ModalDialog',
+    importPath: '@peaui/ui/vue/overlayer/ModalDialog',
     props: [
       {
         name: 'dataTestId',
@@ -8439,7 +9705,7 @@ export const generatedComponentApi = [
       {
         name: 'ariaLabel',
         type: 'string',
-        required: true,
+        required: false,
         description: 'Dostępna nazwa elementu przekazywana przez aria-label.',
       },
     ],
@@ -8451,7 +9717,13 @@ export const generatedComponentApi = [
         description: 'Stan otwarcia kontrolowany przez v-model:open.',
       },
     ],
-    events: [],
+    events: [
+      {
+        name: 'update:open',
+        type: '(value: boolean) => void',
+        description: 'Emitowane po zmianie modelu „open”; przekaż nową wartość do v-model:open.',
+      },
+    ],
     slots: [
       {
         name: 'header',
@@ -8467,7 +9739,7 @@ export const generatedComponentApi = [
     name: 'PopoverButton',
     category: 'overlayer',
     categoryLabel: 'Warstwy i okna',
-    importPath: '@peaui/ui/overlayer/PopoverButton',
+    importPath: '@peaui/ui/vue/overlayer/PopoverButton',
     props: [
       {
         name: 'size',
@@ -8485,7 +9757,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'placement',
-        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        type: "'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
         required: false,
         default: 'top',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -8534,10 +9806,12 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'keydown',
+        type: '(event: KeyboardEvent) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „keydown”.',
       },
       {
         name: 'pointerdown',
+        type: '(event: PointerEvent) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „pointerdown”.',
       },
     ],
@@ -8556,11 +9830,11 @@ export const generatedComponentApi = [
     name: 'PopoverOverlayer',
     category: 'overlayer',
     categoryLabel: 'Warstwy i okna',
-    importPath: '@peaui/ui/overlayer/PopoverOverlayer',
+    importPath: '@peaui/ui/vue/overlayer/PopoverOverlayer',
     props: [
       {
         name: 'placement',
-        type: "| 'top'\n  | 'right'\n  | 'bottom'\n  | 'left'\n  | 'top-left'\n  | 'top-right'\n  | 'bottom-left'\n  | 'bottom-right'",
+        type: "'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'",
         required: false,
         default: 'top',
         description: 'Konfiguruje właściwość „placement” komponentu.',
@@ -8615,6 +9889,7 @@ export const generatedComponentApi = [
     events: [
       {
         name: 'update:open',
+        type: '(value: boolean) => void',
         description: 'Emitowane, gdy komponent zgłasza zdarzenie „update:open”.',
       },
     ],

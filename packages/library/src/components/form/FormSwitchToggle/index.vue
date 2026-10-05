@@ -48,7 +48,8 @@ export interface FormSwitchToggleProps<Value = boolean> {
 
 <script setup lang="ts" generic="Value = boolean">
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useId, useSlots, type CSSProperties } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, useAttrs, useId, type CSSProperties } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -80,7 +81,9 @@ const emit = defineEmits<{
   (event: 'blur', nativeEvent: FocusEvent): void;
 }>();
 
-const slots = useSlots();
+const labelSlot = useSlotPresence('label');
+const descriptionSlot = useSlotPresence('description');
+const errorSlot = useSlotPresence('error');
 const attrs = useAttrs();
 const classNameComponent = `${UIKIT_NAME}-form-switch-toggle`;
 const generatedId = useId();
@@ -97,9 +100,9 @@ const falseValue = computed<Value>(() =>
 );
 const checked = computed(() => Object.is(value.value, trueValue.value));
 const blocked = computed(() => props.disabled || props.loading);
-const hasLabel = computed(() => Boolean(slots.label || props.label.trim()));
-const hasDescription = computed(() => Boolean(slots.description || props.description.trim()));
-const hasError = computed(() => Boolean(slots.error || props.error.trim()));
+const hasLabel = computed(() => Boolean(labelSlot.value || props.label.trim()));
+const hasDescription = computed(() => Boolean(descriptionSlot.value || props.description.trim()));
+const hasError = computed(() => Boolean(errorSlot.value || props.error.trim()));
 const rootClasses = computed(() => [
   classNameComponent,
   `${classNameComponent}--size-${props.size}`,

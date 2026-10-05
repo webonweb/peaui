@@ -61,9 +61,7 @@ function createFileList(files: File[]): FileList {
 }
 
 function mountComponent(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormFileUploadSimple, {
+  const wrapper = mount(FormFileUploadSimple, {
     props: {
       files: [],
       dataTestId: 'form-file-upload-simple',
@@ -90,7 +88,7 @@ describe('FormFileUploadSimple (index.vue)', () => {
     expect(wrapper.get('[data-testid="form-file-upload-simple"]').classes()).toContain(
       'peaui-form-file-upload-simple',
     );
-    expect(wrapper.get('[data-testid="form-file-upload-simple-upload"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-file-upload-simple-upload"]').exists()).toBe(true);
     expect(
       wrapper.get('[data-testid="form-file-upload-simple-button"]').attributes('data-size'),
     ).toBe('xs');
@@ -130,7 +128,11 @@ describe('FormFileUploadSimple (index.vue)', () => {
 
     expect(wrapper.emitted('update:files')?.[0]?.[0]).toEqual([validFile]);
     expect(
-      (wrapper.emitted('update:files')?.[0]?.[0]?.[0] as File & { context?: string }).context,
+      (
+        (wrapper.emitted('update:files')?.[0]?.[0] as File[] | undefined)?.[0] as File & {
+          context?: string;
+        }
+      ).context,
     ).toBe('attachments');
     expect(wrapper.text()).toContain('photo.png');
     expect(wrapper.text()).toContain('archive.zip');

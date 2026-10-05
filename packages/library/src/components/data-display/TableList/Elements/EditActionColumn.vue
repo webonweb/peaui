@@ -2,35 +2,21 @@
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import { computed } from 'vue';
 import type { TableColumn } from '../index.vue';
-import { buildTableTestId, TABLE_LIST_CLASS } from '../shared';
+import { buildTableTestId, TABLE_LIST_CLASS, resolveTableTextValue } from '../shared';
 
 const { column, dataTestId, deep, record, value } = defineProps<{
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   dataTestId?: string;
-  value: string | number | undefined | Record<string, string>;
+  value: unknown;
 }>();
 
 const emit = defineEmits<{
   (e: 'on:click', id: string): void;
 }>();
 
-const displayValue = computed(() => {
-  if (deep && typeof value === 'object' && value !== null) {
-    return value[deep] || '-/-';
-  }
-
-  if (value === null || value === undefined) {
-    return '-/-';
-  }
-
-  if (typeof value === 'string' && value.length === 0) {
-    return '-/-';
-  }
-
-  return value as string | number;
-});
+const displayValue = computed(() => resolveTableTextValue(value, deep));
 
 const buttonAriaLabel = computed(() => column.actionLabel || 'Edytuj wartosc inline');
 const buttonTestId = computed(() => buildTableTestId(dataTestId, 'button'));

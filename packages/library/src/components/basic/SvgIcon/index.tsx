@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { BasicRenderer } from '@/react/renderer-entries/basic.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type SvgIconProps = PeauiReactProps<'SvgIcon'>;
 
-const SvgIcon = createPeauiReactComponent('SvgIcon');
+const SvgIcon = createDirectReactComponent('SvgIcon', BasicRenderer);
 
 export default SvgIcon;

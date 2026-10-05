@@ -14,21 +14,19 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "1.59.1",
     "@storybook/addon-a11y": "^8.6.15",
     "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/vue3-webpack5": "^8.6.14",
+    "@storybook/vue3-vite": "^8.6.14",
     "@tailwindcss/postcss": "^4.1.18",
     "autoprefixer": "^10.4.23",
     "cross-env": "^10.1.0",
-    "css-loader": "^7.1.2",
+    "@vitejs/plugin-vue": "^6.0.1",
     "postcss": "^8.5.6",
-    "postcss-loader": "^8.2.0",
-    "sass-loader": "^16.0.6",
+    "sass": "^1.93.2",
     "shiki": "^3.21.0",
     "storybook": "^8.6.14",
-    "style-loader": "^4.0.0",
     "tailwindcss": "^4.1.18",
-    "vue-svg-loader": "beta"
+    "vite-svg-loader": "^5.1.1"
   }
 }

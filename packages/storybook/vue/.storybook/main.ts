@@ -1,90 +1,47 @@
-import type { StorybookConfig } from "@storybook/vue3-webpack5";
-import path from 'node:path';
+import path from "node:path";
+import { createRequire } from "node:module";
 
-const svgPattern = /\.svg$/i;
-const svgComponentQuery = /component/;
+import type { StorybookConfig } from "@storybook/vue3-vite";
+import vue from "@vitejs/plugin-vue";
+import { mergeConfig } from "vite";
+import svgLoader from "vite-svg-loader";
 
-function excludeSvgFromRules(rules: any[] = []) {
-  for (const rule of rules) {
-    if (Array.isArray(rule?.oneOf)) {
-      excludeSvgFromRules(rule.oneOf);
-    }
-
-    if (!(rule?.test instanceof RegExp) || !rule.test.test('.svg')) {
-      continue;
-    }
-
-    if (!rule.exclude) {
-      rule.exclude = [svgPattern];
-      continue;
-    }
-
-    if (Array.isArray(rule.exclude)) {
-      rule.exclude = [...rule.exclude, svgPattern];
-      continue;
-    }
-
-    rule.exclude = [rule.exclude, svgPattern];
-  }
-}
+const libraryRoot = path.resolve(__dirname, "../../../library");
+const librarySrc = path.resolve(libraryRoot, "src");
+const require = createRequire(import.meta.url);
+const vueViteFrameworkPath = path.dirname(require.resolve("@storybook/vue3-vite/package.json"));
 
 const config: StorybookConfig = {
-  framework: "@storybook/vue3-webpack5",
+  framework: {
+    name: vueViteFrameworkPath as "@storybook/vue3-vite",
+    options: {},
+  },
   stories: ["../../../library/src/components/**/*.vue.stories.@(js|ts|mdx)"],
   addons: ["@storybook/addon-essentials"],
   staticDirs: ["../public"],
-
-  webpackFinal: async (config) => {
-    config.resolve = config.resolve || {}
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@': path.resolve(__dirname, '../../../library/src'),
-      '@components': path.resolve(__dirname, '../../../library/src//components'),
-      '@assets': path.resolve(__dirname, '../../../library/src//assets'),
-    }
-
-    config.module ??= { rules: [] };
-    config.module.rules ??= [];
-
-    excludeSvgFromRules(config.module.rules);
-
-    config.module.rules.push({
-      test: svgPattern,
-      resourceQuery: svgComponentQuery,
-      use: [
-        'vue-loader',
-        'vue-svg-loader',
-      ],
-    });
-
-    config.module.rules.push({
-      test: svgPattern,
-      resourceQuery: {
-        not: [svgComponentQuery],
-      },
-      type: 'asset/resource',
-    });
-
-    config.module.rules.push({
-      test: /\.s[ac]ss$/i,
-      use: [
-        'style-loader',
-        {
-          loader: 'css-loader',
-          options: { sourceMap: true },
+  viteFinal: async (config) =>
+    mergeConfig(config, {
+      plugins: [vue(), svgLoader()],
+      resolve: {
+        alias: {
+          "@": librarySrc,
+          "@components": path.resolve(librarySrc, "components"),
+          "@assets": path.resolve(librarySrc, "assets"),
         },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
+      },
+      css: {
+        preprocessorOptions: {
+          scss: {
             additionalData: `@use "@assets/mixins.scss" as *;`,
           },
         },
-      ],
-    });
-
-    return config
-  },
+      },
+      server: {
+        fs: {
+          allow: [libraryRoot, path.resolve(__dirname, "..")],
+        },
+      },
+    }),
 };
 
 export default config;

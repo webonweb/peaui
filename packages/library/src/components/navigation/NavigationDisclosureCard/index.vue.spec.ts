@@ -54,7 +54,7 @@ function factory(
       description: 'Opis sekcji',
       dataTestId: 'navigation-disclosure-card',
       ...props,
-    } as any,
+    },
     slots: {
       default: () => h('div', 'Zawartosc komponentu'),
       'description-additional': () => h('span', 'Dodatkowe info'),

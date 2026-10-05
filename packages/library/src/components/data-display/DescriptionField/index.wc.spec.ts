@@ -202,4 +202,14 @@ describe('DescriptionField (index.wc.ts)', () => {
       'Hint content',
     );
   });
+
+  it('does not interpret HTML from the label property', async () => {
+    const label = '<img src=x onerror="alert(1)">Label';
+    const element = mountDescriptionField({ label });
+
+    await syncDescriptionFieldState();
+
+    expect(element.querySelector('dt')?.textContent).toBe(label);
+    expect(element.querySelector('dt img')).toBeNull();
+  });
 });

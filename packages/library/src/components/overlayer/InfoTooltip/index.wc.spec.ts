@@ -36,14 +36,7 @@ type MountOptions = {
   disabled?: boolean;
   forwardedTriggerTestId?: string;
   placement?:
-    | 'top'
-    | 'right'
-    | 'bottom'
-    | 'left'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right';
+    'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   title?: string;
   trigger?: Node | string;
   variant?: 'default' | 'disabled';
@@ -526,6 +519,23 @@ describe('InfoTooltip (index.wc.ts)', () => {
 
     expect(element.getAttribute('style')).toContain('--peaui-info-tooltip-layout-version: 2;');
     expect(tooltip.getAttribute('style')).toContain('--peaui-info-tooltip-layout-version: 2;');
+  });
+
+  it('retains moved title and description slots across attribute updates', async () => {
+    const element = createTooltipElement({
+      title: 'Title',
+      description: 'Helpful content',
+      placement: 'top',
+    });
+    document.body.append(element);
+    await syncInfoTooltipState();
+    element.placement = 'right';
+    await syncInfoTooltipState();
+    const popup = element.nextElementSibling;
+    expect(popup?.getAttribute('role')).toBe('tooltip');
+    expect(popup?.textContent).toContain('Title');
+    expect(popup?.textContent).toContain('Helpful content');
+    expect(popup?.className).toContain('--placement-right');
   });
 
   it('does not re-render when nested custom element content mutates inside tooltip slots', async () => {

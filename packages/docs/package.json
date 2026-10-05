@@ -6,7 +6,7 @@
   "scripts": {
     "generate": "node ./scripts/generate-component-api.mjs",
     "dev": "npm run generate && vite --open",
-    "build": "npm run generate && vue-tsc --noEmit && vite build && node ./scripts/generate-static-pages.mjs && node ./scripts/validate-shared-styles.mjs",
+    "build": "npm run generate && vue-tsc --noEmit && vite build && node ./scripts/generate-static-pages.mjs && node ./scripts/validate-shared-styles.mjs && node ./scripts/validate-build-budgets.mjs",
     "lint": "eslint .",
     "test": "vitest run",
     "test:browser": "playwright test --config ./playwright.config.ts",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@eslint/js": "^9.39.2",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "1.59.1",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/test-utils": "^2.4.11",
@@ -39,7 +39,7 @@
     "typescript-eslint": "^8.53.1",
     "vite": "^7.1.10",
     "vite-svg-loader": "^5.1.1",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "vue-tsc": "^3.1.1"
   }
 }

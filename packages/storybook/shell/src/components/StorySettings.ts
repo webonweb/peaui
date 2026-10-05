@@ -9,10 +9,7 @@ import {
 export const STORY_SETTINGS_TAG_NAME = "peaui-story-settings";
 
 type SizeKey =
-  | "peaui-size-s"
-  | "peaui-size-md"
-  | "peaui-size-lg"
-  | "peaui-size-xl";
+  "peaui-size-s" | "peaui-size-md" | "peaui-size-lg" | "peaui-size-xl";
 
 const styles = `
   :host {
@@ -263,7 +260,9 @@ export class StorySettingsElement extends HTMLElement {
   }
 
   #handleToggleDarkMode(): void {
-    document.body.classList.toggle("dark-mode");
+    const dark = document.body.classList.toggle("dark-mode");
+    document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    document.body.style.colorScheme = dark ? "dark" : "light";
   }
 }
 

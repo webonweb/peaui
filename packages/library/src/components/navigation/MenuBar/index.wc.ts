@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,7 +7,12 @@ import {
 
 import MenuBarVueComponent from './index.vue';
 
-export const MenuBarElement = createVueCustomElement(MenuBarVueComponent, `${UIKIT_NAME}-menu-bar`);
+export const MenuBarElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(MenuBarVueComponent, `${UIKIT_NAME}-menu-bar`);
 
 export function defineMenuBar(): typeof MenuBarElement {
   definePeauiCustomElement(MenuBarElement);

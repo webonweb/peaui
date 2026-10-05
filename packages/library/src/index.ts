@@ -185,6 +185,26 @@ export { default as ProgressIndicator } from './components/feedback/ProgressIndi
 export { default as SkeletonLoading } from './components/feedback/SkeletonLoading/index.vue';
 export { default as SpinnerLoader } from './components/feedback/SpinnerLoader/index.vue';
 export { default as ToastAlert } from './components/feedback/ToastAlert/index.vue';
+export { default as NotificationCenter } from './components/feedback/NotificationCenter/index.vue';
+export type { NotificationCenterProps } from './components/feedback/NotificationCenter/index.vue';
+export type {
+  NotificationCenterAction,
+  NotificationCenterActionPayload,
+  NotificationCenterBaseProps,
+  NotificationCenterDate,
+  NotificationCenterDensity,
+  NotificationCenterFilter,
+  NotificationCenterGroup,
+  NotificationCenterGroupBy,
+  NotificationCenterItem,
+  NotificationCenterItemId,
+  NotificationCenterLabels,
+  NotificationCenterLoadMorePayload,
+  NotificationCenterPaginationMode,
+  NotificationCenterPriority,
+  NotificationCenterSelectPayload,
+  NotificationCenterVariant,
+} from './components/feedback/NotificationCenter/notification-center.shared';
 
 export { default as FormFieldLabel } from './components/form/FormFieldLabel/index.vue';
 export { default as FormButtonCheckbox } from './components/form/FormButtonCheckbox/index.vue';
@@ -320,6 +340,22 @@ export { default as PageLayout } from './components/layout/PageLayout/index.vue'
 export { default as SectionDivider } from './components/layout/SectionDivider/index.vue';
 
 export { default as Breadcrumbs } from './components/navigation/Breadcrumbs/index.vue';
+export { default as CommandPalette } from './components/navigation/CommandPalette/index.vue';
+export type {
+  CommandPaletteCommand,
+  CommandPaletteExecutionContext,
+  CommandPaletteExecutionErrorDetail,
+  CommandPaletteExecutionSuccessDetail,
+  CommandPaletteFilter,
+  CommandPaletteGroup,
+  CommandPaletteLevelChangeDetail,
+  CommandPaletteMode,
+  CommandPaletteProps,
+  CommandPaletteResolvedCommand,
+  CommandPaletteSection,
+  CommandPaletteShortcut,
+  CommandPaletteTriggerState,
+} from './components/navigation/CommandPalette/index.vue';
 export { default as ContextMenu } from './components/navigation/ContextMenu/index.vue';
 export type {
   ContextMenuCloseReason,
@@ -358,7 +394,27 @@ export { default as NavigationTabs } from './components/navigation/NavigationTab
 export { default as PaginationControl } from './components/navigation/PaginationControl/index.vue';
 
 export { default as DrawerPanel } from './components/overlayer/DrawerPanel/index.vue';
+export { default as GuidedTour } from './components/overlayer/GuidedTour/index.vue';
+export type {
+  GuidedTourCardVariant,
+  GuidedTourErrorPayload,
+  GuidedTourLabels,
+  GuidedTourLifecycleContext,
+  GuidedTourMissingTargetStrategy,
+  GuidedTourMode,
+  GuidedTourPersistState,
+  GuidedTourPlacement,
+  GuidedTourProps,
+  GuidedTourScrollBehavior,
+  GuidedTourStep,
+  GuidedTourStepPayload,
+  GuidedTourTarget,
+  GuidedTourTargetMissingPayload,
+  GuidedTourTransitionReason,
+} from './components/overlayer/GuidedTour/guided-tour.shared';
 export { default as InfoTooltip } from './components/overlayer/InfoTooltip/index.vue';
 export { default as ModalDialog } from './components/overlayer/ModalDialog/index.vue';
 export { default as PopoverButton } from './components/overlayer/PopoverButton/index.vue';
 export { default as PopoverOverlayer } from './components/overlayer/PopoverOverlayer/index.vue';
+
+export type * from './components/data-display/TableList/table.types';

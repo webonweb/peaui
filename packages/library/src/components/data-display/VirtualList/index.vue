@@ -82,6 +82,7 @@ import {
   areVirtualListRangesEqual,
   calculateVirtualListRange,
   getVirtualListScrollOffset,
+  getVirtualListAnchorOffset,
   isVirtualListHeightValid,
   normalizeVirtualListHeight,
   normalizeVirtualListItems,
@@ -379,17 +380,24 @@ watch(
   { immediate: true },
 );
 
+watch(
+  () => resolvedItems.value.length,
+  () => {
+    reachedEndForCount = -1;
+  },
+  { flush: 'sync' },
+);
 watch(resolvedItems, (nextItems, previousItems) => {
-  reachedEndForCount = -1;
   if (activeIndex.value !== null && activeIndex.value >= nextItems.length) {
     activeIndex.value = nextItems.length > 0 ? nextItems.length - 1 : null;
   }
-  const anchor = previousItems[currentRange.value.visibleStartIndex];
-  if (!anchor || scrollOffset.value === 0) return;
-  const nextIndex = nextItems.findIndex((item) => Object.is(item.key, anchor.key));
-  if (nextIndex >= 0 && nextIndex !== anchor.index) {
-    scrollToOffset(scrollOffset.value + (nextIndex - anchor.index) * normalizedItemSize.value);
-  }
+  const offset = getVirtualListAnchorOffset(
+    previousItems,
+    nextItems,
+    scrollOffset.value,
+    normalizedItemSize.value,
+  );
+  if (offset !== scrollOffset.value) scrollToOffset(offset);
 });
 
 watch(
@@ -476,6 +484,7 @@ onMounted(() => {
         :tabindex="semanticRole === 'listbox' ? 0 : undefined"
         @keydown="handleListboxKeydown"
       >
+        <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -- Keyboard selection is handled by the owning listbox with aria-activedescendant. -->
         <div
           v-for="item in renderedItems"
           :id="`${resolvedId}-item-${item.index}`"

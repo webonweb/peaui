@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Text: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState(args.value);
     return <InlineEdit {...args} value={value} onValueChange={setValue} />;
   },
@@ -51,7 +51,7 @@ export const Validation: Story = {
   },
 };
 export const AsyncSave: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [value, setValue] = useState(args.value);
     const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);

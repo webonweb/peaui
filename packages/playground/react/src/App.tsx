@@ -1,10 +1,10 @@
-import Test from "@peaui/ui/basic/Test";
+import ButtonAction from "@peaui/ui/react/data-entry/ButtonAction";
 
 function App() {
   return (
-    <>
-      <Test />
-    </>
+    <main>
+      <ButtonAction size="m">Add</ButtonAction>
+    </main>
   );
 }
 

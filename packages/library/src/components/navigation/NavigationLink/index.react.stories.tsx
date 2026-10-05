@@ -14,3 +14,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const DownloadLink: Story = {
+  args: {
+    path: '#report',
+    children: 'Download report',
+    target: '_blank',
+    rel: 'noopener',
+    download: 'report.txt',
+  },
+};

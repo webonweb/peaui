@@ -28,6 +28,34 @@ export function countDecimalPlaces(value: number): number {
   return 0;
 }
 
+export type NumberInputLimits = { min?: number; max?: number; step?: number };
+
+/** Commit a numeric draft without interpreting an empty field as zero. */
+export function normalizeNumberInput(
+  value: string | number | undefined,
+  { min, max, step }: NumberInputLimits,
+): number | undefined {
+  if (value === undefined || (typeof value === 'string' && value.trim() === '')) return undefined;
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return undefined;
+  const precision = step !== undefined && step > 0 ? countDecimalPlaces(step) : 0;
+  let result = Number(parsed.toFixed(Math.min(precision, 100)));
+  if (min !== undefined) result = Math.max(min, result);
+  if (max !== undefined) result = Math.min(max, result);
+  return result;
+}
+
+export function stepNumberInput(
+  value: string | number | undefined,
+  direction: 1 | -1,
+  limits: NumberInputLimits,
+): number | undefined {
+  const step = limits.step !== undefined && limits.step > 0 ? limits.step : 1;
+  const initial = direction === 1 ? (limits.min ?? 0) : (limits.max ?? 0);
+  const current = value === undefined || value === '' ? initial : Number(value);
+  return normalizeNumberInput(current + direction * step, { ...limits, step });
+}
+
 /**
  * Returns the range of items (1-indexed) for a given pagination page.
  *

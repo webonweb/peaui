@@ -2,6 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
+import { useSlotPresence } from '@/composables/useSlotPresence';
 import {
   computed,
   nextTick,
@@ -55,7 +56,8 @@ const rootAttrs = computed(() => ({
 const resolvedAlwaysOpen = computed(() => alwaysOpen || allwaysOpen);
 const isOpen = computed(() => resolvedAlwaysOpen.value || Boolean(model.value));
 const isInteractionBlocked = computed(() => disabled || resolvedAlwaysOpen.value);
-const hasTitle = computed(() => Boolean(slots.title) || Boolean(title));
+const hasTitleSlot = useSlotPresence('title');
+const hasTitle = computed(() => hasTitleSlot.value || Boolean(title));
 
 const summaryId = computed(() => `${classNameComponent}-summary-${uid}`);
 const contentId = computed(() => `${classNameComponent}-content-${uid}`);

@@ -6,7 +6,8 @@ export type FormButtonCheckboxSize = 'xxs' | 'xs' | 's' | 'm' | 'l';
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, nextTick, useAttrs } from 'vue';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -30,11 +31,10 @@ const {
   dataTestId?: string;
 }>();
 
-const slots = useSlots();
 const attrs = useAttrs();
 const classNameComponent = `${UIKIT_NAME}-form-button-checkbox`;
 const modelValue = defineModel<boolean | undefined>('value', { required: true });
-const hasDefaultSlot = computed(() => !!slots.default);
+const hasDefaultSlot = useSlotPresence('default');
 const isChecked = computed(() => Boolean(modelValue.value));
 
 // COMPUTED PROPERTIES
@@ -97,6 +97,7 @@ const inputBindings = computed(() => ({
   'aria-invalid': !isValid,
   'aria-label': srOnlyText.value,
   'aria-required': required || false,
+  required,
   disabled,
   id,
   name,
@@ -112,12 +113,15 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
   return normalizedValue ? normalizedValue : undefined;
 }
 
-function handleOnChange(event: Event): void {
+async function handleOnChange(event: Event): Promise<void> {
   if (!(event.target instanceof HTMLInputElement) || disabled) {
     return;
   }
 
-  modelValue.value = event.target.checked;
+  const input = event.target;
+  modelValue.value = input.checked;
+  await nextTick();
+  input.checked = isChecked.value;
 }
 
 function handleOnKeydown(event: KeyboardEvent): void {

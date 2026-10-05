@@ -1,8 +1,8 @@
-// Import your web components from the library here.
-// Replace or extend these imports with your own components as needed.
-// import '@/components/data-display/TagChip/index';
+// Importing the per-component WC entry registers only this custom element.
+import "@peaui/ui/wc/data-display/TagChip";
 
-import '@peaui/ui/data-display/TagChip';
+import { PEAUI_WEB_COMPONENT_TAG_NAMES } from "@peaui/ui/web-components";
 
-export { };
-
+if (!PEAUI_WEB_COMPONENT_TAG_NAMES.includes("peaui-tag-chip")) {
+  throw new Error("The public Web Components catalog is incomplete.");
+}

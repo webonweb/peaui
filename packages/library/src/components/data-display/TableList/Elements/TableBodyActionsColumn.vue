@@ -9,7 +9,7 @@ import { buildTableTestId, TABLE_LIST_CLASS } from '../shared';
 
 const { actionsButtonsColumn, dataTestId, record } = defineProps<{
   actionsButtonsColumn: TableColumn;
-  record: Record<string, any>;
+  record: Record<string, unknown>;
   dataTestId?: string;
 }>();
 
@@ -23,15 +23,28 @@ const triggerReference = ref<HTMLElement | null>(null);
 const popoverReference = ref<{ hidePopover?: () => void } | null>(null);
 const actionButtonReferences = ref<Array<HTMLButtonElement | null>>([]);
 
-const resolvedActions = computed(() =>
-  actionsButtonsColumn?.resolve
-    ? (actionsButtonsColumn.resolve(record) as Array<Record<string, any>>)
-    : [],
-);
+const resolvedActions = computed(() => {
+  const result = actionsButtonsColumn.resolve?.(record);
+  return Array.isArray(result)
+    ? result.flatMap((action) =>
+        typeof action.key === 'string'
+          ? [
+              {
+                key: action.key,
+                label: typeof action.label === 'string' ? action.label : action.key,
+                icon: typeof action.icon === 'string' ? action.icon : '',
+                simple: Boolean(action.simple),
+              },
+            ]
+          : [],
+      )
+    : [];
+});
 
 const isSimpleActions = computed(
   () => resolvedActions.value.length === 1 && Boolean(resolvedActions.value[0]?.simple),
 );
+const simpleAction = computed(() => resolvedActions.value[0]);
 
 const triggerTestId = computed(() => buildTableTestId(dataTestId, 'trigger'));
 const popoverTriggerTestId = computed(() => {
@@ -83,7 +96,7 @@ function closeActionsMenu(): void {
   popoverReference.value?.hidePopover?.();
   isOpen.value = false;
 
-  nextTick(() => {
+  void nextTick(() => {
     triggerReference.value?.focus();
   });
 }
@@ -212,16 +225,16 @@ onMounted(() => {
       <span v-if="!isSimpleActions">&nbsp;</span>
 
       <button
-        v-else
+        v-else-if="simpleAction"
         type="button"
         :class="`${TABLE_LIST_CLASS}__actions-simple-button`"
-        :aria-label="`Uruchom akcje ${resolvedActions[0]?.label} dla rekordu`"
-        :data-testid="getActionButtonTestId(resolvedActions[0]?.key)"
-        @click.prevent="emit('on:fire:action', resolvedActions[0]?.key)"
+        :aria-label="`Uruchom akcje ${simpleAction.label} dla rekordu`"
+        :data-testid="getActionButtonTestId(simpleAction.key)"
+        @click.prevent="emit('on:fire:action', simpleAction.key)"
       >
         <SvgIcon
           :class="`${TABLE_LIST_CLASS}__actions-simple-icon`"
-          :name="resolvedActions[0]?.icon"
+          :name="simpleAction.icon"
           aria-hidden="true"
         />
       </button>

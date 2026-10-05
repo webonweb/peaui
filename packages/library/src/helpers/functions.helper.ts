@@ -1,3 +1,5 @@
+import { decodeHTML } from './html-decoder';
+
 /**
  * Retrieves the computed right padding of the given input element,
  * subtracts a fixed offset (16px), and returns the result as a number.
@@ -104,15 +106,41 @@ export async function copyToClipboard(text: string): Promise<ClipboardMethod> {
 }
 
 /**
- * Removes HTML tags from a string using DOM parsing.
+ * Extracts text from a label fragment identically in browsers and SSR.
+ * This is a text formatter, not an HTML sanitizer. The historical name is retained for compatibility.
  *
  * @param html - HTML source.
  * @returns Plain text content.
  */
 export function stripHtmlUsingDom(html: string): string {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  return doc.body.textContent;
+  let text = '';
+  let index = 0;
+  while (index < html.length) {
+    if (html.startsWith('<!--', index)) {
+      const end = html.indexOf('-->', index + 4);
+      index = end < 0 ? html.length : end + 3;
+      continue;
+    }
+    if (html[index] !== '<' || !/^\/?[a-zA-Z!]/.test(html.slice(index + 1, index + 3))) {
+      text += html[index++];
+      continue;
+    }
+    let quote = '';
+    let end = index + 1;
+    for (; end < html.length; end++) {
+      const character = html[end];
+      if (quote) {
+        if (character === quote) quote = '';
+      } else if (character === '"' || character === "'") quote = character;
+      else if (character === '>') break;
+    }
+    if (end === html.length) {
+      text += html.slice(index);
+      break;
+    }
+    index = end + 1;
+  }
+  return decodeHTML(text);
 }
 
 /**

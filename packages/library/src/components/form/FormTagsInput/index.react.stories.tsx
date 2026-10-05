@@ -61,7 +61,7 @@ export const PasteEditAndKeyboard: Story = {
 };
 
 export const ObjectsAndCustomContent: Story = {
-  render: () => {
+  render: function Render() {
     const suggestions = [
       { id: 'a11y', label: 'Dostępność', value: 'accessibility' },
       { id: 'perf', label: 'Wydajność', value: 'performance' },
@@ -135,7 +135,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [tags, setTags] = useState<import('./index').FormTagsInputTag[]>(['Vue']);
     const [query, setQuery] = useState('');
     return (

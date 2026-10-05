@@ -36,9 +36,7 @@ const ButtonActionStub = defineComponent({
 import InputSlider from './index.vue';
 
 const mountComponent = (props: Record<string, unknown> = {}) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(InputSlider, {
+  const wrapper = mount(InputSlider, {
     props: {
       name: 'intensity',
       value: 0.5,

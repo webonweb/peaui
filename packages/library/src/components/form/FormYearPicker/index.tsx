@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { DateRenderer } from '@/react/renderer-entries/date.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type FormYearPickerProps = PeauiReactProps<'FormYearPicker'>;
 
-const FormYearPicker = createPeauiReactComponent('FormYearPicker');
+const FormYearPicker = createDirectReactComponent('FormYearPicker', DateRenderer);
 
 export default FormYearPicker;

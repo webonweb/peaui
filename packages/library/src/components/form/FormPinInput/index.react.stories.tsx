@@ -127,7 +127,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState('');
     return (
       <div style={{ display: 'grid', gap: '.75rem', maxInlineSize: '100%', width: '30rem' }}>

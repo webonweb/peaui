@@ -1,3 +1,4 @@
+import { pasteText } from "../../helpers/clipboard.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -57,17 +58,7 @@ test("FormTagsInput Vue zachowuje ARIA, paste, edycję i stabilny fokus", async 
         .evaluate((element) => getComputedStyle(element).boxShadow),
     )
     .toContain("0px 0px 0px 2px");
-  await input.evaluate((element) => {
-    const transfer = new DataTransfer();
-    transfer.setData("text", "TypeScript, Web Components");
-    element.dispatchEvent(
-      new ClipboardEvent("paste", {
-        bubbles: true,
-        cancelable: true,
-        clipboardData: transfer,
-      }),
-    );
-  });
+  await pasteText(input, "TypeScript, Web Components");
   await expect(root.locator(".peaui-form-tags-input__tag")).toHaveCount(4);
   await page.keyboard.press("Backspace");
   await expect(root.locator(".peaui-form-tags-input__tag").last()).toHaveClass(

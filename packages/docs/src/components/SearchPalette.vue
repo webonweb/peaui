@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 
-import { getFrameworkComponents } from '../data/catalog';
+import { getCatalogComponents } from '../data/catalog-summary';
 import { icons } from '../data/icons';
 import { getCategoryLabel, getComponentCopy, getIcon } from '../data/localized-content';
 import { useI18n } from '../i18n';
@@ -27,7 +27,7 @@ const phrase = ref('');
 const input = ref<HTMLInputElement>();
 
 const results = computed(() => {
-  const components = getFrameworkComponents(props.framework);
+  const components = getCatalogComponents(props.framework);
   const needle = phrase.value.trim().toLocaleLowerCase(locale.value);
   const componentResults: SearchResult[] = components.map((component) => {
     const categoryLabel = getCategoryLabel(component.category, component.categoryLabel);

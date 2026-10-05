@@ -3,30 +3,16 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
 import { computed } from 'vue';
 import type { TableColumn } from '../index.vue';
-import { TABLE_LIST_CLASS } from '../shared';
+import { TABLE_LIST_CLASS, resolveTableTextValue } from '../shared';
 
-const { column, deep, record, value } = defineProps<{
+const { column, deep, value } = defineProps<{
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
-  value: string | undefined | Record<string, string>;
+  value: unknown;
 }>();
 
-const displayValue = computed(() => {
-  if (deep && typeof value === 'object') {
-    return value[deep] || '-/-';
-  }
-
-  if (value === null || value === undefined) {
-    return '-/-';
-  }
-
-  if (typeof value === 'string' && value.length === 0) {
-    return '-/-';
-  }
-
-  return value as string | number;
-});
+const displayValue = computed(() => resolveTableTextValue(value, deep));
 </script>
 
 <template>

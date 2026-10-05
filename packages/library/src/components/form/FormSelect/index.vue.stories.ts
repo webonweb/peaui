@@ -39,14 +39,14 @@ const meta: Meta<typeof FormSelectComponent> = {
     name: 'FormSelect',
     description:
       'Komponent select opakowany w FormField i otwierany przez PopoverOverlayer. ' +
-      'Obsluguje filtrowanie, sterowanie klawiatura oraz v-model:value zwracajacy option.label ' +
+      'Obsluguje filtrowanie, sterowanie klawiatura oraz v-model:value zwracajacy option.value ' +
       'po wyborze opcji.',
     code: `
 <script lang="ts" setup>
   import FormSelect from "@peaui/ui/form/FormSelect";
   import { ref } from "vue";
 
-  const value = ref("Mazowieckie");
+  const value = ref("mazowieckie");
 
   const options = [
     { label: "Mazowieckie", value: "mazowieckie" },
@@ -85,7 +85,7 @@ const meta: Meta<typeof FormSelectComponent> = {
     },
     value: {
       control: { type: 'text' },
-      description: 'Aktualna wartosc pola (v-model:value), zwracana jako option.label po wyborze.',
+      description: 'Aktualna wartosc pola (v-model:value), zwracana jako option.value po wyborze.',
       table: {
         type: { summary: 'unknown' },
         defaultValue: { summary: undefined },
@@ -257,5 +257,86 @@ export const FormSelect: Story = {
     size: 'm',
     options: defaultOptions,
     dataTestId: 'form-select',
+  },
+};
+
+export const Localized: Story = {
+  ...FormSelect,
+  args: {
+    ...FormSelect.args,
+    id: 'localized',
+    name: 'localized',
+    label: 'Choice',
+    labels: {
+      placeholder: 'Choose',
+      searchPlaceholder: 'Search',
+      selectPlaceholder: 'Choose an option',
+      empty: 'No matches',
+      emptyWritable: 'No matches. Type a value.',
+      clear: 'Clear selection',
+      selectAll: 'Select all',
+      deselectAll: 'Deselect all',
+    },
+    options: [],
+  },
+};
+
+export const Virtualized: Story = {
+  ...FormSelect,
+  args: {
+    ...FormSelect.args,
+    virtual: true,
+    optionHeight: 48,
+    options: Array.from({ length: 5000 }, (_, value) => ({
+      key: value,
+      value,
+      label: `Option ${value}`,
+    })),
+    id: 'virtual-options',
+    name: 'virtual-options',
+    value: '',
+  },
+};
+
+export const LabelMigration: Story = {
+  ...FormSelect,
+  args: {
+    ...FormSelect.args,
+    id: 'label-migration',
+    name: 'label-migration',
+    valueMode: 'label',
+    options: [
+      { label: 'Alpha', value: 'a' },
+      { label: 'Beta', value: 'b' },
+    ],
+    value: 'Alpha',
+  },
+};
+
+export const RequiredSelectOnly: Story = {
+  ...FormSelect,
+  args: { ...FormSelect.args, searchable: false, required: true, value: undefined },
+};
+
+export const ManualEntry: Story = {
+  ...FormSelect,
+  args: {
+    ...FormSelect.args,
+    canWrite: true,
+    required: true,
+    value: 'Custom choice',
+    options: [{ label: 'Alpha', value: 'a' }],
+  },
+};
+
+export const RequiredSearch: Story = {
+  ...FormSelect,
+  args: {
+    ...FormSelect.args,
+    searchable: true,
+    required: true,
+    canErase: true,
+    value: 'a',
+    options: [{ label: 'Alpha', value: 'a' }],
   },
 };

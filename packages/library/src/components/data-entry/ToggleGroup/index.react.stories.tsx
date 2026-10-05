@@ -129,7 +129,7 @@ export const DisabledStates: Story = {
 };
 
 export const DynamicItems: Story = {
-  render: () => {
+  render: function Render() {
     const [items, setItems] = useState([...toggleGroupViewItems]);
     return (
       <div style={{ display: 'grid', gap: '.75rem', justifyItems: 'start' }}>

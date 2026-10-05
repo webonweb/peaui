@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 
 const TOAST_ALERT_TAG_NAME = `${UIKIT_NAME}-toast-alert`;
@@ -148,6 +149,7 @@ export class ToastAlertElement extends HTMLElement {
   #titleElement = document.createElement('strong');
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -163,7 +165,8 @@ export class ToastAlertElement extends HTMLElement {
     this.#closeButtonElement.removeEventListener('click', this.#handleCloseClick);
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted) {
       return;
     }
@@ -216,7 +219,8 @@ export class ToastAlertElement extends HTMLElement {
   }
 
   set withShadow(value: boolean) {
-    this.setAttribute('with-shadow', String(value));
+    if (value) this.setAttribute('with-shadow', '');
+    else this.removeAttribute('with-shadow');
   }
 
   get withBorder(): boolean {
@@ -224,7 +228,8 @@ export class ToastAlertElement extends HTMLElement {
   }
 
   set withBorder(value: boolean) {
-    this.setAttribute('with-border', String(value));
+    if (value) this.setAttribute('with-border', '');
+    else this.removeAttribute('with-border');
   }
 
   get canClose(): boolean {
@@ -232,7 +237,8 @@ export class ToastAlertElement extends HTMLElement {
   }
 
   set canClose(value: boolean) {
-    this.setAttribute('can-close', String(value));
+    if (value) this.setAttribute('can-close', '');
+    else this.removeAttribute('can-close');
   }
 
   render(): void {
@@ -301,7 +307,7 @@ export class ToastAlertElement extends HTMLElement {
     if (this.title) {
       this.#titleElement.className = `${TOAST_ALERT_CLASS_NAME}__title ${TOAST_ALERT_CLASS_NAME}__title--size-${this.size}`;
       this.#titleElement.id = this.#titleId;
-      this.#titleElement.innerHTML = this.title;
+      this.#titleElement.textContent = this.title;
 
       if (this.#titleTestId) {
         this.#titleElement.setAttribute('data-testid', this.#titleTestId);
@@ -315,7 +321,7 @@ export class ToastAlertElement extends HTMLElement {
     if (this.description) {
       this.#descriptionElement.className = `${TOAST_ALERT_CLASS_NAME}__description ${TOAST_ALERT_CLASS_NAME}__description--size-${this.size}`;
       this.#descriptionElement.id = this.#descId;
-      this.#descriptionElement.innerHTML = this.description;
+      this.#descriptionElement.textContent = this.description;
 
       if (this.#descriptionTestId) {
         this.#descriptionElement.setAttribute('data-testid', this.#descriptionTestId);

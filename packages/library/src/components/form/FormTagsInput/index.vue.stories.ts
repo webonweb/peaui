@@ -42,13 +42,20 @@ const playgroundRender: Story['render'] = (args) => ({
 });
 
 export const Playground: Story = {
-  args: { ...formTagsInputDemoProps, dataTestId: 'form-tags-input-default', inputValue: '' },
+  args: {
+    ...formTagsInputDemoProps,
+    value: [...formTagsInputDemoProps.value],
+    suggestions: [...formTagsInputDemoProps.suggestions],
+    dataTestId: 'form-tags-input-default',
+    inputValue: '',
+  },
   render: playgroundRender,
 };
 
 export const SuggestionsOnly: Story = {
   args: {
     ...formTagsInputDemoProps,
+    suggestions: [...formTagsInputDemoProps.suggestions],
     allowCreate: false,
     dataTestId: 'form-tags-input-suggestions',
     mode: 'suggestions-only',

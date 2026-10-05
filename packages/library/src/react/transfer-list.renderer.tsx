@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useVirtualListWindow } from './use-virtual-list-window';
 import {
   useEffect,
   useId,
@@ -15,6 +16,8 @@ import {
 
 import {
   areTransferListKeysEqual,
+  createTransferListKeySet,
+  getTransferListKeyIdentity,
   filterTransferListItems,
   findTransferListEdgeIndex,
   findTransferListEnabledIndex,
@@ -41,7 +44,21 @@ import {
   type TransferListSize,
   type TransferListSort,
 } from '../components/data-entry/TransferList/transfer-list.shared';
-import { reactIconData } from './generated-icon-data';
+import type { ReactIconData } from './generated-icon-data';
+import {
+  iconArrowRight,
+  iconCheck,
+  iconClose,
+  iconDoubleArrowRounded,
+  iconSearch,
+} from './generated-static-icons';
+const controlIcons: Readonly<Record<string, ReactIconData>> = {
+  arrowRight: iconArrowRight,
+  check: iconCheck,
+  close: iconClose,
+  doubleArrowRounded: iconDoubleArrowRounded,
+  search: iconSearch,
+};
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -73,7 +90,7 @@ function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
 }
 
 function TransferIcon({ flip = false, name }: { flip?: boolean; name: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  const icon = controlIcons[name] ?? controlIcons.info;
   return (
     <svg
       aria-hidden="true"
@@ -320,6 +337,16 @@ export function TransferListRenderer({
     () => normalizeTransferListSelection(requestedTargetSelection, targetItems),
     [requestedTargetSelection, targetItems],
   );
+  const sourceMembership = useMemo(
+    () => createTransferListKeySet(sourceSelection),
+    [sourceSelection],
+  );
+  const targetMembership = useMemo(
+    () => createTransferListKeySet(targetSelection),
+    [targetSelection],
+  );
+  const selectionIndex = (panel: TransferListPanel) =>
+    panel === 'source' ? sourceMembership : targetMembership;
   const [sourceQuery, setSourceQuery] = useState('');
   const [targetQuery, setTargetQuery] = useState('');
   const visibleSource = useMemo(
@@ -336,6 +363,26 @@ export function TransferListRenderer({
   const targetAnchor = useRef(-1);
   const sourceListbox = useRef<HTMLDivElement>(null);
   const targetListbox = useRef<HTMLDivElement>(null);
+  const virtual = bool(props, 'virtual');
+  const rowHeight = typeof props.optionHeight === 'number' ? props.optionHeight : 64;
+  const sourceWindow = useVirtualListWindow(
+    visibleSource,
+    sourceActive,
+    true,
+    virtual,
+    rowHeight,
+    sourceListbox,
+  );
+  const targetWindow = useVirtualListWindow(
+    visibleTarget,
+    targetActive,
+    true,
+    virtual,
+    rowHeight,
+    targetListbox,
+  );
+  const panelWindow = (panel: TransferListPanel) =>
+    panel === 'source' ? sourceWindow : targetWindow;
   const [announcement, setAnnouncement] = useState('');
 
   const panelItems = (panel: TransferListPanel): ResolvedTransferListItem[] =>
@@ -385,18 +432,17 @@ export function TransferListRenderer({
     const eligible = eligibleVisible(panel);
     return (
       eligible.length > 0 &&
-      eligible.every((item) => selection(panel).some((key) => Object.is(key, item.key)))
+      eligible.every((item) => selectionIndex(panel).has(getTransferListKeyIdentity(item.key)))
     );
   };
 
   const toggleAll = (panel: TransferListPanel, checked: boolean): void => {
     if (blocked(panel)) return;
     const visibleKeys = eligibleVisible(panel).map((item) => item.key);
+    const visibleKeySet = createTransferListKeySet(visibleKeys);
     const next = checked
       ? [...selection(panel), ...visibleKeys]
-      : selection(panel).filter(
-          (key) => !visibleKeys.some((visibleKey) => Object.is(visibleKey, key)),
-        );
+      : selection(panel).filter((key) => !visibleKeySet.has(getTransferListKeyIdentity(key)));
     updateSelection(panel, next);
   };
 
@@ -416,7 +462,7 @@ export function TransferListRenderer({
       return;
     }
     anchor(panel).current = index;
-    const selected = selection(panel).some((key) => Object.is(key, item.key));
+    const selected = selectionIndex(panel).has(getTransferListKeyIdentity(item.key));
     updateSelection(
       panel,
       selected
@@ -505,12 +551,11 @@ export function TransferListRenderer({
       value,
     });
     if (result.movedKeys.length === 0) return;
+    const movedKeySet = createTransferListKeySet(result.movedKeys);
     updateValue(result.value);
     updateSelection(
       panel,
-      selection(panel).filter(
-        (key) => !result.movedKeys.some((movedKey) => Object.is(movedKey, key)),
-      ),
+      selection(panel).filter((key) => !movedKeySet.has(getTransferListKeyIdentity(key))),
     );
     const destination = direction === 'to-target' ? labels.targetTitle : labels.sourceTitle;
     setAnnouncement(`${labels.moved} ${result.movedKeys.length}: ${destination}.`);
@@ -651,7 +696,11 @@ export function TransferListRenderer({
           <div className="peaui-transfer-list__viewport">
             <div
               aria-activedescendant={
-                active(panel) >= 0 ? optionId(panel, active(panel)) : undefined
+                active(panel) >= 0 &&
+                (!virtual ||
+                  panelWindow(panel).visibleOptions.some((entry) => entry.index === active(panel)))
+                  ? optionId(panel, active(panel))
+                  : undefined
               }
               aria-describedby={hasError ? errorId : undefined}
               aria-labelledby={titleId(panel)}
@@ -663,16 +712,28 @@ export function TransferListRenderer({
                 if (active(panel) < 0)
                   setActive(panel, findTransferListEdgeIndex(panelVisible, 'first'));
               }}
+              onScroll={panelWindow(panel).handleScroll}
               onKeyDown={(event) => handleKeydown(panel, event)}
               ref={panel === 'source' ? sourceListbox : targetListbox}
               role="listbox"
               tabIndex={panelBlocked ? -1 : 0}
             >
-              {panelVisible.map((item, index) => {
-                const selected = selection(panel).some((key) => Object.is(key, item.key));
+              {panelWindow(panel).beforeSize > 0 ? (
+                <div
+                  role="presentation"
+                  aria-hidden="true"
+                  style={{ height: panelWindow(panel).beforeSize }}
+                />
+              ) : null}
+              {panelWindow(panel).visibleOptions.map(({ item, index }) => {
+                const selected = selectionIndex(panel).has(getTransferListKeyIdentity(item.key));
                 const itemRenderer = props.renderItem;
                 return (
+                  // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- The owning listbox handles keyboard selection with aria-activedescendant.
                   <div
+                    style={panelWindow(panel).optionStyle}
+                    aria-setsize={virtual ? panelVisible.length : undefined}
+                    aria-posinset={virtual ? index + 1 : undefined}
                     aria-disabled={item.disabled || undefined}
                     aria-selected={selected}
                     className={cx(
@@ -727,6 +788,13 @@ export function TransferListRenderer({
                   </div>
                 );
               })}
+              {panelWindow(panel).afterSize > 0 ? (
+                <div
+                  role="presentation"
+                  aria-hidden="true"
+                  style={{ height: panelWindow(panel).afterSize }}
+                />
+              ) : null}
             </div>
             {panelStatus}
           </div>

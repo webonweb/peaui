@@ -5,16 +5,6 @@ import InfoTooltipComponent from './index.vue';
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 const { getSettings } = useSettingsStorie();
 
-type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
-
 type Variant = 'default' | 'disabled';
 
 const meta: Meta<typeof InfoTooltipComponent> = {
@@ -98,7 +88,7 @@ export default meta;
 
 type Story = StoryObj<typeof InfoTooltipComponent>;
 
-const renderStory = (args) => ({
+const renderStory = (args: InstanceType<typeof InfoTooltipComponent>['$props']) => ({
   components: { StoryContent, InfoTooltipComponent },
   setup() {
     const settings = getSettings(meta);

@@ -84,7 +84,7 @@ function getSettings(storyMeta: Meta<SectionHeadingStoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };
@@ -261,11 +261,12 @@ export const SecondaryVariant: Story = {
 
     wrapper.style.padding = '1.5rem';
     wrapper.style.borderRadius = '0.75rem';
-    wrapper.style.background = '#1f2937';
+    wrapper.style.background = 'var(--peaui-color-grey-900)';
     wrapper.appendChild(
       createSectionHeading(args, {
-        title: 'Panel nocny',
-        description: 'Wariant secondary ustawia bialy kolor tytulu do uzycia na ciemnym tle.',
+        title: 'Odwrocona powierzchnia',
+        description:
+          'Wariant secondary odwraca kolor tekstu wraz z motywem; tlo korzysta z tokenu grey-900.',
       }),
     );
 

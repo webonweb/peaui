@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { ClipboardError, copyToClipboard } from '@/helpers/functions.helper';
+import { copyToClipboard } from '@/helpers/functions.helper';
 
 const clipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
 const execCommandDescriptor = Object.getOwnPropertyDescriptor(document, 'execCommand');
@@ -50,7 +50,7 @@ describe('copyToClipboard', () => {
     setClipboard(undefined);
     setExecCommand(() => false);
 
-    await expect(copyToClipboard('unavailable')).rejects.toMatchObject<ClipboardError>({
+    await expect(copyToClipboard('unavailable')).rejects.toMatchObject({
       code: 'unavailable',
       name: 'ClipboardError',
     });
@@ -63,7 +63,7 @@ describe('copyToClipboard', () => {
       throw new Error('blocked');
     });
 
-    await expect(copyToClipboard('failure')).rejects.toMatchObject<ClipboardError>({
+    await expect(copyToClipboard('failure')).rejects.toMatchObject({
       code: 'write-failed',
     });
     expect(document.querySelector('textarea')).toBeNull();

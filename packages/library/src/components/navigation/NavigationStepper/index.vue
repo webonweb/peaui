@@ -20,6 +20,7 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 import { UIKIT_NAME } from '@/constants';
 import { sanitizeToSlug } from '@/helpers/string.helper';
+import { getStepperScrollPosition, scrollStepper } from './navigation-stepper.shared';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
 
 // TYPES
@@ -37,7 +38,6 @@ const STATUS_LABELS: Record<StepStatus, string> = {
   disabled: 'Zablokowane',
   hidden: 'Ukryte',
 };
-const SCROLL_AMOUNT = 284;
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -60,6 +60,7 @@ const uid = useId();
 const viewportReference = ref<HTMLElement | null>(null);
 const canScrollPrev = ref(false);
 const canScrollNext = ref(false);
+let resizeObserver: ResizeObserver | undefined;
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -114,10 +115,9 @@ function syncScrollState(): void {
     return;
   }
 
-  const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
-
-  canScrollPrev.value = viewport.scrollLeft > 0;
-  canScrollNext.value = viewport.scrollLeft < maxScrollLeft - 1;
+  const { position, max } = getStepperScrollPosition(viewport);
+  canScrollPrev.value = position > 0;
+  canScrollNext.value = position < max - 1;
 }
 
 function scrollStepIntoView(index: number): void {
@@ -195,10 +195,7 @@ function onStepClick(option: NavStepper): void {
 }
 
 function scrollSteps(direction: ScrollDirection): void {
-  viewportReference.value?.scrollBy({
-    left: SCROLL_AMOUNT * (direction === 'prev' ? -1 : 1),
-    behavior: 'smooth',
-  });
+  scrollStepper(viewportReference.value, direction === 'prev' ? -1 : 1);
 }
 
 function onResize(): void {
@@ -214,14 +211,20 @@ watch(
   { immediate: true, deep: true },
 );
 
-onMounted(async () => {
-  await nextTick();
+onMounted(() => {
   syncScrollState();
   window.addEventListener('resize', onResize);
+  if (typeof ResizeObserver !== 'undefined' && viewportReference.value) {
+    resizeObserver = new ResizeObserver(syncScrollState);
+    resizeObserver.observe(viewportReference.value);
+    if (viewportReference.value.firstElementChild)
+      resizeObserver.observe(viewportReference.value.firstElementChild);
+  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', onResize);
+  resizeObserver?.disconnect();
 });
 </script>
 

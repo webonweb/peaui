@@ -58,6 +58,7 @@ export type {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
+import { useFormControlReset } from '@/composables/useFormControlReset';
 import {
   computed,
   getCurrentInstance,
@@ -160,6 +161,10 @@ const openModel = defineModel<boolean>('open', { default: false });
 const classNameComponent = `${UIKIT_NAME}-form-date-time-picker`;
 const popoverReference = ref<PopoverReference>();
 const triggerReference = ref<HTMLElement>();
+useFormControlReset(triggerReference, () => {
+  touched.value = false;
+  syncDraft(modelValue.value);
+});
 const activeDayReference = ref<HTMLElement>();
 const isOpen = ref(false);
 const touched = ref(false);
@@ -201,20 +206,18 @@ const formatContext = computed(() => ({
   locale: props.locale,
   showSeconds: props.showSeconds,
 }));
-const validationOptions = computed(
-  (): DateTimeValidationOptions => ({
-    allowOffStep: props.allowOffStep,
-    format: props.format,
-    hourStep: normalizeStep(props.hourStep, 24),
-    isDateTimeDisabled: props.isDateTimeDisabled,
-    locale: props.locale,
-    max: props.max,
-    min: props.min,
-    minuteStep: normalizeStep(props.minuteStep, 60),
-    secondStep: normalizeStep(props.secondStep, 60),
-    showSeconds: props.showSeconds,
-  }),
-);
+const validationOptions = computed((): DateTimeValidationOptions => ({
+  allowOffStep: props.allowOffStep,
+  format: props.format,
+  hourStep: normalizeStep(props.hourStep, 24),
+  isDateTimeDisabled: props.isDateTimeDisabled,
+  locale: props.locale,
+  max: props.max,
+  min: props.min,
+  minuteStep: normalizeStep(props.minuteStep, 60),
+  secondStep: normalizeStep(props.secondStep, 60),
+  showSeconds: props.showSeconds,
+}));
 const draftReason = computed(() => validateLocalDateTime(draft.value, validationOptions.value));
 const publicReason = computed(() => {
   if (!touched.value) return undefined;
@@ -709,6 +712,9 @@ watch(openModel, (next) => {
               type="text"
               role="combobox"
               aria-autocomplete="none"
+              :aria-controls="panelId"
+              :aria-expanded="isOpen"
+              aria-haspopup="dialog"
               autocomplete="off"
               :disabled="props.disabled || props.loading"
               :placeholder="resolvedPlaceholder"
@@ -735,6 +741,9 @@ watch(openModel, (next) => {
               <input
                 v-bind="getInputBindings(fieldProps, props.id, 'Data')"
                 role="combobox"
+                :aria-controls="panelId"
+                :aria-expanded="isOpen"
+                aria-haspopup="dialog"
                 :class="`${classNameComponent}__split-input`"
                 :data-testid="baseTestId ? `${baseTestId}-date-input` : undefined"
                 type="text"
@@ -752,6 +761,9 @@ watch(openModel, (next) => {
               <input
                 v-bind="getInputBindings(fieldProps, `${props.id}-time`, 'Czas')"
                 role="combobox"
+                :aria-controls="panelId"
+                :aria-expanded="isOpen"
+                aria-haspopup="dialog"
                 :class="`${classNameComponent}__split-input`"
                 :data-testid="baseTestId ? `${baseTestId}-time-input` : undefined"
                 type="text"

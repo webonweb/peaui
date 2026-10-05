@@ -60,7 +60,7 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(tooltip.attributes('role')).toBe('tooltip');
     expect(tooltip.attributes('id')).toMatch(/^info-tooltip-/);
@@ -78,7 +78,7 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const tooltip = wrapper.find('[role="tooltip"]');
     expect(tooltip.classes()).toContain('peaui-info-tooltip__content--placement-bottom-right');
   });
 
@@ -92,7 +92,7 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(tooltip.classes()).toContain('peaui-info-tooltip__content--variant-disabled');
     expect(wrapper.get('strong').classes()).toContain('peaui-info-tooltip__title');
@@ -110,8 +110,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(root.classes()).toContain('peaui-info-tooltip--disabled');
     expect(root.attributes('tabindex')).toBeUndefined();
@@ -136,10 +136,10 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const content = wrapper.get('[data-testid="info-tooltip-content"]');
+    const content = wrapper.find('[data-testid="info-tooltip-content"]');
     expect(content.exists()).toBe(true);
 
-    const tooltip = wrapper.get('[data-testid="info-tooltip-tooltip"]');
+    const tooltip = wrapper.find('[data-testid="info-tooltip-tooltip"]');
     expect(tooltip.exists()).toBe(true);
 
     const title = wrapper.get('[data-testid="info-tooltip-title"]');
@@ -157,7 +157,7 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    expect(wrapper.get('[role="tooltip"]').exists()).toBe(true);
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(true);
 
     expect(wrapper.find('[data-testid="info-tooltip-title"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="info-tooltip-description"]').exists()).toBe(false);
@@ -171,7 +171,7 @@ describe('InfoTooltip (index.vue)', () => {
       slots: { default: 'Trigger' },
     });
 
-    const root = wrapper.get('.peaui-info-tooltip');
+    const root = wrapper.find('.peaui-info-tooltip');
     expect(root.exists()).toBe(true);
   });
 
@@ -189,7 +189,7 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
+    const root = wrapper.find('.peaui-info-tooltip');
 
     expect(root.classes()).toContain('custom-tooltip-trigger');
     expect(root.attributes('data-testid')).toBe('custom-trigger');
@@ -209,8 +209,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(root.attributes('tabindex')).toBe('0');
     expect(root.attributes('role')).toBe('button');
@@ -228,8 +228,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
     const trigger = wrapper.get('button');
     const describedBy = trigger.attributes('aria-describedby')?.split(' ') ?? [];
 
@@ -257,8 +257,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
     const trigger = wrapper.get('button');
     const describedBy = trigger.attributes('aria-describedby')?.split(' ') ?? [];
 
@@ -288,8 +288,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
     const option = wrapper.get('[role="option"]');
     const describedBy = option.attributes('aria-describedby')?.split(' ') ?? [];
 
@@ -310,8 +310,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
     const describedBy = root.attributes('aria-describedby')?.split(' ') ?? [];
 
     expect(root.attributes('tabindex')).toBe('0');
@@ -335,8 +335,8 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
     const describedBy = root.attributes('aria-describedby')?.split(' ') ?? [];
 
     expect(root.attributes('role')).toBe('button');
@@ -363,7 +363,7 @@ describe('InfoTooltip (index.vue)', () => {
     await nextTick();
 
     const button = wrapper.get('button');
-    const root = wrapper.get('.peaui-info-tooltip');
+    const root = wrapper.find('.peaui-info-tooltip');
 
     await button.trigger('mouseenter');
     expect(root.attributes('data-open')).toBeUndefined();
@@ -372,7 +372,7 @@ describe('InfoTooltip (index.vue)', () => {
     expect(root.attributes('data-open')).toBe('true');
 
     await root.trigger('mouseleave');
-    expect(root.attributes('data-open')).toBeUndefined();
+    await vi.waitFor(() => expect(root.attributes('data-open')).toBeUndefined());
 
     await button.trigger('focusin');
     expect(root.attributes('data-open')).toBe('true');
@@ -388,7 +388,7 @@ describe('InfoTooltip (index.vue)', () => {
 
     await nextTick();
 
-    const root = wrapper.get('.peaui-info-tooltip');
+    const root = wrapper.find('.peaui-info-tooltip');
 
     await root.trigger('mouseenter');
     expect(root.attributes('data-open')).toBe('true');
@@ -410,8 +410,8 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(root.attributes('style')).toContain('--peaui-info-tooltip-layout-version: 0;');
     expect(tooltip.attributes('style')).toContain('--peaui-info-tooltip-layout-version: 0;');
@@ -437,8 +437,8 @@ describe('InfoTooltip (index.vue)', () => {
       },
     });
 
-    const root = wrapper.get('.peaui-info-tooltip');
-    const tooltip = wrapper.get('[role="tooltip"]');
+    const root = wrapper.find('.peaui-info-tooltip');
+    const tooltip = wrapper.find('[role="tooltip"]');
 
     expect(observe).toHaveBeenCalledWith(root.element);
     expect(observe).toHaveBeenCalledWith(tooltip.element);
@@ -479,11 +479,11 @@ describe('InfoTooltip (index.vue)', () => {
 
     expect(wrapper.find('[data-testid="info-tooltip-content"]').exists()).toBe(false);
 
-    wrapper.vm.isVisible = true;
+    await wrapper.setData({ isVisible: true });
     await nextTick();
 
-    const root = wrapper.get('[data-testid="info-tooltip-content"]');
-    const tooltip = wrapper.get('[data-testid="info-tooltip-tooltip"]');
+    const root = wrapper.find('[data-testid="info-tooltip-content"]');
+    const tooltip = wrapper.find('[data-testid="info-tooltip-tooltip"]');
 
     expect(root.attributes('style')).toContain('--peaui-info-tooltip-layout-version: 0;');
     expect(tooltip.attributes('style')).toContain('--peaui-info-tooltip-layout-version: 0;');

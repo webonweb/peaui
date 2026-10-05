@@ -94,6 +94,7 @@ describe('InlineEdit React', () => {
       />,
     );
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '3' } });
+    fireEvent.blur(screen.getByRole('spinbutton'));
     fireEvent.click(screen.getByRole('button', { name: 'Zapisz' }));
     expect(onSave).toHaveBeenCalledWith({ previousValue: 2, value: 3 });
     expect(screen.getByRole('spinbutton')).toBeInTheDocument();

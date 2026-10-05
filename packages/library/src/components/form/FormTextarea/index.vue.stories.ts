@@ -1,7 +1,9 @@
+import { ref } from 'vue';
 import StoryContent from '@peaui/storybook-shell/src/components/StoryContent.vue';
 import type { Meta, StoryObj } from '@storybook/vue3';
 
 import FormTextareaComponent from './index.vue';
+import ButtonAction from '../../data-entry/ButtonAction/index.vue';
 
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 
@@ -166,4 +168,20 @@ export const FormTextarea: Story = {
     disabled: false,
     dataTestId: 'form-textarea',
   },
+};
+
+export const NativeReset: Story = {
+  args: { id: 'reset-description', name: 'description', label: 'Description' },
+  render: (args) => ({
+    components: { FormTextareaComponent, ButtonAction },
+    setup: () => {
+      const value = ref('Initial description');
+      const resetValue = () => {
+        value.value = 'Initial description';
+      };
+      return { args, value, resetValue };
+    },
+    template:
+      '<form @reset.prevent="resetValue"><FormTextareaComponent v-bind="args" v-model:value="value" autocomplete="street-address" :minlength="5" /><ButtonAction type="reset">Reset</ButtonAction></form>',
+  }),
 };

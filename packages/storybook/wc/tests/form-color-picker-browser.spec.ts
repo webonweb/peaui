@@ -12,7 +12,7 @@ test("FormColorPicker WC zachowuje ARIA, klawiaturę, pointer i cele dotykowe", 
 }) => {
   await gotoColorPickerStory(page, "default");
   const input = page.getByRole("combobox", { name: /Kolor marki/ });
-  await expect(input).toHaveAttribute("aria-controls", "brand-color-panel");
+  await expect(input).toHaveAttribute("aria-controls", "brand-color-control-panel");
   await expect(input).toHaveAttribute("aria-expanded", "false");
   await expect(
     page.locator(".peaui-form-color-picker__toggle-icon"),

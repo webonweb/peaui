@@ -2,6 +2,8 @@ import {
   ButtonAction,
   CopyButton,
   type CopyButtonProps,
+  CommandPalette,
+  type CommandPaletteProps,
   KeyboardKey,
   type KeyboardKeyPlatform,
   type KeyboardKeyProps,
@@ -42,6 +44,7 @@ import {
 import ReactButtonAction from "@peaui/ui/react/data-entry/ButtonAction";
 import ReactCopyButton from "@peaui/ui/react/data-entry/CopyButton";
 import ReactKeyboardKey from "@peaui/ui/react/data-display/KeyboardKey";
+import ReactCommandPalette from "@peaui/ui/react/navigation/CommandPalette";
 import ReactToggleButton from "@peaui/ui/react/data-entry/ToggleButton";
 import ReactToggleGroup from "@peaui/ui/react/data-entry/ToggleGroup";
 import ReactTransferList from "@peaui/ui/react/data-entry/TransferList";
@@ -59,6 +62,7 @@ import ReactSplitButton from "@peaui/ui/react/data-entry/SplitButton";
 import LegacyButtonAction from "@peaui/ui/data-entry/ButtonAction";
 import LegacyCopyButton from "@peaui/ui/data-entry/CopyButton";
 import LegacyKeyboardKey from "@peaui/ui/data-display/KeyboardKey";
+import LegacyCommandPalette from "@peaui/ui/navigation/CommandPalette";
 import LegacyToggleButton from "@peaui/ui/data-entry/ToggleButton";
 import LegacyToggleGroup from "@peaui/ui/data-entry/ToggleGroup";
 import LegacyTransferList from "@peaui/ui/data-entry/TransferList";
@@ -75,6 +79,7 @@ import LegacyFormTagsInput from "@peaui/ui/form/FormTagsInput";
 import VueButtonAction from "@peaui/ui/vue/data-entry/ButtonAction";
 import VueCopyButton from "@peaui/ui/vue/data-entry/CopyButton";
 import VueKeyboardKey from "@peaui/ui/vue/data-display/KeyboardKey";
+import VueCommandPalette from "@peaui/ui/vue/navigation/CommandPalette";
 import VueToggleButton from "@peaui/ui/vue/data-entry/ToggleButton";
 import VueToggleGroup from "@peaui/ui/vue/data-entry/ToggleGroup";
 import VueTransferList from "@peaui/ui/vue/data-entry/TransferList";
@@ -94,6 +99,8 @@ import type CopyButtonElement from "@peaui/ui/wc/data-entry/CopyButton";
 import type { defineCopyButton } from "@peaui/ui/wc/data-entry/CopyButton";
 import type KeyboardKeyElement from "@peaui/ui/wc/data-display/KeyboardKey";
 import type { defineKeyboardKey } from "@peaui/ui/wc/data-display/KeyboardKey";
+import type CommandPaletteElement from "@peaui/ui/wc/navigation/CommandPalette";
+import type { defineCommandPalette } from "@peaui/ui/wc/navigation/CommandPalette";
 import type ToggleButtonElement from "@peaui/ui/wc/data-entry/ToggleButton";
 import type { defineToggleButton } from "@peaui/ui/wc/data-entry/ToggleButton";
 import type ToggleGroupElement from "@peaui/ui/wc/data-entry/ToggleGroup";
@@ -120,6 +127,10 @@ import type FormRatingInputElement from "@peaui/ui/wc/form/FormRatingInput";
 import type { defineFormRatingInput } from "@peaui/ui/wc/form/FormRatingInput";
 import type FormTagsInputElement from "@peaui/ui/wc/form/FormTagsInput";
 import type { defineFormTagsInput } from "@peaui/ui/wc/form/FormTagsInput";
+import {
+  PEAUI_WEB_COMPONENT_TAG_NAMES,
+  type PeauiWebComponentTagName,
+} from "@peaui/ui/web-components";
 
 type PublicWebComponent = InstanceType<typeof ButtonActionElement>;
 type DefineWebComponent = typeof defineButtonAction;
@@ -127,6 +138,10 @@ type PublicCopyButtonWebComponent = InstanceType<typeof CopyButtonElement>;
 type DefineCopyButtonWebComponent = typeof defineCopyButton;
 type PublicKeyboardKeyWebComponent = InstanceType<typeof KeyboardKeyElement>;
 type DefineKeyboardKeyWebComponent = typeof defineKeyboardKey;
+type PublicCommandPaletteWebComponent = InstanceType<
+  typeof CommandPaletteElement
+>;
+type DefineCommandPaletteWebComponent = typeof defineCommandPalette;
 type PublicToggleWebComponent = InstanceType<typeof ToggleButtonElement>;
 type DefineToggleWebComponent = typeof defineToggleButton;
 type PublicToggleGroupWebComponent = InstanceType<typeof ToggleGroupElement>;
@@ -167,10 +182,12 @@ type PublicFormTagsInputWebComponent = InstanceType<
   typeof FormTagsInputElement
 >;
 type DefineFormTagsInputWebComponent = typeof defineFormTagsInput;
+const webComponentTagName: PeauiWebComponentTagName = "peaui-form-input";
 
 const publicEntries = [
   ButtonAction,
   CopyButton,
+  CommandPalette,
   KeyboardKey,
   FormInput,
   FormTimePicker,
@@ -182,6 +199,7 @@ const publicEntries = [
   FormTagsInput,
   ReactButtonAction,
   ReactCopyButton,
+  ReactCommandPalette,
   ReactKeyboardKey,
   ReactToggleButton,
   ReactToggleGroup,
@@ -199,6 +217,7 @@ const publicEntries = [
   ReactSplitButton,
   LegacyButtonAction,
   LegacyCopyButton,
+  LegacyCommandPalette,
   LegacyKeyboardKey,
   LegacyToggleButton,
   LegacyToggleGroup,
@@ -221,6 +240,7 @@ const publicEntries = [
   ScrollArea,
   VueButtonAction,
   VueCopyButton,
+  VueCommandPalette,
   VueKeyboardKey,
   VueToggleButton,
   VueToggleGroup,
@@ -241,6 +261,9 @@ declare const tree: TreeListType;
 declare const webComponent: PublicWebComponent;
 declare const defineWebComponent: DefineWebComponent;
 declare const copyButtonProps: CopyButtonProps;
+declare const commandPaletteProps: CommandPaletteProps;
+declare const commandPaletteWebComponent: PublicCommandPaletteWebComponent;
+declare const defineCommandPaletteWebComponent: DefineCommandPaletteWebComponent;
 declare const copyButtonWebComponent: PublicCopyButtonWebComponent;
 declare const defineCopyButtonWebComponent: DefineCopyButtonWebComponent;
 declare const keyboardKeyPlatform: KeyboardKeyPlatform;
@@ -297,6 +320,9 @@ void tree;
 void webComponent;
 void defineWebComponent;
 void copyButtonProps;
+void commandPaletteProps;
+void commandPaletteWebComponent;
+void defineCommandPaletteWebComponent;
 void copyButtonWebComponent;
 void defineCopyButtonWebComponent;
 void keyboardKeyPlatform;
@@ -347,3 +373,5 @@ void formRatingInputWebComponent;
 void defineFormRatingInputWebComponent;
 void formTagsInputWebComponent;
 void defineFormTagsInputWebComponent;
+void PEAUI_WEB_COMPONENT_TAG_NAMES;
+void webComponentTagName;

@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import SplitButtonVueComponent from './index.vue';
 
-const SplitButtonVueElement = createVueCustomElement(
-  SplitButtonVueComponent,
-  `${UIKIT_NAME}-split-button`,
-);
+const SplitButtonVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(SplitButtonVueComponent, `${UIKIT_NAME}-split-button`);
 
 /** Light-DOM custom element preserving the Vue SplitButton contract. */
 export class SplitButtonElement extends SplitButtonVueElement {

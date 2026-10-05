@@ -38,3 +38,5 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const LegacyFileModel: Story = { args: { valueMode: 'file' } };

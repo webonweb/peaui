@@ -179,3 +179,11 @@ export const LinkVariant: Story = {
     `,
   }),
 };
+
+export const ExplicitLinkName: Story = {
+  render: () => ({
+    components: { NavigationDisclosureCardComponent },
+    template:
+      '<NavigationDisclosureCardComponent id="named-card" title="" description="" path="#account" aria-label="Account details" />',
+  }),
+};

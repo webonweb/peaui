@@ -6,6 +6,7 @@ import {
   Comment,
   computed,
   isVNode,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   onUpdated,
@@ -18,14 +19,7 @@ import {
 // TYPES
 //-----------------------------------------------------------------------------------------------//
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 type PopoverElement = HTMLElement & {
   hidePopover?: () => void;
@@ -472,21 +466,36 @@ const onHandlePopoverToggle = (event: Event) => {
 
   if (newState) {
     isOpen.value = newState === 'open';
+    syncViewportListeners();
     emit('update:open', isOpen.value);
     return;
   }
 
   isOpen.value = popoverReference.value?.matches(':popover-open') ?? false;
+  syncViewportListeners();
   emit('update:open', isOpen.value);
 };
 
+let positionFrame: number | undefined;
 const onHandleViewportChange = () => {
-  if (!isOpen.value) {
-    return;
-  }
-
-  refreshPopoverPosition();
+  if (!isOpen.value || positionFrame !== undefined) return;
+  positionFrame = requestAnimationFrame(() => {
+    positionFrame = undefined;
+    if (isOpen.value) refreshPopoverPosition();
+  });
 };
+
+function syncViewportListeners(): void {
+  const method = isOpen.value ? 'addEventListener' : 'removeEventListener';
+  window[method]('resize', onHandleViewportChange);
+  window[method]('scroll', onHandleViewportChange, true);
+  window.visualViewport?.[method]('resize', onHandleViewportChange);
+  window.visualViewport?.[method]('scroll', onHandleViewportChange);
+  if (!isOpen.value && positionFrame !== undefined) {
+    cancelAnimationFrame(positionFrame);
+    positionFrame = undefined;
+  }
+}
 
 const showPopover = () => {
   if (disabled || !popoverReference.value || popoverReference.value.matches(':popover-open')) {
@@ -528,12 +537,9 @@ const onHandleTriggerKeydown = (event: KeyboardEvent) => {
 
 onMounted(() => {
   syncTriggerAccessibility();
+  void nextTick(syncTriggerAccessibility);
   syncTriggerWidth();
   popoverReference.value?.addEventListener('toggle', onHandlePopoverToggle as EventListener);
-  window.addEventListener('resize', onHandleViewportChange);
-  window.addEventListener('scroll', onHandleViewportChange, true);
-  window.visualViewport?.addEventListener('resize', onHandleViewportChange);
-  window.visualViewport?.addEventListener('scroll', onHandleViewportChange);
 
   if (typeof ResizeObserver === 'undefined' || !triggerReference.value) {
     return;
@@ -541,7 +547,7 @@ onMounted(() => {
 
   resizeObserver = new ResizeObserver(() => {
     if (isOpen.value) {
-      refreshPopoverPosition();
+      onHandleViewportChange();
       return;
     }
 
@@ -552,15 +558,14 @@ onMounted(() => {
 
 onUpdated(() => {
   syncTriggerAccessibility();
+  void nextTick(syncTriggerAccessibility);
 });
 
 onBeforeUnmount(() => {
   clearManagedTriggerAccessibility();
   popoverReference.value?.removeEventListener('toggle', onHandlePopoverToggle as EventListener);
-  window.removeEventListener('resize', onHandleViewportChange);
-  window.removeEventListener('scroll', onHandleViewportChange, true);
-  window.visualViewport?.removeEventListener('resize', onHandleViewportChange);
-  window.visualViewport?.removeEventListener('scroll', onHandleViewportChange);
+  isOpen.value = false;
+  syncViewportListeners();
   resizeObserver?.disconnect();
 });
 

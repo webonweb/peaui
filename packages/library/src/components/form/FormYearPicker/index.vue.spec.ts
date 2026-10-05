@@ -192,9 +192,7 @@ const mountComponent = (
   props: Record<string, unknown> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormYearPicker, {
+  const wrapper = mount(FormYearPicker, {
     props: {
       id: 'year',
       name: 'year',

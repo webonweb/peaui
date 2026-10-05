@@ -2,7 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, onUpdated, ref, useAttrs, useSlots } from 'vue';
+import { computed, onBeforeUpdate, ref, useAttrs, useSlots } from 'vue';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -17,6 +17,7 @@ const {
   after,
   before,
   canErase,
+  clearLabel = 'Usuń wartość pola',
   disabled,
   iconAfter,
   iconBefore,
@@ -34,6 +35,7 @@ const {
   after?: string;
   before?: string;
   canErase?: boolean;
+  clearLabel?: string;
   disabled?: boolean;
   iconAfter?: string;
   iconBefore?: string;
@@ -63,7 +65,7 @@ function syncSlotPresence(): void {
   hasSuccessSlot.value = Boolean(slots.success);
 }
 
-onUpdated(syncSlotPresence);
+onBeforeUpdate(syncSlotPresence);
 
 // EMITS
 //-----------------------------------------------------------------------------------------------//
@@ -126,7 +128,7 @@ const explicitAriaInvalid = computed(() => getNormalizedAttributeValue(attrs['ar
 const fieldAriaLabel = computed(
   () => explicitAriaLabel.value ?? (!label && !explicitAriaLabelledBy.value ? name : undefined),
 );
-const fieldAriaLabelledBy = computed(() => (label ? undefined : explicitAriaLabelledBy.value));
+const fieldAriaLabelledBy = computed(() => explicitAriaLabelledBy.value);
 const generatedDescriptionId = computed(() => {
   if (hasErrorSlot.value && !hasSuccessSlot.value) {
     return errorMessageId.value;
@@ -165,6 +167,7 @@ const bindings = computed(() => {
     'aria-label': fieldAriaLabel.value,
     'aria-labelledby': fieldAriaLabelledBy.value,
     'aria-required': required || false,
+    required: required || undefined,
     id,
     name,
     readonly,
@@ -196,6 +199,7 @@ const bindings = computed(() => {
 });
 
 const isEraseButtonVisible = computed(() => {
+  if (readonly || disabled) return false;
   if (typeof value === 'object') {
     return canErase && Array.isArray(value) && value.length > 0 && !disabled;
   }
@@ -261,9 +265,9 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
         type="button"
         :class="`${classNameComponent}__erase-button`"
         :data-testid="eraseButtonTestId"
-        aria-label="Usuń wartość pola"
+        :aria-label="clearLabel"
         :style="{ '--right': `${eraseButtonRight}px` }"
-        @click.prevent.stop="emit('on:remove')"
+        @click.prevent.stop="!disabled && !readonly && emit('on:remove')"
       >
         <SvgIcon name="cross" :class="`${classNameComponent}__erase-icon`" />
       </button>

@@ -1,3 +1,5 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
+import { connectFormReset } from '@/helpers/form-reset.helper';
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
 import { FormFieldElement, defineFormField } from '@/components/form/FormField/index.wc';
 import { UIKIT_NAME } from '@/constants';
@@ -144,6 +146,7 @@ defineFormField();
 defineSvgIcon();
 
 export class FormPasswordElement extends HTMLElement {
+  #disconnectFormReset?: () => void;
   static readonly tagName = FORM_PASSWORD_TAG_NAME;
 
   static get observedAttributes(): string[] {
@@ -173,12 +176,12 @@ export class FormPasswordElement extends HTMLElement {
 
   #actionsElement = document.createElement('div');
   #copyButtonElement = document.createElement('button');
-  #copyIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
+  #copyIconElement = document.createElement(SvgIconElement.tagName);
   #copyStatusElement = document.createElement('span');
   #copyStatusMessage = '';
   #descriptionNodes: Node[] = [];
   #errorNodes: Node[] = [];
-  #fieldElement = document.createElement(FormFieldElement.tagName) as FormFieldElement;
+  #fieldElement = document.createElement(FormFieldElement.tagName);
   #forwardedInputAttributeNames = new Set<string>();
   #generatedInputId = getNextGeneratedPasswordInputId();
   #hintNodes: Node[] = [];
@@ -197,7 +200,7 @@ export class FormPasswordElement extends HTMLElement {
   );
   #successNodes: Node[] = [];
   #toggleButtonElement = document.createElement('button');
-  #toggleIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
+  #toggleIconElement = document.createElement(SvgIconElement.tagName);
 
   constructor() {
     super();
@@ -212,6 +215,9 @@ export class FormPasswordElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
+    this.#disconnectFormReset?.();
+    this.#disconnectFormReset = connectFormReset(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -224,12 +230,14 @@ export class FormPasswordElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#disconnectFormReset?.();
     this.#isMounted = false;
     this.#mutationObserver?.disconnect();
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -444,6 +452,7 @@ export class FormPasswordElement extends HTMLElement {
 
     this.#mutationObserver.observe(this, {
       childList: true,
+      attributes: true,
     });
   }
 
@@ -453,6 +462,13 @@ export class FormPasswordElement extends HTMLElement {
     }
 
     return records.every((record) => {
+      if (record.type === 'attributes') {
+        const name = record.attributeName!;
+        return (
+          FormPasswordElement.observedAttributes.includes(name) ||
+          NON_FORWARDED_INPUT_ATTRIBUTES.has(name)
+        );
+      }
       const changedNodes: Node[] = [
         ...Array.from(record.addedNodes),
         ...Array.from(record.removedNodes),
@@ -618,7 +634,10 @@ export class FormPasswordElement extends HTMLElement {
     ]
       .filter(Boolean)
       .join(' ');
-    this.#toggleButtonElement.setAttribute('aria-controls', this.#resolvedInputId);
+    this.#toggleButtonElement.setAttribute(
+      'aria-controls',
+      `${this.#resolvedInputId}-field-control`,
+    );
     this.#toggleButtonElement.setAttribute('aria-label', this.#togglePasswordAriaLabel);
     this.#toggleButtonElement.setAttribute('aria-pressed', String(this.#isPasswordVisible));
     this.#toggleButtonElement.disabled = this.disabled;
@@ -675,7 +694,12 @@ export class FormPasswordElement extends HTMLElement {
     this.#fieldElement.beforeText = this.beforeText;
     this.#fieldElement.disabled = this.disabled;
     this.#fieldElement.iconBefore = this.iconBefore;
-    this.#fieldElement.id = this.#resolvedInputId;
+    this.#fieldElement.id = `${this.#resolvedInputId}-field`;
+    for (const name of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
+      const value = this.getAttribute(name);
+      if (value === null) this.#fieldElement.removeAttribute(name);
+      else this.#fieldElement.setAttribute(name, value);
+    }
     this.#fieldElement.label = this.label;
     this.#fieldElement.maxLength = this.maxLength;
     this.#fieldElement.name = this.name;

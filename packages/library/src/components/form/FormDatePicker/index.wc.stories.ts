@@ -9,8 +9,10 @@ import {
 
 import FormDatePickerVueComponent from './index.ce.vue';
 import { FormDatePickerElement, defineFormDatePicker } from './index.wc';
+import { ButtonActionElement, defineButtonAction } from '../../data-entry/ButtonAction/index.wc';
 
 defineFormDatePicker();
+defineButtonAction();
 
 const meta = {
   title: '5. Form/FormDatePicker',
@@ -41,3 +43,24 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const NativeRequired: Story = {
+  args: {
+    id: 'required-date',
+    name: 'date',
+    label: 'Required date',
+    required: true,
+    value: undefined,
+  },
+  render: (args) => {
+    const form = document.createElement('form');
+    form.addEventListener('submit', (event) => event.preventDefault());
+    const field = new FormDatePickerElement();
+    Object.assign(field, args);
+    const submit = new ButtonActionElement();
+    submit.type = 'submit';
+    submit.textContent = 'Submit';
+    form.append(field, submit);
+    return form;
+  },
+};

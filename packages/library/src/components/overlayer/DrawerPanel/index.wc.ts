@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import DrawerPanelVueComponent from './index.ce.vue';
 
-export const DrawerPanelElement = createVueCustomElement(
-  DrawerPanelVueComponent,
-  `${UIKIT_NAME}-drawer-panel`,
-);
+export const DrawerPanelElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(DrawerPanelVueComponent, `${UIKIT_NAME}-drawer-panel`);
 
 export function defineDrawerPanel(): void {
   definePeauiCustomElement(DrawerPanelElement);

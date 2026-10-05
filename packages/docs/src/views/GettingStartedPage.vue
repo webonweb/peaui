@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
 import CodeBlock from '../components/CodeBlock.vue';
-import { getFrameworkComponents } from '../data/catalog';
+import { getCatalogComponents } from '../data/catalog-summary';
 import {
   colorPalettes,
   colorTokenCount,
@@ -17,11 +17,15 @@ const route = useRoute();
 const { localize } = useI18n();
 const framework = computed(() => normalizeFramework(route.params.framework));
 const frameworkDefinition = computed(() => getFrameworkDefinition(framework.value));
-const availableComponents = computed(() => getFrameworkComponents(framework.value));
+const availableComponents = computed(() => getCatalogComponents(framework.value));
 
-const installCode = computed(() =>
-  framework.value === 'react' ? 'npm install @peaui/ui react react-dom' : 'npm install @peaui/ui',
-);
+const installCode = computed(() => {
+  if (framework.value === 'react') {
+    return 'npm install @peaui/ui "react@^19.2.0" "react-dom@^19.2.0"';
+  }
+
+  return 'npm install @peaui/ui "vue@^3.5.0"';
+});
 
 const vueSetupCode = `import { createApp } from 'vue';
 import App from './App.vue';
@@ -65,7 +69,7 @@ function App() {
       name="name"
       label="${localize({ en: 'Name', pl: 'Nazwa' })}"
       value={name}
-      onValueChange={setName}
+      onValueChange={(value) => setName(value ?? '')}
     />
   );
 }
@@ -81,8 +85,16 @@ import FormInput from '@peaui/ui/react/form/FormInput';
 // ${localize({ en: 'so do not import React components from the main entry point.', pl: 'dlatego nie importuj komponentów React z głównego entry pointu.' })}`,
 );
 
-const webComponentSetupCode = `import '@peaui/ui/wc/data-entry/ButtonAction';
-import '@peaui/ui/wc/form/FormInput';`;
+const webComponentSetupCode = computed(
+  () => `// ${localize({ en: 'A module registers its element and required child elements. Repeated imports are safe.', pl: 'Moduł rejestruje element i wymagane elementy potomne. Ponowny import jest bezpieczny.' })}
+import '@peaui/ui/wc/data-entry/ButtonAction';
+import '@peaui/ui/wc/form/FormInput';
+
+// ${localize({ en: 'This catalog entry provides tag names and types without registering all elements.', pl: 'Ten moduł udostępnia nazwy i typy tagów bez rejestrowania wszystkich elementów.' })}
+import { PEAUI_WEB_COMPONENT_TAG_NAMES } from '@peaui/ui/web-components';
+
+console.log(PEAUI_WEB_COMPONENT_TAG_NAMES);`,
+);
 const webComponentHtmlCode = computed(
   () => `<peaui-form-input
   id="name"
@@ -96,21 +108,35 @@ const webComponentHtmlCode = computed(
 </peaui-button-action>`,
 );
 const webComponentEventsCode = computed(
-  () => `const input = document.querySelector('peaui-form-input') as
-  | (HTMLElement & { disabled: boolean })
-  | null;
+  () => `import type { FormInputElement } from '@peaui/ui/wc/form/FormInput';
+
+const input = document.querySelector<FormInputElement>('peaui-form-input');
 
 input?.addEventListener('update:value', (event) => {
   const value = (event as CustomEvent<string>).detail;
   console.log('${localize({ en: 'New value:', pl: 'Nowa wartość:' })}', value);
 });
 
-// ${localize({ en: 'Assign complex values and flags as properties:', pl: 'Wartości złożone i flagi najlepiej ustawiać jako properties:' })}
+// ${localize({ en: 'Boolean attribute presence means true; assign properties when toggling:', pl: 'Obecność atrybutu logicznego oznacza true; przy zmianie używaj properties:' })}
 if (input) {
   input.disabled = true;
   input.disabled = false;
 }`,
 );
+
+const namedImportsCode = computed(
+  () => `import { defineConfig } from 'vite';
+import { peauiImports } from '@peaui/ui/vite';
+
+// ${localize({ en: 'Add peauiImports() alongside your existing Vue or React plugin.', pl: 'Dodaj peauiImports() obok używanego pluginu Vue albo React.' })}
+export default defineConfig({ plugins: [peauiImports()] });
+
+// ${localize({ en: 'The transform rewrites named component imports to direct paths:', pl: 'Transformacja zamienia nazwane importy komponentów na ścieżki bezpośrednie:' })}
+import { FormInput } from '@peaui/ui/${framework.value === 'react' ? 'react' : 'vue'}';`,
+);
+
+const clientStylesCode = `// Client/bundler entry
+import '@peaui/ui/styles.css';`;
 const webComponentLazyCode = computed(
   () => `// ${localize({ en: 'In an SSR app, register elements only on the client.', pl: 'W aplikacji SSR rejestruj elementy wyłącznie po stronie klienta.' })}
 if (typeof window !== 'undefined') {
@@ -175,10 +201,23 @@ const copy = computed(() =>
       packagePlural: 'components in the package',
       reactTitle: `${availableComponents.value.length} native React components`,
       reactNotice:
-        'The React API provides the complete Vue-compatible catalog. Every model supports a controlled value, a default… initial value and an on…Change callback.',
+        'The React catalog uses native React implementations. Models expose value/onValueChange, open/onOpenChange or other documented pairs. Use defaultValue or defaultOpen only where the component API lists them.',
       installTitle: '1. Installation',
+      requirements:
+        'Vue and the complete Web Components catalog require Vue ^3.5.0. React requires react and react-dom ^19.2.0. The optional Vite import plugin supports Vite ^6.4.0 or ^7.0.0. Package installation assumes an existing application and bundler; bare npm specifiers do not run directly in an HTML module without resolution.',
+      modelsTitle: 'State, content and forms',
+      modelsText:
+        'Vue uses named v-model bindings and slots; React uses documented model/callback pairs, children and named content or render props. Web Components use properties, update:* events and light-DOM slots. A change notification is not a replacement for updating controlled application state. Supply localized labels, descriptions and errors, and choose keyboard and focus behavior from the component guide.',
+      formsText:
+        'Set a unique id and a submission name on form fields. Native reset restores initial values in supported uncontrolled controls; reset controlled Vue/React application state in the form handler. Pass form when a control exposes it and belongs to a form elsewhere in the document. Prefer component label props; a Web Component host ID is not necessarily the native input ID.',
+      namedImportsTitle: 'Named imports with Vite',
+      namedImportsText:
+        'Aggregate imports can retain CSS from the full catalog. Keep named imports and component-sized CSS with the optional peauiImports transform. It supports @peaui/ui, @peaui/ui/vue and @peaui/ui/react; add it to your existing Vite configuration.',
+      nodeTitle: 'Node and server rendering',
+      nodeText:
+        'Vue and React node exports omit CSS so they can be imported by Node without a CSS loader. Include the stylesheet in the client/bundler entry if your server integration uses those exports. Keep initial props and content identical on server and client; browser actions and custom-element registration belong on the client.',
       installText:
-        'Install one package. Every component entry automatically loads its required styles and dependencies.',
+        'In an existing application, install PEAUI with the supported runtime for your target. Framework runtimes are optional peers, so install the one you use explicitly. Browser/bundler component entries automatically include required styles and child-component dependencies.',
       vueSetupTitle: '2. Vue setup',
       vueSetupText: 'No global stylesheet import is required before mounting the application.',
       firstTitle: '3. First component',
@@ -186,30 +225,30 @@ const copy = computed(() =>
         'An explicit Vue component entry provides a default export and automatically includes its required styles.',
       directTitle: '4. Direct imports',
       directText:
-        'Import one component from an explicit Vue path to load only its code, styles and component dependencies.',
+        'Import one component from an explicit Vue path to load only its code, styles and component dependencies. The root @peaui/ui entry remains a backward-compatible aggregate Vue API.',
       reactRunTitle: '2. Run in React',
       reactRunText:
         'Import a component from the explicit @peaui/ui/react subtree. Its required CSS is included automatically.',
       importRulesTitle: '3. Import rules',
       importRulesText:
-        'The main package API remains the Vue API. React uses separate, stable subpaths.',
+        'The main @peaui/ui entry and @peaui/ui/vue export Vue components. React exposes direct paths and named exports through @peaui/ui/react. Direct imports keep the dependency and CSS graph limited to the selected components.',
       fullCatalogTitle: '4. Full catalog and documentation',
       fullCatalogText: `The documentation covers all ${availableComponents.value.length} components with variants, a props editor, ready TSX, callbacks and ReactNode content.`,
       viewReact: 'View React components',
       registerTitle: '2. Register elements',
-      registerText: `Importing a module registers that element through customElements.define and loads its required CSS automatically. Import only the elements used by your application. All ${availableComponents.value.length} elements share the Vue rendering layer declared as a peer dependency, while their public interface remains standard Custom Elements.`,
+      registerText: `A module registers its element and required child elements, with required CSS included by the bundler. Import only the elements you use. The catalog combines native DOM elements with Vue-backed adapters; install Vue to use the complete catalog. The public API uses standard Custom Elements and light DOM.`,
       htmlTitle: '3. Use in HTML',
       htmlText:
-        'After registration, use native peaui-* tags. Pass simple values as HTML attributes.',
+        'After registration, use native peaui-* tags. Pass simple values as HTML attributes. For booleans, attribute presence means true and absence means false.',
       eventsTitle: '4. Properties and events',
       eventsText:
-        'Events are native CustomEvents and their data is available in event.detail. Assign boolean flags and complex values through element properties.',
+        'Events are native CustomEvents. A single emitted argument is event.detail; multiple arguments are an array in declaration order. Assign arrays, objects and callbacks as element properties, never JSON attributes. Boolean attribute presence means true: disabled="false" still disables. Consult the component API for event names and signatures.',
       ssrTitle: '5. SSR and lazy loading',
       ssrText:
         'In server-rendered environments, register elements on the client. Modules can be loaded dynamically with the view that uses them.',
       availabilityTitle: '6. Current availability',
       availabilityText:
-        'The catalog includes only components with a real index.wc.ts implementation, including tag names, attributes and events read from source.',
+        'Every catalog entry has a registered peaui-* element. @peaui/ui/web-components exports tag-name metadata without registering the catalog; the package custom-elements.json describes attributes, properties, events and slots. Default and named light-DOM children remain application-owned nodes.',
       viewWc: 'View Web Components',
       colorsTitle: 'Colors and CSS tokens',
       colorsText:
@@ -246,10 +285,23 @@ const copy = computed(() =>
       packagePlural: 'komponentów w paczce',
       reactTitle: `${availableComponents.value.length} natywnych komponentów React`,
       reactNotice:
-        'API React ma pełny katalog zgodny z Vue. Każdy model obsługuje tryb kontrolowany, wartość początkową default… i callback on…Change.',
+        'Katalog React używa natywnych implementacji React. Modele udostępniają pary value/onValueChange, open/onOpenChange lub inne opisane w API. Używaj defaultValue lub defaultOpen tylko tam, gdzie wymienia je API komponentu.',
       installTitle: '1. Instalacja',
+      requirements:
+        'Vue i pełny katalog Web Components wymagają Vue ^3.5.0. React wymaga react i react-dom ^19.2.0. Opcjonalny plugin importów obsługuje Vite ^6.4.0 albo ^7.0.0. Instalacja zakłada istniejącą aplikację i bundler; specyfikatory npm nie działają bezpośrednio w module HTML bez mechanizmu ich rozwiązywania.',
+      modelsTitle: 'Stan, treść i formularze',
+      modelsText:
+        'Vue korzysta z nazwanych wiązań v-model i slotów; React z opisanych par model/callback, children oraz propsów treści i funkcji renderujących. Web Components korzystają z properties, zdarzeń update:* i slotów light DOM. Powiadomienie o zmianie wymaga aktualizacji kontrolowanego stanu aplikacji. Podaj lokalizowane etykiety, opisy i błędy; zachowanie klawiatury i fokusu sprawdź w przewodniku komponentu.',
+      formsText:
+        'Nadaj polom unikalne id i name używane podczas wysyłania. Natywny reset przywraca stan początkowy obsługiwanych pól niekontrolowanych; kontrolowany stan Vue/React resetuj w obsłudze formularza. Użyj form, jeśli kontrolka je udostępnia i należy do formularza poza swoim drzewem DOM. Preferuj prop label; id hosta Web Component nie musi być identyfikatorem natywnego inputa.',
+      namedImportsTitle: 'Nazwane importy w Vite',
+      namedImportsText:
+        'Import zbiorczy może zachować CSS całego katalogu. Opcjonalna transformacja peauiImports pozwala używać nazwanych importów ze stylami wybranych komponentów. Obsługuje @peaui/ui, @peaui/ui/vue i @peaui/ui/react; dodaj ją do obecnej konfiguracji Vite.',
+      nodeTitle: 'Node i renderowanie na serwerze',
+      nodeText:
+        'Eksporty node dla Vue i React pomijają CSS, aby Node mógł je importować bez loadera stylów. Dołącz arkusz w punkcie wejścia klienta lub bundlera, jeśli integracja serwerowa korzysta z tych eksportów. Utrzymuj identyczne początkowe propsy i treść na serwerze oraz kliencie; akcje przeglądarki i rejestrację custom elements wykonuj po stronie klienta.',
       installText:
-        'Zainstaluj jedną paczkę. Każdy entry point komponentu automatycznie ładuje wymagane style i zależności.',
+        'W istniejącej aplikacji zainstaluj PEAUI z obsługiwaną wersją runtime’u wybranej technologii. Runtime’y są opcjonalnymi peer dependencies, dlatego jawnie zainstaluj używany. Entry pointy dla przeglądarki i bundlera dołączają wymagane style oraz zależności komponentów potomnych.',
       vueSetupTitle: '2. Konfiguracja Vue',
       vueSetupText:
         'Przed zamontowaniem aplikacji nie musisz importować globalnego arkusza stylów.',
@@ -258,29 +310,30 @@ const copy = computed(() =>
         'Jawny entry point komponentu Vue udostępnia domyślny eksport i automatycznie dołącza wymagane style.',
       directTitle: '4. Importy bezpośrednie',
       directText:
-        'Importuj pojedynczy komponent z jawnej ścieżki Vue, aby załadować tylko jego kod, style i zależności komponentowe.',
+        'Importuj pojedynczy komponent z jawnej ścieżki Vue, aby załadować tylko jego kod, style i zależności komponentowe. Główny entry point @peaui/ui pozostaje zbiorczym API Vue zachowanym dla zgodności.',
       reactRunTitle: '2. Uruchomienie w React',
       reactRunText:
         'Importuj komponent z jawnego poddrzewa @peaui/ui/react. Wymagany CSS zostanie dołączony automatycznie.',
       importRulesTitle: '3. Zasady importowania',
-      importRulesText: 'Główne API paczki pozostaje API Vue. React ma osobne, stabilne podścieżki.',
+      importRulesText:
+        'Główne API @peaui/ui i @peaui/ui/vue eksportuje komponenty Vue. React udostępnia ścieżki bezpośrednie i nazwane eksporty przez @peaui/ui/react. Importy bezpośrednie ograniczają zależności i CSS do wybranych komponentów.',
       fullCatalogTitle: '4. Pełny katalog i dokumentacja',
       fullCatalogText: `Dokumentacja pokazuje wszystkie ${availableComponents.value.length} komponentów z wariantami, edytorem propsów, gotowym kodem TSX, callbackami oraz treścią ReactNode.`,
       viewReact: 'Zobacz komponenty React',
       registerTitle: '2. Rejestracja elementów',
-      registerText: `Zaimportowanie modułu rejestruje dany element przez customElements.define i automatycznie ładuje wymagany CSS. Importuj tylko elementy używane w aplikacji. Wszystkie ${availableComponents.value.length} elementy korzystają ze wspólnej warstwy renderującej Vue, deklarowanej przez paczkę jako peer dependency, ale ich publicznym interfejsem pozostaje standard Custom Elements.`,
+      registerText: `Moduł rejestruje element oraz wymagane elementy potomne; bundler dołącza wymagany CSS. Importuj używane elementy. Katalog łączy implementacje oparte na natywnym DOM z adapterami Vue, dlatego pełny katalog wymaga instalacji Vue. Publiczne API korzysta ze standardu Custom Elements i light DOM.`,
       htmlTitle: '3. Użycie w HTML',
       htmlText:
-        'Po rejestracji korzystasz z natywnych znaczników peaui-*. Proste wartości przekazuj jako atrybuty HTML.',
+        'Po rejestracji korzystasz z natywnych znaczników peaui-*. Proste wartości przekazuj jako atrybuty HTML. Dla wartości logicznych obecność atrybutu oznacza true, a jego brak false.',
       eventsTitle: '4. Properties i zdarzenia',
       eventsText:
-        'Zdarzenia są natywnymi CustomEvent. Dane znajdują się w event.detail. Flagi logiczne i wartości złożone ustawiaj przez właściwości elementu.',
+        'Zdarzenia są natywnymi CustomEvent. Jeden argument znajduje się w event.detail, a wiele argumentów tworzy tablicę w kolejności deklaracji. Tablice, obiekty i callbacki przypisuj jako properties, bez atrybutów JSON. Obecność atrybutu logicznego oznacza true: disabled="false" nadal wyłącza kontrolkę. Nazwy i sygnatury zdarzeń sprawdzaj w API komponentu.',
       ssrTitle: '5. SSR i lazy loading',
       ssrText:
         'W środowisku renderowanym na serwerze wykonuj rejestrację po stronie klienta. Moduły można ładować dynamicznie razem z widokiem, który ich potrzebuje.',
       availabilityTitle: '6. Aktualna dostępność',
       availabilityText:
-        'Katalog zawiera wyłącznie komponenty z rzeczywistą implementacją index.wc.ts, wraz z nazwą znacznika, atrybutami i zdarzeniami odczytanymi ze źródła.',
+        'Każda pozycja katalogu ma element peaui-*. @peaui/ui/web-components eksportuje metadane nazw tagów bez rejestracji katalogu; plik custom-elements.json opisuje atrybuty, properties, zdarzenia i sloty. Dzieci domyślne i z nazwanym slotem pozostają węzłami light DOM należącymi do aplikacji.',
       viewWc: 'Zobacz Web Components',
       colorsTitle: 'Kolorystyka i tokeny CSS',
       colorsText:
@@ -338,6 +391,7 @@ const copy = computed(() =>
       <h2>{{ copy.installTitle }}</h2>
       <p>{{ copy.installText }}</p>
       <CodeBlock :code="installCode" language="bash" />
+      <p>{{ copy.requirements }}</p>
     </section>
 
     <template v-if="framework === 'vue'">
@@ -405,6 +459,25 @@ const copy = computed(() =>
         <RouterLink class="inline-docs-link" to="/web-components/components">
           {{ copy.viewWc }} →
         </RouterLink>
+      </section>
+    </template>
+
+    <section id="modele-formularze">
+      <h2>{{ copy.modelsTitle }}</h2>
+      <p>{{ copy.modelsText }}</p>
+      <p>{{ copy.formsText }}</p>
+    </section>
+
+    <template v-if="framework !== 'web-components'">
+      <section id="vite-imports">
+        <h2>{{ copy.namedImportsTitle }}</h2>
+        <p>{{ copy.namedImportsText }}</p>
+        <CodeBlock :code="namedImportsCode" language="ts" />
+      </section>
+      <section id="node-ssr">
+        <h2>{{ copy.nodeTitle }}</h2>
+        <p>{{ copy.nodeText }}</p>
+        <CodeBlock :code="clientStylesCode" language="ts" />
       </section>
     </template>
 

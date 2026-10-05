@@ -16,3 +16,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Disabled: Story = { args: { disabled: true } };
+
+export const LegacyFileModel: Story = { args: { valueMode: 'file' } };

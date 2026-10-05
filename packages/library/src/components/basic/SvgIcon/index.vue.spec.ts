@@ -28,6 +28,14 @@ import { loadCatalogIcon } from '@/assets/icons/runtime/catalog/load-icon';
 import * as vueModule from 'vue';
 
 describe('SvgIcon (index.vue)', () => {
+  it('reuses one async definition across instances of the same icon', () => {
+    const defineAsyncComponentMock = vi.mocked(vueModule.defineAsyncComponent);
+    defineAsyncComponentMock.mockClear();
+    const first = mount(SvgIcon, { props: { name: 'core/alarm-clock' } });
+    const second = mount(SvgIcon, { props: { name: 'core/alarm-clock' } });
+    expect(defineAsyncComponentMock).toHaveBeenCalledTimes(1);
+    expect(first.get('svg').element).not.toBe(second.get('svg').element);
+  });
   it('renders async icon root with decorative defaults and base class', () => {
     const wrapper = mount(SvgIcon, {
       props: {

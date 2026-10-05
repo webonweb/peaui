@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { Component } from 'vue';
+import { formComponentsDictionary } from './editor-components';
+
 import type { TableColumn } from '../index.vue';
-import { computed, defineAsyncComponent, useId } from 'vue';
+import { computed, useId } from 'vue';
 import { getDeepValue } from '@/helpers/object.helper';
 import {
   TABLE_LIST_CLASS,
@@ -14,7 +15,7 @@ import {
 const props = defineProps<{
   columns: TableColumn[];
   errors?: Record<string, string | undefined>;
-  formValues: Record<string, any>;
+  formValues: Record<string, unknown>;
   dataTestId?: string;
   lockedColumns?: Record<string, TableLockedColumnMeta | undefined>;
 }>();
@@ -22,19 +23,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   (
     e: 'on:update',
-    value: string | undefined | number | unknown[] | Record<string, any>,
+    value: string | undefined | number | unknown[] | Record<string, unknown>,
     column: TableColumn,
   ): void;
 }>();
 
 const uid = useId();
-
-const formComponentsDictionary: Readonly<Record<string, Component>> = {
-  multiselect: defineAsyncComponent(() => import('@/components/form/FormMultiSelect/index.vue')),
-  number: defineAsyncComponent(() => import('@/components/form/FormNumber/index.vue')),
-  select: defineAsyncComponent(() => import('@/components/form/FormSelect/index.vue')),
-  text: defineAsyncComponent(() => import('@/components/form/FormInput/index.vue')),
-} as const;
 
 const vMask = {
   mounted() {
@@ -45,7 +39,7 @@ const vMask = {
   },
 };
 
-function resolveOptions(column: TableColumn): any[] | undefined {
+function resolveOptions(column: TableColumn): import('../shared').TableManageOption[] | undefined {
   return resolveTableManageOptions({
     columnKey: column.key,
     currentRecord: props.formValues,
@@ -108,7 +102,7 @@ function getCellStyles(column: TableColumn): Record<string, string> {
 }
 
 function handleUpdateValue(
-  value: string | undefined | number | unknown[] | Record<string, any>,
+  value: string | undefined | number | unknown[] | Record<string, unknown>,
   column: TableColumn,
 ): void {
   emit('on:update', value, column);
@@ -151,6 +145,7 @@ function resolvePlacement(column: TableColumn): 'top' | 'bottom' | undefined {
       :min="column.manage.min"
       :name="getFieldIdentifier(column)"
       :options="resolveOptions(column)"
+      :value-mode="column.manage?.valueMode"
       :placeholder="column.manage.placeholder"
       :placement="resolvePlacement(column)"
       :readonly="column.manage.disabled"
@@ -159,7 +154,7 @@ function resolvePlacement(column: TableColumn): 'top' | 'bottom' | undefined {
       :with-select-all="column.manage.withSelectAll"
       :value="getFieldValue(column)"
       @update:value="
-        (value: string | undefined | number | unknown[] | Record<string, any>) =>
+        (value: string | undefined | number | unknown[] | Record<string, unknown>) =>
           handleUpdateValue(value, column)
       "
     >
@@ -182,6 +177,7 @@ function resolvePlacement(column: TableColumn): 'top' | 'bottom' | undefined {
       :min="column.manage.min"
       :name="getFieldIdentifier(column)"
       :options="resolveOptions(column)"
+      :value-mode="column.manage?.valueMode"
       :placeholder="column.manage.placeholder"
       :placement="resolvePlacement(column)"
       :readonly="column.manage.disabled"
@@ -190,7 +186,7 @@ function resolvePlacement(column: TableColumn): 'top' | 'bottom' | undefined {
       :with-select-all="column.manage.withSelectAll"
       :value="getFieldValue(column)"
       @update:value="
-        (value: string | undefined | number | unknown[] | Record<string, any>) =>
+        (value: string | undefined | number | unknown[] | Record<string, unknown>) =>
           handleUpdateValue(value, column)
       "
     >

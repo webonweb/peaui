@@ -243,7 +243,7 @@ function handleToggleLockColumn(column: TableColumn): void {
         :aria-disabled="column.canSort ? undefined : 'true'"
         @click.prevent="handleSortColumn(column)"
       >
-        <span :class="`${TABLE_LIST_CLASS}__head-label`" v-html="column.label" />
+        <span :class="`${TABLE_LIST_CLASS}__head-label`">{{ column.label }}</span>
 
         <SvgIcon
           v-if="isActiveSortColumn(column)"

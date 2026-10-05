@@ -73,7 +73,7 @@ describe('DisclosurePanel (index.vue)', () => {
 
     const title = wrapper.get('[data-testid="slot-title"]');
     expect(title.text()).toBe('Slot Title');
-    expect(wrapper.get('[data-testid="disc-title"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="disc-title"]').exists()).toBe(true);
   });
 
   it('renders additional slot next to title', () => {
@@ -84,7 +84,7 @@ describe('DisclosurePanel (index.vue)', () => {
 
     const additional = wrapper.get('[data-testid="slot-additional"]');
     expect(additional.text()).toBe('Extra');
-    expect(wrapper.get('[data-testid="disc-additional"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="disc-additional"]').exists()).toBe(true);
   });
 
   it('uses aria-label only when title is missing', () => {

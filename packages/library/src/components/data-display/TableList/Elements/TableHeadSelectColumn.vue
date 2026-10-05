@@ -3,9 +3,10 @@ import { buildTableTestId, TABLE_LIST_CLASS } from '../shared';
 import FormCheckbox from '@/components/form/FormCheckbox/index.vue';
 import { computed, useId } from 'vue';
 
-const { dataTestId, disabled, isAllSelected } = defineProps<{
+const { dataTestId, disabled, isAllSelected, isPartiallySelected } = defineProps<{
   disabled?: boolean;
   isAllSelected: boolean;
+  isPartiallySelected?: boolean;
   dataTestId?: string;
 }>();
 
@@ -27,6 +28,7 @@ const checkboxFieldId = computed(() => `select-all-rows-${uid}`);
       name="select-all-rows"
       :disabled="disabled"
       :value="isAllSelected"
+      :indeterminate="isPartiallySelected"
       :dataTestId="checkboxTestId"
       aria-label="Zaznacz wszystkie rekordy na stronie"
       @update:value="emit('on:toggle:select:row')"

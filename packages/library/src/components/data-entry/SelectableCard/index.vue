@@ -81,6 +81,7 @@ const ariaAttrs = computed(() => ({
     ? undefined
     : (normalizedAriaLabel.value ?? normalizedAttrsAriaLabel.value ?? DEFAULT_ACCESSIBLE_NAME),
   'aria-disabled': readonly || undefined,
+  'aria-pressed': active,
 }));
 
 const titleId = computed(() => (slots.title ? `${classNameComponent}-title-${id}` : undefined));

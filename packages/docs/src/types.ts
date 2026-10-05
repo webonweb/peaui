@@ -11,6 +11,7 @@ export interface ApiEntry {
 
 export interface NamedApiEntry {
   name: string;
+  type?: string;
   description: string;
 }
 
@@ -26,6 +27,16 @@ export interface ComponentApi {
 }
 
 export type FrameworkId = 'vue' | 'react' | 'web-components';
+
+export interface ComponentCatalogEntry {
+  name: string;
+  category: string;
+  categoryLabel: string;
+  framework: FrameworkId;
+  sourceName: string;
+  tagName?: string;
+  status: 'stable' | 'experimental';
+}
 
 export interface FrameworkComponentApi extends ComponentApi {
   framework: FrameworkId;
@@ -49,6 +60,11 @@ export interface ComponentDefinition extends ComponentApi {
 export interface FrameworkComponentDefinition extends FrameworkComponentApi {
   component?: Component;
   reactComponent?: ComponentType<Record<string, unknown>>;
+  slug: string;
+  copy: ComponentCopy;
+}
+
+export interface ComponentCatalogDefinition extends ComponentCatalogEntry {
   slug: string;
   copy: ComponentCopy;
 }

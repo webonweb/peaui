@@ -129,10 +129,9 @@ function handleToggleColumnVisibility(event: Event, column: TableColumn): void {
                   @change="(event: Event) => handleToggleColumnVisibility(event, column)"
                 />
 
-                <span
-                  :class="`${TABLE_LIST_CLASS}__head-actions-option-label`"
-                  v-html="getColumnLabel(column)"
-                />
+                <span :class="`${TABLE_LIST_CLASS}__head-actions-option-label`">
+                  {{ getColumnLabel(column) }}
+                </span>
               </label>
             </li>
           </ul>

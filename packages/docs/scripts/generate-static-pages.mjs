@@ -96,7 +96,7 @@ function readLiteral(expression, sourceName) {
   throw new Error(`Unsupported generated value in ${sourceName}.`);
 }
 
-export function parseGeneratedArraySource(source, exportName, sourceName = 'generated source') {
+export function parseGeneratedValueSource(source, exportName, sourceName = 'generated source') {
   const sourceFile = ts.createSourceFile(
     sourceName,
     source,
@@ -112,16 +112,17 @@ export function parseGeneratedArraySource(source, exportName, sourceName = 'gene
         declaration.name.text === exportName &&
         declaration.initializer
       ) {
-        const value = readLiteral(declaration.initializer, sourceName);
-        if (Array.isArray(value)) return value;
+        return readLiteral(declaration.initializer, sourceName);
       }
     }
   }
   throw new Error(`Could not read ${exportName} from ${sourceName}.`);
 }
 
-function readGeneratedArray(file, exportName) {
-  return parseGeneratedArraySource(fs.readFileSync(file, 'utf8'), exportName, file);
+export function parseGeneratedArraySource(source, exportName, sourceName = 'generated source') {
+  const value = parseGeneratedValueSource(source, exportName, sourceName);
+  if (!Array.isArray(value)) throw new Error(`${exportName} must be an array.`);
+  return value;
 }
 
 function interpolate(message, values) {
@@ -251,26 +252,16 @@ export function renderNotFoundHtml(template) {
 
 export function generateStaticPages() {
   const generatedRoot = path.join(docsRoot, 'src', 'generated');
-  const vueComponents = readGeneratedArray(
-    path.join(generatedRoot, 'component-api.ts'),
-    'generatedComponentApi',
-  );
-  const reactComponents = readGeneratedArray(
-    path.join(generatedRoot, 'framework-component-api.ts'),
-    'generatedReactComponentApi',
-  );
-  const webComponents = readGeneratedArray(
-    path.join(generatedRoot, 'framework-component-api.ts'),
-    'generatedWebComponentApi',
+  const catalogFile = path.join(generatedRoot, 'component-catalog.ts');
+  const frameworkComponents = parseGeneratedValueSource(
+    fs.readFileSync(catalogFile, 'utf8'),
+    'generatedComponentCatalog',
+    catalogFile,
   );
   const messages = JSON.parse(
     fs.readFileSync(path.join(docsRoot, 'src', 'data', 'seo-messages.json'), 'utf8'),
   );
-  const routes = buildPublicRoutes({
-    vue: vueComponents,
-    react: reactComponents,
-    'web-components': webComponents,
-  });
+  const routes = buildPublicRoutes(frameworkComponents);
   const indexFile = path.join(distRoot, 'index.html');
   const template = fs.readFileSync(indexFile, 'utf8');
 

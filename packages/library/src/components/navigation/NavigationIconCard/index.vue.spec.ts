@@ -106,6 +106,7 @@ describe('NavigationIconCard (index.vue)', () => {
 
     expect(root.classes()).toContain('uikit-navigation-icon-card');
     expect(root.attributes('data-to')).toBe('/citizen');
+    expect(root.attributes('tabindex')).toBe('0');
     expect(root.attributes('href')).toBeUndefined();
     expect(root.attributes('data-testid')).toBe('navigation-icon-card');
     expect(root.attributes('aria-labelledby')).toBe(text.attributes('id'));
@@ -182,6 +183,7 @@ describe('NavigationIconCard (index.vue)', () => {
     expect(root.attributes('target')).toBeUndefined();
     expect(root.attributes('rel')).toBeUndefined();
     expect(root.attributes('aria-disabled')).toBe('true');
+    expect(root.attributes('role')).toBe('link');
     expect(root.attributes('tabindex')).toBe('-1');
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       '[NavigationIconCard] Missing path. Rendering a disabled card without navigation.',

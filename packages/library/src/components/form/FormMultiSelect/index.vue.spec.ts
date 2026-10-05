@@ -161,14 +161,13 @@ const mountComponent = (
   props: Record<string, unknown> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormMultiSelect, {
+  const wrapper = mount(FormMultiSelect, {
     props: {
       id: 'regions',
       name: 'regions',
       value: [],
       options: defaultOptions,
+      valueMode: 'label',
       dataTestId: 'form-multiselect',
       'onUpdate:value': async (value: unknown[] | null | undefined) => {
         await wrapper.setProps({ value });
@@ -190,6 +189,18 @@ const mountComponent = (
 };
 
 describe('FormMultiSelect (index.vue)', () => {
+  it('returns option values by default and offers the label migration mode', async () => {
+    for (const valueMode of [undefined, 'label'] as const) {
+      const wrapper = mountComponent({ valueMode, options: [{ label: 'Alpha', value: 'a' }] });
+      await wrapper.get('input').trigger('keydown', { key: 'ArrowDown' });
+      await wrapper.get('[role="option"]').trigger('click');
+      expect(wrapper.emitted('update:value')?.at(-1)).toEqual([
+        valueMode === 'label' ? ['Alpha'] : ['a'],
+      ]);
+      wrapper.unmount();
+    }
+  });
+
   it('renders combobox input with base aria attrs and displays selected labels', () => {
     const wrapper = mountComponent({
       value: ['Mazowieckie', 'Pomorskie'],
@@ -226,10 +237,10 @@ describe('FormMultiSelect (index.vue)', () => {
 
     const options = wrapper.findAll('[role="option"]');
     expect(options).toHaveLength(1);
-    expect(options[0].text()).toContain('Malopolskie');
+    expect(options[0]!.text()).toContain('Malopolskie');
 
-    await options[0].trigger('mousedown');
-    await options[0].trigger('click');
+    await options[0]!.trigger('mousedown');
+    await options[0]!.trigger('click');
     await nextTick();
 
     expect(wrapper.emitted('update:value')?.at(-1)).toEqual([['Malopolskie']]);
@@ -334,8 +345,8 @@ describe('FormMultiSelect (index.vue)', () => {
     await nextTick();
 
     const options = wrapper.findAll('[role="option"]');
-    await options[2].trigger('mousedown');
-    await options[2].trigger('click');
+    await options[2]!.trigger('mousedown');
+    await options[2]!.trigger('click');
     await nextTick();
 
     expect(wrapper.emitted('update:value')?.at(-1)).toEqual([['Mazowieckie', 'Pomorskie']]);
@@ -401,7 +412,7 @@ describe('FormMultiSelect (index.vue)', () => {
     await nextTick();
 
     expect(wrapper.get('input').attributes('aria-expanded')).toBe('true');
-    expect(wrapper.get('[data-testid="form-multiselect-select-all-option"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-multiselect-select-all-option"]').exists()).toBe(true);
   });
 
   it('restores listbox scroll position after selecting an option', async () => {
@@ -433,9 +444,9 @@ describe('FormMultiSelect (index.vue)', () => {
     assignedScrollTopValues.length = 0;
 
     const options = wrapper.findAll('[role="option"]');
-    await options[10].trigger('mouseenter');
-    await options[10].trigger('mousedown');
-    await options[10].trigger('click');
+    await options[10]!.trigger('mouseenter');
+    await options[10]!.trigger('mousedown');
+    await options[10]!.trigger('click');
     await flushPromises();
 
     expect(wrapper.emitted('update:value')?.at(-1)).toEqual([['Option 11']]);
@@ -446,18 +457,18 @@ describe('FormMultiSelect (index.vue)', () => {
   it('keeps highlighted option and does not auto-scroll back after selecting when parent refreshes options', async () => {
     const getElementByIdSpy = vi.spyOn(document, 'getElementById');
 
-    let wrapper: ReturnType<typeof mount>;
     const mapOptionsWithActive = (selectedValues: unknown[] | null | undefined) =>
       defaultOptions.map((option) => ({
         ...option,
         active: Array.isArray(selectedValues) && selectedValues.includes(option.label),
       }));
 
-    wrapper = mount(FormMultiSelect, {
+    const wrapper: ReturnType<typeof mount> = mount(FormMultiSelect, {
       props: {
         id: 'regions',
         name: 'regions',
         value: ['Mazowieckie'],
+        valueMode: 'label',
         options: mapOptionsWithActive(['Mazowieckie']),
         dataTestId: 'form-multiselect',
         'onUpdate:value': async (value: unknown[] | null | undefined) => {
@@ -485,13 +496,13 @@ describe('FormMultiSelect (index.vue)', () => {
     const scrollLookupCallCountAfterOpen = getElementByIdSpy.mock.calls.length;
 
     const options = wrapper.findAll('[role="option"]');
-    await options[2].trigger('mouseenter');
+    await options[2]!.trigger('mouseenter');
     await nextTick();
 
     expect(wrapper.get('input').attributes('aria-activedescendant')).toBe('regions-option-2');
 
-    await options[2].trigger('mousedown');
-    await options[2].trigger('click');
+    await options[2]!.trigger('mousedown');
+    await options[2]!.trigger('click');
     await flushPromises();
 
     expect(wrapper.emitted('update:value')?.at(-1)).toEqual([['Mazowieckie', 'Pomorskie']]);

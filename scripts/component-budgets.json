@@ -1,0 +1,1133 @@
+{
+  "vue/basic/ImageView": {
+    "js": 1536,
+    "css": 2304
+  },
+  "react/basic/ImageView": {
+    "js": 1792,
+    "css": 2304
+  },
+  "wc/basic/ImageView": {
+    "js": 2048,
+    "css": 2304,
+    "native": true
+  },
+  "vue/basic/SvgIcon": {
+    "js": 3328,
+    "css": 2176
+  },
+  "react/basic/SvgIcon": {
+    "js": 3584,
+    "css": 2176
+  },
+  "wc/basic/SvgIcon": {
+    "js": 3584,
+    "css": 2176,
+    "native": true
+  },
+  "vue/data-display/Avatar": {
+    "js": 5376,
+    "css": 3328
+  },
+  "react/data-display/Avatar": {
+    "js": 4096,
+    "css": 3328
+  },
+  "wc/data-display/Avatar": {
+    "js": 6144,
+    "css": 3328,
+    "native": true
+  },
+  "vue/data-display/AvatarGroup": {
+    "js": 7680,
+    "css": 4224
+  },
+  "react/data-display/AvatarGroup": {
+    "js": 6144,
+    "css": 4224
+  },
+  "wc/data-display/AvatarGroup": {
+    "js": 9728,
+    "css": 4224,
+    "native": false
+  },
+  "vue/data-display/CalculationResults": {
+    "js": 6144,
+    "css": 3968
+  },
+  "react/data-display/CalculationResults": {
+    "js": 6400,
+    "css": 3968
+  },
+  "wc/data-display/CalculationResults": {
+    "js": 7680,
+    "css": 3968,
+    "native": false
+  },
+  "vue/data-display/CardCarousel": {
+    "js": 6656,
+    "css": 3072
+  },
+  "react/data-display/CardCarousel": {
+    "js": 5120,
+    "css": 3072
+  },
+  "wc/data-display/CardCarousel": {
+    "js": 7424,
+    "css": 3072,
+    "native": true
+  },
+  "vue/data-display/CounterBadge": {
+    "js": 768,
+    "css": 2304
+  },
+  "react/data-display/CounterBadge": {
+    "js": 1536,
+    "css": 2304
+  },
+  "wc/data-display/CounterBadge": {
+    "js": 1024,
+    "css": 2304,
+    "native": true
+  },
+  "vue/data-display/DescriptionField": {
+    "js": 5376,
+    "css": 3328
+  },
+  "react/data-display/DescriptionField": {
+    "js": 5888,
+    "css": 3328
+  },
+  "wc/data-display/DescriptionField": {
+    "js": 7424,
+    "css": 3328,
+    "native": true
+  },
+  "vue/data-display/DisclosurePanel": {
+    "js": 2048,
+    "css": 2816
+  },
+  "react/data-display/DisclosurePanel": {
+    "js": 4352,
+    "css": 2816
+  },
+  "wc/data-display/DisclosurePanel": {
+    "js": 3840,
+    "css": 2816,
+    "native": false
+  },
+  "vue/data-display/KeyboardKey": {
+    "js": 3072,
+    "css": 2688
+  },
+  "react/data-display/KeyboardKey": {
+    "js": 2560,
+    "css": 2688
+  },
+  "wc/data-display/KeyboardKey": {
+    "js": 4608,
+    "css": 2688,
+    "native": false
+  },
+  "vue/data-display/SectionHeading": {
+    "js": 5376,
+    "css": 3328
+  },
+  "react/data-display/SectionHeading": {
+    "js": 6144,
+    "css": 3328
+  },
+  "wc/data-display/SectionHeading": {
+    "js": 7936,
+    "css": 3328,
+    "native": true
+  },
+  "vue/data-display/TableList": {
+    "js": 35072,
+    "css": 12288
+  },
+  "react/data-display/TableList": {
+    "js": 25088,
+    "css": 11264
+  },
+  "wc/data-display/TableList": {
+    "js": 36096,
+    "css": 12288,
+    "native": false
+  },
+  "vue/data-display/TableListFooter": {
+    "js": 22528,
+    "css": 6528
+  },
+  "react/data-display/TableListFooter": {
+    "js": 15616,
+    "css": 6528
+  },
+  "wc/data-display/TableListFooter": {
+    "js": 23552,
+    "css": 6528,
+    "native": false
+  },
+  "vue/data-display/TableListHeader": {
+    "js": 12288,
+    "css": 5632
+  },
+  "react/data-display/TableListHeader": {
+    "js": 12800,
+    "css": 5632
+  },
+  "wc/data-display/TableListHeader": {
+    "js": 13568,
+    "css": 5632,
+    "native": false
+  },
+  "vue/data-display/TagChip": {
+    "js": 1280,
+    "css": 2560
+  },
+  "react/data-display/TagChip": {
+    "js": 1536,
+    "css": 2560
+  },
+  "wc/data-display/TagChip": {
+    "js": 2048,
+    "css": 2560,
+    "native": true
+  },
+  "vue/data-display/TreeList": {
+    "js": 5120,
+    "css": 3072
+  },
+  "react/data-display/TreeList": {
+    "js": 5632,
+    "css": 3072
+  },
+  "wc/data-display/TreeList": {
+    "js": 6400,
+    "css": 3072,
+    "native": false
+  },
+  "vue/data-display/VirtualList": {
+    "js": 10752,
+    "css": 4736
+  },
+  "react/data-display/VirtualList": {
+    "js": 9472,
+    "css": 4736
+  },
+  "wc/data-display/VirtualList": {
+    "js": 12288,
+    "css": 4736,
+    "native": false
+  },
+  "vue/data-entry/ButtonAction": {
+    "js": 1280,
+    "css": 2816
+  },
+  "react/data-entry/ButtonAction": {
+    "js": 1536,
+    "css": 2816
+  },
+  "wc/data-entry/ButtonAction": {
+    "js": 2560,
+    "css": 2816,
+    "native": true
+  },
+  "vue/data-entry/ButtonExport": {
+    "js": 9216,
+    "css": 4480
+  },
+  "react/data-entry/ButtonExport": {
+    "js": 7936,
+    "css": 4480
+  },
+  "wc/data-entry/ButtonExport": {
+    "js": 10496,
+    "css": 4480,
+    "native": false
+  },
+  "vue/data-entry/CopyButton": {
+    "js": 6400,
+    "css": 3456
+  },
+  "react/data-entry/CopyButton": {
+    "js": 5632,
+    "css": 3456
+  },
+  "wc/data-entry/CopyButton": {
+    "js": 7680,
+    "css": 3456,
+    "native": false
+  },
+  "vue/data-entry/InlineEdit": {
+    "js": 24064,
+    "css": 6528
+  },
+  "react/data-entry/InlineEdit": {
+    "js": 17408,
+    "css": 6528
+  },
+  "wc/data-entry/InlineEdit": {
+    "js": 25344,
+    "css": 6528,
+    "native": false
+  },
+  "vue/data-entry/InputSlider": {
+    "js": 2560,
+    "css": 3072
+  },
+  "react/data-entry/InputSlider": {
+    "js": 4096,
+    "css": 3072
+  },
+  "wc/data-entry/InputSlider": {
+    "js": 4608,
+    "css": 3072,
+    "native": false
+  },
+  "vue/data-entry/SearchInput": {
+    "js": 5376,
+    "css": 3456
+  },
+  "react/data-entry/SearchInput": {
+    "js": 6912,
+    "css": 3456
+  },
+  "wc/data-entry/SearchInput": {
+    "js": 6912,
+    "css": 3456,
+    "native": false
+  },
+  "vue/data-entry/SegmentedControl": {
+    "js": 6656,
+    "css": 3328
+  },
+  "react/data-entry/SegmentedControl": {
+    "js": 5632,
+    "css": 3328
+  },
+  "wc/data-entry/SegmentedControl": {
+    "js": 7936,
+    "css": 3328,
+    "native": false
+  },
+  "vue/data-entry/SelectableCard": {
+    "js": 5632,
+    "css": 3584
+  },
+  "react/data-entry/SelectableCard": {
+    "js": 3584,
+    "css": 3584
+  },
+  "wc/data-entry/SelectableCard": {
+    "js": 7168,
+    "css": 3584,
+    "native": false
+  },
+  "vue/data-entry/SplitButton": {
+    "js": 11776,
+    "css": 4608
+  },
+  "react/data-entry/SplitButton": {
+    "js": 10496,
+    "css": 4608
+  },
+  "wc/data-entry/SplitButton": {
+    "js": 13056,
+    "css": 4608,
+    "native": false
+  },
+  "vue/data-entry/ToggleButton": {
+    "js": 4864,
+    "css": 3328
+  },
+  "react/data-entry/ToggleButton": {
+    "js": 3840,
+    "css": 3328
+  },
+  "wc/data-entry/ToggleButton": {
+    "js": 6400,
+    "css": 3328,
+    "native": false
+  },
+  "vue/data-entry/ToggleGroup": {
+    "js": 7936,
+    "css": 3968
+  },
+  "react/data-entry/ToggleGroup": {
+    "js": 6144,
+    "css": 3968
+  },
+  "wc/data-entry/ToggleGroup": {
+    "js": 9216,
+    "css": 3968,
+    "native": false
+  },
+  "vue/data-entry/TransferList": {
+    "js": 18176,
+    "css": 6144
+  },
+  "react/data-entry/TransferList": {
+    "js": 11520,
+    "css": 6144
+  },
+  "wc/data-entry/TransferList": {
+    "js": 19456,
+    "css": 6144,
+    "native": false
+  },
+  "vue/feedback/EmptyState": {
+    "js": 1536,
+    "css": 2432
+  },
+  "react/feedback/EmptyState": {
+    "js": 2048,
+    "css": 2432
+  },
+  "wc/feedback/EmptyState": {
+    "js": 3584,
+    "css": 2432,
+    "native": false
+  },
+  "vue/feedback/MessageText": {
+    "js": 7168,
+    "css": 2688
+  },
+  "react/feedback/MessageText": {
+    "js": 6400,
+    "css": 2688
+  },
+  "wc/feedback/MessageText": {
+    "js": 8448,
+    "css": 2688,
+    "native": true
+  },
+  "vue/feedback/NotificationCenter": {
+    "js": 11520,
+    "css": 6144
+  },
+  "react/feedback/NotificationCenter": {
+    "js": 10496,
+    "css": 6144
+  },
+  "wc/feedback/NotificationCenter": {
+    "js": 14592,
+    "css": 6144,
+    "native": false
+  },
+  "vue/feedback/ProgressIndicator": {
+    "js": 1536,
+    "css": 2304
+  },
+  "react/feedback/ProgressIndicator": {
+    "js": 2048,
+    "css": 2304
+  },
+  "wc/feedback/ProgressIndicator": {
+    "js": 3328,
+    "css": 2304,
+    "native": false
+  },
+  "vue/feedback/SkeletonLoading": {
+    "js": 1024,
+    "css": 2432
+  },
+  "react/feedback/SkeletonLoading": {
+    "js": 1536,
+    "css": 2432
+  },
+  "wc/feedback/SkeletonLoading": {
+    "js": 2816,
+    "css": 2432,
+    "native": false
+  },
+  "vue/feedback/SpinnerLoader": {
+    "js": 768,
+    "css": 2560
+  },
+  "react/feedback/SpinnerLoader": {
+    "js": 1536,
+    "css": 2560
+  },
+  "wc/feedback/SpinnerLoader": {
+    "js": 1024,
+    "css": 2560,
+    "native": true
+  },
+  "vue/feedback/ToastAlert": {
+    "js": 4864,
+    "css": 2944
+  },
+  "react/feedback/ToastAlert": {
+    "js": 4352,
+    "css": 2944
+  },
+  "wc/feedback/ToastAlert": {
+    "js": 5632,
+    "css": 2944,
+    "native": true
+  },
+  "vue/form/FormButtonCheckbox": {
+    "js": 1536,
+    "css": 3072
+  },
+  "react/form/FormButtonCheckbox": {
+    "js": 2304,
+    "css": 3072
+  },
+  "wc/form/FormButtonCheckbox": {
+    "js": 3584,
+    "css": 3072,
+    "native": false
+  },
+  "vue/form/FormButtonGroup": {
+    "js": 14336,
+    "css": 4992
+  },
+  "react/form/FormButtonGroup": {
+    "js": 9728,
+    "css": 4992
+  },
+  "wc/form/FormButtonGroup": {
+    "js": 15360,
+    "css": 4992,
+    "native": false
+  },
+  "vue/form/FormCheckbox": {
+    "js": 1536,
+    "css": 2816
+  },
+  "react/form/FormCheckbox": {
+    "js": 2304,
+    "css": 2816
+  },
+  "wc/form/FormCheckbox": {
+    "js": 3328,
+    "css": 2816,
+    "native": false
+  },
+  "vue/form/FormColorPicker": {
+    "js": 22272,
+    "css": 6784
+  },
+  "react/form/FormColorPicker": {
+    "js": 11520,
+    "css": 6784
+  },
+  "wc/form/FormColorPicker": {
+    "js": 23808,
+    "css": 6784,
+    "native": false
+  },
+  "vue/form/FormContainer": {
+    "js": 2304,
+    "css": 3456
+  },
+  "react/form/FormContainer": {
+    "js": 2048,
+    "css": 3456
+  },
+  "wc/form/FormContainer": {
+    "js": 4352,
+    "css": 3456,
+    "native": false
+  },
+  "vue/form/FormDatePicker": {
+    "js": 21248,
+    "css": 6016
+  },
+  "react/form/FormDatePicker": {
+    "js": 13056,
+    "css": 6016
+  },
+  "wc/form/FormDatePicker": {
+    "js": 22272,
+    "css": 6016,
+    "native": false
+  },
+  "vue/form/FormDateRangePicker": {
+    "js": 23296,
+    "css": 7168
+  },
+  "react/form/FormDateRangePicker": {
+    "js": 11264,
+    "css": 7168
+  },
+  "wc/form/FormDateRangePicker": {
+    "js": 24576,
+    "css": 7168,
+    "native": false
+  },
+  "vue/form/FormDateTimePicker": {
+    "js": 24320,
+    "css": 6784
+  },
+  "react/form/FormDateTimePicker": {
+    "js": 15872,
+    "css": 6784
+  },
+  "wc/form/FormDateTimePicker": {
+    "js": 25600,
+    "css": 6784,
+    "native": false
+  },
+  "vue/form/FormField": {
+    "js": 12288,
+    "css": 4480
+  },
+  "react/form/FormField": {
+    "js": 8704,
+    "css": 4480
+  },
+  "wc/form/FormField": {
+    "js": 16896,
+    "css": 4480,
+    "native": true
+  },
+  "vue/form/FormFieldLabel": {
+    "js": 5376,
+    "css": 3200
+  },
+  "react/form/FormFieldLabel": {
+    "js": 6144,
+    "css": 3200
+  },
+  "wc/form/FormFieldLabel": {
+    "js": 7680,
+    "css": 3200,
+    "native": true
+  },
+  "vue/form/FormFileUpload": {
+    "js": 6912,
+    "css": 3456
+  },
+  "react/form/FormFileUpload": {
+    "js": 10496,
+    "css": 3456
+  },
+  "wc/form/FormFileUpload": {
+    "js": 8448,
+    "css": 3456,
+    "native": false
+  },
+  "vue/form/FormFileUploadSimple": {
+    "js": 7168,
+    "css": 3328
+  },
+  "react/form/FormFileUploadSimple": {
+    "js": 10496,
+    "css": 3328
+  },
+  "wc/form/FormFileUploadSimple": {
+    "js": 8704,
+    "css": 3328,
+    "native": false
+  },
+  "vue/form/FormInput": {
+    "js": 13056,
+    "css": 4480
+  },
+  "react/form/FormInput": {
+    "js": 10496,
+    "css": 4480
+  },
+  "wc/form/FormInput": {
+    "js": 18432,
+    "css": 4480,
+    "native": true
+  },
+  "vue/form/FormMultiSelect": {
+    "js": 19712,
+    "css": 5760
+  },
+  "react/form/FormMultiSelect": {
+    "js": 13312,
+    "css": 5760
+  },
+  "wc/form/FormMultiSelect": {
+    "js": 20992,
+    "css": 5760,
+    "native": false
+  },
+  "vue/form/FormNumber": {
+    "js": 13568,
+    "css": 4480
+  },
+  "react/form/FormNumber": {
+    "js": 10496,
+    "css": 4480
+  },
+  "wc/form/FormNumber": {
+    "js": 14848,
+    "css": 4480,
+    "native": false
+  },
+  "vue/form/FormPassword": {
+    "js": 16640,
+    "css": 4992
+  },
+  "react/form/FormPassword": {
+    "js": 13312,
+    "css": 4992
+  },
+  "wc/form/FormPassword": {
+    "js": 22272,
+    "css": 4992,
+    "native": true
+  },
+  "vue/form/FormPinInput": {
+    "js": 4352,
+    "css": 3456
+  },
+  "react/form/FormPinInput": {
+    "js": 3840,
+    "css": 3456
+  },
+  "wc/form/FormPinInput": {
+    "js": 5888,
+    "css": 3456,
+    "native": false
+  },
+  "vue/form/FormRadio": {
+    "js": 1536,
+    "css": 2688
+  },
+  "react/form/FormRadio": {
+    "js": 2304,
+    "css": 2688
+  },
+  "wc/form/FormRadio": {
+    "js": 3328,
+    "css": 2688,
+    "native": false
+  },
+  "vue/form/FormRatingInput": {
+    "js": 13312,
+    "css": 4608
+  },
+  "react/form/FormRatingInput": {
+    "js": 5376,
+    "css": 4608
+  },
+  "wc/form/FormRatingInput": {
+    "js": 14592,
+    "css": 4608,
+    "native": false
+  },
+  "vue/form/FormSelect": {
+    "js": 19456,
+    "css": 5504
+  },
+  "react/form/FormSelect": {
+    "js": 13312,
+    "css": 5504
+  },
+  "wc/form/FormSelect": {
+    "js": 20480,
+    "css": 5504,
+    "native": false
+  },
+  "vue/form/FormSwitchToggle": {
+    "js": 2816,
+    "css": 3584
+  },
+  "react/form/FormSwitchToggle": {
+    "js": 2560,
+    "css": 3584
+  },
+  "wc/form/FormSwitchToggle": {
+    "js": 4608,
+    "css": 3584,
+    "native": false
+  },
+  "vue/form/FormTagsInput": {
+    "js": 16896,
+    "css": 5120
+  },
+  "react/form/FormTagsInput": {
+    "js": 7936,
+    "css": 5120
+  },
+  "wc/form/FormTagsInput": {
+    "js": 18176,
+    "css": 5120,
+    "native": false
+  },
+  "vue/form/FormTextarea": {
+    "js": 12800,
+    "css": 4608
+  },
+  "react/form/FormTextarea": {
+    "js": 8704,
+    "css": 4608
+  },
+  "wc/form/FormTextarea": {
+    "js": 14080,
+    "css": 4608,
+    "native": false
+  },
+  "vue/form/FormTimePicker": {
+    "js": 21760,
+    "css": 6400
+  },
+  "react/form/FormTimePicker": {
+    "js": 12800,
+    "css": 6400
+  },
+  "wc/form/FormTimePicker": {
+    "js": 23296,
+    "css": 6400,
+    "native": false
+  },
+  "vue/form/FormYearPicker": {
+    "js": 18944,
+    "css": 5760
+  },
+  "react/form/FormYearPicker": {
+    "js": 13056,
+    "css": 5760
+  },
+  "wc/form/FormYearPicker": {
+    "js": 20224,
+    "css": 5760,
+    "native": false
+  },
+  "vue/layout/CardPanel": {
+    "js": 1024,
+    "css": 2560
+  },
+  "react/layout/CardPanel": {
+    "js": 1536,
+    "css": 2560
+  },
+  "wc/layout/CardPanel": {
+    "js": 2560,
+    "css": 2560,
+    "native": true
+  },
+  "vue/layout/FullscreenContainer": {
+    "js": 4096,
+    "css": 2816
+  },
+  "react/layout/FullscreenContainer": {
+    "js": 5888,
+    "css": 2816
+  },
+  "wc/layout/FullscreenContainer": {
+    "js": 6400,
+    "css": 2816,
+    "native": false
+  },
+  "vue/layout/GridItem": {
+    "js": 1024,
+    "css": 2176
+  },
+  "react/layout/GridItem": {
+    "js": 1536,
+    "css": 2176
+  },
+  "wc/layout/GridItem": {
+    "js": 1536,
+    "css": 2176,
+    "native": true
+  },
+  "vue/layout/GridSection": {
+    "js": 1024,
+    "css": 2304
+  },
+  "react/layout/GridSection": {
+    "js": 1536,
+    "css": 2304
+  },
+  "wc/layout/GridSection": {
+    "js": 2048,
+    "css": 2304,
+    "native": true
+  },
+  "vue/layout/PageLayout": {
+    "js": 1024,
+    "css": 2304
+  },
+  "react/layout/PageLayout": {
+    "js": 1536,
+    "css": 2304
+  },
+  "wc/layout/PageLayout": {
+    "js": 2304,
+    "css": 2304,
+    "native": true
+  },
+  "vue/layout/ScrollArea": {
+    "js": 5376,
+    "css": 3584
+  },
+  "react/layout/ScrollArea": {
+    "js": 5120,
+    "css": 3584
+  },
+  "wc/layout/ScrollArea": {
+    "js": 6912,
+    "css": 3584,
+    "native": false
+  },
+  "vue/layout/SectionDivider": {
+    "js": 768,
+    "css": 2176
+  },
+  "react/layout/SectionDivider": {
+    "js": 1536,
+    "css": 2176
+  },
+  "wc/layout/SectionDivider": {
+    "js": 1280,
+    "css": 2176,
+    "native": true
+  },
+  "vue/navigation/Breadcrumbs": {
+    "js": 4864,
+    "css": 3584
+  },
+  "react/navigation/Breadcrumbs": {
+    "js": 3584,
+    "css": 3584
+  },
+  "wc/navigation/Breadcrumbs": {
+    "js": 6400,
+    "css": 3584,
+    "native": false
+  },
+  "vue/navigation/CommandPalette": {
+    "js": 23808,
+    "css": 7168
+  },
+  "react/navigation/CommandPalette": {
+    "js": 21248,
+    "css": 6400
+  },
+  "wc/navigation/CommandPalette": {
+    "js": 25088,
+    "css": 7168,
+    "native": false
+  },
+  "vue/navigation/ContextMenu": {
+    "js": 12800,
+    "css": 3712
+  },
+  "react/navigation/ContextMenu": {
+    "js": 12032,
+    "css": 3712
+  },
+  "wc/navigation/ContextMenu": {
+    "js": 14080,
+    "css": 3712,
+    "native": false
+  },
+  "vue/navigation/DropdownMenu": {
+    "js": 10240,
+    "css": 3456
+  },
+  "react/navigation/DropdownMenu": {
+    "js": 9216,
+    "css": 3456
+  },
+  "wc/navigation/DropdownMenu": {
+    "js": 12032,
+    "css": 3456,
+    "native": false
+  },
+  "vue/navigation/ListLimitControl": {
+    "js": 19968,
+    "css": 5632
+  },
+  "react/navigation/ListLimitControl": {
+    "js": 13568,
+    "css": 5632
+  },
+  "wc/navigation/ListLimitControl": {
+    "js": 21248,
+    "css": 5632,
+    "native": false
+  },
+  "vue/navigation/MenuBar": {
+    "js": 12032,
+    "css": 3840
+  },
+  "react/navigation/MenuBar": {
+    "js": 10752,
+    "css": 3840
+  },
+  "wc/navigation/MenuBar": {
+    "js": 13056,
+    "css": 3840,
+    "native": false
+  },
+  "vue/navigation/NavigationCard": {
+    "js": 6912,
+    "css": 3712
+  },
+  "react/navigation/NavigationCard": {
+    "js": 5888,
+    "css": 3712
+  },
+  "wc/navigation/NavigationCard": {
+    "js": 8192,
+    "css": 3712,
+    "native": false
+  },
+  "vue/navigation/NavigationDisclosureCard": {
+    "js": 5120,
+    "css": 2944
+  },
+  "react/navigation/NavigationDisclosureCard": {
+    "js": 4608,
+    "css": 2944
+  },
+  "wc/navigation/NavigationDisclosureCard": {
+    "js": 6400,
+    "css": 2944,
+    "native": false
+  },
+  "vue/navigation/NavigationIconCard": {
+    "js": 4864,
+    "css": 2688
+  },
+  "react/navigation/NavigationIconCard": {
+    "js": 3328,
+    "css": 2688
+  },
+  "wc/navigation/NavigationIconCard": {
+    "js": 6400,
+    "css": 2688,
+    "native": false
+  },
+  "vue/navigation/NavigationLink": {
+    "js": 1280,
+    "css": 2432
+  },
+  "react/navigation/NavigationLink": {
+    "js": 1536,
+    "css": 2432
+  },
+  "wc/navigation/NavigationLink": {
+    "js": 2304,
+    "css": 2432,
+    "native": true
+  },
+  "vue/navigation/NavigationStepper": {
+    "js": 6144,
+    "css": 3584
+  },
+  "react/navigation/NavigationStepper": {
+    "js": 5632,
+    "css": 3584
+  },
+  "wc/navigation/NavigationStepper": {
+    "js": 7936,
+    "css": 3584,
+    "native": false
+  },
+  "vue/navigation/NavigationTabs": {
+    "js": 1536,
+    "css": 2944
+  },
+  "react/navigation/NavigationTabs": {
+    "js": 1792,
+    "css": 2944
+  },
+  "wc/navigation/NavigationTabs": {
+    "js": 3328,
+    "css": 2944,
+    "native": false
+  },
+  "vue/navigation/PaginationControl": {
+    "js": 4864,
+    "css": 3072
+  },
+  "react/navigation/PaginationControl": {
+    "js": 5120,
+    "css": 3072
+  },
+  "wc/navigation/PaginationControl": {
+    "js": 6400,
+    "css": 3072,
+    "native": false
+  },
+  "vue/overlayer/DrawerPanel": {
+    "js": 2048,
+    "css": 2560
+  },
+  "react/overlayer/DrawerPanel": {
+    "js": 2304,
+    "css": 2560
+  },
+  "wc/overlayer/DrawerPanel": {
+    "js": 3840,
+    "css": 2560,
+    "native": false
+  },
+  "vue/overlayer/GuidedTour": {
+    "js": 7168,
+    "css": 3840
+  },
+  "react/overlayer/GuidedTour": {
+    "js": 6912,
+    "css": 3840
+  },
+  "wc/overlayer/GuidedTour": {
+    "js": 8704,
+    "css": 3840,
+    "native": false
+  },
+  "vue/overlayer/InfoTooltip": {
+    "js": 2816,
+    "css": 3072
+  },
+  "react/overlayer/InfoTooltip": {
+    "js": 4608,
+    "css": 3072
+  },
+  "wc/overlayer/InfoTooltip": {
+    "js": 4352,
+    "css": 3072,
+    "native": true
+  },
+  "vue/overlayer/ModalDialog": {
+    "js": 1792,
+    "css": 2432
+  },
+  "react/overlayer/ModalDialog": {
+    "js": 2304,
+    "css": 2432
+  },
+  "wc/overlayer/ModalDialog": {
+    "js": 3584,
+    "css": 2432,
+    "native": false
+  },
+  "vue/overlayer/PopoverButton": {
+    "js": 2560,
+    "css": 3328
+  },
+  "react/overlayer/PopoverButton": {
+    "js": 3072,
+    "css": 3328
+  },
+  "wc/overlayer/PopoverButton": {
+    "js": 4352,
+    "css": 3328,
+    "native": false
+  },
+  "vue/overlayer/PopoverOverlayer": {
+    "js": 3328,
+    "css": 2816
+  },
+  "react/overlayer/PopoverOverlayer": {
+    "js": 3072,
+    "css": 2816
+  },
+  "wc/overlayer/PopoverOverlayer": {
+    "js": 4864,
+    "css": 2816,
+    "native": false
+  }
+}

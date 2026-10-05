@@ -122,6 +122,11 @@ export const CalculationResults: Story = {
   },
 };
 
+export const Loading: Story = {
+  render: renderStory,
+  args: { ...CalculationResults.args, isLoading: true, showCalculateButton: true },
+};
+
 export const Simple: Story = {
   render: renderStory,
   args: {

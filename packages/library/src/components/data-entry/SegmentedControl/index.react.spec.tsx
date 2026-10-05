@@ -32,8 +32,8 @@ describe('SegmentedControl React', () => {
 
   it('obsługuje niekontrolowany model i kolejność callbacków', () => {
     const order: string[] = [];
-    const onValueChange = vi.fn(() => order.push('value'));
-    const onChange = vi.fn(() => order.push('change'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('value'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
     render(
       <SegmentedControl
         items={items}

@@ -47,3 +47,19 @@ export function renderCustomElement(element: Node | null | undefined): void {
 export function isCustomElementNode(node: Node | null): node is HTMLElement {
   return node instanceof HTMLElement && node.tagName.includes('-');
 }
+
+/** Replay pre-upgrade own properties through the component's public setters. */
+export function upgradeCustomElementProperties(element: HTMLElement): void {
+  let prototype: object | null = Object.getPrototypeOf(element) as object | null;
+  const values = new Map<string, unknown>();
+  while (prototype && prototype !== HTMLElement.prototype) {
+    for (const [name, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(prototype))) {
+      if (descriptor.set && Object.hasOwn(element, name) && !values.has(name)) {
+        values.set(name, Reflect.get(element, name));
+        Reflect.deleteProperty(element, name);
+      }
+    }
+    prototype = Object.getPrototypeOf(prototype) as object | null;
+  }
+  for (const [name, value] of values) Reflect.set(element, name, value);
+}

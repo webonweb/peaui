@@ -18,6 +18,20 @@ export default defineConfig(({ command, mode }) => ({
     __PEAUI_VERSION__: JSON.stringify(libraryPackage.version),
   },
   plugins: [peauiVueCustomElementPlugin(), react(), vue(), svgLoader()],
+  build: {
+    manifest: true,
+    // ComponentPage is lazy-loaded and guarded by a stricter 200 KiB gzip
+    // budget in validate-build-budgets.mjs. Keep Vite's raw-size warning
+    // aligned with that route-level budget instead of its generic 500 KiB.
+    chunkSizeWarningLimit: 1_000,
+  },
+  optimizeDeps: {
+    // Web Component adapters import virtual `index.ce.vue` modules supplied by
+    // peauiVueCustomElementPlugin. Vite's esbuild scanner cannot resolve those
+    // virtual sources, so only the actual framework runtimes are prebundled.
+    noDiscovery: true,
+    include: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', 'vue', 'vue-router'],
+  },
   resolve: {
     dedupe: ['react', 'react-dom', 'vue'],
     alias: {

@@ -15,12 +15,7 @@ import {
 } from './scroll-area.shared';
 
 export type ScrollAreaEventName =
-  | 'scroll'
-  | 'scrollStart'
-  | 'scrollEnd'
-  | 'reachStart'
-  | 'reachEnd'
-  | 'resize';
+  'scroll' | 'scrollStart' | 'scrollEnd' | 'reachStart' | 'reachEnd' | 'resize';
 
 export type ScrollAreaControllerElements = {
   root: HTMLElement;
@@ -92,10 +87,6 @@ export function getScrollAreaRtlMode(): ScrollAreaRtlMode {
 function directionOf(element: HTMLElement): 'ltr' | 'rtl' {
   if (typeof getComputedStyle !== 'function') return 'ltr';
   return getComputedStyle(element).direction === 'rtl' ? 'rtl' : 'ltr';
-}
-
-function prefersReducedMotion(): boolean {
-  return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
 export function normalizeScrollAreaBehavior(
@@ -466,3 +457,4 @@ export function createScrollAreaController(
     },
   };
 }
+import { prefersReducedMotion } from '@/helpers/browser.helper';

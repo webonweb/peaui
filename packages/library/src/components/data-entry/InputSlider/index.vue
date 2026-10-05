@@ -2,7 +2,9 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useId } from 'vue';
+import { computed, useAttrs, useId, type StyleValue } from 'vue';
+defineOptions({ inheritAttrs: false });
+const attrs = useAttrs();
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -11,18 +13,25 @@ import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
 const {
+  id: providedId,
+  form,
   name,
   ariaLabel,
   disabled = false,
   dataTestId,
 } = defineProps<{
+  id?: string;
+  form?: string;
   name: string;
   ariaLabel?: string;
   disabled?: boolean;
   dataTestId?: string;
 }>();
 
-const id = useId();
+const generatedId = useId();
+const id = computed(() => providedId || `input-slider-${generatedId}`);
+const controlAttrs = () =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style'));
 const classNameComponent = `${UIKIT_NAME}-input-slider`;
 
 const model = defineModel<number>('value', { default: 0 });
@@ -56,12 +65,16 @@ const onHandleChangeValue = (type: 'increment' | 'decrement') => {
 </script>
 
 <template>
-  <div :class="classNameComponent" :data-testid="dataTestId">
+  <div
+    :class="[classNameComponent, attrs.class]"
+    :style="attrs.style as StyleValue"
+    :data-testid="dataTestId"
+  >
     <ButtonAction
       :class="`${classNameComponent}__button ${classNameComponent}__button--decrement`"
       type="button"
       :disabled
-      :aria-controls="`input-slider-${id}`"
+      :aria-controls="id"
       :ariaLabel="`Zmniejsz warto\u015b\u0107. Obecna: ${model}`"
       useAriaLabel
       @click.prevent="onHandleChangeValue('decrement')"
@@ -82,10 +95,12 @@ const onHandleChangeValue = (type: 'increment' | 'decrement') => {
     </ButtonAction>
 
     <input
+      v-bind="controlAttrs()"
       :class="`${classNameComponent}__slider`"
       type="range"
-      :id="`input-slider-${id}`"
+      :id="id"
       :name="name"
+      :form="form"
       :min="0"
       :max="1"
       :step="0.1"
@@ -103,7 +118,7 @@ const onHandleChangeValue = (type: 'increment' | 'decrement') => {
       :class="`${classNameComponent}__button ${classNameComponent}__button--increment`"
       type="button"
       :disabled
-      :aria-controls="`input-slider-${id}`"
+      :aria-controls="id"
       :ariaLabel="`Zwi\u0119ksz warto\u015b\u0107. Obecna: ${model}`"
       useAriaLabel
       @click.prevent="onHandleChangeValue('increment')"

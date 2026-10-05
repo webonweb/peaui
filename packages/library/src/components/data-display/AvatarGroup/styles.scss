@@ -3,6 +3,10 @@
 .peaui-avatar-group {
   --peaui-avatar-group-size: 2.5rem;
   --peaui-avatar-group-overlap: 0.75rem;
+  --peaui-avatar-group-target-size: max(
+    var(--peaui-avatar-group-size),
+    calc(var(--peaui-target-min) + var(--peaui-space-4))
+  );
 
   position: relative;
   display: inline-flex;
@@ -51,7 +55,7 @@
 }
 
 .peaui-avatar-group--spaced .peaui-avatar-group__list {
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-avatar-group__item {
@@ -91,8 +95,8 @@
   background: transparent;
   border: 0;
   border-radius: 50%;
-  inline-size: var(--peaui-avatar-group-size);
-  block-size: var(--peaui-avatar-group-size);
+  inline-size: var(--peaui-avatar-group-target-size);
+  block-size: var(--peaui-avatar-group-target-size);
 
   @include outline(var(--peaui-color-primary-600));
 }
@@ -161,7 +165,8 @@
 .peaui-avatar-group__popover {
   position: absolute;
   z-index: 1002;
-  inset-block-start: calc(100% + var(--peaui-overlay-offset));
+  inset-block-start: 100%;
+  margin-block-start: var(--peaui-overlay-offset);
   box-sizing: border-box;
   overflow: auto;
   padding: 0.5rem;
@@ -213,7 +218,7 @@
   cursor: pointer;
   background: transparent;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
 
   @include outline(var(--peaui-color-primary-600));
 }

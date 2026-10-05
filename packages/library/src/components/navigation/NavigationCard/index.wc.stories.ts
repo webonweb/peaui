@@ -38,3 +38,21 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const DownloadLink: Story = {
+  render: () => {
+    const element = renderVueCustomElementStory(NavigationCardElement.tagName, {
+      path: '#report',
+      title: 'Download report',
+      description: 'Report file',
+    });
+    element.replaceChildren();
+    for (const [key, value] of Object.entries({
+      target: '_blank',
+      rel: 'noopener',
+      download: 'report.txt',
+    }))
+      element.setAttribute(key, value);
+    return element;
+  },
+};

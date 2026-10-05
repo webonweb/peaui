@@ -246,10 +246,10 @@ export const SecondaryVariant: Story = {
     },
     template: `
       <StoryContent :settings>
-        <div style="padding: 1.5rem; border-radius: 0.75rem; background: #1f2937;">
+        <div style="padding: 1.5rem; border-radius: 0.75rem; background: var(--peaui-color-grey-900);">
           <SectionHeadingComponent v-bind="args">
-            <template #title>Panel nocny</template>
-            <template #description>Wariant secondary ustawia bialy kolor tytulu do uzycia na ciemnym tle.</template>
+            <template #title>Odwrocona powierzchnia</template>
+            <template #description>Wariant secondary odwraca kolor tekstu wraz z motywem; tlo korzysta z tokenu grey-900.</template>
           </SectionHeadingComponent>
         </div>
       </StoryContent>

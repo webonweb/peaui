@@ -1,6 +1,0 @@
-// Ten plik jest generowany przez scripts/sync-icon-catalog.mjs.
-const icons: Readonly<Record<string, string>> = {
-  "core/cpu": "<rect x=\"7\" y=\"7\" width=\"10\" height=\"10\" rx=\"2\"/><rect x=\"10\" y=\"10\" width=\"4\" height=\"4\" rx=\".5\"/><path d=\"M9 3v4\"/><path d=\"M15 3v4\"/><path d=\"M9 17v4\"/><path d=\"M15 17v4\"/><path d=\"M3 9h4\"/><path d=\"M17 9h4\"/><path d=\"M3 15h4\"/><path d=\"M17 15h4\"/>",
-};
-
-export default icons;

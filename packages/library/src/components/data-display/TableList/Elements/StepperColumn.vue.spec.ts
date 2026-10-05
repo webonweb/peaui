@@ -33,7 +33,7 @@ const InfoTooltipStub = defineComponent({
 
 function factory(
   isExpanded: boolean,
-  steps: Array<Record<string, any>> = [
+  steps: import('../table.types').TableStepperStep[] = [
     {
       key: 'verification',
       label: 'Weryfikacja',
@@ -167,7 +167,15 @@ describe('StepperColumn.vue', () => {
     const buttons = wrapper.findAll('[data-testid="verification"]');
 
     expect(buttons).toHaveLength(2);
-    expect(buttons[0].attributes('id')).toBeUndefined();
-    expect(buttons[1].attributes('id')).toBeUndefined();
+    expect(buttons[0]!.attributes('id')).toBeUndefined();
+    expect(buttons[1]!.attributes('id')).toBeUndefined();
+  });
+
+  it('does not interpret HTML from step labels', () => {
+    const label = '<img src=x onerror="alert(1)">Verification';
+    const wrapper = factory(false, [{ key: 'verification', label, status: 'current' }]);
+
+    expect(wrapper.get('.peaui-table-list__stepper-label').text()).toBe(label);
+    expect(wrapper.find('.peaui-table-list__stepper-label img').exists()).toBe(false);
   });
 });

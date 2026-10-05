@@ -13,10 +13,9 @@ import { defineDropdownMenu, DropdownMenuElement } from './index.wc';
 defineDropdownMenu();
 
 function renderMenu(args: VueCustomElementStoryArgs): HTMLElement {
-  const element = document.createElement(DropdownMenuElement.tagName) as HTMLElement &
-    Record<string, unknown>;
+  const element = document.createElement(DropdownMenuElement.tagName);
   for (const [name, value] of Object.entries(args)) {
-    if (value !== undefined) element[name] = value;
+    if (value !== undefined) Reflect.set(element, name, value);
   }
   return element;
 }

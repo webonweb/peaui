@@ -7,16 +7,7 @@ import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 
 const { getSettings } = useSettingsStorie();
 
-type StoryArgs = {
-  ariaLabel?: string;
-  isShadowEnabled?: boolean;
-  isHoverEnabled?: boolean;
-  dataTestId?: string;
-  as?: 'div' | 'section' | 'article';
-  backgroundColor?: 'default' | 'primary' | 'grey';
-  borderColor?: 'default' | 'primary' | 'grey';
-  size?: 'xs' | 's' | 'm' | 'l';
-};
+type StoryArgs = InstanceType<typeof CardPanelComponent>['$props'];
 
 const meta: Meta<typeof CardPanelComponent> = {
   title: '6. Layout/CardPanel',
@@ -248,4 +239,11 @@ export const WithHeader: Story = {
     size: 'm',
     dataTestId: 'card-panel-header',
   },
+};
+
+export const Link: Story = {
+  render: () => ({
+    components: { CardPanelComponent },
+    template: `<CardPanelComponent as="a" href="#orders">Wszystkie zamówienia</CardPanelComponent>`,
+  }),
 };

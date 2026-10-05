@@ -55,8 +55,8 @@ const contentTestId = computed(() => (dataTestId ? `${dataTestId}-content` : und
         <slot />
       </div>
     </main>
-    <div v-if="slots.footer" :class="`${classNameComponent}__footer`">
+    <footer v-if="slots.footer" :class="`${classNameComponent}__footer`">
       <slot name="footer" />
-    </div>
+    </footer>
   </div>
 </template>

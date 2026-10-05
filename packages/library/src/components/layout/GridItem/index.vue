@@ -13,6 +13,7 @@ const {
   grid = true,
 } = defineProps<{
   colspan?: number;
+  /** Liczba kolumn: domyślnie 2; 0 dobiera liczbę do dzieci. */
   columns?: number;
   gap?: number;
   grid?: boolean;

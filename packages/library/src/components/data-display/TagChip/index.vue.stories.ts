@@ -70,7 +70,7 @@ const meta: Meta<typeof TagChipComponent> = {
       description: 'Czy stan aktywny jest wlaczony.',
       table: {
         type: { summary: 'boolean' },
-        defaultValue: { summary: false },
+        defaultValue: { summary: 'false' },
       },
     },
     as: {

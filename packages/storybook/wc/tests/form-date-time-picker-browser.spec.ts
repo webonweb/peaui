@@ -8,7 +8,7 @@ async function gotoDateTimePickerStory(page: Page, story: string): Promise<void>
 test('FormDateTimePicker WC zachowuje ARIA, klawiaturę i cele dotykowe', async ({ page }) => {
   await gotoDateTimePickerStory(page, 'default');
   const input = page.getByRole('combobox', { name: /Termin spotkania/ });
-  await expect(input).toHaveAttribute('aria-controls', 'appointment-date-time-panel');
+  await expect(input).toHaveAttribute('aria-controls', 'appointment-date-time-control-panel');
   await input.focus();
   await page.keyboard.press('ArrowDown');
   const dialog = page.getByRole('dialog', { name: 'Wybierz datę i czas' });

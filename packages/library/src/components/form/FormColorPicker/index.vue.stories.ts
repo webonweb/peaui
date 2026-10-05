@@ -14,6 +14,7 @@ import FormColorPickerComponent from './index.vue';
 const meta = {
   title: '5. Form/FormColorPicker',
   component: FormColorPickerComponent,
+  args: { ...formColorPickerDemoProps },
   parameters: {
     name: 'FormColorPicker',
     description:

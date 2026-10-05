@@ -58,8 +58,8 @@ const AccessiblePopoverButtonStub = defineComponent({
           ButtonAction,
           {
             ...attrs,
-            size: props.size,
-            variant: props.variant,
+            size: props.size as InstanceType<typeof ButtonAction>['$props']['size'],
+            variant: props.variant as InstanceType<typeof ButtonAction>['$props']['variant'],
             disabled: props.disabled,
             ariaLabel: props.ariaLabel,
             useAriaLabel: props.useAriaLabel,

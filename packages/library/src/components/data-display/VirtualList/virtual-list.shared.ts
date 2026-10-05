@@ -3,11 +3,9 @@ export type VirtualListRole = 'list' | 'listbox';
 export type VirtualListAlign = 'auto' | 'start' | 'center' | 'end';
 export type VirtualListItem = unknown;
 export type VirtualListItemKeyResolver =
-  | string
-  | ((item: VirtualListItem, index: number) => unknown);
+  string | ((item: VirtualListItem, index: number) => unknown);
 export type VirtualListItemLabelResolver =
-  | string
-  | ((item: VirtualListItem, index: number) => unknown);
+  string | ((item: VirtualListItem, index: number) => unknown);
 
 export type VirtualListRange = {
   startIndex: number;
@@ -227,10 +225,18 @@ export function normalizeVirtualListItems(
   itemLabel?: VirtualListItemLabelResolver,
 ): ResolvedVirtualListItem[] {
   const usedKeys = new Set<VirtualListKey>();
+  const resolvedKeys = items.map((item, index) => getVirtualListItemKey(item, index, itemKey));
+  const reservedKeys = new Set(resolvedKeys);
 
   return items.map((item, index) => {
-    const resolvedKey = getVirtualListItemKey(item, index, itemKey);
-    const key = usedKeys.has(resolvedKey) ? `${String(resolvedKey)}-${index}` : resolvedKey;
+    const resolvedKey = resolvedKeys[index]!;
+    let key = resolvedKey;
+    if (usedKeys.has(key)) {
+      const base = `${String(resolvedKey)}-${index}`;
+      key = base;
+      let suffix = 0;
+      while (usedKeys.has(key) || reservedKeys.has(key)) key = `${base}-${++suffix}`;
+    }
     usedKeys.add(key);
 
     return {
@@ -255,4 +261,18 @@ export function areVirtualListRangesEqual(
     first.visibleEndIndex === second.visibleEndIndex &&
     first.total === second.total,
   );
+}
+/** Preserve the visible keyed row and its pixel offset when data is inserted before it. */
+export function getVirtualListAnchorOffset(
+  previous: readonly ResolvedVirtualListItem[],
+  next: readonly ResolvedVirtualListItem[],
+  offset: number,
+  itemSize: number,
+): number {
+  if (offset <= 0) return offset;
+  const index = Math.floor(offset / itemSize);
+  const anchor = previous[index];
+  if (!anchor) return offset;
+  const nextIndex = next.findIndex((item) => Object.is(item.key, anchor.key));
+  return nextIndex < 0 ? offset : offset + (nextIndex - index) * itemSize;
 }

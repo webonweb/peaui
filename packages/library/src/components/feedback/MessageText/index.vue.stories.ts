@@ -52,7 +52,7 @@ const meta: Meta<typeof MessageTextComponent> = {
       control: { type: 'select' },
       options: ['default', 'info', 'error', 'success', 'danger', 'white'],
       description:
-        'Wariant stylu. Dla wariantow statusowych renderuje sie ikona wariantowa, a wariant white ustawia jasny tekst.',
+        'Wariant stylu. Statusy maja dopasowana ikone; white korzysta z odwracanego tokenu tekstu na powierzchni grey-900, zgodnie z motywem.',
       table: {
         type: { summary: "'info' | 'error' | 'success' | 'danger' | 'default' | 'white'" },
         defaultValue: { summary: 'default' },
@@ -147,9 +147,9 @@ export const WhiteVariant: Story = {
     },
     template: `
       <StoryContent :settings>
-        <div style="padding: 1.5rem; border-radius: 0.75rem; background: #1f2937;">
+        <div style="padding: 1.5rem; border-radius: 0.75rem; background: var(--peaui-color-grey-900);">
           <MessageTextComponent v-bind="args">
-            Tresc komunikatu na ciemnym tle
+            Komunikat na odwroconej powierzchni; tekst i tlo grey-900 reaguja na motyw.
           </MessageTextComponent>
         </div>
       </StoryContent>
@@ -176,7 +176,7 @@ export const Variants: Story = {
           <MessageTextComponent
             v-for="item in messageVariants"
             :key="item.variant"
-            id="message-text-variants"
+            :id="'message-text-variants-' + item.variant"
             size="s"
             :variant="item.variant"
           >

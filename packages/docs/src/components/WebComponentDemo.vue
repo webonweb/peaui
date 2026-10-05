@@ -15,6 +15,7 @@ import { useDemoTranslation } from '../composables/use-demo-translation';
 import { useI18n } from '../i18n';
 import type { ApiEntry, DemoVariant, FrameworkComponentDefinition } from '../types';
 import CodeBlock from './CodeBlock.vue';
+import GuidedTourDemoScene from './GuidedTourDemoScene.vue';
 import PropControl from './PropControl.vue';
 
 const props = defineProps<{ definition: FrameworkComponentDefinition }>();
@@ -402,7 +403,11 @@ function logEvent(name: string, value: unknown): void {
 }
 
 function handleComponentEvent(name: string, event: Event): void {
-  const value = event instanceof CustomEvent ? event.detail : undefined;
+  const detail = event instanceof CustomEvent ? event.detail : undefined;
+  // The PEAUI Vue custom-element adapter already removes Vue's single-argument
+  // event wrapper. Arrays reaching the documentation are therefore real model
+  // values (for example TransferList selections) and must stay arrays.
+  const value = detail;
   logEvent(name, value);
 
   if (props.definition.name === 'TableList') {
@@ -449,8 +454,8 @@ function createPreviewElement(): PreviewElement {
     if (typeof value === 'function' || isComplexEntry(entry, value) || isNumberEntry(entry)) {
       if (value !== undefined) element[propertyName] = value;
     } else if (isBooleanEntry(entry)) {
-      if (value) element.setAttribute(entry.name, '');
-    } else if (value !== undefined && value !== null && value !== '') {
+      if (value !== undefined) element[propertyName] = value;
+    } else if (value !== undefined && value !== null) {
       element.setAttribute(entry.name, String(value));
     }
   }
@@ -504,6 +509,34 @@ function updateProp(name: string, value: unknown): void {
   void renderPreview();
 }
 
+function startGuidedTour(): void {
+  interactiveProps.value = { ...interactiveProps.value, open: true, step: 0 };
+  void renderPreview();
+}
+
+function guidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip'): string {
+  const labels = interactiveProps.value.labels;
+  if (labels && typeof labels === 'object' && !Array.isArray(labels)) {
+    const value = (labels as Record<string, unknown>)[name];
+    if (typeof value === 'string') return value;
+  }
+  if (name === 'back') return 'Back';
+  if (name === 'complete') return 'Complete';
+  return name === 'next' ? 'Next' : 'Skip tour';
+}
+
+function updateGuidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip', value: string): void {
+  const labels = interactiveProps.value.labels;
+  interactiveProps.value = {
+    ...interactiveProps.value,
+    labels: {
+      ...(labels && typeof labels === 'object' && !Array.isArray(labels) ? labels : {}),
+      [name]: value,
+    },
+  };
+  void renderPreview();
+}
+
 function escapeAttribute(value: unknown): string {
   return String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;');
 }
@@ -513,19 +546,52 @@ function serializeProperty(value: unknown): string {
 }
 
 function createExampleCode(): string {
+  if (props.definition.name === 'GuidedTour') {
+    return `<button type="button" data-guided-tour-demo="navigation">Navigation</button>
+<label data-guided-tour-demo="search">
+  Search workspace
+  <input type="search" />
+</label>
+<button type="button" data-guided-tour-demo="profile">User profile</button>
+<button id="start-tour" type="button">Start guided tour</button>
+
+<peaui-guided-tour></peaui-guided-tour>
+
+<script type="module">
+  import '@peaui/ui/wc/overlayer/GuidedTour';
+
+  const tour = document.querySelector('peaui-guided-tour');
+  tour.steps = ${serializeProperty(interactiveProps.value.steps)};
+  tour.labels = { back: 'Previous', complete: 'Finish', next: 'Continue', skip: 'Not now' };
+  tour.mode = 'spotlight';
+  tour.step = 0;
+
+  document.querySelector('#start-tour').addEventListener('click', () => {
+    tour.open = true;
+  });
+
+  tour.addEventListener('update:open', (event) => {
+    tour.open = event.detail;
+  });
+  tour.addEventListener('update:step', (event) => {
+    tour.step = event.detail;
+  });
+<\/script>`;
+  }
+
   const tagName = props.definition.tagName ?? 'div';
   const attributes: string[] = [];
   const properties: string[] = [];
 
   for (const entry of inputEntries.value) {
     const value = interactiveProps.value[entry.name];
-    if (value === undefined || value === null || value === '') continue;
-    if (typeof value === 'function') continue;
+    if (value === undefined) continue;
 
-    if (isComplexEntry(entry, value)) {
+    if (typeof value === 'function' || value === null || isComplexEntry(entry, value)) {
       properties.push(`component.${toPropertyName(entry.name)} = ${serializeProperty(value)};`);
     } else if (isBooleanEntry(entry)) {
       if (value) attributes.push(entry.name);
+      else properties.push(`component.${toPropertyName(entry.name)} = false;`);
     } else {
       attributes.push(`${entry.name}="${escapeAttribute(value)}"`);
     }
@@ -543,10 +609,12 @@ function createExampleCode(): string {
   const markup = contentLines.length
     ? `<${tagName}${attributeBlock}>\n${contentLines.join('\n')}\n</${tagName}>`
     : `<${tagName}${attributeBlock}></${tagName}>`;
-  const eventLines = props.definition.events.map(
-    (event) =>
-      `component.addEventListener('${event.name}', (event) => {\n  console.log(event.detail);\n});`,
-  );
+  const eventLines = props.definition.events.map((event) => {
+    const modelName = event.name.startsWith('update:')
+      ? event.name.slice('update:'.length)
+      : undefined;
+    return `component.addEventListener('${event.name}', (event) => {\n${modelName ? `  component.${toPropertyName(modelName)} = event.detail;\n` : ''}  console.log(event.detail);\n});`;
+  });
   const scriptLines = [
     `import '${props.definition.importPath}';`,
     '',
@@ -612,7 +680,18 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-if="panel === 'preview'" ref="demoStage" class="demo-stage">
-        <div ref="mountPoint" class="wc-live-root" />
+        <GuidedTourDemoScene
+          v-if="definition.name === 'GuidedTour'"
+          :back-label="guidedTourLabel('back')"
+          :complete-label="guidedTourLabel('complete')"
+          :next-label="guidedTourLabel('next')"
+          :skip-label="guidedTourLabel('skip')"
+          @label-change="updateGuidedTourLabel"
+          @start="startGuidedTour"
+        >
+          <div ref="mountPoint" class="wc-live-root" />
+        </GuidedTourDemoScene>
+        <div v-else ref="mountPoint" class="wc-live-root" />
         <p v-if="error" class="demo-error">{{ error }}</p>
       </div>
       <CodeBlock v-else :code="exampleCode" language="html" />

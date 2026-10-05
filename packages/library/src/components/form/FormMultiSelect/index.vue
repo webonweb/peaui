@@ -12,6 +12,7 @@ export interface MultiSelectFieldOption<T = string> {
 <script lang="ts" setup>
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
+import { useVirtualListWindow } from '@/composables/useVirtualListWindow';
 import { UIKIT_NAME } from '@/constants';
 import {
   computed,
@@ -33,6 +34,17 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import FormField from '@/components/form/FormField/index.vue';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
 import PopoverOverlayer from '@/components/overlayer/PopoverOverlayer/index.vue';
+import {
+  getSelectLabels,
+  getSelectFormValues,
+  focusInvalidSelect,
+  resolveSelectPlacement,
+  createSelectValueIndex,
+  isSelectOptionSelected,
+  toggleSelectValues,
+  type SelectValueMode,
+  type SelectLabels,
+} from '../FormSelect/select.shared';
 
 defineOptions({
   inheritAttrs: false,
@@ -57,7 +69,11 @@ const {
   label,
   iconBefore,
   required,
-  placeholder = 'wybierz/wyszukaj',
+  placeholder,
+  labels,
+  valueMode = 'value',
+  virtual = false,
+  optionHeight = 48,
   disabled,
   readonly,
   searchable = true,
@@ -75,12 +91,19 @@ const {
   iconBefore?: string;
   required?: boolean;
   placeholder?: string;
+  labels?: Partial<SelectLabels>;
+  /** Value is the default; label preserves the pre-3.0 Vue/WC model contract. */
+  valueMode?: SelectValueMode;
+  /** Render only visible fixed-height options for large lists. */
+  virtual?: boolean;
+  /** Row height in pixels when virtual is enabled (minimum 24). */
+  optionHeight?: number;
   disabled?: boolean;
   readonly?: boolean;
   searchable?: boolean;
   withSelectAll?: boolean;
   dataTestId?: string;
-  options: MultiSelectFieldOption[];
+  options: MultiSelectFieldOption<unknown>[];
   placement?: MultiSelectPopoverPlacement;
 }>();
 
@@ -117,9 +140,15 @@ const listboxLabelledBy = computed(() => (label ? `label-${id}` : explicitAriaLa
 const listboxAriaLabel = computed(
   () => explicitAriaLabel.value ?? (!label && !explicitAriaLabelledBy.value ? name : undefined),
 );
+const nativeInvalid = ref(false);
+watch(modelValue, () => {
+  nativeInvalid.value = false;
+});
+const formValues = computed(() => getSelectFormValues(modelValue.value, true));
 const inputIsReadonly = computed(() => readonly || !searchable);
 const normalizedSearchPhrase = computed(() => normalizeText(searchPhrase.value));
 
+const selectedValueIndex = computed(() => createSelectValueIndex(getModelValues(), valueMode));
 const selectedOptions = computed(() => options.filter((option) => isOptionSelected(option)));
 
 const filteredOptions = computed(() => {
@@ -131,6 +160,16 @@ const filteredOptions = computed(() => {
     normalizeText(option.label).startsWith(normalizedSearchPhrase.value),
   );
 });
+
+const { visibleOptions, beforeSize, afterSize, optionStyle, handleScroll, revealActive } =
+  useVirtualListWindow({
+    items: filteredOptions,
+    viewport: listboxReference,
+    activeIndex: currentIndex,
+    enabled: () => virtual,
+    itemSize: () => optionHeight,
+    open: isOpen,
+  });
 
 const selectableFilteredOptions = computed(() =>
   filteredOptions.value.filter((option) => !option.disabled),
@@ -147,7 +186,10 @@ const currentOption = computed(() =>
 );
 
 const activeDescendantId = computed(() =>
-  currentOption.value ? getOptionId(currentIndex.value) : undefined,
+  currentOption.value &&
+  (!virtual || visibleOptions.value.some(({ index }) => index === currentIndex.value))
+    ? getOptionId(currentIndex.value)
+    : undefined,
 );
 
 const displayValue = computed(() => {
@@ -158,8 +200,11 @@ const displayValue = computed(() => {
   return selectedOptions.value.map((option) => option.label).join(', ');
 });
 
+const resolvedLabels = computed(() => getSelectLabels(labels));
 const currentPlaceholder = computed(() =>
-  isOpen.value && searchable ? 'wyszukaj opcje' : placeholder,
+  isOpen.value && searchable
+    ? resolvedLabels.value.searchPlaceholder
+    : (placeholder ?? resolvedLabels.value.placeholder),
 );
 
 const inputClass = computed(() => [
@@ -185,7 +230,7 @@ const bindings = computed(() => {
     type: 'text',
     role: 'combobox',
     autocomplete: 'off',
-    autocapitalize: 'off',
+    autocapitalize: 'none',
     spellcheck: false,
     readonly: inputIsReadonly.value,
     'aria-autocomplete': searchable ? 'list' : 'none',
@@ -212,7 +257,9 @@ const selectAllOptionTestId = computed(() =>
 const showSelectAllAction = computed(() => withSelectAll && filteredOptions.value.length > 0);
 const selectAllActionDisabled = computed(() => selectableFilteredOptions.value.length === 0);
 const selectAllActionLabel = computed(() =>
-  areAllFilteredOptionsSelected.value ? 'Odznacz wszystkie' : 'Zaznacz wszystkie',
+  areAllFilteredOptionsSelected.value
+    ? resolvedLabels.value.deselectAll
+    : resolvedLabels.value.selectAll,
 );
 
 // WATCHERS
@@ -237,7 +284,7 @@ watch(
       return;
     }
 
-    scrollActiveOptionIntoView();
+    void scrollActiveOptionIntoView();
   },
   { deep: true },
 );
@@ -258,51 +305,16 @@ function getModelValues(): unknown[] {
   return Array.isArray(modelValue.value) ? modelValue.value : [];
 }
 
-function getOptionModelValue(option: MultiSelectFieldOption): unknown {
-  return option.label ?? option.value;
-}
-
-function isValueEqual(leftValue: unknown, rightValue: unknown): boolean {
-  if (leftValue === rightValue) {
-    return true;
-  }
-
-  const normalizedLeftValue = normalizeText(leftValue);
-  const normalizedRightValue = normalizeText(rightValue);
-
-  return normalizedLeftValue !== '' && normalizedLeftValue === normalizedRightValue;
-}
-
-function areOptionsEqual(
-  leftOption: MultiSelectFieldOption,
-  rightOption: MultiSelectFieldOption,
-): boolean {
-  if (leftOption.id && rightOption.id) {
-    return leftOption.id === rightOption.id;
-  }
-
-  return (
-    isValueEqual(getOptionModelValue(leftOption), getOptionModelValue(rightOption)) ||
-    isValueEqual(leftOption.label, rightOption.label)
-  );
-}
-
 function getOptionId(index: number): string {
   return `${id}-option-${index}`;
 }
 
-function getOptionKey(option: MultiSelectFieldOption, index: number): string {
+function getOptionKey(option: MultiSelectFieldOption<unknown>, index: number): string {
   return option.id ?? `${option.label}-${index}`;
 }
 
-function isOptionSelected(option: MultiSelectFieldOption): boolean {
-  return getModelValues().some((value) => {
-    if (option.value !== undefined && isValueEqual(option.value, value)) {
-      return true;
-    }
-
-    return isValueEqual(option.label, value);
-  });
+function isOptionSelected(option: MultiSelectFieldOption<unknown>): boolean {
+  return isSelectOptionSelected(option, selectedValueIndex.value, valueMode);
 }
 
 function getFirstEnabledIndex(): number {
@@ -348,12 +360,13 @@ function syncCurrentIndex(): void {
   currentIndex.value = getFirstEnabledIndex();
 }
 
-function scrollActiveOptionIntoView(): void {
+async function scrollActiveOptionIntoView(): Promise<void> {
+  await revealActive();
   if (!currentOption.value) {
     return;
   }
 
-  document.getElementById(activeDescendantId.value ?? '')?.scrollIntoView({
+  document.getElementById(activeDescendantId.value ?? '')?.scrollIntoView?.({
     block: 'nearest',
   });
 }
@@ -364,28 +377,6 @@ function restoreListboxScrollPosition(scrollTop: number | null): void {
   }
 
   listboxReference.value.scrollTop = scrollTop;
-}
-
-function commitSelectedOptions(
-  nextSelectedOptions: MultiSelectFieldOption[],
-  currentListboxScrollTop: number | null,
-): void {
-  skipNextAutoScrollSync.value = true;
-  modelValue.value = nextSelectedOptions.map((selectedOption) =>
-    getOptionModelValue(selectedOption),
-  );
-
-  void nextTick(() => {
-    restoreListboxScrollPosition(currentListboxScrollTop);
-  });
-}
-
-function orderSelectedOptions(
-  selectedCandidates: MultiSelectFieldOption[],
-): MultiSelectFieldOption[] {
-  return options.filter((option) =>
-    selectedCandidates.some((candidate) => areOptionsEqual(candidate, option)),
-  );
 }
 
 function getEstimatedPopoverHeight(): number {
@@ -419,11 +410,12 @@ function syncPopoverPlacement(): void {
 
   const rect = inputReference.value.getBoundingClientRect();
   const estimatedPopoverHeight = getEstimatedPopoverHeight() + 5;
-  const availableAbove = rect.top;
-  const availableBelow = window.innerHeight - rect.bottom;
-
-  popoverPlacement.value =
-    availableBelow >= estimatedPopoverHeight || availableBelow >= availableAbove ? 'bottom' : 'top';
+  popoverPlacement.value = resolveSelectPlacement(
+    rect,
+    estimatedPopoverHeight,
+    window.innerHeight,
+    placement ?? 'bottom',
+  );
 }
 
 function openSelect(): void {
@@ -445,7 +437,7 @@ async function handlePopoverState(open: boolean): Promise<void> {
 
     syncCurrentIndex();
     await nextTick();
-    scrollActiveOptionIntoView();
+    void scrollActiveOptionIntoView();
     return;
   }
 
@@ -454,48 +446,21 @@ async function handlePopoverState(open: boolean): Promise<void> {
   searchPhrase.value = '';
 }
 
-function toggleOption(option: MultiSelectFieldOption): void {
-  if (!option || option.disabled || disabled || readonly) {
-    return;
-  }
+function commitToggle(candidates: MultiSelectFieldOption<unknown>[]): void {
+  if (disabled || readonly) return;
+  const scrollTop = listboxReference.value?.scrollTop ?? null;
+  skipNextAutoScrollSync.value = true;
+  modelValue.value = toggleSelectValues(getModelValues(), candidates, valueMode);
+  void nextTick(() => restoreListboxScrollPosition(scrollTop));
+}
 
-  const currentListboxScrollTop = listboxReference.value?.scrollTop ?? null;
-
-  const nextSelectedOptions = selectedOptions.value.filter(
-    (selectedOption) => !areOptionsEqual(selectedOption, option),
-  );
-
-  if (!isOptionSelected(option)) {
-    nextSelectedOptions.push(option);
-  }
-
-  commitSelectedOptions(orderSelectedOptions(nextSelectedOptions), currentListboxScrollTop);
+function toggleOption(option: MultiSelectFieldOption<unknown>): void {
+  if (!option || option.disabled) return;
+  commitToggle([option]);
 }
 
 function toggleAllOptions(): void {
-  if (disabled || readonly || selectableFilteredOptions.value.length === 0) {
-    return;
-  }
-
-  const currentListboxScrollTop = listboxReference.value?.scrollTop ?? null;
-
-  const nextSelectedOptions = areAllFilteredOptionsSelected.value
-    ? selectedOptions.value.filter(
-        (selectedOption) =>
-          !selectableFilteredOptions.value.some((option) =>
-            areOptionsEqual(option, selectedOption),
-          ),
-      )
-    : selectedOptions.value.concat(
-        selectableFilteredOptions.value.filter(
-          (option) =>
-            !selectedOptions.value.some((selectedOption) =>
-              areOptionsEqual(option, selectedOption),
-            ),
-        ),
-      );
-
-  commitSelectedOptions(orderSelectedOptions(nextSelectedOptions), currentListboxScrollTop);
+  commitToggle(selectableFilteredOptions.value);
 }
 
 function toggleOptionByIndex(index: number): void {
@@ -652,9 +617,14 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
     @update:open="handlePopoverState"
   >
     <FormField
+      :aria-label="attrs['aria-label']"
+      :aria-labelledby="attrs['aria-labelledby']"
+      :aria-describedby="attrs['aria-describedby']"
+      :aria-invalid="nativeInvalid || attrs['aria-invalid']"
       :after
       :before
       :can-erase="canErase"
+      :clear-label="resolvedLabels.clear"
       :disabled
       iconAfter="arrow"
       :iconBefore
@@ -676,6 +646,12 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
         <input
           ref="inputReference"
           v-bind="{ ...bindings, ...fieldProps }"
+          :name="undefined"
+          :required="false"
+          @invalid="
+            nativeInvalid = true;
+            focusInvalidSelect($event, inputReference);
+          "
           :class="inputClass"
           :readonly="inputIsReadonly"
           :style="fieldProps.style as StyleValue"
@@ -691,6 +667,29 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
           @keydown.end.stop="handleEnd"
           @keydown.tab="handleTab"
         />
+        <select
+          aria-hidden="true"
+          :tabindex="-1"
+          class="peaui-form-field__native-select"
+          :name="name"
+          :form="typeof attrs.form === 'string' ? attrs.form : undefined"
+          :disabled="disabled"
+          :required="required && !readonly"
+          multiple
+          @invalid="
+            nativeInvalid = true;
+            focusInvalidSelect($event, inputReference);
+          "
+        >
+          <option
+            v-for="(entry, index) in formValues"
+            :key="`${index}:${entry}`"
+            :value="entry"
+            selected
+          >
+            {{ entry }}
+          </option>
+        </select>
       </template>
 
       <template v-if="slots.description" #description>
@@ -707,7 +706,7 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
     </FormField>
 
     <template #content>
-      <div :class="`${classNameComponent}__panel`">
+      <div v-if="isOpen" :class="`${classNameComponent}__panel`">
         <button
           v-if="showSelectAllAction"
           ref="selectAllButtonReference"
@@ -730,12 +729,23 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
           :aria-label="listboxAriaLabel"
           :aria-labelledby="listboxLabelledBy"
           aria-multiselectable="true"
+          @scroll="handleScroll"
           role="listbox"
           tabindex="-1"
           :data-testid="listboxTestId"
         >
           <li
-            v-for="(option, index) in filteredOptions"
+            v-if="beforeSize"
+            role="presentation"
+            aria-hidden="true"
+            :style="{ height: `${beforeSize}px` }"
+          />
+          <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/mouse-events-have-key-events -- The combobox input owns focus and keyboard selection; pointer hover only changes its active descendant. -->
+          <li
+            v-for="{ item: option, index } in visibleOptions"
+            :style="optionStyle"
+            :aria-setsize="virtual ? filteredOptions.length : undefined"
+            :aria-posinset="virtual ? index + 1 : undefined"
             :id="getOptionId(index)"
             :key="getOptionKey(option, index)"
             :class="[
@@ -781,6 +791,12 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
               </template>
             </InfoTooltip>
           </li>
+          <li
+            v-if="afterSize"
+            role="presentation"
+            aria-hidden="true"
+            :style="{ height: `${afterSize}px` }"
+          />
         </ul>
 
         <p
@@ -790,7 +806,7 @@ function handleSelectAllActionTab(event: KeyboardEvent): void {
           aria-live="polite"
           :data-testid="emptyStateTestId"
         >
-          - brak wynikow -
+          {{ resolvedLabels.empty }}
         </p>
       </div>
     </template>

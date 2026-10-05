@@ -13,7 +13,7 @@ function getControlLabel(item: StoryPropItem): string {
     return "tylko kod";
   }
 
-  const controlType = typeof control === "string" ? control : control?.type;
+  const controlType = typeof control === "string" ? control : (typeof control === "object" ? control?.type : undefined);
 
   if (Array.isArray(item.options) && item.options.length > 0) {
     return `${controlType || "select"} (${item.options.length})`;
@@ -25,7 +25,7 @@ function getControlLabel(item: StoryPropItem): string {
 
 <template>
   <div class="story-props">
-    <div v-if="propsList.length > 0" class="story-props__table-wrapper">
+    <div v-if="propsList.length > 0" class="story-props__table-wrapper" tabindex="0" role="region" aria-label="API komponentu">
       <table class="story-props__table">
         <thead>
           <tr>

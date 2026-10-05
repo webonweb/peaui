@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 
 const GRID_ITEM_TAG_NAME = `${UIKIT_NAME}-grid-item`;
@@ -86,6 +87,7 @@ export class GridItemElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -102,7 +104,8 @@ export class GridItemElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -119,7 +122,7 @@ export class GridItemElement extends HTMLElement {
   }
 
   get columns(): number | undefined {
-    return getNumberAttributeValue(this, 'columns');
+    return getNumberAttributeValue(this, 'columns') ?? 2;
   }
 
   set columns(value: number | null | undefined) {

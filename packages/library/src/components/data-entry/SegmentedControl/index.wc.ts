@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import SegmentedControlVueComponent, { type SegmentedControlModelValue } from './index.vue';
 
-const SegmentedControlVueElement = createVueCustomElement(
-  SegmentedControlVueComponent,
-  `${UIKIT_NAME}-segmented-control`,
-);
+const SegmentedControlVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(SegmentedControlVueComponent, `${UIKIT_NAME}-segmented-control`);
 
 /** Light-DOM custom element exposing the same controlled value as Vue and React. */
 export class SegmentedControlElement extends SegmentedControlVueElement {

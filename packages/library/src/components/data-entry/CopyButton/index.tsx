@@ -1,7 +1,8 @@
 /** @jsxImportSource react */
 import type { CSSProperties, ReactElement, ReactNode, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { CopyButtonRuntimeRenderer } from '@/react/renderer-entries/copy-button.renderer-entry';
 
 import type {
   CopyButtonContent,
@@ -61,7 +62,7 @@ export type {
   CopyButtonVariant,
 } from './copy-button.shared';
 
-const CopyButtonBase = createPeauiReactComponent('CopyButton');
+const CopyButtonBase = createDirectReactComponent('CopyButton', CopyButtonRuntimeRenderer);
 const CopyButton = CopyButtonBase as unknown as (
   props: CopyButtonProps & RefAttributes<HTMLElement>,
 ) => ReactElement | null;

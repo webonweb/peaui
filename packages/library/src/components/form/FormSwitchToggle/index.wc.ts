@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormSwitchToggleVueComponent from './index.vue';
 
-const FormSwitchToggleVueElement = createVueCustomElement(
-  FormSwitchToggleVueComponent,
-  `${UIKIT_NAME}-form-switch-toggle`,
-);
+const FormSwitchToggleVueElement = createVueCustomElement<
+  Omit<
+    Parameters<typeof PublicVueComponent>[0],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormSwitchToggleVueComponent, `${UIKIT_NAME}-form-switch-toggle`);
 
 /**
  * A native custom element keeps its public `value` property in sync after a

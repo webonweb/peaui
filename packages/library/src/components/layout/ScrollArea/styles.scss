@@ -15,7 +15,7 @@ peaui-scroll-area {
   min-block-size: 0;
   overflow: hidden;
   border: 1px solid var(--peaui-color-grey-200);
-  border-radius: 0.75rem;
+  border-radius: var(--peaui-radius-lg);
   background: var(--peaui-color-grey-0);
   color: var(--peaui-color-grey-900);
   container-type: inline-size;

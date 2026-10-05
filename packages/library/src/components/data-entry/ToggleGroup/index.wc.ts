@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import ToggleGroupVueComponent, { type ToggleGroupModelValue } from './index.vue';
 
-const ToggleGroupVueElement = createVueCustomElement(
-  ToggleGroupVueComponent,
-  `${UIKIT_NAME}-toggle-group`,
-);
+const ToggleGroupVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ToggleGroupVueComponent, `${UIKIT_NAME}-toggle-group`);
 
 /** Light-DOM custom element with a reflected controlled value property. */
 export class ToggleGroupElement extends ToggleGroupVueElement {

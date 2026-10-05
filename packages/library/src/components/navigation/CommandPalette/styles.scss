@@ -1,0 +1,248 @@
+@use '@/assets/mixins.scss' as *;
+
+.peaui-command-palette {
+  inline-size: min(42rem, calc(100vw - 2rem));
+  max-inline-size: 100%;
+  color: var(--peaui-color-grey-900);
+
+  &--embedded {
+    overflow: hidden;
+    background: var(--peaui-color-grey-0);
+    border: 1px solid var(--peaui-color-grey-200);
+    border-radius: var(--peaui-radius-lg);
+    box-shadow: var(--shadow-m);
+  }
+
+  &__embedded-header {
+    padding: 1rem 1.25rem 0;
+    font-weight: 700;
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    inline-size: min(42rem, calc(100vw - 2rem));
+    max-inline-size: 100%;
+    max-block-size: min(80dvh, 40rem);
+    overflow: hidden;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--peaui-color-grey-0) 94%, transparent),
+        var(--peaui-color-grey-0)
+      ),
+      radial-gradient(circle at 90% 0, var(--peaui-color-primary-50), transparent 45%);
+  }
+
+  &__breadcrumb {
+    padding: 0.75rem 1rem 0;
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--peaui-space-2);
+    max-inline-size: 100%;
+    padding: 0.375rem 0.5rem;
+    overflow: hidden;
+    color: var(--peaui-color-grey-700);
+    font: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--peaui-color-primary-700);
+      outline-offset: 2px;
+    }
+  }
+
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 1rem;
+  }
+
+  &__search-icon {
+    position: absolute;
+    inset-inline-start: 1rem;
+    z-index: 1;
+    color: var(--peaui-color-grey-500);
+    pointer-events: none;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 3rem;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    color: var(--peaui-color-grey-900);
+    font: inherit;
+    background: var(--peaui-color-grey-0);
+    border: 1px solid var(--peaui-color-grey-300);
+    border-radius: 0.625rem;
+    outline: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--peaui-color-primary-700);
+      outline-offset: 2px;
+      border-color: var(--peaui-color-primary-500);
+    }
+  }
+
+  .peaui-search-input {
+    inline-size: auto;
+    margin: 1rem;
+
+    &__button {
+      display: none;
+    }
+
+    &__field {
+      inline-size: 100%;
+    }
+  }
+
+  &__status {
+    @include sr-only;
+  }
+
+  &__list {
+    padding: 0 0.625rem 0.75rem;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  &__group + &__group {
+    margin-block-start: 0.5rem;
+    padding-block-start: 0.5rem;
+    border-block-start: 1px solid var(--peaui-color-grey-100);
+  }
+
+  &__group-label {
+    padding: 0.5rem 0.625rem;
+    color: var(--peaui-color-grey-600);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__command {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--peaui-space-3);
+    min-block-size: 3.5rem;
+    padding: 0.625rem 0.75rem;
+    color: var(--peaui-color-grey-900);
+    border-radius: var(--peaui-radius-md);
+    cursor: pointer;
+    user-select: none;
+
+    &--active {
+      color: var(--peaui-color-primary-900);
+      background: var(--peaui-color-primary-50);
+      box-shadow: inset 3px 0 0 var(--peaui-color-primary-500);
+    }
+
+    &--disabled {
+      color: var(--peaui-color-grey-500);
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+  }
+
+  &__command-copy {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-inline-size: 0;
+
+    strong,
+    small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    small {
+      margin-block-start: 0.125rem;
+      color: var(--peaui-color-grey-600);
+    }
+  }
+
+  &__executing {
+    color: var(--peaui-color-primary-700);
+    font-size: 0.75rem;
+  }
+
+  &__state {
+    display: grid;
+    min-block-size: 12rem;
+    place-items: center;
+    padding: 1.5rem;
+    overflow: auto;
+  }
+
+  &__footer {
+    padding: 0.75rem 1rem;
+    color: var(--peaui-color-grey-600);
+    font-size: 0.8125rem;
+    border-block-start: 1px solid var(--peaui-color-grey-100);
+  }
+
+  .peaui-virtual-list__item {
+    padding-inline: 0.625rem;
+  }
+}
+
+.peaui-modal-dialog:has(.peaui-command-palette__panel) {
+  padding: 0;
+
+  .peaui-modal-dialog__inner {
+    max-inline-size: min(42rem, calc(100vw - 2rem));
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .peaui-modal-dialog__header {
+    @include sr-only;
+  }
+}
+
+@media (max-width: 40rem) {
+  .peaui-command-palette,
+  .peaui-command-palette__panel {
+    inline-size: 100%;
+    max-block-size: 100dvh;
+  }
+
+  .peaui-modal-dialog:has(.peaui-command-palette__panel) {
+    inline-size: 100vw;
+    max-inline-size: none;
+    block-size: 100dvh;
+    max-block-size: none;
+    margin: 0;
+
+    .peaui-modal-dialog__inner {
+      inline-size: 100%;
+      max-inline-size: none;
+      block-size: 100%;
+      border-radius: 0;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .peaui-command-palette__command--active {
+    color: HighlightText;
+    background: Highlight;
+    outline: 1px solid Highlight;
+  }
+}

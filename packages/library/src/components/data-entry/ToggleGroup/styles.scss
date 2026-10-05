@@ -33,7 +33,7 @@ peaui-toggle-group {
   max-inline-size: 100%;
   min-inline-size: 0;
   align-items: stretch;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-toggle-group--vertical {
@@ -128,7 +128,7 @@ peaui-toggle-group {
 }
 
 .peaui-toggle-group--invalid {
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   outline: 2px solid transparent;
 }
 

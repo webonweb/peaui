@@ -127,7 +127,7 @@ const usesRootSemantics = computed(
 const accessibleName = computed(
   () =>
     externalAriaLabel.value ??
-    normalizedAlt.value ??
+    (normalizedAlt.value || undefined) ??
     normalizedName.value ??
     (resolvedInitials.value || DEFAULT_ACCESSIBLE_NAME),
 );

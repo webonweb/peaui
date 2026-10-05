@@ -70,3 +70,16 @@ export const VerticalMobile: Story = {
     return wrapper;
   },
 };
+
+export const Virtualized: Story = {
+  args: {
+    virtual: true,
+    optionHeight: 64,
+    items: Array.from({ length: 5000 }, (_, value) => ({
+      key: value,
+      value,
+      label: `Option ${value}`,
+    })),
+    value: [0, 1],
+  },
+};

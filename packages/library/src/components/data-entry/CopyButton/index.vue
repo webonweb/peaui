@@ -91,7 +91,7 @@ const emit = defineEmits<{
   (event: 'statusChange', status: CopyButtonStatus): void;
 }>();
 
-const slots = defineSlots<{
+defineSlots<{
   default?(props: CopyButtonStatusSlotState): unknown;
   icon?(props: CopyButtonStatusSlotState): unknown;
   'copied-icon'?(props: CopyButtonStatusSlotState): unknown;

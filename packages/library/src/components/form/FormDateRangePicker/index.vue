@@ -68,6 +68,7 @@ export type {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
+import { useFormControlReset } from '@/composables/useFormControlReset';
 import {
   computed,
   getCurrentInstance,
@@ -163,6 +164,10 @@ const openModel = defineModel<boolean>('open', { default: false });
 const classNameComponent = `${UIKIT_NAME}-form-date-range-picker`;
 const popoverReference = ref<PopoverReference>();
 const triggerReference = ref<HTMLElement>();
+useFormControlReset(triggerReference, () => {
+  touched.value = false;
+  syncDraft(modelValue.value);
+});
 const activeDayReference = ref<HTMLElement>();
 const isOpen = ref(false);
 const touched = ref(false);
@@ -179,13 +184,11 @@ const popoverPlacement = ref<FormDateRangePickerPlacement>(props.placement);
 const availablePanelHeight = ref(640);
 
 const blocked = computed(() => props.disabled || props.readonly || props.loading);
-const validationOptions = computed(
-  (): DateRangeValidationOptions => ({
-    isDateDisabled: props.isDateDisabled,
-    maxDate: props.maxDate,
-    minDate: props.minDate,
-  }),
-);
+const validationOptions = computed((): DateRangeValidationOptions => ({
+  isDateDisabled: props.isDateDisabled,
+  maxDate: props.maxDate,
+  minDate: props.minDate,
+}));
 const formatOptions = computed(() => ({
   dateFormat: props.dateFormat,
   format: props.format,
@@ -538,6 +541,8 @@ function getInputBindings(
     ...forwarded,
     ...fieldProps,
     id: inputId,
+    // Localized display text is not a second submitted model; hidden endpoints own FormData.
+    name: undefined,
     'aria-busy': props.loading || undefined,
     'aria-controls': panelId.value,
     'aria-describedby': [getFieldDescription(fieldProps), statusId.value].filter(Boolean).join(' '),
@@ -614,6 +619,9 @@ watch(openModel, (next) => {
               type="text"
               role="combobox"
               aria-autocomplete="none"
+              :aria-controls="panelId"
+              :aria-expanded="isOpen"
+              aria-haspopup="dialog"
               autocomplete="off"
               :disabled="props.disabled || props.loading"
               :placeholder="resolvedPlaceholder"
@@ -647,6 +655,9 @@ watch(openModel, (next) => {
                   type="text"
                   role="combobox"
                   aria-autocomplete="none"
+                  :aria-controls="panelId"
+                  :aria-expanded="isOpen"
+                  aria-haspopup="dialog"
                   autocomplete="off"
                   :disabled="props.disabled || props.loading"
                   :placeholder="props.startPlaceholder || resolvedDatePlaceholder"
@@ -670,6 +681,9 @@ watch(openModel, (next) => {
                   type="text"
                   role="combobox"
                   aria-autocomplete="none"
+                  :aria-controls="panelId"
+                  :aria-expanded="isOpen"
+                  aria-haspopup="dialog"
                   autocomplete="off"
                   :disabled="props.disabled || props.loading"
                   :placeholder="props.endPlaceholder || resolvedDatePlaceholder"
@@ -695,8 +709,18 @@ watch(openModel, (next) => {
           {{ props.loadingLabel }}
         </span>
       </slot>
-      <input type="hidden" :name="`${props.name}.start`" :value="modelValue?.[0] || ''" />
-      <input type="hidden" :name="`${props.name}.end`" :value="modelValue?.[1] || ''" />
+      <input
+        type="hidden"
+        :disabled="disabled"
+        :name="`${props.name}.start`"
+        :value="modelValue?.[0] || ''"
+      />
+      <input
+        type="hidden"
+        :disabled="disabled"
+        :name="`${props.name}.end`"
+        :value="modelValue?.[1] || ''"
+      />
     </div>
 
     <template #content>

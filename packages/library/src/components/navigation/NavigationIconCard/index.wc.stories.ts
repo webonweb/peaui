@@ -38,3 +38,32 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const Disabled: Story = {
+  args: { icon: 'home', text: 'Unavailable', path: '' },
+  parameters: {
+    docs: {
+      description: {
+        story: 'An empty path exposes a disabled named link outside the Tab order.',
+      },
+    },
+  },
+};
+
+export const DownloadLink: Story = {
+  render: () => {
+    const element = renderVueCustomElementStory(NavigationIconCardElement.tagName, {
+      path: '#report',
+      icon: 'home',
+      text: 'Download report',
+    });
+    element.replaceChildren();
+    for (const [key, value] of Object.entries({
+      target: '_blank',
+      rel: 'noopener',
+      download: 'report.txt',
+    }))
+      element.setAttribute(key, value);
+    return element;
+  },
+};

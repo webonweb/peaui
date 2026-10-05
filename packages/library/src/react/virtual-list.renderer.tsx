@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import {
   useEffect,
+  useLayoutEffect,
   useId,
   useImperativeHandle,
   useMemo,
@@ -18,6 +19,7 @@ import {
   areVirtualListRangesEqual,
   calculateVirtualListRange,
   getVirtualListScrollOffset,
+  getVirtualListAnchorOffset,
   isVirtualListHeightValid,
   normalizeVirtualListHeight,
   normalizeVirtualListItems,
@@ -158,19 +160,26 @@ export function VirtualListRenderer({
   const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<number | null>(
     props.defaultActiveIndex ?? null,
   );
-  const items = Array.isArray(props.items) ? props.items : [];
-  const itemSize = normalizeVirtualListItemSize(props.itemSize ?? 64);
+  const items = useMemo<readonly VirtualListItem[]>(() => props.items ?? [], [props.items]);
+  const rawItemSize = props.itemSize;
+  const rawHeight = props.height;
+  const onActiveIndexChange = props.onActiveIndexChange;
+  const onMeasureError = props.onMeasureError;
+  const controlledActiveIndex = props.activeIndex;
+  const itemSize = normalizeVirtualListItemSize(rawItemSize ?? 64);
   const overscan = normalizeVirtualListOverscan(props.overscan ?? 4);
   const role = props.semanticRole ?? 'list';
   const ariaLabel = props.ariaLabel?.trim() || 'Lista wirtualna';
   const isLoading = props.loading === true;
   const hasMore = props.hasMore === true;
   const hasError = typeof props.error === 'string' && props.error.length > 0;
-  const activeIndex = props.activeIndex === undefined ? uncontrolledActiveIndex : props.activeIndex;
+  const activeIndex =
+    controlledActiveIndex === undefined ? uncontrolledActiveIndex : controlledActiveIndex;
   const resolvedItems = useMemo(
     () => normalizeVirtualListItems(items, props.itemKey ?? 'id', props.itemLabel ?? 'label'),
     [items, props.itemKey, props.itemLabel],
   );
+  const previousItemsRef = useRef(resolvedItems);
   const range = calculateVirtualListRange({
     itemCount: resolvedItems.length,
     itemSize,
@@ -259,24 +268,54 @@ export function VirtualListRenderer({
       behavior,
     );
   };
+  const rangeActionsRef = useRef({
+    emitRangeIfChanged,
+    maybeReachEnd,
+    range,
+    scrollOffset,
+    scrollToOffset,
+  });
+  rangeActionsRef.current = {
+    emitRangeIfChanged,
+    maybeReachEnd,
+    range,
+    scrollOffset,
+    scrollToOffset,
+  };
 
-  useImperativeHandle(
-    forwardedRef,
-    (): VirtualListHandle => ({
-      get viewport() {
-        return scrollAreaRef.current?.viewport ?? null;
-      },
-      getVisibleRange() {
-        return { ...range };
-      },
-      scrollToIndex,
-      scrollToOffset,
-    }),
-  );
+  useImperativeHandle(forwardedRef, (): VirtualListHandle => ({
+    get viewport() {
+      return scrollAreaRef.current?.viewport ?? null;
+    },
+    getVisibleRange() {
+      return { ...range };
+    },
+    scrollToIndex,
+    scrollToOffset,
+  }));
+
+  useLayoutEffect(() => {
+    reachedEndForCountRef.current = -1;
+  }, [resolvedItems.length]);
+
+  useLayoutEffect(() => {
+    const previous = previousItemsRef.current;
+    previousItemsRef.current = resolvedItems;
+    if (previous === resolvedItems) return;
+    const actions = rangeActionsRef.current;
+    const offset = getVirtualListAnchorOffset(
+      previous,
+      resolvedItems,
+      actions.scrollOffset,
+      itemSize,
+    );
+    if (offset !== actions.scrollOffset) actions.scrollToOffset(offset);
+  }, [resolvedItems, itemSize]);
 
   useEffect(() => {
-    emitRangeIfChanged(range);
-    maybeReachEnd(range);
+    const actions = rangeActionsRef.current;
+    actions.emitRangeIfChanged(actions.range);
+    actions.maybeReachEnd(actions.range);
   }, [
     range.endIndex,
     range.startIndex,
@@ -286,30 +325,29 @@ export function VirtualListRenderer({
   ]);
 
   useEffect(() => {
-    reachedEndForCountRef.current = -1;
     if (activeIndex !== null && activeIndex >= resolvedItems.length) {
       const next = resolvedItems.length > 0 ? resolvedItems.length - 1 : null;
-      if (props.activeIndex === undefined) setUncontrolledActiveIndex(next);
-      props.onActiveIndexChange?.(next);
+      if (controlledActiveIndex === undefined) setUncontrolledActiveIndex(next);
+      onActiveIndexChange?.(next);
     }
-  }, [resolvedItems.length]);
+  }, [activeIndex, controlledActiveIndex, onActiveIndexChange, resolvedItems.length]);
 
   useEffect(() => {
-    if (normalizeVirtualListItemSize(props.itemSize ?? 64) !== (props.itemSize ?? 64)) {
-      props.onMeasureError?.({
+    if (normalizeVirtualListItemSize(rawItemSize ?? 64) !== (rawItemSize ?? 64)) {
+      onMeasureError?.({
         message: 'itemSize musi być dodatnią, skończoną liczbą.',
         property: 'itemSize',
-        value: props.itemSize,
+        value: rawItemSize,
       });
     }
-    if (!isVirtualListHeightValid(props.height ?? 320)) {
-      props.onMeasureError?.({
+    if (!isVirtualListHeightValid(rawHeight ?? 320)) {
+      onMeasureError?.({
         message: 'height musi być dodatnią liczbą albo poprawnym rozmiarem CSS.',
         property: 'height',
-        value: props.height,
+        value: rawHeight,
       });
     }
-  }, [props.height, props.itemSize]);
+  }, [onMeasureError, rawHeight, rawItemSize]);
 
   const handleScroll = (position: ScrollAreaPosition): void => {
     const nextOffset = position.y;
@@ -445,6 +483,7 @@ export function VirtualListRenderer({
             },
           };
           return (
+            // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- The owning listbox handles keyboard selection with aria-activedescendant.
             <div
               aria-posinset={item.index + 1}
               aria-selected={role === 'listbox' ? activeIndex === item.index : undefined}

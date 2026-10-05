@@ -94,6 +94,8 @@
 
 .peaui-search-input__erase-button {
   @include unset-safe;
+  min-inline-size: var(--peaui-target-min, 24px);
+  min-block-size: var(--peaui-target-min, 24px);
 
   position: absolute;
   top: 50%;

@@ -14,3 +14,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const Closable: Story = {
+  args: { title: 'Zapisano', description: 'Zmiany zostały zapisane.', canClose: true },
+};
+
+export const WithShadow: Story = { args: { withShadow: true } };
+
+export const WithBorder: Story = { args: { withBorder: true } };

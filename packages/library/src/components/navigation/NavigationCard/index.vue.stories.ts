@@ -221,3 +221,11 @@ export const Sizes: Story = {
     `,
   }),
 };
+
+export const DownloadLink: Story = {
+  render: () => ({
+    components: { NavigationCardComponent },
+    template:
+      '<NavigationCardComponent path="#report" title="Download report" description="Report file" target="_blank" rel="noopener" download="report.txt" />',
+  }),
+};

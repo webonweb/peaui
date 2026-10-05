@@ -60,8 +60,8 @@ const messages = {
   'common.invalidJson': { en: 'Invalid JSON', pl: 'Niepoprawny JSON' },
   'home.version': { en: 'Documentation v{version}', pl: 'Dokumentacja v{version}' },
   'home.title': {
-    en: 'One UI system. Three native integrations.',
-    pl: 'Jeden system UI. Trzy natywne integracje.',
+    en: 'One UI system for Vue, React and Web Components.',
+    pl: 'Jeden system UI dla Vue, React i Web Components.',
   },
   'home.intro': {
     en: 'Accessible, fully typed and customizable components for Vue, React and Web Components — powered by one consistent design system.',
@@ -84,8 +84,8 @@ const messages = {
     pl: 'Wybierz technologię, aby dopasować linki dokumentacji',
   },
   'home.frameworkChoiceHint': {
-    en: 'No choice yet — the documentation links will take you to the technology section.',
-    pl: 'Nie wybrano jeszcze technologii — linki dokumentacji prowadzą do sekcji wyboru.',
+    en: 'Choose a technology to include its required runtime in the installation command and open its documentation.',
+    pl: 'Wybierz technologię, aby dodać wymagany runtime do polecenia instalacji i otworzyć właściwą dokumentację.',
   },
   'home.frameworkSelected': {
     en: '{framework} documentation selected.',
@@ -136,8 +136,8 @@ const messages = {
   'home.availableIcons': { en: 'available icons', pl: 'dostępnych ikon' },
   'home.integrationEyebrow': { en: 'Technology', pl: 'Technologia' },
   'home.integrationTitle': {
-    en: 'Choose your native integration',
-    pl: 'Wybierz natywną integrację',
+    en: 'Choose your integration',
+    pl: 'Wybierz integrację',
   },
   'home.integrationDescription': {
     en: 'Each integration uses the same design system while keeping the API natural for its ecosystem.',

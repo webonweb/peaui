@@ -23,11 +23,7 @@ export type FormTagsInputSuggestionProvider = (
 ) => Promise<readonly FormTagsInputTag[]>;
 
 export type FormTagsInputInvalidReason =
-  | 'duplicate'
-  | 'empty'
-  | 'invalid'
-  | 'max'
-  | 'suggestion-only';
+  'duplicate' | 'empty' | 'invalid' | 'max' | 'suggestion-only';
 
 export type FormTagsInputInvalidDetail = {
   input: string;
@@ -116,6 +112,21 @@ export function areTagsInputTagsEqual(
   getTagKey?: FormTagsInputKeyGetter,
 ): boolean {
   return Object.is(getTagsInputKey(left, 0, getTagKey), getTagsInputKey(right, 0, getTagKey));
+}
+
+const negativeZeroKey = Symbol('negative-zero-tag-key');
+
+/** Indexes the same identities as areTagsInputTagsEqual, including Object.is(-0, 0). */
+export function createTagsInputMatcher(
+  tags: readonly FormTagsInputTag[],
+  getTagKey?: FormTagsInputKeyGetter,
+): (tag: FormTagsInputTag) => boolean {
+  const keyFor = (tag: FormTagsInputTag): string | number | symbol => {
+    const key = getTagsInputKey(tag, 0, getTagKey);
+    return Object.is(key, -0) ? negativeZeroKey : key;
+  };
+  const keys = new Set(tags.map(keyFor));
+  return (tag) => keys.has(keyFor(tag));
 }
 
 export function commitTagsInput(

@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -7,10 +8,12 @@ import {
 import FormDateTimePickerVueComponent from './index.ce.vue';
 import type { LocalDateTimeValue } from './date-time-picker.shared';
 
-const FormDateTimePickerVueElement = createVueCustomElement(
-  FormDateTimePickerVueComponent,
-  `${UIKIT_NAME}-form-date-time-picker`,
-);
+const FormDateTimePickerVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormDateTimePickerVueComponent, `${UIKIT_NAME}-form-date-time-picker`);
 
 /** Light-DOM custom element preserving the Vue FormDateTimePicker contract. */
 export class FormDateTimePickerElement extends FormDateTimePickerVueElement {

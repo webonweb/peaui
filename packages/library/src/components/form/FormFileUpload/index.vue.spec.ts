@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import { defineComponent, h, nextTick, ref } from 'vue';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -74,13 +74,11 @@ function createFileList(files: File[]): FileList {
 }
 
 function mountComponent(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormFileUpload, {
+  const wrapper = mount(FormFileUpload, {
     props: {
       file: undefined,
       dataTestId: 'form-file-upload',
-      'onUpdate:file': async (file: unknown) => {
+      'onUpdate:file': async (file: InstanceType<typeof FormFileUpload>['$props']['file']) => {
         await wrapper.setProps({ file });
       },
       ...props,
@@ -107,11 +105,11 @@ describe('FormFileUpload (index.vue)', () => {
     expect(wrapper.get('[data-testid="form-file-upload"]').classes()).toContain(
       'peaui-form-file-upload',
     );
-    expect(wrapper.get('[data-testid="form-file-upload-dropzone"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-file-upload-dropzone"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="form-file-upload-button"]').attributes('data-size')).toBe(
       'xs',
     );
-    expect(wrapper.get('[data-icon="imageUpload"]').exists()).toBe(true);
+    expect(wrapper.find('[data-icon="imageUpload"]').exists()).toBe(true);
 
     const input = wrapper.get('[data-testid="form-file-upload-input"]');
 
@@ -136,7 +134,7 @@ describe('FormFileUpload (index.vue)', () => {
     expect(wrapper.get('[data-testid="form-file-upload-message"]').text()).toContain(
       ERROR_MESSAGES.photoFormat,
     );
-    expect(wrapper.get('[data-icon="help"]').exists()).toBe(true);
+    expect(wrapper.find('[data-icon="help"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="form-file-upload-input"]').attributes('aria-invalid')).toBe(
       'true',
     );
@@ -153,6 +151,7 @@ describe('FormFileUpload (index.vue)', () => {
     });
 
     await input.trigger('change');
+    await flushPromises();
 
     expect(wrapper.emitted('update:file')?.[0]?.[0]).toEqual(
       expect.objectContaining({
@@ -174,7 +173,7 @@ describe('FormFileUpload (index.vue)', () => {
     });
 
     expect(wrapper.get('[data-testid="form-file-upload-details"]').text()).toContain('photo.png');
-    expect(wrapper.get('[data-icon="picture"]').exists()).toBe(true);
+    expect(wrapper.find('[data-icon="picture"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="form-file-upload-image"]').attributes('src')).toBe(
       '/uploads/photo.png',
     );
@@ -238,14 +237,14 @@ describe('FormFileUpload (index.vue)', () => {
     await wrapper.get('[data-testid="form-file-upload-remove"]').trigger('click');
 
     expect(wrapper.emitted('on:remove')).toEqual([[]]);
-    expect(wrapper.get('[data-testid="form-file-upload-preview"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-file-upload-preview"]').exists()).toBe(true);
 
     await wrapper.setProps({
       file: undefined,
     });
 
     expect(wrapper.find('[data-testid="form-file-upload-preview"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="form-file-upload-dropzone"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-file-upload-dropzone"]').exists()).toBe(true);
   });
 
   it('does not bind custom keyup.enter to remove button in preview state', async () => {
@@ -259,7 +258,7 @@ describe('FormFileUpload (index.vue)', () => {
     await wrapper.get('[data-testid="form-file-upload-remove"]').trigger('keyup', { key: 'Enter' });
 
     expect(wrapper.emitted('on:remove')).toBeUndefined();
-    expect(wrapper.get('[data-testid="form-file-upload-preview"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="form-file-upload-preview"]').exists()).toBe(true);
   });
 
   it('renders danger variant message and disables interactive controls', () => {

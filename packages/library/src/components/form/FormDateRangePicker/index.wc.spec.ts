@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { defineFormDateRangePicker, FormDateRangePickerElement } from './index.wc';
 import type { DateRangePreset, DateRangeValue } from './date-range-picker.shared';
@@ -67,6 +67,13 @@ function getStart(element: TestElement): HTMLInputElement {
   return element.querySelector('[role="combobox"]') as HTMLInputElement;
 }
 
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date(2026, 7, 1, 12));
+});
+
+afterEach(() => vi.useRealTimers());
+
 afterEach(() => {
   document.body.replaceChildren();
   vi.restoreAllMocks();
@@ -82,7 +89,7 @@ describe('FormDateRangePicker Web Component', () => {
     expect(inputs).toHaveLength(2);
     expect(inputs[0]).toHaveAccessibleName('Data początkowa');
     expect(inputs[1]).toHaveAccessibleName('Data końcowa');
-    expect(inputs[0]).toHaveAttribute('aria-controls', 'report-range-wc-panel');
+    expect(inputs[0]).toHaveAttribute('aria-controls', 'report-range-wc-control-panel');
   });
 
   it('synchronizuje property value po ręcznym wpisie', async () => {

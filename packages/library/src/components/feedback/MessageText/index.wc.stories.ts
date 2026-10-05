@@ -10,16 +10,7 @@ type MessageTextStoryArgs = {
   id: string;
   ownIcon?: string;
   size?:
-    | 'xxs'
-    | 'xs'
-    | 's'
-    | 'm'
-    | 'l'
-    | 'xl'
-    | 'heading-xs'
-    | 'heading-s'
-    | 'heading-m'
-    | 'heading-l';
+    'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | 'heading-s' | 'heading-m' | 'heading-l';
   variant?: 'default' | 'info' | 'error' | 'success' | 'danger' | 'white';
   withIcon?: boolean;
 };
@@ -67,7 +58,7 @@ const meta = {
       control: { type: 'select' },
       options: ['default', 'info', 'error', 'success', 'danger', 'white'],
       description:
-        'Wariant stylu. Dla wariantow statusowych renderuje sie ikona wariantowa, a wariant white ustawia jasny tekst.',
+        'Wariant stylu. Statusy maja dopasowana ikone; white korzysta z odwracanego tokenu tekstu na powierzchni grey-900, zgodnie z motywem.',
       table: {
         type: { summary: "'info' | 'error' | 'success' | 'danger' | 'default' | 'white'" },
         defaultValue: { summary: 'default' },
@@ -133,7 +124,7 @@ function getSettings(storyMeta: Meta<MessageTextStoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };
@@ -217,8 +208,13 @@ export const WhiteVariant: Story = {
 
     wrapper.style.padding = '1.5rem';
     wrapper.style.borderRadius = '0.75rem';
-    wrapper.style.background = '#1f2937';
-    wrapper.appendChild(createMessageText(args, 'Tresc komunikatu na ciemnym tle'));
+    wrapper.style.background = 'var(--peaui-color-grey-900)';
+    wrapper.appendChild(
+      createMessageText(
+        args,
+        'Komunikat na odwroconej powierzchni; tekst i tlo grey-900 reaguja na motyw.',
+      ),
+    );
 
     return wrapper;
   }),
@@ -242,7 +238,7 @@ export const Variants: Story = {
       preview.appendChild(
         createMessageText(
           {
-            id: 'message-text-variants',
+            id: `message-text-variants-${item.variant}`,
             size: 's',
             variant: item.variant,
           },

@@ -148,16 +148,26 @@ export const typographyArray = [
 
 export const typography = typographyArray.map((type) => ({
   name: `text-${type.size}`,
-  token: `text-${type.size}`,
-  description: `Font size: ${type.font} | Line Height: ${type.height}`,
+  token: `--peaui-font-size-${type.size}`,
+  lineHeightToken: `--peaui-line-height-${type.size}`,
+  description: `Rozmiar bazowy: ${type.font} | Wysokość wiersza: ${type.height}`,
 }));
 
 <div className="ds-header">
   <h1>Typografia</h1>
   <p>
-    Typografia jest kluczowym elementem naszego design systemu, który wpływa na
-    czytelność, hierarchię informacji oraz ogólne wrażenia estetyczne. Poniżej
-    znajdziesz dostępne tokeny <strong>font-size</strong> wraz z podglądem.
+    Vue, React i Web Components korzystają ze wspólnych zmiennych CSS
+    <code>{"--peaui-font-size-*"}</code> oraz{" "}
+    <code>{"--peaui-line-height-*"}</code>. Użyj np.{" "}
+    <code>font-size: var(--peaui-font-size-m)</code> i
+    <code> line-height: var(--peaui-line-height-m)</code>. Nazwy{" "}
+    <code>{"text-*"}</code> poniżej służą jedynie do podglądu tej strony.
+  </p>
+  <p>
+    Pokazane wartości bazowe są mnożone przez <code>--peaui-font-scale</code>:
+    0,85 poniżej 640 px, 0,9 od 640 px, 0,95 od 768 px i 1 od 1024 px. Podgląd
+    przedstawia skalę 1. Zmienne dostarcza wspólny arkusz tokenów, automatycznie
+    dołączany przez importy komponentów.
   </p>
 </div>
 
@@ -175,6 +185,9 @@ export function Text({ font, lineHeight, children }) {
         </p>
         <p className="meta">
           <b>Token:</b> {item.token}
+        </p>
+        <p className="meta">
+          <b>Wysokość wiersza:</b> {item.lineHeightToken}
         </p>
         <p className="meta">{item.description}</p>
       </div>

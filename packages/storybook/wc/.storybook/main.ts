@@ -15,10 +15,7 @@ const config: StorybookConfig = {
     name: "@storybook/web-components-vite",
     options: {},
   },
-  stories: [
-    "../stories/**/*.stories.@(js|ts|mdx)",
-    "../../../library/src/components/**/*.wc.stories.@(js|ts|mdx)",
-  ],
+  stories: ["../../../library/src/components/**/*.wc.stories.@(js|ts|mdx)"],
   addons: ["@storybook/addon-essentials"],
   staticDirs: ["../public"],
   viteFinal: async (config) =>
@@ -27,10 +24,8 @@ const config: StorybookConfig = {
       optimizeDeps: {
         // `index.ce.vue` is supplied by the pre-enforced virtual-source plugin.
         // Vite's discovery scanner reads virtual Vue ids from disk before `load`,
-        // so discovery must stay disabled while explicit Storybook dependencies
-        // can still be prebundled.
+        // so discovery must stay disabled.
         noDiscovery: true,
-        include: ["property-expr", "tiny-case", "toposort"],
       },
       resolve: {
         alias: {

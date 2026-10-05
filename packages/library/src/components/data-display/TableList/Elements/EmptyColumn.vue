@@ -4,7 +4,7 @@ import { TABLE_LIST_CLASS } from '../shared';
 
 defineProps<{
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   value: string | undefined | Record<string, string>;
 }>();

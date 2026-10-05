@@ -94,7 +94,7 @@ vi.mock('@/components/form/FormField/index.wc', () => {
 
       if (input) {
         input.type = input.getAttribute('type') ?? 'text';
-        input.id = this.id;
+        input.id = `${this.id}-control`;
         input.setAttribute('name', this.getAttribute('name') ?? '');
         input.setAttribute('placeholder', this.getAttribute('placeholder') ?? '');
         input.style.paddingRight = '28px';
@@ -153,10 +153,10 @@ type MountOptions = {
   after?: string;
   before?: string;
   canErase?: boolean;
-  description?: Node | string;
+  description?: HTMLElement | string;
   disabled?: boolean;
-  error?: Node | string;
-  hint?: Node | string;
+  error?: HTMLElement | string;
+  hint?: HTMLElement | string;
   iconAfter?: string;
   iconBefore?: string;
   id?: string;
@@ -166,14 +166,14 @@ type MountOptions = {
   placeholder?: string;
   readonly?: boolean;
   required?: boolean;
-  success?: Node | string;
+  success?: HTMLElement | string;
   value?: string;
 };
 
 function appendSlottedNode(
   element: FormInputElement,
   slotName: 'description' | 'error' | 'hint' | 'success',
-  content: Node | string | undefined,
+  content: HTMLElement | string | undefined,
 ) {
   if (content === undefined) {
     return;
@@ -292,7 +292,7 @@ describe('FormInput (index.wc.ts)', () => {
     const input = element.querySelector<HTMLInputElement>('input');
 
     expect(input?.getAttribute('type')).toBe('text');
-    expect(input?.getAttribute('id')).toBe('first-name');
+    expect(input?.getAttribute('id')).toBe('first-name-field-control');
     expect(input?.getAttribute('name')).toBe('firstName');
     expect(input?.getAttribute('placeholder')).toBe('Wpisz imie');
     expect(input?.getAttribute('title')).toBe('Pole tekstowe');

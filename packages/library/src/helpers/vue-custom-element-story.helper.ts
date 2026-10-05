@@ -52,7 +52,9 @@ function getTypeSummary(options: RuntimePropOptions): string {
   return names.length > 0 ? names.join(' | ') : 'unknown';
 }
 
-function getControl(options: RuntimePropOptions): { type: string } {
+function getControl(options: RuntimePropOptions): {
+  type: 'boolean' | 'number' | 'object' | 'text';
+} {
   const types = getTypes(options);
 
   if (types.includes(Boolean)) return { type: 'boolean' };
@@ -105,7 +107,14 @@ function getDefaultValue(options: RuntimePropOptions): unknown {
   }
 }
 
-export function createVueCustomElementArgTypes(component: unknown): Record<string, unknown> {
+export function createVueCustomElementArgTypes(component: unknown): Record<
+  string,
+  {
+    control: ReturnType<typeof getControl>;
+    description: string;
+    table: { type: { summary: string }; defaultValue: { summary: string | undefined } };
+  }
+> {
   return Object.fromEntries(
     Object.entries(getProps(component)).map(([name, options]) => [
       name,
@@ -114,7 +123,9 @@ export function createVueCustomElementArgTypes(component: unknown): Record<strin
         description: `Właściwość „${name}” odziedziczona z publicznego API komponentu Vue.`,
         table: {
           type: { summary: getTypeSummary(options) },
-          defaultValue: { summary: getDefaultValue(options) },
+          defaultValue: {
+            summary: options.default === undefined ? undefined : String(getDefaultValue(options)),
+          },
         },
       },
     ]),

@@ -1,4 +1,12 @@
+import { upgradeCustomElementProperties, syncNodeChildren } from '@/helpers/dom.helper';
 import { SvgIconElement, defineSvgIcon } from '@/components/basic/SvgIcon/index.wc';
+import { prefersReducedMotion } from '@/helpers/browser.helper';
+import {
+  getCarouselMetrics,
+  createCarouselRotationToggle,
+  CAROUSEL_PAUSE_LABEL,
+  CAROUSEL_RESUME_LABEL,
+} from './carousel.shared';
 import { UIKIT_NAME } from '@/constants';
 
 const CARD_CAROUSEL_TAG_NAME = `${UIKIT_NAME}-card-carousel`;
@@ -153,6 +161,8 @@ export class CardCarouselElement extends HTMLElement {
       'is-navigation-dots-visible',
       'is-navigation-visible',
       'with-animation',
+      'pause-label',
+      'resume-label',
       'id',
       'tabindex',
     ];
@@ -165,12 +175,17 @@ export class CardCarouselElement extends HTMLElement {
   #managedChildren = new Set<Node>();
   #viewportElement = document.createElement('div');
   #controlsElement = document.createElement('div');
+  #rotationElement = document.createElement('button');
+  #rotationPaused = false;
+  #rotationToggle = createCarouselRotationToggle();
+  #motionQuery: MediaQueryList | undefined;
   #previousButtonElement = document.createElement('button');
   #nextButtonElement = document.createElement('button');
   #paginationElement = document.createElement('div');
-  #previousIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
-  #nextIconElement = document.createElement(SvgIconElement.tagName) as SvgIconElement;
+  #previousIconElement = document.createElement(SvgIconElement.tagName);
+  #nextIconElement = document.createElement(SvgIconElement.tagName);
   #slideNodes: Node[] = [];
+  #slideWrappers = new Map<Node, HTMLDivElement>();
   #resizeObserver: ResizeObserver | null = null;
   #mutationObserver: MutationObserver | null = null;
   #currentIndex = 0;
@@ -178,7 +193,6 @@ export class CardCarouselElement extends HTMLElement {
   #slideStep = 0;
   #isPointerDragging = false;
   #isPointerHovering = false;
-  #isFocusWithin = false;
   #totalSlides = 0;
   #pointerStartX = 0;
   #pointerStartScrollLeft = 0;
@@ -192,6 +206,7 @@ export class CardCarouselElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -199,11 +214,18 @@ export class CardCarouselElement extends HTMLElement {
 
     this.#isMounted = true;
     this.#collectExternalSlides();
+    this.#motionQuery =
+      typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : undefined;
+    this.#updateMotionPreference();
+    this.#motionQuery?.addEventListener('change', this.#updateMotionPreference);
     this.#setupObservers();
     this.render();
   }
 
   disconnectedCallback(): void {
+    this.#motionQuery?.removeEventListener('change', this.#updateMotionPreference);
     this.#isMounted = false;
     this.#mutationObserver?.disconnect();
     this.#mutationObserver = null;
@@ -217,7 +239,8 @@ export class CardCarouselElement extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -303,13 +326,14 @@ export class CardCarouselElement extends HTMLElement {
 
   #withDomSync<T>(callback: () => T): T {
     const wasSyncingDom = this.#isSyncingDom;
-
+    if (!wasSyncingDom) this.#mutationObserver?.disconnect();
     this.#isSyncingDom = true;
 
     try {
       return callback();
     } finally {
       this.#isSyncingDom = wasSyncingDom;
+      if (!wasSyncingDom && this.#isMounted) this.#observeSlides();
     }
   }
 
@@ -325,7 +349,16 @@ export class CardCarouselElement extends HTMLElement {
     this.addEventListener('mouseenter', this.#handleMouseEnter);
     this.addEventListener('mouseleave', this.#handleMouseLeave);
     this.addEventListener('focusin', this.#handleFocusIn);
-    this.addEventListener('focusout', this.#handleFocusOut);
+    this.#rotationElement.type = 'button';
+    this.#rotationElement.addEventListener('pointerdown', () => {
+      this.#rotationToggle.capturePointerState(this.#rotationPaused);
+    });
+    this.#rotationElement.addEventListener('click', (event) => {
+      this.#rotationPaused = this.#rotationToggle.toggle(this.#rotationPaused, event);
+      this.#syncRotation();
+      this.#syncAnimationInterval();
+    });
+    this.#managedChildren.add(this.#rotationElement);
 
     this.#previousButtonElement.type = 'button';
     this.#previousButtonElement.addEventListener('click', () => {
@@ -360,7 +393,7 @@ export class CardCarouselElement extends HTMLElement {
   #setupObservers(): void {
     if (!this.#mutationObserver) {
       this.#mutationObserver = new MutationObserver((records) => {
-        if (this.#isSyncingDom || this.#shouldIgnoreMutations(records)) {
+        if (this.#isSyncingDom || records.length === 0 || this.#onlyAddsManagedChildren(records)) {
           return;
         }
 
@@ -368,15 +401,14 @@ export class CardCarouselElement extends HTMLElement {
         this.render();
       });
 
-      this.#mutationObserver.observe(this, {
-        childList: true,
-      });
+      this.#observeSlides();
     }
 
     if (typeof ResizeObserver !== 'undefined' && !this.#resizeObserver) {
       this.#resizeObserver = new ResizeObserver(() => {
         this.#updateMetrics();
         this.#syncControls();
+        this.#syncAnimationInterval();
       });
 
       this.#resizeObserver.observe(this.#viewportElement);
@@ -388,11 +420,29 @@ export class CardCarouselElement extends HTMLElement {
       Array.from(this.childNodes).filter((node) => !this.#managedChildren.has(node)),
     );
 
-    if (nextSlides.length === 0) {
-      return;
-    }
+    const external = new Set(nextSlides);
+    this.#slideNodes = [
+      ...this.#slideNodes.filter((node) => this.contains(node) && !external.has(node)),
+      ...nextSlides,
+    ];
+  }
 
-    this.#slideNodes.push(...nextSlides.filter((node) => !this.#slideNodes.includes(node)));
+  #onlyAddsManagedChildren(records: MutationRecord[]): boolean {
+    // Own container insertion never changes slides. Removals must still be observed:
+    // removing the viewport externally also removes its current slide content.
+    return records.every(
+      (record) =>
+        record.type === 'childList' &&
+        record.target === this &&
+        record.removedNodes.length === 0 &&
+        record.addedNodes.length > 0 &&
+        Array.from(record.addedNodes).every((node) => this.#managedChildren.has(node)),
+    );
+  }
+
+  #observeSlides(): void {
+    this.#mutationObserver?.observe(this, { childList: true });
+    this.#mutationObserver?.observe(this.#viewportElement, { childList: true, subtree: true });
   }
 
   #syncRootAttributes(): void {
@@ -478,11 +528,18 @@ export class CardCarouselElement extends HTMLElement {
         this.#viewportElement.removeAttribute('data-testid');
       }
 
-      const fragment = document.createDocumentFragment();
       const slides = normalizeSlideNodes(this.#slideNodes);
+      const current = new Set(slides);
+      for (const [node, wrapper] of this.#slideWrappers) {
+        if (!current.has(node)) {
+          wrapper.remove();
+          this.#slideWrappers.delete(node);
+        }
+      }
 
       slides.forEach((slide, index) => {
-        const wrapper = document.createElement('div');
+        const wrapper = this.#slideWrappers.get(slide) ?? document.createElement('div');
+        this.#slideWrappers.set(slide, wrapper);
 
         wrapper.className = `${CARD_CAROUSEL_CLASS_NAME}__slide`;
         wrapper.setAttribute('role', 'group');
@@ -493,35 +550,18 @@ export class CardCarouselElement extends HTMLElement {
 
         if (slideTestId) {
           wrapper.setAttribute('data-testid', slideTestId);
-        }
+        } else wrapper.removeAttribute('data-testid');
 
-        wrapper.appendChild(slide);
-        fragment.appendChild(wrapper);
+        if (slide.parentNode !== wrapper) wrapper.appendChild(slide);
+        const position = this.#viewportElement.children.item(index);
+        if (position !== wrapper) this.#viewportElement.insertBefore(wrapper, position);
       });
 
       this.#slideNodes = slides;
-      this.#viewportElement.replaceChildren(fragment);
 
       if (this.firstChild !== this.#viewportElement) {
         this.prepend(this.#viewportElement);
       }
-    });
-  }
-
-  #shouldIgnoreMutations(records: MutationRecord[]): boolean {
-    if (records.length === 0) {
-      return false;
-    }
-
-    return records.every((record) => {
-      const changedNodes: Node[] = [
-        ...Array.from(record.addedNodes),
-        ...Array.from(record.removedNodes),
-      ];
-
-      return (
-        changedNodes.length > 0 && changedNodes.every((node) => this.#managedChildren.has(node))
-      );
     });
   }
 
@@ -530,29 +570,13 @@ export class CardCarouselElement extends HTMLElement {
       `.${CARD_CAROUSEL_CLASS_NAME}__slide`,
     ).length;
 
-    const gap = getViewportGap(this.#viewportElement);
-    const slideElement = this.#viewportElement.querySelector<HTMLElement>(
-      `.${CARD_CAROUSEL_CLASS_NAME}__slide`,
+    const metrics = getCarouselMetrics(
+      this.#viewportElement,
+      this.#totalSlides,
+      this.#requestedVisibleSlides,
     );
-    const slideWidth = slideElement?.offsetWidth ?? 0;
-
-    this.#slideStep = slideWidth > 0 ? slideWidth + gap : 0;
-
-    if (slideWidth > 0 && this.#slideStep > 0) {
-      const calculatedVisibleSlides = Math.round(
-        (this.#viewportElement.clientWidth + gap) / this.#slideStep,
-      );
-
-      this.#visibleSlidesCount = Math.max(
-        1,
-        Math.min(this.#totalSlides || 1, calculatedVisibleSlides || 1),
-      );
-    } else {
-      this.#visibleSlidesCount = Math.min(
-        this.#requestedVisibleSlides,
-        this.#totalSlides || this.#requestedVisibleSlides,
-      );
-    }
+    this.#slideStep = metrics.step;
+    this.#visibleSlidesCount = metrics.visible;
 
     const nextIndex = this.#clampIndex(this.#currentIndex);
 
@@ -564,6 +588,7 @@ export class CardCarouselElement extends HTMLElement {
   }
 
   #syncControls(): void {
+    this.#syncRotation();
     this.#withDomSync(() => {
       if (!this.#hasControls) {
         this.#controlsElement.remove();
@@ -602,7 +627,7 @@ export class CardCarouselElement extends HTMLElement {
         controlsChildren.push(this.#nextButtonElement);
       }
 
-      this.#controlsElement.replaceChildren(...controlsChildren);
+      syncNodeChildren(this.#controlsElement, controlsChildren);
 
       if (this.#controlsElement.parentNode !== this) {
         this.appendChild(this.#controlsElement);
@@ -660,10 +685,12 @@ export class CardCarouselElement extends HTMLElement {
       this.#paginationElement.removeAttribute('data-testid');
     }
 
-    const fragment = document.createDocumentFragment();
+    const buttons: HTMLButtonElement[] = [];
 
     for (let index = 0; index < this.#dotCount; index += 1) {
-      const button = document.createElement('button');
+      const button =
+        (this.#paginationElement.children[index] as HTMLButtonElement | undefined) ??
+        document.createElement('button');
 
       button.type = 'button';
       button.className = [
@@ -675,7 +702,12 @@ export class CardCarouselElement extends HTMLElement {
 
       if (index === this.#currentIndex) {
         button.setAttribute('aria-current', 'true');
+        button.setAttribute('aria-disabled', 'true');
+      } else {
+        button.removeAttribute('aria-current');
+        button.removeAttribute('aria-disabled');
       }
+      button.setAttribute('aria-controls', this.#viewportId);
 
       button.setAttribute('aria-label', this.#getDotAriaLabel(index));
 
@@ -685,14 +717,11 @@ export class CardCarouselElement extends HTMLElement {
         button.setAttribute('data-testid', dotTestId);
       }
 
-      button.addEventListener('click', () => {
-        this.#scrollToIndex(index);
-      });
-
-      fragment.appendChild(button);
+      button.onclick = () => this.#scrollToIndex(index);
+      buttons.push(button);
     }
 
-    this.#paginationElement.replaceChildren(fragment);
+    syncNodeChildren(this.#paginationElement, buttons);
   }
 
   #syncIndexFromScroll(): void {
@@ -722,7 +751,7 @@ export class CardCarouselElement extends HTMLElement {
     if (typeof this.#viewportElement.scrollTo === 'function') {
       this.#viewportElement.scrollTo({
         left: clampedIndex * calculatedStep,
-        behavior,
+        behavior: prefersReducedMotion() ? 'auto' : behavior,
       });
     } else {
       this.#viewportElement.scrollLeft = clampedIndex * calculatedStep;
@@ -858,21 +887,43 @@ export class CardCarouselElement extends HTMLElement {
     this.#syncAnimationInterval();
   };
 
-  #handleFocusIn = (): void => {
-    this.#isFocusWithin = true;
+  #handleFocusIn = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return;
+    this.#rotationPaused = true;
+    this.#syncRotation();
     this.#syncAnimationInterval();
   };
 
-  #handleFocusOut = (event: FocusEvent): void => {
-    const relatedTarget = event.relatedTarget as Node | null;
+  #updateMotionPreference = (): void => {
+    if (this.#motionQuery?.matches === true) this.#rotationPaused = true;
+    this.#syncRotation();
+    this.#syncAnimationInterval();
+  };
 
-    if (relatedTarget && this.contains(relatedTarget)) {
+  get pauseLabel(): string {
+    return this.getAttribute('pause-label') ?? CAROUSEL_PAUSE_LABEL;
+  }
+  set pauseLabel(value: string) {
+    this.setAttribute('pause-label', value);
+  }
+  get resumeLabel(): string {
+    return this.getAttribute('resume-label') ?? CAROUSEL_RESUME_LABEL;
+  }
+  set resumeLabel(value: string) {
+    this.setAttribute('resume-label', value);
+  }
+
+  #syncRotation(): void {
+    if (!this.withAnimation || !this.#hasOverflow) {
+      this.#rotationElement.remove();
       return;
     }
-
-    this.#isFocusWithin = false;
-    this.#syncAnimationInterval();
-  };
+    this.#rotationElement.className = `${CARD_CAROUSEL_CLASS_NAME}__rotation`;
+    this.#rotationElement.textContent = this.#rotationPaused ? this.resumeLabel : this.pauseLabel;
+    this.#rotationElement.setAttribute('aria-controls', this.#viewportId);
+    if (this.#rotationElement.parentNode !== this)
+      this.insertBefore(this.#rotationElement, this.#viewportElement);
+  }
 
   #clearAnimationInterval(): void {
     if (this.#animationInterval) {
@@ -889,7 +940,7 @@ export class CardCarouselElement extends HTMLElement {
       !this.#hasOverflow ||
       this.#isPointerDragging ||
       this.#isPointerHovering ||
-      this.#isFocusWithin
+      this.#rotationPaused
     ) {
       return;
     }

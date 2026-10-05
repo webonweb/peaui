@@ -1,3 +1,4 @@
+import { pasteText } from "../../helpers/clipboard.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -47,17 +48,7 @@ test("FormPinInput React zachowuje ARIA, paste, klawiaturę i cele dotykowe", as
   await page.keyboard.press("Home");
   await expect(cells.nth(0)).toBeFocused();
 
-  await cells.nth(0).evaluate((element) => {
-    const transfer = new DataTransfer();
-    transfer.setData("text", "12a345678");
-    element.dispatchEvent(
-      new ClipboardEvent("paste", {
-        bubbles: true,
-        cancelable: true,
-        clipboardData: transfer,
-      }),
-    );
-  });
+  await pasteText(cells.nth(0), "12a345678");
   await expect(cells.nth(0)).toHaveValue("1");
   await expect(cells.nth(5)).toHaveValue("6");
 
@@ -108,7 +99,7 @@ test("FormPinInput React kontroluje długi kod i etykietę na 320 px", async ({
 
   const lastCell = group.locator(".peaui-form-pin-input__cell").last();
   await lastCell.focus();
-  expect(await group.evaluate((element) => element.scrollLeft)).toBeGreaterThan(
+  await expect.poll(() => group.evaluate((element) => element.scrollLeft)).toBeGreaterThan(
     0,
   );
   expect(

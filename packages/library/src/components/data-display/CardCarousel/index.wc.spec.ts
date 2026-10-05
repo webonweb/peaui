@@ -406,6 +406,29 @@ describe('CardCarousel (index.wc.ts)', () => {
     expect(renderSpy).not.toHaveBeenCalled();
   });
 
+  it('still processes external removal of the managed viewport and its slides', async () => {
+    const element = mountCardCarousel({ slides: ['A', 'B'], defaultVisibleSlides: 1 });
+    await syncCarouselState();
+    const viewport = element.querySelector('.peaui-card-carousel__viewport')!;
+    const previousSlides = Array.from(viewport.querySelectorAll('article'));
+    viewport.remove();
+    mutationObserverInstances[0]?.trigger([
+      {
+        addedNodes: [] as unknown as NodeList,
+        removedNodes: [viewport] as unknown as NodeList,
+        attributeName: null,
+        attributeNamespace: null,
+        nextSibling: null,
+        oldValue: null,
+        previousSibling: null,
+        target: element,
+        type: 'childList',
+      },
+    ] as MutationRecord[]);
+    expect(element.querySelectorAll('.peaui-card-carousel__slide')).toHaveLength(0);
+    expect(previousSlides.every((slide) => !element.contains(slide))).toBe(true);
+  });
+
   it('auto-advances slides every 2 seconds when withAnimation is enabled', async () => {
     let intervalCallback: (() => void) | undefined;
 
@@ -460,7 +483,9 @@ describe('CardCarousel (index.wc.ts)', () => {
   });
 
   it('does not render an autoplay toggle and still pauses autoplay on hover and focus', async () => {
-    const setIntervalSpy = vi.spyOn(window, 'setInterval').mockImplementation(((callback) => {
+    const setIntervalSpy = vi.spyOn(window, 'setInterval').mockImplementation(((
+      callback: TimerHandler,
+    ) => {
       return window.setTimeout(callback as TimerHandler, 0) as unknown as number;
     }) as typeof window.setInterval);
     const clearIntervalSpy = vi.spyOn(window, 'clearInterval').mockImplementation(() => undefined);
@@ -490,6 +515,8 @@ describe('CardCarousel (index.wc.ts)', () => {
 
     element.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
     element.dispatchEvent(new Event('mouseleave'));
+    expect(setIntervalSpy).toHaveBeenCalledTimes(1);
+    element.querySelector<HTMLButtonElement>('.peaui-card-carousel__rotation')!.click();
     expect(setIntervalSpy).toHaveBeenCalledTimes(2);
   });
 

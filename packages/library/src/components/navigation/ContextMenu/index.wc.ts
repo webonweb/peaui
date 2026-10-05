@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -12,30 +13,20 @@ type ExposedContextMenu = {
   openAt(point: ContextMenuPoint): boolean;
 };
 
-type VueCustomElementInternals = {
-  _instance?: { exposed?: Partial<ExposedContextMenu> };
-};
-
-const ContextMenuVueElement = createVueCustomElement(
-  ContextMenuVueComponent,
-  `${UIKIT_NAME}-context-menu`,
-);
+const ContextMenuVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ContextMenuVueComponent, `${UIKIT_NAME}-context-menu`);
 
 /** Light-DOM Web Component exposing the same imperative positioning API as Vue and React refs. */
 export class ContextMenuElement extends ContextMenuVueElement {
   static readonly tagName = `${UIKIT_NAME}-context-menu`;
 
-  openAt(point: ContextMenuPoint): boolean {
-    return this.exposed()?.openAt?.(point) ?? false;
-  }
-
-  close(): void {
-    this.exposed()?.close?.();
-  }
-
-  private exposed(): Partial<ExposedContextMenu> | undefined {
-    return (this as unknown as VueCustomElementInternals)._instance?.exposed;
-  }
+  // Vue 3.5 publishes defineExpose methods directly on a mounted custom element.
+  declare openAt: ExposedContextMenu['openAt'];
+  declare close: ExposedContextMenu['close'];
 }
 
 export function defineContextMenu(): typeof ContextMenuElement {

@@ -88,12 +88,10 @@ const defaultOptions = [
 
 const mountComponent = (
   props: Record<string, unknown> = {},
-  slots: Record<string, unknown> = {},
+  slots: Record<string, string | (() => import('vue').VNode[])> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormButtonGroup, {
+  const wrapper = mount(FormButtonGroup, {
     props: {
       id: 'decision',
       name: 'decision',
@@ -133,8 +131,8 @@ describe('FormButtonGroup (index.vue)', () => {
     expect(group.classes()).toContain('field-element');
     expect(group.classes()).toContain('peaui-form-button-group');
     expect(buttons).toHaveLength(3);
-    expect(buttons[0].attributes('data-testid')).toBe('form-button-group-option-0');
-    expect(buttons[0].attributes('aria-checked')).toBe('false');
+    expect(buttons[0]!.attributes('data-testid')).toBe('form-button-group-option-0');
+    expect(buttons[0]!.attributes('aria-checked')).toBe('false');
   });
 
   it('falls back to aria-label from name when visible label is missing', () => {
@@ -218,20 +216,20 @@ describe('FormButtonGroup (index.vue)', () => {
     const tooltips = wrapper.findAll('.info-tooltip-stub');
 
     expect(tooltips).toHaveLength(2);
-    expect(tooltips[0].attributes('data-test-id')).toBe('form-button-group-option-0-hint');
-    expect(tooltips[0].attributes('data-placement')).toBe('right');
-    expect(tooltips[0].attributes('data-variant')).toBe('default');
-    expect(tooltips[0].attributes('tabindex')).toBe('-1');
-    expect(tooltips[0].find('[data-testid="form-button-group-option-0"]').exists()).toBe(true);
-    expect(tooltips[0].text()).toContain('Mozesz wybrac te opcje od razu.');
+    expect(tooltips[0]!.attributes('data-test-id')).toBe('form-button-group-option-0-hint');
+    expect(tooltips[0]!.attributes('data-placement')).toBe('right');
+    expect(tooltips[0]!.attributes('data-variant')).toBe('default');
+    expect(tooltips[0]!.attributes('tabindex')).toBe('-1');
+    expect(tooltips[0]!.find('[data-testid="form-button-group-option-0"]').exists()).toBe(true);
+    expect(tooltips[0]!.text()).toContain('Mozesz wybrac te opcje od razu.');
 
-    expect(tooltips[1].attributes('data-test-id')).toBe('form-button-group-option-2-hint');
-    expect(tooltips[1].attributes('data-placement')).toBe('right');
-    expect(tooltips[1].attributes('data-variant')).toBe('disabled');
+    expect(tooltips[1]!.attributes('data-test-id')).toBe('form-button-group-option-2-hint');
+    expect(tooltips[1]!.attributes('data-placement')).toBe('right');
+    expect(tooltips[1]!.attributes('data-variant')).toBe('disabled');
     expect(
-      tooltips[1].find('[data-testid="form-button-group-option-2"]').attributes(),
+      tooltips[1]!.find('[data-testid="form-button-group-option-2"]').attributes(),
     ).toHaveProperty('disabled');
-    expect(tooltips[1].text()).toContain('Ta opcja jest zablokowana.');
+    expect(tooltips[1]!.text()).toContain('Ta opcja jest zablokowana.');
   });
 
   it('renders a uniform flex item wrapper for every option', () => {
@@ -246,10 +244,10 @@ describe('FormButtonGroup (index.vue)', () => {
     const items = wrapper.findAll('.peaui-form-button-group__button-item');
 
     expect(items).toHaveLength(3);
-    expect(items[0].find('.info-tooltip-stub').exists()).toBe(true);
-    expect(items[0].find('[data-testid="form-button-group-option-0"]').exists()).toBe(true);
-    expect(items[1].find('.info-tooltip-stub').exists()).toBe(false);
-    expect(items[1].find('[data-testid="form-button-group-option-1"]').exists()).toBe(true);
+    expect(items[0]!.find('.info-tooltip-stub').exists()).toBe(true);
+    expect(items[0]!.find('[data-testid="form-button-group-option-0"]').exists()).toBe(true);
+    expect(items[1]!.find('.info-tooltip-stub').exists()).toBe(false);
+    expect(items[1]!.find('[data-testid="form-button-group-option-1"]').exists()).toBe(true);
   });
 
   it('updates model on button click', async () => {

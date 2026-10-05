@@ -7,6 +7,7 @@ import { useDemoTranslation } from '../composables/use-demo-translation';
 import type { FrameworkComponentDefinition } from '../types';
 import { useI18n } from '../i18n';
 import CodeBlock from './CodeBlock.vue';
+import GuidedTourDemoScene from './GuidedTourDemoScene.vue';
 import PropControl from './PropControl.vue';
 import ReactRenderer from './ReactRenderer.vue';
 
@@ -48,6 +49,13 @@ const renderedBindings = computed(() => {
     if (bindings[event.name]) continue;
 
     bindings[event.name] = (...values: unknown[]) => {
+      const controlledMatch = event.name.match(/^on(.+)Change$/);
+      if (controlledMatch?.[1]) {
+        const inputName = `${controlledMatch[1].charAt(0).toLowerCase()}${controlledMatch[1].slice(1)}`;
+        if (inputEntries.value.some((entry) => entry.name === inputName)) {
+          interactiveProps.value = { ...interactiveProps.value, [inputName]: values[0] };
+        }
+      }
       if (props.definition.name === 'TableList') {
         if (event.name === 'onSelectRow' && Array.isArray(values[0])) {
           interactiveProps.value = { ...interactiveProps.value, selectedRows: values[0] };
@@ -83,6 +91,32 @@ function selectVariant(id: string): void {
 
 function updateProp(name: string, value: unknown): void {
   interactiveProps.value = { ...interactiveProps.value, [name]: value };
+}
+
+function startGuidedTour(): void {
+  interactiveProps.value = { ...interactiveProps.value, open: true, step: 0 };
+}
+
+function guidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip'): string {
+  const labels = interactiveProps.value.labels;
+  if (labels && typeof labels === 'object' && !Array.isArray(labels)) {
+    const value = (labels as Record<string, unknown>)[name];
+    if (typeof value === 'string') return value;
+  }
+  if (name === 'back') return 'Back';
+  if (name === 'complete') return 'Complete';
+  return name === 'next' ? 'Next' : 'Skip tour';
+}
+
+function updateGuidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip', value: string): void {
+  const labels = interactiveProps.value.labels;
+  interactiveProps.value = {
+    ...interactiveProps.value,
+    labels: {
+      ...(labels && typeof labels === 'object' && !Array.isArray(labels) ? labels : {}),
+      [name]: value,
+    },
+  };
 }
 
 function getEventType(value: unknown): string | undefined {
@@ -171,8 +205,23 @@ watch(
       </div>
 
       <div v-if="panel === 'preview'" ref="demoStage" class="demo-stage">
+        <GuidedTourDemoScene
+          v-if="definition.name === 'GuidedTour' && definition.reactComponent"
+          :back-label="guidedTourLabel('back')"
+          :complete-label="guidedTourLabel('complete')"
+          :next-label="guidedTourLabel('next')"
+          :skip-label="guidedTourLabel('skip')"
+          @label-change="updateGuidedTourLabel"
+          @start="startGuidedTour"
+        >
+          <ReactRenderer
+            :component="definition.reactComponent"
+            :bindings="renderedBindings"
+            :slot-content="slotContent"
+          />
+        </GuidedTourDemoScene>
         <ReactRenderer
-          v-if="definition.reactComponent"
+          v-else-if="definition.reactComponent"
           :component="definition.reactComponent"
           :bindings="renderedBindings"
           :slot-content="slotContent"

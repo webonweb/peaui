@@ -83,8 +83,8 @@ $button-variants: (
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.5rem;
+  gap: var(--peaui-space-2);
+  border-radius: var(--peaui-radius-md);
   font-weight: 500;
   width: 100%;
   cursor: pointer;

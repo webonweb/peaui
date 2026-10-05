@@ -126,11 +126,12 @@ const rootAttrs = computed(() => {
     'aria-labelledby': rootAriaLabelledBy.value,
     'aria-describedby': rootAriaDescribedBy.value,
     'aria-disabled': hasValidPath.value ? undefined : 'true',
+    role: hasValidPath.value ? attrs.role : 'link',
     href: isRouterLink.value || !hasValidPath.value ? undefined : normalizedPath.value,
     to: isRouterLink.value ? normalizedPath.value : undefined,
     target: hasValidPath.value ? normalizedTarget.value : undefined,
     rel: hasValidPath.value ? resolvedRel : undefined,
-    tabindex: hasValidPath.value ? undefined : '-1',
+    tabindex: hasValidPath.value ? (attrs.tabindex ?? 0) : '-1',
   };
 });
 

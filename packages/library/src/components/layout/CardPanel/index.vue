@@ -2,7 +2,8 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, type Component, useSlots } from 'vue';
+import { computed, type Component } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
 
 type CardPanelTag = 'div' | 'section' | 'article' | 'a' | Component;
 
@@ -29,7 +30,6 @@ const {
 }>();
 
 const classNameComponent = `${UIKIT_NAME}-card-panel`;
-const slots = useSlots();
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -41,7 +41,7 @@ const baseClass = computed(
       isShadowEnabled ? `${classNameComponent}--shadow-enabled` : ''
     } ${classNameComponent}--background-${backgroundColor} ${classNameComponent}--border-${borderColor}`,
 );
-const hasHeaderSlot = computed(() => Boolean(slots.header));
+const hasHeaderSlot = useSlotPresence('header');
 </script>
 
 <template>

@@ -4,6 +4,7 @@
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import { UIKIT_NAME } from '@/constants';
 import { computed, useAttrs } from 'vue';
+import { getPaginationRange } from './pagination.shared';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -27,39 +28,16 @@ const rootAttrs = computed(() => ({
   ...attrs,
 }));
 
-const pagesCount = computed(() => Math.max(1, totalPages));
-
-const activePage = computed(() => clampPage(currentPage.value ?? 1));
+const range = computed(() => getPaginationRange(totalPages, currentPage.value ?? 1));
+const pagesCount = computed(() => range.value.total);
+const activePage = computed(() => range.value.current);
 
 const isFirstPage = computed(() => activePage.value === 1);
 const isLastPage = computed(() => activePage.value === pagesCount.value);
 
-const showLeadingShortcut = computed(
-  () => pagesCount.value > 5 && pagesCount.value - activePage.value < 5,
-);
-
-const showTrailingShortcut = computed(() => pagesCount.value - activePage.value >= 5);
-
-const visiblePages = computed<number[]>(() => {
-  const pagesToShow = 4;
-  const pages: number[] = [];
-
-  let startPage = 1;
-
-  if (activePage.value <= 2) {
-    startPage = 1;
-  } else if (activePage.value >= pagesCount.value - 1) {
-    startPage = Math.max(1, pagesCount.value - pagesToShow + 1);
-  } else {
-    startPage = activePage.value - 1;
-  }
-
-  for (let index = 0; index < pagesToShow && startPage + index <= pagesCount.value; index += 1) {
-    pages.push(startPage + index);
-  }
-
-  return pages;
-});
+const showLeadingShortcut = computed(() => range.value.leading);
+const showTrailingShortcut = computed(() => range.value.trailing);
+const visiblePages = computed(() => range.value.pages);
 
 const firstPageButtonTestId = computed(() =>
   dataTestId ? `${dataTestId}-button-first-page` : undefined,
@@ -165,7 +143,7 @@ function getPageAriaLabel(page: number): string {
         1
       </button>
       <div
-        v-if="showLeadingShortcut && pagesCount > 4"
+        v-if="range.leadingGap"
         :class="`${classNameComponent}__ellipsis`"
         :data-testid="leadingEllipsisTestId"
         aria-hidden="true"
@@ -191,7 +169,7 @@ function getPageAriaLabel(page: number): string {
         {{ page }}
       </button>
       <div
-        v-if="showTrailingShortcut"
+        v-if="range.trailingGap"
         :class="`${classNameComponent}__ellipsis`"
         :data-testid="trailingEllipsisTestId"
         aria-hidden="true"

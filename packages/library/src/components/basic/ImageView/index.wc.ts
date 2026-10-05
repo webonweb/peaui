@@ -1,3 +1,5 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
+import { getHumanizedSourceText } from './image-view.shared';
 import { UIKIT_NAME } from '@/constants';
 
 const IMAGE_VIEW_TAG_NAME = `${UIKIT_NAME}-image-view`;
@@ -75,36 +77,6 @@ function getTrimmedAttributeValueAllowEmpty(
   return `${element.getAttribute(name) ?? ''}`.trim();
 }
 
-function getHumanizedSourceText(src: string | undefined): string | undefined {
-  if (!src) {
-    return undefined;
-  }
-
-  const normalizedSource = src.trim();
-
-  if (
-    normalizedSource.length === 0 ||
-    normalizedSource.startsWith('data:') ||
-    normalizedSource.startsWith('blob:')
-  ) {
-    return undefined;
-  }
-
-  const sourceWithoutHash = normalizedSource.split('#')[0] ?? normalizedSource;
-  const sourceWithoutQuery = sourceWithoutHash.split('?')[0] ?? sourceWithoutHash;
-  const lastSegment = sourceWithoutQuery.split('/').filter(Boolean).pop();
-
-  if (!lastSegment) {
-    return undefined;
-  }
-
-  const decodedSegment = decodeURIComponent(lastSegment);
-  const segmentWithoutExtension = decodedSegment.replace(/\.[^.]+$/, '');
-  const humanizedText = segmentWithoutExtension.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
-
-  return humanizedText.length > 0 ? humanizedText : undefined;
-}
-
 function getResolvedAltText(
   src: string | undefined,
   explicitAlt: string | undefined,
@@ -151,6 +123,7 @@ export class ImageViewElement extends HTMLElement {
   #originalInlineMaxWidth: string | null = null;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -160,7 +133,8 @@ export class ImageViewElement extends HTMLElement {
     this.render();
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }

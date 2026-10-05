@@ -14,3 +14,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const Debounced: Story = { args: { debounceTime: 250, ariaLabel: 'Wyszukaj dokument' } };
+export const Disabled: Story = { args: { disabled: true, value: 'Zablokowane' } };
+export const Readonly: Story = { args: { readonly: true, value: 'Tylko do odczytu' } };

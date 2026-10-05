@@ -10,7 +10,7 @@ defineProps<{
 }>();
 
 function isApiEntry(entry: ApiEntry | NamedApiEntry): entry is ApiEntry {
-  return 'type' in entry;
+  return 'required' in entry;
 }
 </script>
 
@@ -20,7 +20,7 @@ function isApiEntry(entry: ApiEntry | NamedApiEntry): entry is ApiEntry {
       <thead>
         <tr>
           <th>{{ t('common.name') }}</th>
-          <th v-if="kind === 'input'">{{ t('common.type') }}</th>
+          <th v-if="entries.some((entry) => entry.type)">{{ t('common.type') }}</th>
           <th v-if="kind === 'input'">{{ t('common.default') }}</th>
           <th>{{ t('common.description') }}</th>
         </tr>
@@ -33,8 +33,9 @@ function isApiEntry(entry: ApiEntry | NamedApiEntry): entry is ApiEntry {
               t('common.required')
             }}</span>
           </td>
-          <td v-if="kind === 'input'">
-            <code v-if="isApiEntry(entry)" class="type-code">{{ entry.type }}</code>
+          <td v-if="entries.some((entry) => entry.type)">
+            <code v-if="entry.type" class="type-code">{{ entry.type }}</code>
+            <span v-else>—</span>
           </td>
           <td v-if="kind === 'input'">
             <code v-if="isApiEntry(entry) && entry.default !== undefined">{{ entry.default }}</code>

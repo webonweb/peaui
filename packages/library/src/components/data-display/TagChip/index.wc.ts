@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 
 const TAG_CHIP_TAG_NAME = `${UIKIT_NAME}-tag-chip`;
@@ -119,15 +120,13 @@ export class TagChipElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
     }
 
     this.#isMounted = true;
-    this.#hasExplicitAriaPressed =
-      getNormalizedAttributeValue(this.getAttribute('aria-pressed')) !== undefined;
-
     super.addEventListener('click', this.#handleManagedClick, true);
     super.addEventListener('keydown', this.#handleManagedKeydown);
     super.addEventListener('keyup', this.#handleManagedKeyup);
@@ -147,7 +146,8 @@ export class TagChipElement extends HTMLElement {
     super.removeEventListener('keyup', this.#handleManagedKeyup);
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (this.#isSyncingAttributes) {
       return;
     }

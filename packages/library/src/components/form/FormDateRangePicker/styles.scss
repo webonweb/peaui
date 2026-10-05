@@ -185,7 +185,7 @@
   );
   box-sizing: border-box;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1rem;
+  gap: var(--peaui-space-4);
   padding: var(--peaui-overlay-padding);
   overflow: auto;
   background: var(--peaui-color-grey-0);
@@ -233,7 +233,7 @@
   min-height: 2.75rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: var(--peaui-space-3);
   margin-bottom: 0.5rem;
 }
 
@@ -387,7 +387,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
   padding-top: 1rem;
   border-top: 1px solid var(--peaui-color-grey-200);
 }
@@ -422,7 +422,7 @@
 
 @container peaui-date-range-picker (max-width: 25rem) {
   .peaui-form-date-range-picker__panel {
-    gap: 0.75rem;
+    gap: var(--peaui-space-3);
     padding: 0.75rem;
   }
 
@@ -438,7 +438,7 @@
 @media (max-width: 27rem) {
   .peaui-form-date-range-picker__range-fields {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.25rem;
+    gap: var(--peaui-space-1);
     padding-block: 0.375rem;
   }
 

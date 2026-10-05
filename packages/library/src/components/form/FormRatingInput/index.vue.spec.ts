@@ -12,8 +12,7 @@ afterEach(() => {
 });
 
 function mountRating(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-  wrapper = mount(FormRatingInput, {
+  const wrapper = mount(FormRatingInput, {
     attachTo: document.body,
     props: {
       id: 'quality-rating',
@@ -75,7 +74,7 @@ describe('FormRatingInput Vue', () => {
     item.element.dispatchEvent(new MouseEvent('pointermove', { bubbles: true, clientX: 10 }));
     await wrapper.vm.$nextTick();
     expect(wrapper.attributes('data-preview-value')).toBe('2.5');
-    expect(wrapper.props('value')).toBe(2);
+    expect(wrapper.vm.$props.value).toBe(2);
     expect(wrapper.emitted('previewChange')?.at(-1)).toEqual([2.5]);
     await wrapper.get('.peaui-form-rating-input__control').trigger('pointerleave');
     expect(wrapper.emitted('previewChange')?.at(-1)).toEqual([null]);
@@ -115,7 +114,7 @@ describe('FormRatingInput Vue', () => {
     expect(wrapper.emitted('change')?.at(-1)?.[0]).toBe(5);
     await input.trigger('keydown', { key: 'Delete' });
     expect(wrapper.emitted('clear')).toHaveLength(1);
-    expect(wrapper.props('value')).toBeNull();
+    expect(wrapper.vm.$props.value).toBeNull();
   });
 
   it('readonly jest nietabowalnym odczytem, a disabled wyłącza suwak', () => {

@@ -96,8 +96,7 @@ afterEach(() => {
 });
 
 function mountPicker(props: Record<string, unknown> = {}, attrs: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-  wrapper = mount(FormTimePicker, {
+  const wrapper = mount(FormTimePicker, {
     attachTo: document.body,
     props: {
       id: 'meeting-time',
@@ -186,7 +185,7 @@ describe('FormTimePicker Vue', () => {
   it('otwiera panel klawiaturą, wybiera opcję i przywraca focus po Escape', async () => {
     const wrapper = mountPicker();
     const input = wrapper.get('input[type="text"]');
-    input.element.focus();
+    (input.element as HTMLInputElement).focus();
     await input.trigger('keydown', { key: 'ArrowDown' });
     await nextTick();
 
@@ -244,7 +243,7 @@ describe('FormTimePicker Vue', () => {
     const updatedSpinbuttons = wrapper.findAll(
       '[data-testid="time-picker-element"] [role="spinbutton"]',
     );
-    updatedSpinbuttons[0]!.element.focus();
+    (updatedSpinbuttons[0]!.element as HTMLInputElement).focus();
     await updatedSpinbuttons[0]!.trigger('keydown', { key: 'ArrowRight' });
     expect(updatedSpinbuttons[1]!.element).toHaveFocus();
   });

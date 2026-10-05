@@ -58,7 +58,9 @@ import {
   computed,
   nextTick,
   onBeforeUnmount,
+  onBeforeUpdate,
   onMounted,
+  onUpdated,
   ref,
   useAttrs,
   useId,
@@ -67,6 +69,7 @@ import {
 } from 'vue';
 
 import Avatar, { type AvatarShape, type AvatarSize, type AvatarStatus } from '../Avatar/index.vue';
+import { observeAvatarGroupPopover } from './avatar-group.shared';
 
 defineOptions({ inheritAttrs: false });
 
@@ -132,7 +135,7 @@ const visibleItems = computed(() => props.items.slice(0, normalizedLimit.value))
 const hiddenItems = computed(() => props.items.slice(normalizedLimit.value));
 const hasOverflow = computed(() => props.overflowMode !== 'none' && hiddenItems.value.length > 0);
 const showsPopover = computed(
-  () => props.overflowMode === 'popover' && hasOverflow.value && open.value,
+  () => props.overflowMode === 'popover' && hasOverflow.value && open.value && !props.disabled,
 );
 const rootClasses = computed(() => [
   classNameComponent,
@@ -168,7 +171,7 @@ const groupLabel = computed(() => {
 });
 const overflowLabel = computed(() => `Pokaż ${hiddenItems.value.length} pozostałych użytkowników`);
 
-function itemKey(item: AvatarGroupItem, index: number): string | number {
+function getItemKey(item: AvatarGroupItem, index: number): string | number {
   if (typeof props.itemKey === 'function') return props.itemKey(item, index);
 
   const value = item[props.itemKey];
@@ -216,7 +219,11 @@ function activateOverflow(): void {
 function closePopover(restoreFocus = false): void {
   if (!open.value) return;
   open.value = false;
-  if (restoreFocus) void nextTick(() => overflowButton.value?.focus());
+  if (restoreFocus)
+    void nextTick(() => {
+      const target = overflowButton.value;
+      (target && !target.disabled ? target : root.value)?.focus();
+    });
 }
 
 function handleKeydown(event: KeyboardEvent): void {
@@ -231,22 +238,91 @@ function handleDocumentPointerDown(event: PointerEvent): void {
   closePopover(false);
 }
 
+function focusPopover(): void {
+  const firstAction = popover.value?.querySelector<HTMLButtonElement>('button:not(:disabled)');
+  (firstAction ?? popover.value)?.focus();
+}
+
+let removedFocus: { element: HTMLElement; index: number } | undefined;
+onBeforeUpdate(() => {
+  const active = document.activeElement;
+  removedFocus =
+    active instanceof HTMLElement && popover.value?.contains(active)
+      ? {
+          element: active,
+          index: Array.from(popover.value.querySelectorAll('button:not(:disabled)')).indexOf(
+            active,
+          ),
+        }
+      : undefined;
+});
+onUpdated(() => {
+  const previous = removedFocus;
+  removedFocus = undefined;
+  if (
+    !previous ||
+    previous.element.isConnected ||
+    (document.activeElement !== document.body && document.activeElement !== previous.element)
+  )
+    return;
+  const actions = showsPopover.value
+    ? popover.value?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')
+    : undefined;
+  const next = actions?.[Math.min(Math.max(previous.index, 0), actions.length - 1)];
+  (next ?? (showsPopover.value ? popover.value : overflowButton.value) ?? root.value)?.focus();
+});
+
+let stopPositioning: (() => void) | undefined;
+function positionPopover(): void {
+  stopPositioning?.();
+  stopPositioning =
+    showsPopover.value && root.value && popover.value
+      ? observeAvatarGroupPopover(root.value, popover.value, props.direction)
+      : undefined;
+}
+
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (disabled && open.value) closePopover(root.value?.contains(document.activeElement) ?? false);
+  },
+);
+watch(
+  () => props.loading,
+  () => {
+    if (showsPopover.value && popover.value?.contains(document.activeElement))
+      void nextTick(focusPopover);
+  },
+);
+watch(
+  () => props.direction,
+  () => {
+    if (showsPopover.value) void nextTick(positionPopover);
+  },
+);
 watch(showsPopover, (isOpen) => {
   if (isOpen) {
     document.addEventListener('pointerdown', handleDocumentPointerDown);
     void nextTick(() => {
-      const firstAction = popover.value?.querySelector<HTMLButtonElement>('button:not(:disabled)');
-      (firstAction ?? popover.value)?.focus();
+      if (!showsPopover.value) return;
+      positionPopover();
+      focusPopover();
     });
-  } else document.removeEventListener('pointerdown', handleDocumentPointerDown);
+  } else {
+    document.removeEventListener('pointerdown', handleDocumentPointerDown);
+    positionPopover();
+  }
 });
 onMounted(() => {
   if (!showsPopover.value) return;
   document.addEventListener('pointerdown', handleDocumentPointerDown);
-  const firstAction = popover.value?.querySelector<HTMLButtonElement>('button:not(:disabled)');
-  (firstAction ?? popover.value)?.focus();
+  positionPopover();
+  focusPopover();
 });
-onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocumentPointerDown));
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', handleDocumentPointerDown);
+  stopPositioning?.();
+});
 </script>
 
 <template>
@@ -255,12 +331,15 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
     v-bind="rootAttrs"
     :class="rootClasses"
     :style="rootStyle"
+    :tabindex="
+      typeof attrs.tabindex === 'string' || typeof attrs.tabindex === 'number' ? attrs.tabindex : -1
+    "
     @keydown="handleKeydown"
   >
     <ul :class="`${classNameComponent}__list`" role="list" :aria-label="groupLabel">
       <li
         v-for="(item, index) in visibleItems"
-        :key="itemKey(item, index)"
+        :key="getItemKey(item, index)"
         :class="`${classNameComponent}__item`"
         :style="itemStyle(index)"
         :data-testid="props.dataTestId ? `${props.dataTestId}-item-${index}` : undefined"
@@ -330,45 +409,47 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', handleDocument
       :aria-busy="props.loading || undefined"
       :data-testid="props.dataTestId ? `${props.dataTestId}-popover` : undefined"
     >
-      <div :class="`${classNameComponent}__popover-header`">
-        <slot name="popover-header" :count="hiddenItems.length">Pozostali użytkownicy</slot>
-      </div>
-      <p v-if="props.loading" :class="`${classNameComponent}__loading`" role="status">
-        Ładowanie użytkowników…
-      </p>
-      <ul v-else :class="`${classNameComponent}__popover-list`" role="list">
-        <li
-          v-for="(item, hiddenIndex) in hiddenItems"
-          :key="itemKey(item, normalizedLimit + hiddenIndex)"
-          :class="`${classNameComponent}__popover-item`"
-        >
-          <button
-            type="button"
-            :class="`${classNameComponent}__popover-button`"
-            :aria-label="itemLabel(item, normalizedLimit + hiddenIndex)"
-            :disabled="isItemDisabled(item)"
-            @click="selectItem(item, normalizedLimit + hiddenIndex, true)"
+      <template v-if="showsPopover">
+        <div :class="`${classNameComponent}__popover-header`">
+          <slot name="popover-header" :count="hiddenItems.length">Pozostali użytkownicy</slot>
+        </div>
+        <p v-if="props.loading" :class="`${classNameComponent}__loading`" role="status">
+          Ładowanie użytkowników…
+        </p>
+        <ul v-else :class="`${classNameComponent}__popover-list`" role="list">
+          <li
+            v-for="(item, hiddenIndex) in hiddenItems"
+            :key="getItemKey(item, normalizedLimit + hiddenIndex)"
+            :class="`${classNameComponent}__popover-item`"
           >
-            <span :class="`${classNameComponent}__popover-visual`" aria-hidden="true">
-              <slot name="popover-item" :item="item" :index="normalizedLimit + hiddenIndex">
-                <Avatar
-                  alt=""
-                  :name="item.name"
-                  :src="item.src"
-                  :initials="item.initials"
-                  :status="item.status ?? 'none'"
-                  size="s"
-                  :shape="props.shape as AvatarShape"
-                  aria-hidden="true"
-                />
-                <span :class="`${classNameComponent}__popover-name`">
-                  {{ itemName(item, normalizedLimit + hiddenIndex) }}
-                </span>
-              </slot>
-            </span>
-          </button>
-        </li>
-      </ul>
+            <button
+              type="button"
+              :class="`${classNameComponent}__popover-button`"
+              :aria-label="itemLabel(item, normalizedLimit + hiddenIndex)"
+              :disabled="isItemDisabled(item)"
+              @click="selectItem(item, normalizedLimit + hiddenIndex, true)"
+            >
+              <span :class="`${classNameComponent}__popover-visual`" aria-hidden="true">
+                <slot name="popover-item" :item="item" :index="normalizedLimit + hiddenIndex">
+                  <Avatar
+                    alt=""
+                    :name="item.name"
+                    :src="item.src"
+                    :initials="item.initials"
+                    :status="item.status ?? 'none'"
+                    size="s"
+                    :shape="props.shape as AvatarShape"
+                    aria-hidden="true"
+                  />
+                  <span :class="`${classNameComponent}__popover-name`">
+                    {{ itemName(item, normalizedLimit + hiddenIndex) }}
+                  </span>
+                </slot>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </template>
     </section>
   </div>
 </template>

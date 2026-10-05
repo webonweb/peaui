@@ -97,7 +97,7 @@ export const ReadonlyDisabledAndError: Story = {
 };
 
 export const ControlledKeyboardAndClear: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<RatingValue>(2.5);
     return (
       <div style={{ display: 'grid', gap: '.75rem', maxWidth: '32rem' }}>

@@ -51,6 +51,18 @@ afterEach(() => {
 });
 
 describe('FormPinInput Web Component', () => {
+  it('scrolls an externally focused cell into view', async () => {
+    const element = new FormPinInputElement();
+    element.length = 12;
+    document.body.append(element);
+    await flush();
+    const last = element.querySelectorAll('input').item(11);
+    const scroll = vi.fn();
+    last.scrollIntoView = scroll;
+    last.focus();
+    expect(scroll).toHaveBeenCalledWith({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+  });
+
   it('rejestruje light-DOM element z nazwaną grupą i komórkami', async () => {
     expect(defineFormPinInput()).toBe(FormPinInputElement);
     expect(customElements.get(FormPinInputElement.tagName)).toBe(FormPinInputElement);

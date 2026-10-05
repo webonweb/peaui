@@ -5,7 +5,7 @@ import { buildTableTestId, TABLE_LIST_CLASS } from '../shared';
 import { computed } from 'vue';
 
 const { column, dataTestId, record } = defineProps<{
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   dataTestId?: string;
 }>();

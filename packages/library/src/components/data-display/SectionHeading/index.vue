@@ -7,6 +7,7 @@ import { computed, useAttrs, useId, useSlots } from 'vue';
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
+import { SECTION_HEADING_TAGS } from './section-heading.shared';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -26,24 +27,11 @@ const {
   variant?: 'default' | 'primary' | 'secondary';
 }>();
 
-const tagsTypeMap: Readonly<
-  Record<'heading-l' | 'heading-m' | 'heading-s' | 'heading-xs' | 'xl' | 'l' | 'm' | 's', string>
-> = {
-  'heading-l': 'h1',
-  'heading-m': 'h2',
-  'heading-s': 'h2',
-  'heading-xs': 'h2',
-  s: 'strong',
-  m: 'h4',
-  l: 'h3',
-  xl: 'h2',
-} as const;
-
 const classNameComponent = `${UIKIT_NAME}-section-heading`;
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
-const tagType = computed(() => tagsTypeMap[size]);
+const tagType = computed(() => SECTION_HEADING_TAGS[size]);
 
 const titleClasses = computed(() => [
   `${classNameComponent}__title`,

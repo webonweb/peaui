@@ -53,6 +53,7 @@ export type {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
+import { useFormControlReset } from '@/composables/useFormControlReset';
 import { computed, getCurrentInstance, nextTick, ref, useAttrs, useSlots, watch } from 'vue';
 
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
@@ -122,6 +123,10 @@ const triggerReference = ref<HTMLElement>();
 const inputReference = ref<HTMLInputElement>();
 const isOpen = ref(false);
 const touched = ref(false);
+useFormControlReset(triggerReference, () => {
+  touched.value = false;
+  syncFromModel();
+});
 const canonicalColor = ref<HsvaColor>(parseColor(modelValue.value) ?? DEFAULT_COLOR);
 const inputText = ref(modelValue.value || serializeColor(DEFAULT_COLOR, props.format, props.alpha));
 const eyedropperActive = ref(false);

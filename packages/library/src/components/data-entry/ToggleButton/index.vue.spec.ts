@@ -28,9 +28,9 @@ describe('ToggleButton Vue', () => {
 
   it('aktualizuje model i emituje zdarzenia dokładnie raz w stabilnej kolejności', async () => {
     const order: string[] = [];
-    const onChange = vi.fn(() => order.push('change'));
-    const onClick = vi.fn(() => order.push('click'));
-    const onValueChange = vi.fn(() => order.push('update'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
+    const onClick = vi.fn((..._args: unknown[]) => order.push('click'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('update'));
     const { emitted } = render(ToggleButton, {
       props: {
         label: 'Przypnij',

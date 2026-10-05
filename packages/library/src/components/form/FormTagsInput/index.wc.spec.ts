@@ -67,10 +67,10 @@ describe('FormTagsInput Web Component', () => {
     const control = input(element);
 
     expect(element.shadowRoot).toBeNull();
-    expect(control.getAttribute('aria-labelledby')).toBe('label-skills-wc-input');
+    expect(control.getAttribute('aria-labelledby')).toBe('label-skills-wc-control-input');
     expect(element.querySelector('label')).toHaveClass('peaui-form-label');
-    expect(control.getAttribute('aria-describedby')).toContain('skills-wc-description');
-    expect(control.getAttribute('aria-describedby')).toContain('skills-wc-error');
+    expect(control.getAttribute('aria-describedby')).toContain('skills-wc-control-description');
+    expect(control.getAttribute('aria-describedby')).toContain('skills-wc-control-error');
     expect(element.querySelectorAll('[role="status"]')).toHaveLength(1);
   });
 
@@ -162,7 +162,7 @@ describe('FormTagsInput Web Component', () => {
     control.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowDown' }));
     await flush();
 
-    expect(control.getAttribute('aria-activedescendant')).toBe('skills-wc-suggestion-0');
+    expect(control.getAttribute('aria-activedescendant')).toBe('skills-wc-control-suggestion-0');
     const option = element.querySelector('[role="option"]');
     const overlay = option?.closest('.peaui-form-tags-input__popover-content');
     expect(option?.getAttribute('aria-selected')).toBe('true');

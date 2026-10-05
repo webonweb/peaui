@@ -193,4 +193,15 @@ describe('TableHeadColumn.vue', () => {
       'peaui-table-list__head-cell--border-right',
     );
   });
+
+  it('does not interpret HTML from column labels', () => {
+    const label = '<img src=x onerror="alert(1)">Name';
+    const wrapper = mount(TableHeadColumn, {
+      props: { columns: [{ key: 'name', label }], sortType: 'ASC' },
+      global: { stubs: { InfoTooltip: InfoTooltipStub, SvgIcon: SvgIconStub } },
+    });
+
+    expect(wrapper.get('.peaui-table-list__head-label').text()).toBe(label);
+    expect(wrapper.find('.peaui-table-list__head-label img').exists()).toBe(false);
+  });
 });

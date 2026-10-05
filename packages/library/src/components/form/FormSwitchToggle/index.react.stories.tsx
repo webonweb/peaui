@@ -53,7 +53,7 @@ export const SizesAndLabelPositions: Story = {
 };
 
 export const CustomValues: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<'enabled' | 'disabled'>('disabled');
     return (
       <div style={{ display: 'grid', gap: '.75rem' }}>

@@ -9,12 +9,13 @@ const configDirectory = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
+  workers: 4,
   reporter: 'list',
   timeout: 30_000,
   expect: { timeout: 10_000 },
   use: {
     baseURL,
-    browserName: 'chromium',
+    browserName: (process.env.PEAUI_BROWSER ?? 'chromium') as 'chromium' | 'firefox' | 'webkit',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',

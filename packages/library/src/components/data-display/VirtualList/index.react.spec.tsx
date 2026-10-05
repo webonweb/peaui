@@ -48,6 +48,61 @@ afterEach(() => {
 });
 
 describe('VirtualList React', () => {
+  it('V-D04 preserves the visible keyed anchor after prepend and removal before it', async () => {
+    const reference = createRef<VirtualListHandle>();
+    const initial = items.slice(0, 100);
+    const { rerender } = render(<VirtualList items={initial} itemSize={64} ref={reference} />);
+    act(() => reference.current?.scrollToIndex(50, 'start'));
+    await act(async () => vi.runAllTimersAsync());
+    rerender(
+      <VirtualList
+        items={[{ id: 'new', label: 'New' }, ...initial]}
+        itemSize={64}
+        ref={reference}
+      />,
+    );
+    await act(async () => vi.runAllTimersAsync());
+    expect(reference.current?.viewport?.scrollTop).toBe(51 * 64);
+    expect(reference.current?.getVisibleRange().visibleStartIndex).toBe(51);
+    rerender(<VirtualList items={initial.slice(1)} itemSize={64} ref={reference} />);
+    await act(async () => vi.runAllTimersAsync());
+    expect(reference.current?.viewport?.scrollTop).toBe(49 * 64);
+  });
+  it('V-D09 does not rearm reachEnd for keyboard state or callback identity changes', async () => {
+    const reference = createRef<VirtualListHandle>();
+    const reachEnd = vi.fn();
+    const data = items.slice(0, 20);
+    const { rerender } = render(
+      <VirtualList
+        items={data}
+        ref={reference}
+        hasMore
+        semanticRole="listbox"
+        onReachEnd={reachEnd}
+        onActiveIndexChange={() => undefined}
+      />,
+    );
+    act(() => reference.current?.scrollToIndex(19, 'end'));
+    await act(async () => vi.runAllTimersAsync());
+    fireEvent.keyDown(screen.getByRole('listbox'), { key: 'End' });
+    await act(async () => vi.runAllTimersAsync());
+    rerender(
+      <VirtualList
+        items={data}
+        ref={reference}
+        hasMore
+        loading
+        semanticRole="listbox"
+        onReachEnd={reachEnd}
+        onActiveIndexChange={() => undefined}
+      />,
+    );
+    act(() => reference.current?.scrollToIndex(0));
+    await act(async () => vi.runAllTimersAsync());
+    act(() => reference.current?.scrollToIndex(19, 'end'));
+    await act(async () => vi.runAllTimersAsync());
+    expect(reachEnd).toHaveBeenCalledTimes(1);
+  });
   it('keeps a bounded DOM and exposes the same imperative range API', async () => {
     const ref = createRef<VirtualListHandle>();
     render(<VirtualList ariaLabel="Wyniki" dataTestId="virtual-list" items={items} ref={ref} />);

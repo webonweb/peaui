@@ -103,7 +103,7 @@ export const DisabledStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | number | null>('list');
     return (
       <div style={{ display: 'grid', gap: '.75rem', justifyItems: 'start' }}>

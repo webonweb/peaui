@@ -697,8 +697,8 @@ function factoryWithExpandableBodyColumn(
       ...props,
     } as never,
     slots: {
-      'details-record': ({ record }: { record: Record<string, any> }) =>
-        h('div', { 'data-testid': 'expanded-content' }, record.name),
+      'details-record': ({ record }: { record: Record<string, unknown> }) =>
+        h('div', { 'data-testid': 'expanded-content' }, String(record.name)),
     },
     global: {
       stubs: {
@@ -1339,7 +1339,7 @@ describe('TableList (index.vue)', () => {
   });
 
   it('reruns step columns for the updated row after inline select onUpdate', async () => {
-    const onUpdate = vi.fn((record: Record<string, any>) => record);
+    const onUpdate = vi.fn((record: Record<string, unknown>) => record);
     const steps = vi.fn(() => []);
     const wrapper = factoryWithInlineUpdateBodyColumn({
       columns: [
@@ -1381,11 +1381,11 @@ describe('TableList (index.vue)', () => {
       id: '1',
     });
     expect(wrapper.emitted('on:changeValue')).toEqual([['1', 'Techniczny']]);
-    expect(onUpdate.mock.invocationCallOrder[0]).toBeLessThan(steps.mock.invocationCallOrder[0]);
+    expect(onUpdate.mock.invocationCallOrder[0]!).toBeLessThan(steps.mock.invocationCallOrder[0]!);
   });
 
   it('does not rerun step columns after non-select inline onUpdate', async () => {
-    const onUpdate = vi.fn((record: Record<string, any>) => record);
+    const onUpdate = vi.fn((record: Record<string, unknown>) => record);
     const steps = vi.fn(() => []);
     const wrapper = factoryWithInlineUpdateBodyColumn({
       columns: [

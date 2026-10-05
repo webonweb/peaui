@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 import FullscreenContainerComponent from './index.vue';
+import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 
 const { getSettings } = useSettingsStorie();
 
@@ -72,6 +73,14 @@ export default meta;
 
 type Story = StoryObj<typeof FullscreenContainerComponent>;
 
+export const KeyboardInteraction: Story = {
+  render: (args) => ({
+    components: { FullscreenContainerComponent, ButtonAction },
+    setup: () => ({ args }),
+    template: `<div><ButtonAction>Przed kontenerem</ButtonAction><FullscreenContainerComponent v-bind="args"><ButtonAction>Akcja w kontenerze</ButtonAction><p>Po otwarciu pełnego ekranu Tab pozostaje wewnątrz. Escape zamyka widok i przywraca fokus.</p></FullscreenContainerComponent><ButtonAction>Za kontenerem</ButtonAction></div>`,
+  }),
+};
+
 const renderStory = (args: StoryArgs) => ({
   components: { FullscreenContainerComponent, StoryContent },
   setup() {
@@ -83,13 +92,13 @@ const renderStory = (args: StoryArgs) => ({
       <div style="width: min(100%, 56rem);">
         <FullscreenContainerComponent v-bind="args">
           <div style="display: grid; gap: 1rem;">
-            <div style="padding: 1rem; border-radius: 0.75rem; background: #f4f6f8;">
+            <div style="padding: 1rem; border-radius: 0.75rem; background: var(--peaui-color-grey-100);">
               Naglowek sekcji
             </div>
-            <div style="padding: 1rem; border-radius: 0.75rem; background: #ffffff; border: 1px solid #d7dde3;">
+            <div style="padding: 1rem; border-radius: 0.75rem; background: var(--peaui-color-grey-0); border: 1px solid var(--peaui-color-grey-200);">
               Dowolna zawartosc komponentu moze byc wyswietlana wewnatrz slotu.
             </div>
-            <div style="padding: 1rem; border-radius: 0.75rem; background: #eef5ef;">
+            <div style="padding: 1rem; border-radius: 0.75rem; background: var(--peaui-color-primary-50);">
               Przykladowy blok pomocniczy.
             </div>
           </div>
@@ -130,7 +139,7 @@ export const LongContent: Story = {
               <article
                 v-for="section in sections"
                 :key="section.id"
-                style="padding: 1rem; border-radius: 0.75rem; border: 1px solid #d7dde3; background: #ffffff;"
+                style="padding: 1rem; border-radius: 0.75rem; border: 1px solid var(--peaui-color-grey-200); background: var(--peaui-color-grey-0);"
               >
                 <strong>{{ section.title }}</strong>
                 <p style="margin: 0.5rem 0 0;">{{ section.description }}</p>

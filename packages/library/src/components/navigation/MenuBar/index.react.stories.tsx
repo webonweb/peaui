@@ -30,7 +30,7 @@ export const SubmenuCheckboxRadioAndShortcuts: Story = {
 };
 
 export const Controlled: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [openMenu, setOpenMenu] = useState<string | number | null>('edit');
     return (
       <div style={{ display: 'grid', gap: '.75rem' }}>

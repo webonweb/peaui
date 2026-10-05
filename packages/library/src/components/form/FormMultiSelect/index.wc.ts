@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormMultiSelectVueComponent from './index.ce.vue';
 
-export const FormMultiSelectElement = createVueCustomElement(
-  FormMultiSelectVueComponent,
-  `${UIKIT_NAME}-form-multi-select`,
-);
+export const FormMultiSelectElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormMultiSelectVueComponent, `${UIKIT_NAME}-form-multi-select`);
 
 export function defineFormMultiSelect(): void {
   definePeauiCustomElement(FormMultiSelectElement);

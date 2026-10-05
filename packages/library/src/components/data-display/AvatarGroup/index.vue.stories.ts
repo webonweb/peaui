@@ -24,6 +24,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const SmallTargetsAndViewportEdge: Story = {
+  args: { ...avatarGroupDemoProps, size: 'xs', direction: 'end', open: true },
+};
+export const LargeClosedGroup: Story = {
+  args: {
+    ...avatarGroupDemoProps,
+    open: false,
+    items: Array.from({ length: 1000 }, (_, id) => ({ id, name: `Member ${id}` })),
+  },
+};
+
 const { getSettings } = useSettingsStorie();
 
 export const Playground: Story = {

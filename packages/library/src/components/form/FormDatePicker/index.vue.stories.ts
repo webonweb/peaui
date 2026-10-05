@@ -2,6 +2,7 @@ import StoryContent from '@peaui/storybook-shell/src/components/StoryContent.vue
 import type { Meta, StoryObj } from '@storybook/vue3';
 
 import FormDatePickerComponent from './index.vue';
+import ButtonAction from '../../data-entry/ButtonAction/index.vue';
 
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 
@@ -232,4 +233,20 @@ export const FormDatePickerRange: Story = {
     canErase: true,
     dataTestId: 'form-date-picker-range',
   },
+};
+
+export const NativeRequired: Story = {
+  args: {
+    id: 'required-date',
+    name: 'date',
+    label: 'Required date',
+    required: true,
+    value: undefined,
+  },
+  render: (args) => ({
+    components: { FormDatePickerComponent, ButtonAction },
+    setup: () => ({ args }),
+    template:
+      '<form @submit.prevent><FormDatePickerComponent v-bind="args" /><ButtonAction type="submit">Submit</ButtonAction></form>',
+  }),
 };

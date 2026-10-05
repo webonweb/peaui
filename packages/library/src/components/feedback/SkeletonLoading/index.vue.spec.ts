@@ -6,8 +6,8 @@ vi.mock('@/constants', () => ({
   UIKIT_NAME: 'peaui',
 }));
 
-vi.mock('@/assets/global.scss', () => ({}), { virtual: true });
-vi.mock('./styles.scss', () => ({}), { virtual: true });
+vi.mock('@/assets/global.scss', () => ({}));
+vi.mock('./styles.scss', () => ({}));
 
 describe('SkeletonLoading (index.vue)', () => {
   it('renders base class and medium size by default', () => {

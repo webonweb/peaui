@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref, useId, type Component, watch } from 'vue';
+import { formComponentsDictionary } from './editor-components';
+import { computed, ref, useId, watch } from 'vue';
 import FormContainer from '@/components/form/FormContainer/index.vue';
 import GridItem from '@/components/layout/GridItem/index.vue';
 import GridSection from '@/components/layout/GridSection/index.vue';
@@ -10,7 +11,7 @@ import { TABLE_LIST_CLASS, resolveTableManageOptions } from '../shared';
 const { manage, column, record } = defineProps<{
   manage?: TableManageColumn;
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
   index?: number;
 }>();
@@ -24,17 +25,11 @@ const modelValue = defineModel<string | number | undefined>('value');
 const currentValue = ref<string | number | undefined>(modelValue.value);
 const uid = useId();
 
-const formComponentsDictionary: Readonly<Record<string, Component>> = {
-  number: defineAsyncComponent(() => import('@/components/form/FormNumber/index.vue')),
-  select: defineAsyncComponent(() => import('@/components/form/FormSelect/index.vue')),
-  text: defineAsyncComponent(() => import('@/components/form/FormInput/index.vue')),
-} as const;
-
 const fieldIdentifier = computed(() =>
   ['dynamical', manage?.type ?? 'field', column.key, uid].join('-'),
 );
 
-function resolveOptions(): any[] | undefined {
+function resolveOptions(): import('../shared').TableManageOption[] | undefined {
   return resolveTableManageOptions({
     columnKey: column.key,
     currentRecord: {
@@ -86,12 +81,13 @@ watch(modelValue, () => {
           :id="fieldIdentifier"
           :max="
             typeof manage.max === 'function'
-              ? manage.max(record as Record<string, any>)
+              ? manage.max(record as Record<string, unknown>)
               : manage.max
           "
           :min="manage.min"
           :name="fieldIdentifier"
           :options="resolveOptions()"
+          :value-mode="manage?.valueMode"
           :placeholder="manage.placeholder"
           :placement="resolvePlacement()"
           :readonly="manage.disabled"

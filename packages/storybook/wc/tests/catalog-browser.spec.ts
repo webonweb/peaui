@@ -75,7 +75,7 @@ async function expectStoryHasNoErrors(
 
   const results = await new AxeBuilder({ page })
     .include("#storybook-root")
-    .withTags(["wcag2a", "wcag2aa"])
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .disableRules(disabledAxeRules)
     .analyze();
 

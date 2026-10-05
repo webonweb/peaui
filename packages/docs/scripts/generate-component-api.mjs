@@ -8,6 +8,7 @@ const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const componentsRoot = path.resolve(docsRoot, '../library/src/components');
 const outputFile = path.resolve(docsRoot, 'src/generated/component-api.ts');
 const frameworkOutputFile = path.resolve(docsRoot, 'src/generated/framework-component-api.ts');
+const catalogOutputFile = path.resolve(docsRoot, 'src/generated/component-catalog.ts');
 const prettierOptions = {
   ...((await resolveConfig(outputFile)) ?? {}),
   parser: 'typescript',
@@ -193,7 +194,22 @@ function getDocumentation(node) {
 
 function literalValue(node, sourceFile) {
   if (!node) return undefined;
-  if (ts.isArrowFunction(node)) return node.body.getText(sourceFile);
+  if (ts.isIdentifier(node)) {
+    const declaration = getDefinitions(sourceFile).get(node.text);
+    if (
+      declaration &&
+      ts.isVariableDeclaration(declaration) &&
+      declaration.initializer &&
+      declaration.initializer !== node
+    ) {
+      return literalValue(declaration.initializer, declaration.getSourceFile());
+    }
+  }
+  if (ts.isArrowFunction(node)) {
+    let body = node.body;
+    while (ts.isParenthesizedExpression(body)) body = body.expression;
+    return body.getText(sourceFile);
+  }
   const text = node.getText(sourceFile);
 
   if (/^['\"`]/.test(text)) return text.slice(1, -1);
@@ -221,19 +237,55 @@ function getTypeText(typeNode, definitions, sourceFile) {
           ts.isTypeReferenceNode(entry),
       )
     ) {
-      return definition.type.getText(sourceFile);
+      return definition.type.getText();
     }
   }
 
   return typeNode.getText(sourceFile);
 }
 
+const definitionsCache = new Map();
+
 function getDefinitions(sourceFile) {
+  if (definitionsCache.has(sourceFile.fileName)) return definitionsCache.get(sourceFile.fileName);
   const definitions = new Map();
+  definitionsCache.set(sourceFile.fileName, definitions);
 
   for (const statement of sourceFile.statements) {
     if (ts.isInterfaceDeclaration(statement) || ts.isTypeAliasDeclaration(statement)) {
       definitions.set(statement.name.text, statement);
+    }
+    if (ts.isVariableStatement(statement)) {
+      for (const declaration of statement.declarationList.declarations) {
+        if (ts.isIdentifier(declaration.name)) definitions.set(declaration.name.text, declaration);
+      }
+    }
+  }
+
+  for (const statement of sourceFile.statements) {
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier))
+      continue;
+    const specifier = statement.moduleSpecifier.text;
+    if (!specifier.startsWith('.') && !specifier.startsWith('@/')) continue;
+    const base = specifier.startsWith('@/')
+      ? path.resolve(componentsRoot, '..', specifier.slice(2))
+      : path.resolve(path.dirname(sourceFile.fileName), specifier);
+    const file = [base, `${base}.ts`, path.join(base, 'index.ts')].find(
+      (candidate) =>
+        fs.existsSync(candidate) && fs.statSync(candidate).isFile() && candidate.endsWith('.ts'),
+    );
+    if (
+      !file ||
+      !statement.importClause?.namedBindings ||
+      !ts.isNamedImports(statement.importClause.namedBindings)
+    )
+      continue;
+    const imported = getDefinitions(
+      ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true),
+    );
+    for (const binding of statement.importClause.namedBindings.elements) {
+      const declaration = imported.get((binding.propertyName ?? binding.name).text);
+      if (declaration) definitions.set(binding.name.text, declaration);
     }
   }
 
@@ -246,6 +298,7 @@ function resolveMembers(typeNode, definitions) {
 
   if (ts.isTypeReferenceNode(typeNode)) {
     const definition = definitions.get(typeNode.typeName.getText());
+    if (!definition) return [];
     if (ts.isInterfaceDeclaration(definition)) return definition.members;
     if (ts.isTypeAliasDeclaration(definition) && ts.isTypeLiteralNode(definition.type)) {
       return definition.type.members;
@@ -297,16 +350,34 @@ function readPropsDefaults(call, sourceFile) {
 
 function extractEvents(typeNode, sourceFile) {
   if (!typeNode) return [];
-  const text = typeNode.getText(sourceFile);
-  const names = new Set();
-
-  for (const match of text.matchAll(/['\"]([^'\"]+)['\"]\s*:/g)) names.add(match[1]);
-  for (const match of text.matchAll(/(?:e|event)\s*:\s*['\"]([^'\"]+)['\"]/g)) names.add(match[1]);
-
-  return [...names].map((name) => ({
-    name,
-    description: eventDescriptions[name] ?? `Emitowane, gdy komponent zgłasza zdarzenie „${name}”.`,
-  }));
+  const entries = new Map();
+  for (const member of typeNode.members ?? []) {
+    let name;
+    let type;
+    if (ts.isCallSignatureDeclaration(member)) {
+      const eventType = member.parameters[0]?.type;
+      if (!eventType || !ts.isLiteralTypeNode(eventType)) continue;
+      name = eventType.literal.text;
+      type = `(${member.parameters
+        .slice(1)
+        .map((parameter) => parameter.getText(sourceFile))
+        .join(', ')}) => void`;
+    } else if (ts.isPropertySignature(member)) {
+      name = getPropertyName(member, sourceFile);
+      type = member.type?.getText(sourceFile);
+    }
+    if (!name) continue;
+    const previous = entries.get(name);
+    entries.set(name, {
+      name,
+      type: previous ? `${previous.type} | ${type}` : type,
+      description:
+        getDocumentation(member) ??
+        eventDescriptions[name] ??
+        `Emitowane, gdy komponent zgłasza zdarzenie „${name}”.`,
+    });
+  }
+  return [...entries.values()];
 }
 
 function extractComponent(componentDirectory) {
@@ -343,7 +414,9 @@ function extractComponent(componentDirectory) {
           default: defaults[name],
           description:
             getDocumentation(member) ??
-            propDescriptions[name] ??
+            (name === 'loading' && type === 'boolean'
+              ? propDescriptions.isLoading
+              : propDescriptions[name]) ??
             `Konfiguruje właściwość „${humanize(name).toLocaleLowerCase('pl-PL')}” komponentu.`,
         });
       }
@@ -351,7 +424,9 @@ function extractComponent(componentDirectory) {
 
     if (isCallNamed(node, 'defineModel')) {
       const nameNode = node.arguments[0];
-      const optionsNode = node.arguments[1];
+      const optionsNode =
+        node.arguments[1] ??
+        (nameNode && ts.isObjectLiteralExpression(nameNode) ? nameNode : undefined);
       const name = nameNode && ts.isStringLiteralLike(nameNode) ? nameNode.text : 'modelValue';
       let required = false;
       let defaultValue;
@@ -392,6 +467,29 @@ function extractComponent(componentDirectory) {
 
   visit(sourceFile);
 
+  // Props paired with explicit update events have the same v-model contract as
+  // defineModel, including newer components that declare their state manually.
+  for (const event of events) {
+    if (!event.name.startsWith('update:')) continue;
+    const modelName = event.name.slice('update:'.length);
+    const propIndex = props.findIndex((prop) => prop.name === modelName);
+    if (propIndex < 0 || models.some((model) => model.name === modelName)) continue;
+    const [prop] = props.splice(propIndex, 1);
+    models.push({
+      ...prop,
+      description:
+        modelDescriptions[modelName] ?? `Wartość kontrolowana przez v-model:${modelName}.`,
+    });
+  }
+  for (const model of models) {
+    if (events.some((event) => event.name === `update:${model.name}`)) continue;
+    events.push({
+      name: `update:${model.name}`,
+      type: `(value: ${model.type}) => void`,
+      description: `Emitowane po zmianie modelu „${model.name}”; przekaż nową wartość do v-model${model.name === 'modelValue' ? '' : `:${model.name}`}.`,
+    });
+  }
+
   for (const match of template.matchAll(/<slot(?:\s[^>]*)?>/g)) {
     const slotMarkup = match[0];
     const name = slotMarkup.match(/\bname=['\"]([^'\"]+)['\"]/)?.[1] ?? 'default';
@@ -405,7 +503,7 @@ function extractComponent(componentDirectory) {
     name,
     category,
     categoryLabel: categoryLabels[category] ?? humanize(category),
-    importPath: `@peaui/ui/${category}/${name}`,
+    importPath: `@peaui/ui/vue/${category}/${name}`,
     props,
     models: models.filter(
       (model, index, list) => list.findIndex((item) => item.name === model.name) === index,
@@ -433,116 +531,6 @@ function toKebabCase(value) {
 
 function toCamelCase(value) {
   return value.replace(/[-:]([a-z])/g, (_, character) => character.toUpperCase());
-}
-
-function toReactSlotName(componentName, slotName) {
-  if (componentName === 'KeyboardKey' && slotName === 'key') return 'renderKey';
-  if (componentName === 'KeyboardKey' && slotName === 'separator') return 'renderSeparator';
-  if (componentName === 'FormTagsInput') {
-    const slotNames = {
-      label: 'renderLabel',
-      hint: 'renderHint',
-      tag: 'renderTag',
-      'tag-content': 'renderTagContent',
-      suggestion: 'renderSuggestion',
-      'empty-suggestions': 'renderEmptySuggestions',
-      loading: 'loadingContent',
-      prefix: 'prefixContent',
-      suffix: 'suffixContent',
-      description: 'descriptionContent',
-      error: 'errorContent',
-    };
-    return slotNames[slotName] ?? slotName;
-  }
-  if (componentName === 'FormPinInput' && slotName === 'label') return 'labelContent';
-  if (componentName === 'FormPinInput' && slotName === 'hint') return 'hintContent';
-  if (componentName === 'FormPinInput' && slotName === 'separator') return 'renderSeparator';
-  if (componentName === 'FormPinInput' && slotName === 'description') return 'descriptionContent';
-  if (componentName === 'FormPinInput' && slotName === 'error') return 'errorContent';
-  if (componentName === 'FormColorPicker' && slotName === 'trigger') return 'renderTrigger';
-  if (componentName === 'FormColorPicker' && slotName === 'swatch') return 'renderSwatch';
-  if (componentName === 'FormColorPicker' && slotName === 'saved-color') return 'renderSavedColor';
-  if (componentName === 'FormColorPicker' && slotName === 'recent-color')
-    return 'renderRecentColor';
-  if (componentName === 'FormColorPicker' && slotName === 'footer') return 'renderFooter';
-  if (componentName === 'FormColorPicker' && slotName === 'error') return 'errorContent';
-  if (componentName === 'FormColorPicker' && slotName === 'description')
-    return 'descriptionContent';
-  if (componentName === 'FormColorPicker' && slotName === 'hint') return 'hintContent';
-  if (componentName === 'Avatar' && slotName === 'status') return 'statusContent';
-  if (componentName === 'AvatarGroup' && slotName === 'item') return 'renderItem';
-  if (componentName === 'AvatarGroup' && slotName === 'overflow') return 'renderOverflow';
-  if (componentName === 'AvatarGroup' && slotName === 'popover-item') return 'renderPopoverItem';
-  if (componentName === 'DropdownMenu' && slotName === 'trigger') return 'renderTrigger';
-  if (componentName === 'DropdownMenu' && slotName === 'item') return 'renderItem';
-  if (componentName === 'DropdownMenu' && slotName === 'item-icon') return 'renderItemIcon';
-  if (componentName === 'DropdownMenu' && slotName === 'item-shortcut') return 'renderItemShortcut';
-  if (componentName === 'DropdownMenu' && slotName === 'group-label') return 'renderGroupLabel';
-  if (componentName === 'DropdownMenu' && slotName === 'loading') return 'loadingContent';
-  if (componentName === 'FormSwitchToggle' && slotName === 'label') return 'labelContent';
-  if (componentName === 'FormSwitchToggle' && slotName === 'description')
-    return 'descriptionContent';
-  if (componentName === 'FormSwitchToggle' && slotName === 'error') return 'errorContent';
-  if (componentName === 'FormSwitchToggle' && slotName === 'thumb') return 'renderThumb';
-  if (componentName === 'FormSwitchToggle' && slotName === 'on-label') return 'onLabelContent';
-  if (componentName === 'FormSwitchToggle' && slotName === 'off-label') return 'offLabelContent';
-  if (componentName === 'FormTimePicker' && slotName === 'trigger') return 'renderTrigger';
-  if (componentName === 'FormTimePicker' && slotName === 'hour-option') return 'renderHourOption';
-  if (componentName === 'FormTimePicker' && slotName === 'minute-option')
-    return 'renderMinuteOption';
-  if (componentName === 'FormTimePicker' && slotName === 'second-option')
-    return 'renderSecondOption';
-  if (componentName === 'FormTimePicker' && slotName === 'period-option')
-    return 'renderPeriodOption';
-  if (componentName === 'FormTimePicker' && slotName === 'footer') return 'footerContent';
-  if (componentName === 'FormTimePicker' && slotName === 'error') return 'errorContent';
-  if (componentName === 'FormTimePicker' && slotName === 'description') return 'descriptionContent';
-  if (componentName === 'FormDateTimePicker' && slotName === 'trigger') return 'renderTrigger';
-  if (componentName === 'FormDateTimePicker' && slotName === 'date') return 'renderDate';
-  if (componentName === 'FormDateTimePicker' && slotName === 'time') return 'renderTime';
-  if (componentName === 'FormDateTimePicker' && slotName === 'time-zone') return 'renderTimeZone';
-  if (componentName === 'FormDateTimePicker' && slotName === 'footer') return 'footerContent';
-  if (componentName === 'FormDateTimePicker' && slotName === 'error') return 'errorContent';
-  if (componentName === 'FormDateTimePicker' && slotName === 'description')
-    return 'descriptionContent';
-  if (componentName === 'ToggleButton' && slotName === 'icon') return 'iconContent';
-  if (componentName === 'ToggleButton' && slotName === 'pressed-icon') return 'pressedIconContent';
-  if (componentName === 'ToggleGroup' && slotName === 'item') return 'renderItem';
-  if (componentName === 'ToggleGroup' && slotName === 'label') return 'labelContent';
-  if (componentName === 'ToggleGroup' && slotName === 'error') return 'errorContent';
-  if (componentName === 'SegmentedControl' && slotName === 'item') return 'renderItem';
-  if (componentName === 'SegmentedControl' && slotName === 'item-icon') return 'renderItemIcon';
-  if (componentName === 'SegmentedControl' && slotName === 'indicator') return 'renderIndicator';
-  if (componentName === 'SplitButton' && slotName === 'label') return 'labelContent';
-  if (componentName === 'SplitButton' && slotName === 'icon') return 'iconContent';
-  if (componentName === 'SplitButton' && slotName === 'menu-trigger-icon')
-    return 'menuTriggerIconContent';
-  if (componentName === 'SplitButton' && slotName === 'menu-item') return 'renderMenuItem';
-  if (componentName === 'SplitButton' && slotName === 'menu-item-icon') return 'renderMenuItemIcon';
-  if (componentName === 'SplitButton' && slotName === 'menu-item-shortcut')
-    return 'renderMenuItemShortcut';
-  if (componentName === 'SplitButton' && slotName === 'group-label') return 'renderGroupLabel';
-  if (componentName === 'SplitButton' && slotName === 'empty') return 'emptyContent';
-  if (componentName === 'SplitButton' && slotName === 'menu-loading') return 'menuLoadingContent';
-  if (componentName === 'TransferList' && slotName === 'source-header') return 'renderSourceHeader';
-  if (componentName === 'TransferList' && slotName === 'target-header') return 'renderTargetHeader';
-  if (componentName === 'TransferList' && slotName === 'item') return 'renderItem';
-  if (componentName === 'TransferList' && slotName === 'source-empty') return 'renderSourceEmpty';
-  if (componentName === 'TransferList' && slotName === 'target-empty') return 'renderTargetEmpty';
-  if (componentName === 'TransferList' && slotName === 'controls') return 'renderControls';
-  if (componentName === 'TransferList' && slotName === 'loading') return 'renderLoading';
-  if (componentName === 'ScrollArea' && slotName === 'scrollbar') return 'renderScrollbar';
-  if (componentName === 'ScrollArea' && slotName === 'start-indicator') return 'startIndicator';
-  if (componentName === 'ScrollArea' && slotName === 'end-indicator') return 'endIndicator';
-
-  return toCamelCase(slotName);
-}
-
-function toReactCallbackName(value) {
-  if (value === 'update:open') return 'onOpenChange';
-  if (value === 'on:dblclick') return 'onRowDoubleClick';
-  const normalized = toCamelCase(value.replace(/^on:/, ''));
-  return `on${normalized.charAt(0).toUpperCase()}${normalized.slice(1)}`;
 }
 
 function getFrameworkIdentity(componentDirectory) {
@@ -575,7 +563,7 @@ function extractWebComponent(componentDirectory) {
     const toWebProperty = (entry) => ({
       ...entry,
       name: entry.name === 'dataTestId' ? 'data-testid' : toKebabCase(entry.name),
-      description: `${entry.description} W HTML użyj atrybutu z myślnikami; wartości złożone ustaw jako property.`,
+      description: `${vueApi.models.some((model) => model.name === entry.name) ? `Kontrolowana właściwość ${entry.name}; synchronizuj ją przez zdarzenie update:${entry.name}.` : entry.description} Property JavaScript: ${entry.name}. Wartości złożone i funkcje ustawiaj jako properties.`,
     });
     const modelEvents = vueApi.models.map((model) => ({
       name: `update:${model.name}`,
@@ -685,106 +673,148 @@ function extractWebComponent(componentDirectory) {
   };
 }
 
+const reactFiles = walkFrameworkDirectories(componentsRoot)
+  .map((directory) => path.join(directory, 'index.tsx'))
+  .filter((file) => fs.existsSync(file));
+const reactProgram = ts.createProgram(reactFiles, {
+  target: ts.ScriptTarget.ESNext,
+  module: ts.ModuleKind.ESNext,
+  moduleResolution: ts.ModuleResolutionKind.Bundler,
+  jsx: ts.JsxEmit.ReactJSX,
+  skipLibCheck: true,
+  strict: true,
+  baseUrl: path.resolve(componentsRoot, '..'),
+  paths: { '@/*': ['./*'] },
+});
+const reactChecker = reactProgram.getTypeChecker();
+
 function extractReactComponent(componentDirectory) {
   const identity = getFrameworkIdentity(componentDirectory);
   const vueApi = extractComponent(componentDirectory);
-
+  const sourceFile = reactProgram.getSourceFile(path.join(componentDirectory, 'index.tsx'));
+  const declaration = sourceFile.statements.find(
+    (statement) =>
+      (ts.isTypeAliasDeclaration(statement) || ts.isInterfaceDeclaration(statement)) &&
+      statement.name.text === `${identity.name}Props`,
+  );
+  if (!declaration) throw new Error(`Missing React public props: ${identity.name}`);
+  const propsType = reactChecker.getTypeAtLocation(declaration);
+  const vueInputs = new Map(
+    [...vueApi.props, ...vueApi.models].map((entry) => [entry.name, entry]),
+  );
+  const props = [];
+  const events = [];
+  const slots = [];
+  const ownDefaults = {};
+  function collectDefaults(node) {
+    if (ts.isParameter(node) && ts.isObjectBindingPattern(node.name)) {
+      for (const element of node.name.elements) {
+        if (element.initializer)
+          ownDefaults[(element.propertyName ?? element.name).getText()] = literalValue(
+            element.initializer,
+            sourceFile,
+          );
+      }
+    }
+    ts.forEachChild(node, collectDefaults);
+  }
+  collectDefaults(sourceFile);
+  for (const symbol of reactChecker.getPropertiesOfType(propsType)) {
+    const name = symbol.getName();
+    const member = symbol.declarations?.find((entry) =>
+      entry.getSourceFile().fileName.replaceAll('\\', '/').includes('/library/src/'),
+    );
+    if (!member) continue;
+    // Standard DOM attributes are documented once; keep each component table
+    // focused on its public component contract and supported children.
+    const isBaseProp =
+      member.parent.name?.getText() === 'PeauiReactBaseProps' ||
+      member.parent.parent?.name?.getText() === 'PeauiReactBaseProps';
+    if (
+      isBaseProp &&
+      (name !== 'children' || !vueApi.slots.some((slot) => slot.name === 'default'))
+    )
+      continue;
+    const vueEntry = vueInputs.get(name === 'tabIndex' ? 'tabindex' : name);
+    const declaredTypes = [
+      ...new Set(symbol.declarations?.map((entry) => entry.type?.getText()).filter(Boolean)),
+    ];
+    const type = declaredTypes.length
+      ? declaredTypes.join(' | ')
+      : reactChecker.typeToString(
+          reactChecker.getTypeOfSymbolAtLocation(symbol, declaration),
+          declaration,
+          ts.TypeFormatFlags.NoTruncation,
+        );
+    let description =
+      getDocumentation(member) ??
+      vueEntry?.description ??
+      propDescriptions[name] ??
+      `Konfiguruje właściwość „${humanize(name).toLocaleLowerCase('pl-PL')}” komponentu.`;
+    if (name === 'loading' && type === 'boolean') description = propDescriptions.isLoading;
+    if (/^on[A-Z]/.test(name)) {
+      events.push({
+        name,
+        type,
+        description: description.replace(/v-model(?::[\w-]+)?/g, 'kontrolowany prop'),
+      });
+    } else if (
+      name === 'children' ||
+      /^render[A-Z]/.test(name) ||
+      (!vueEntry && /ReactNode/.test(type))
+    ) {
+      slots.push({
+        name,
+        type,
+        description: /=>/.test(type)
+          ? `Funkcja renderująca ${name}; argumenty i zwracana treść są opisane w sygnaturze.`
+          : `Treść React przekazywana przez prop ${name}.`,
+      });
+    } else {
+      const defaultModel = name.startsWith('default')
+        ? `${name[7]?.toLowerCase()}${name.slice(8)}`
+        : undefined;
+      props.push({
+        name,
+        type,
+        required: !(symbol.flags & ts.SymbolFlags.Optional),
+        default:
+          ownDefaults[name] ??
+          vueEntry?.default ??
+          (defaultModel ? vueInputs.get(defaultModel)?.default : undefined),
+        description,
+      });
+    }
+  }
+  const modelNames = new Set(
+    props
+      .filter((prop) =>
+        events.some(
+          (event) =>
+            event.name === `on${prop.name.charAt(0).toUpperCase()}${prop.name.slice(1)}Change`,
+        ),
+      )
+      .map((prop) => prop.name),
+  );
+  const models = props
+    .filter((prop) => modelNames.has(prop.name))
+    .map((model) => {
+      const capitalized = `${model.name.charAt(0).toUpperCase()}${model.name.slice(1)}`;
+      const uncontrolled = props.some((prop) => prop.name === `default${capitalized}`);
+      return {
+        ...model,
+        description: `Kontrolowana wartość ${model.name}; aktualizuj ją przez on${capitalized}Change.${uncontrolled ? ` Dla stanu niekontrolowanego użyj default${capitalized}.` : ''}`,
+      };
+    });
   return {
     ...identity,
     framework: 'react',
     importPath: `@peaui/ui/react/${identity.category}/${identity.name}`,
     status: 'stable',
-    props: vueApi.props.map((prop) =>
-      identity.name === 'ScrollArea' && prop.name === 'tabindex'
-        ? {
-            ...prop,
-            name: 'tabIndex',
-            description: `${prop.description} W React użyj standardowego propa tabIndex.`,
-          }
-        : prop,
-    ),
-    models: vueApi.models.map((model) => {
-      const name = toCamelCase(model.name);
-      const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
-      return {
-        ...model,
-        name,
-        required: false,
-        description: `${model.description} W React dostępne są propsy ${name}, default${capitalized} i on${capitalized}Change.`,
-      };
-    }),
-    events: vueApi.events.map((event) => ({
-      ...event,
-      name: toReactCallbackName(event.name),
-      description: `${event.description} W React przekaż callback ${toReactCallbackName(
-        event.name,
-      )}.`,
-    })),
-    slots: vueApi.slots
-      .filter((slot) => !(identity.name === 'ToggleGroup' && slot.name === 'default'))
-      .map((slot) => ({
-        ...slot,
-        name:
-          slot.name === 'default'
-            ? 'children'
-            : slot.name.includes('[')
-              ? 'renderCell'
-              : toReactSlotName(identity.name, slot.name),
-        description:
-          slot.name === 'default'
-            ? 'Główna treść React przekazywana przez children.'
-            : slot.name.includes('[')
-              ? 'Funkcja renderCell pozwala renderować niestandardową zawartość komórki tabeli.'
-              : identity.name === 'FormPinInput' && slot.name === 'separator'
-                ? `${slot.description} W React funkcja renderSeparator otrzymuje indeks komórki poprzedzającej separator.`
-                : identity.name === 'KeyboardKey' && slot.name === 'key'
-                  ? `${slot.description} W React funkcja renderKey otrzymuje token, pełną nazwę, etykietę wizualną, platformę i indeks.`
-                  : identity.name === 'KeyboardKey' && slot.name === 'separator'
-                    ? `${slot.description} W React funkcja renderSeparator otrzymuje separator i indeks kolejnego klawisza.`
-                    : identity.name === 'FormPinInput' && slot.name === 'label'
-                      ? `${slot.description} W React przekaż treść przez labelContent.`
-                      : identity.name === 'FormColorPicker' && slot.name === 'trigger'
-                        ? `${slot.description} W React funkcja renderTrigger otrzymuje kolor, stan open i funkcję toggle.`
-                        : identity.name === 'FormColorPicker' && slot.name === 'swatch'
-                          ? `${slot.description} W React funkcja renderSwatch otrzymuje znormalizowany kolor.`
-                          : identity.name === 'FormColorPicker' &&
-                              ['saved-color', 'recent-color'].includes(slot.name)
-                            ? `${slot.description} W React funkcja renderująca otrzymuje próbkę koloru i jej indeks.`
-                            : identity.name === 'FormColorPicker' && slot.name === 'footer'
-                              ? `${slot.description} W React funkcja renderFooter otrzymuje znormalizowany kolor.`
-                              : identity.name === 'FormSwitchToggle' && slot.name === 'thumb'
-                                ? `${slot.description} W React jest to funkcja renderThumb otrzymująca stan checked i loading.`
-                                : identity.name === 'ToggleGroup' && slot.name === 'item'
-                                  ? `${slot.description} W React jest to funkcja renderItem otrzymująca element oraz stan pressed, disabled i index.`
-                                  : identity.name === 'SegmentedControl' && slot.name === 'item'
-                                    ? `${slot.description} W React jest to funkcja renderItem otrzymująca element oraz stan selected, disabled i index.`
-                                    : identity.name === 'SegmentedControl' &&
-                                        slot.name === 'item-icon'
-                                      ? `${slot.description} W React jest to funkcja renderItemIcon otrzymująca element oraz stan selected i index.`
-                                      : identity.name === 'SegmentedControl' &&
-                                          slot.name === 'indicator'
-                                        ? `${slot.description} W React jest to funkcja renderIndicator otrzymująca wybrany element i index.`
-                                        : identity.name === 'SplitButton' &&
-                                            [
-                                              'menu-item',
-                                              'menu-item-icon',
-                                              'menu-item-shortcut',
-                                              'group-label',
-                                            ].includes(slot.name)
-                                          ? `${slot.description} W React jest to funkcja renderująca otrzymująca pozycję menu i jej ścieżkę.`
-                                          : identity.name === 'TransferList'
-                                            ? `${slot.description} W React jest to funkcja „${toReactSlotName(
-                                                identity.name,
-                                                slot.name,
-                                              )}” otrzymująca stan właściwy dla panelu lub elementu.`
-                                            : identity.name === 'ScrollArea' &&
-                                                slot.name === 'scrollbar'
-                                              ? `${slot.description} W React funkcja renderScrollbar otrzymuje orientację paska.`
-                                              : `${slot.description} W React jest to prop ReactNode „${toReactSlotName(
-                                                  identity.name,
-                                                  slot.name,
-                                                )}”.`,
-      })),
+    props: props.filter((prop) => !modelNames.has(prop.name)),
+    models,
+    events,
+    slots,
   };
 }
 
@@ -814,15 +844,31 @@ const reactComponents = frameworkDirectories
 const webComponents = frameworkDirectories
   .filter((directory) => fs.existsSync(path.join(directory, 'index.wc.ts')))
   .map(extractWebComponent);
+// Both framework catalogs are used together. Reuse identical Vue input rows
+// instead of shipping their types/defaults/descriptions a second time for React.
+const sharedVueRows = new Map(
+  components.flatMap((component, componentIndex) =>
+    component.props.map((entry, propIndex) => [
+      JSON.stringify(entry),
+      `generatedComponentApi[${componentIndex}].props[${propIndex}]`,
+    ]),
+  ),
+);
+const reactMetadataSource = JSON.stringify(
+  reactComponents,
+  (_key, value) => {
+    if (!value || typeof value !== 'object' || !('required' in value)) return value;
+    const reference = sharedVueRows.get(JSON.stringify(value));
+    return reference ? `__SHARED_VUE_ROW__${reference}` : value;
+  },
+  2,
+).replace(/"__SHARED_VUE_ROW__(generatedComponentApi\[\d+\]\.props\[\d+\])"/g, '$1');
 const frameworkFileContents =
   `// Ten plik jest generowany przez scripts/generate-component-api.mjs.\n` +
   `// Nie edytuj go ręcznie — źródłem prawdy są implementacje React i Web Components.\n\n` +
-  `import type { FrameworkComponentApi } from '../types';\n\n` +
-  `export const generatedReactComponentApi = ${JSON.stringify(
-    reactComponents,
-    null,
-    2,
-  )} as const satisfies readonly FrameworkComponentApi[];\n\n` +
+  `import type { FrameworkComponentApi } from '../types';\n` +
+  `import { generatedComponentApi } from './component-api';\n\n` +
+  `export const generatedReactComponentApi = ${reactMetadataSource} as const satisfies readonly FrameworkComponentApi[];\n\n` +
   `export const generatedWebComponentApi = ${JSON.stringify(
     webComponents,
     null,
@@ -830,6 +876,36 @@ const frameworkFileContents =
   )} as const satisfies readonly FrameworkComponentApi[];\n`;
 
 fs.writeFileSync(frameworkOutputFile, await format(frameworkFileContents, prettierOptions), 'utf8');
+
+function createCatalogEntry(component, framework) {
+  return {
+    name: component.name,
+    category: component.category,
+    categoryLabel: component.categoryLabel,
+    framework,
+    sourceName: component.sourceName ?? component.name,
+    ...(component.tagName ? { tagName: component.tagName } : {}),
+    status: component.status ?? 'stable',
+  };
+}
+
+const catalogFileContents =
+  `// Ten plik jest generowany przez scripts/generate-component-api.mjs.\n` +
+  `// Zawiera lekki katalog nawigacyjny bez rozbudowanych opisow publicznego API.\n\n` +
+  `import type { ComponentCatalogEntry, FrameworkId } from '../types';\n\n` +
+  `export const generatedComponentCatalog = ${JSON.stringify(
+    {
+      vue: components.map((component) => createCatalogEntry(component, 'vue')),
+      react: reactComponents.map((component) => createCatalogEntry(component, 'react')),
+      'web-components': webComponents.map((component) =>
+        createCatalogEntry(component, 'web-components'),
+      ),
+    },
+    null,
+    2,
+  )} as const satisfies Record<FrameworkId, readonly ComponentCatalogEntry[]>;\n`;
+
+fs.writeFileSync(catalogOutputFile, await format(catalogFileContents, prettierOptions), 'utf8');
 
 console.log(
   `Wygenerowano API: Vue ${components.length}, React ${reactComponents.length}, Web Components ${webComponents.length}.`,

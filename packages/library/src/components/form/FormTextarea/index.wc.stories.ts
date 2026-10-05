@@ -9,8 +9,10 @@ import {
 
 import FormTextareaVueComponent from './index.ce.vue';
 import { FormTextareaElement, defineFormTextarea } from './index.wc';
+import { ButtonActionElement, defineButtonAction } from '../../data-entry/ButtonAction/index.wc';
 
 defineFormTextarea();
+defineButtonAction();
 
 const meta = {
   title: '5. Form/FormTextarea',
@@ -38,3 +40,24 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const NativeReset: Story = {
+  args: {
+    id: 'reset-description',
+    name: 'description',
+    label: 'Description',
+    value: 'Initial description',
+  },
+  render: (args) => {
+    const form = document.createElement('form');
+    const field = new FormTextareaElement();
+    Object.assign(field, args);
+    field.setAttribute('autocomplete', 'street-address');
+    field.setAttribute('minlength', '5');
+    const reset = new ButtonActionElement();
+    reset.type = 'reset';
+    reset.textContent = 'Reset';
+    form.append(field, reset);
+    return form;
+  },
+};

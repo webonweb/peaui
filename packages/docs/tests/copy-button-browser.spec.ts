@@ -27,7 +27,8 @@ for (const framework of frameworks) {
     await expect(root).toBeVisible();
     const button = root.getByRole('button', { name: 'Kopiuj identyfikator' });
     const statusRegion = root.locator('.peaui-copy-button__status');
-    await button.click();
+    await button.focus();
+    await page.keyboard.press('Enter');
     await Promise.all([
       expect(root).toHaveAttribute('data-status', 'copied'),
       expect(button).toBeFocused(),

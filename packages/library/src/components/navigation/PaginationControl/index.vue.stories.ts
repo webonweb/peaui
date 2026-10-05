@@ -116,3 +116,12 @@ export const NearEndState: Story = {
     dataTestId: 'pagination-control-end',
   },
 };
+
+export const SixPagesAtSecondPage: Story = {
+  render: () => ({
+    components: { PaginationControlComponent },
+    setup: () => ({ page: ref(2) }),
+    template:
+      '<PaginationControlComponent :total-pages="6" v-model:page="page" aria-label="Pages" />',
+  }),
+};

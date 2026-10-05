@@ -9,8 +9,12 @@ permissions:
   contents: write
 
 jobs:
+  verify:
+    uses: ./.github/workflows/ci.yml
+
   release:
     name: Build and publish release
+    needs: verify
     runs-on: ubuntu-latest
 
     steps:
@@ -24,52 +28,25 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Use the repository npm version
+        run: npm install --global npm@11.6.0
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build PeaUI library
         run: npm run library:build
 
-      - name: Verify library build
-        run: |
-          DIST_DIRECTORY="packages/library/dist"
-
-          if [ ! -d "$DIST_DIRECTORY" ]; then
-            echo "::error::Build directory does not exist: $DIST_DIRECTORY"
-
-            echo "Available dist directories:"
-            find . -maxdepth 6 -type d -name "dist" -print
-
-            echo "Files inside packages/library:"
-            find packages/library -maxdepth 3 -type f -print || true
-
-            exit 1
-          fi
-
-          if [ -z "$(find "$DIST_DIRECTORY" -mindepth 1 -print -quit)" ]; then
-            echo "::error::Build directory is empty: $DIST_DIRECTORY"
-            exit 1
-          fi
-
-          echo "Library build created successfully:"
-          find "$DIST_DIRECTORY" -maxdepth 4 -type f -print
-
-      - name: Create release archive
-        run: |
-          ARCHIVE_PATH="${GITHUB_WORKSPACE}/peaui-ui-${GITHUB_REF_NAME}.zip"
-
-          cd packages/library/dist
-          zip -r "$ARCHIVE_PATH" .
-
-          echo "Created archive:"
-          ls -lh "$ARCHIVE_PATH"
+      - name: Pack and test the exact release artifact
+        run: npm run release:artifact
 
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${GITHUB_REF_NAME}"
-          ARCHIVE="peaui-ui-${TAG}.zip"
+          ARCHIVE=$(find .release -maxdepth 1 -name '*.tgz' -print -quit)
+          test -n "$ARCHIVE"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG already exists. Uploading archive."

@@ -1,6 +1,8 @@
+import { SECTION_HEADING_TAGS } from './section-heading.shared';
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { InfoTooltipElement, defineInfoTooltip } from '@/components/overlayer/InfoTooltip/index.wc';
 import { UIKIT_NAME } from '@/constants';
-import { syncNodeChildren } from '@/helpers/dom.helper';
+import { renderCustomElement, syncNodeChildren } from '@/helpers/dom.helper';
 
 const SECTION_HEADING_TAG_NAME = `${UIKIT_NAME}-section-heading`;
 const SECTION_HEADING_CLASS_NAME = `${UIKIT_NAME}-section-heading`;
@@ -24,17 +26,6 @@ const HINT_ICON_PATH =
 type SectionHeadingSize = (typeof SIZE_VALUES)[number];
 type SectionHeadingAs = (typeof AS_VALUES)[number];
 type SectionHeadingVariant = (typeof VARIANT_VALUES)[number];
-
-const TITLE_TAG_BY_SIZE: Record<SectionHeadingSize, string> = {
-  'heading-l': 'h1',
-  'heading-m': 'h2',
-  'heading-s': 'h2',
-  'heading-xs': 'h2',
-  xl: 'h2',
-  l: 'h3',
-  m: 'h4',
-  s: 'h5',
-};
 
 let nextTitleId = 0;
 
@@ -131,7 +122,7 @@ export class SectionHeadingElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
   #rootElement: HTMLElement = document.createElement('div');
   #descriptionElement = document.createElement('p');
-  #tooltipElement = document.createElement(InfoTooltipElement.tagName) as InfoTooltipElement;
+  #tooltipElement = document.createElement(InfoTooltipElement.tagName);
   #hintDescriptionElement = document.createElement('span');
   #hintIconElement = createHintIcon();
   #titleElement: HTMLElement | null = null;
@@ -146,6 +137,7 @@ export class SectionHeadingElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -163,7 +155,8 @@ export class SectionHeadingElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -211,6 +204,8 @@ export class SectionHeadingElement extends HTMLElement {
       this.#syncTitle();
       this.#syncDescription();
       this.#syncRootChildren();
+      // Reconcile the tooltip after moving its slotted content and sibling popup.
+      if (this.#hintNodes.length > 0) renderCustomElement(this.#tooltipElement);
     });
   }
 
@@ -384,7 +379,7 @@ export class SectionHeadingElement extends HTMLElement {
       return;
     }
 
-    const expectedTagName = TITLE_TAG_BY_SIZE[this.size];
+    const expectedTagName = SECTION_HEADING_TAGS[this.size];
 
     if (!this.#titleElement || this.#titleElement.tagName.toLowerCase() !== expectedTagName) {
       this.#titleElement = document.createElement(expectedTagName);
@@ -407,6 +402,8 @@ export class SectionHeadingElement extends HTMLElement {
       syncNodeChildren(this.#hintDescriptionElement, this.#hintNodes);
       syncNodeChildren(this.#tooltipElement, [this.#hintIconElement, this.#hintDescriptionElement]);
       children.push(this.#tooltipElement);
+      const popup = this.#tooltipElement.nextElementSibling;
+      if (popup?.getAttribute('role') === 'tooltip') children.push(popup);
     } else {
       this.#tooltipElement.dataTestId = undefined;
       this.#tooltipElement.remove();

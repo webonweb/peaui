@@ -45,7 +45,7 @@ describe('FormLabel (index.vue)', () => {
     expect(label.attributes('id')).toBe('label-first-name');
   });
 
-  it('renders text using v-html and sets data-testid for text when dataTestId is provided', () => {
+  it('renders the text prop safely and sets data-testid for text', () => {
     const wrapper = mount(FormLabel, {
       props: {
         for: 'email',
@@ -58,7 +58,8 @@ describe('FormLabel (index.vue)', () => {
     });
 
     const text = wrapper.get('[data-testid="my-label-text"]');
-    expect(text.html()).toContain('<strong>firmowy</strong>');
+    expect(text.text()).toBe('E-mail <strong>firmowy</strong>');
+    expect(text.find('strong').exists()).toBe(false);
     expect(text.classes()).toContain('peaui-form-label__text');
   });
 

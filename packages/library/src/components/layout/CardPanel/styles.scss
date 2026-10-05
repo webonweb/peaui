@@ -1,11 +1,11 @@
 @use '@/assets/mixins.scss' as *;
 
 .peaui-card-panel {
-  --peaui-card-panel-header-gap: 1rem;
+  --peaui-card-panel-header-gap: var(--peaui-space-4);
   --peaui-card-panel-padding-block: 1.5rem;
   --peaui-card-panel-padding-inline: 1.5rem;
 
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
 
   border-width: 1px;
   border-style: solid;

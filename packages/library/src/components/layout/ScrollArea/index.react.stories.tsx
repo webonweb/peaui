@@ -51,7 +51,10 @@ const renderVertical = (args: ScrollAreaProps) => (
 
 export const Default: Story = { render: renderVertical };
 export const Vertical: Story = { render: renderVertical };
-export const Native: Story = { args: { type: 'native' }, render: renderVertical };
+export const Native: Story = {
+  args: { type: 'native', tabIndex: undefined },
+  render: renderVertical,
+};
 export const AlwaysVisible: Story = {
   args: { scrollbarVisibility: 'always' },
   render: renderVertical,
@@ -120,7 +123,7 @@ export const RTL: Story = {
   ),
 };
 export const Programmatic: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const area = createRef<ScrollAreaHandle>();
     return (
       <div style={{ display: 'grid', gap: 12 }}>
@@ -141,7 +144,7 @@ export const Programmatic: Story = {
 };
 export const DynamicAndNarrow: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
-  render: (args) => {
+  render: function Render(args) {
     const [count, setCount] = useState(4);
     return (
       <div style={{ display: 'grid', gap: 12, inlineSize: 'min(100%, 14rem)' }}>

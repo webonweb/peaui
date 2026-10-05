@@ -57,7 +57,7 @@ describe('TableHeadActionsColumn.vue', () => {
       },
     });
 
-    expect(wrapper.get('[data-testid="head-actions-column-visibility-trigger"]').exists()).toBe(
+    expect(wrapper.find('[data-testid="head-actions-column-visibility-trigger"]').exists()).toBe(
       true,
     );
     expect(wrapper.get('svg').attributes('data-icon-name')).toBe('cogs');
@@ -205,5 +205,24 @@ describe('TableHeadActionsColumn.vue', () => {
     expect(wrapper.find('[data-testid="head-actions-column-visibility-trigger"]').exists()).toBe(
       false,
     );
+  });
+
+  it('does not interpret HTML from column labels in the visibility menu', () => {
+    const wrapper = mount(TableHeadActionsColumn, {
+      props: {
+        canHideColumns: true,
+        columns: [
+          { key: 'name', label: '<img src=x onerror="alert(1)">Name', visible: true },
+          { key: 'status', label: 'Status', visible: true },
+          { key: 'city', label: 'City', visible: true },
+          { key: 'owners', label: 'Owners', visible: true },
+        ],
+      },
+      global: { stubs: { PopoverOverlayer: PopoverOverlayerStub, SvgIcon: SvgIconStub } },
+    });
+
+    const label = wrapper.get('.peaui-table-list__head-actions-option-label');
+    expect(label.text()).toBe('Name');
+    expect(label.find('img').exists()).toBe(false);
   });
 });

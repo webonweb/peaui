@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
-import { getFrameworkCategories } from '../data/catalog';
+import { getCatalogCategories } from '../data/catalog-summary';
 import { getFrameworkDefinition, normalizeFramework } from '../data/frameworks';
 import { getCategoryLabel, getComponentCopy } from '../data/localized-content';
 import { useI18n } from '../i18n';
@@ -16,7 +16,7 @@ const activeCategory = computed(() =>
   typeof route.params.category === 'string' ? route.params.category : '',
 );
 const categories = computed(() => {
-  const localizedCategories = getFrameworkCategories(framework.value).map((category) => ({
+  const localizedCategories = getCatalogCategories(framework.value).map((category) => ({
     ...category,
     label: getCategoryLabel(category.slug, category.label),
     components: category.components.map((component) => ({
@@ -40,7 +40,7 @@ const copy = computed(() =>
       componentCount: 'components',
       reactTitle: 'Complete catalog of native React components',
       reactText:
-        'Every entry is a standalone React component with typed props, stories, tests and interactive documentation.',
+        'Every entry uses a native React implementation with typed props, callbacks and JSX content. Check its API for supported controlled and uncontrolled models.',
       filter: 'Filter components…',
       filterLabel: 'Filter the component catalog',
     },
@@ -50,7 +50,7 @@ const copy = computed(() =>
       componentCount: 'komponentów',
       reactTitle: 'Pełny katalog natywnych komponentów React',
       reactText:
-        'Każda pozycja jest osobnym komponentem React, ma typowane propsy, historie, testy oraz interaktywną dokumentację.',
+        'Każda pozycja korzysta z natywnej implementacji React z typowanymi propsami, callbackami i treścią JSX. Sprawdź w API obsługiwane modele kontrolowane i niekontrolowane.',
       filter: 'Filtruj komponenty…',
       filterLabel: 'Filtruj katalog komponentów',
     },

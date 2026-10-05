@@ -3,13 +3,13 @@ import { computed } from 'vue';
 
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import type { TableColumn } from '../index.vue';
-import { TABLE_LIST_CLASS } from '../shared';
+import { TABLE_LIST_CLASS, resolveTableTextValue } from '../shared';
 
 const { deep, record, value, isExpanded } = defineProps<{
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
-  value: string | number | undefined | null | Record<string, string>;
+  value: unknown;
   isExpanded?: boolean;
 }>();
 
@@ -17,17 +17,7 @@ const emit = defineEmits<{
   (e: 'on:click', id: string): void;
 }>();
 
-const displayValue = computed(() => {
-  if (deep && value && typeof value === 'object' && !Array.isArray(value)) {
-    return value[deep] || '-/-';
-  }
-
-  if (value === null || value === undefined || value === '') {
-    return '-/-';
-  }
-
-  return value;
-});
+const displayValue = computed(() => resolveTableTextValue(value, deep));
 
 const buttonAriaLabel = computed(() => {
   const actionLabel = isExpanded ? 'Zwin dodatkowy wiersz' : 'Rozwin dodatkowy wiersz';

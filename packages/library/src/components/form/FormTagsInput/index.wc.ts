@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -14,10 +15,12 @@ import type {
 } from './tags-input.shared';
 import FormTagsInputVueComponent from './index.ce.vue';
 
-const FormTagsInputVueElement = createVueCustomElement(
-  FormTagsInputVueComponent,
-  `${UIKIT_NAME}-form-tags-input`,
-);
+const FormTagsInputVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormTagsInputVueComponent, `${UIKIT_NAME}-form-tags-input`);
 
 /** Light-DOM custom element preserving the Vue FormTagsInput contract. */
 export class FormTagsInputElement extends FormTagsInputVueElement {

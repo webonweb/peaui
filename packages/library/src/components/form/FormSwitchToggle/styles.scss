@@ -19,7 +19,7 @@ peaui-form-switch-toggle {
   min-inline-size: 0;
   color: var(--peaui-color-grey-900);
   font-family: inherit;
-  row-gap: 0.25rem;
+  row-gap: var(--peaui-space-1);
 }
 
 .peaui-form-switch-toggle--size-s {

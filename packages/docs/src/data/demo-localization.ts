@@ -1,6 +1,19 @@
 import { locale } from '../i18n';
 
 const english: Record<string, string> = {
+  Dalej: 'Next',
+  Pomiń: 'Skip tour',
+  Wstecz: 'Back',
+  Zakończ: 'Complete',
+  'Nawigacja po projekcie': 'Project navigation',
+  'Tutaj przełączasz najważniejsze obszary aplikacji.':
+    'Use this area to switch between the most important parts of the application.',
+  'Szybkie wyszukiwanie': 'Quick search',
+  'Znajdź projekt, raport albo członka zespołu bez opuszczania bieżącego widoku.':
+    'Find a project, report or team member without leaving the current view.',
+  'Profil i ustawienia': 'Profile and settings',
+  'Z tego miejsca zarządzasz kontem oraz preferencjami użytkownika.':
+    'Manage the account and user preferences from this area.',
   Formalny: 'Formal',
   formalny: 'formal',
   Techniczny: 'Technical',

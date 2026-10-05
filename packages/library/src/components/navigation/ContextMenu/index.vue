@@ -5,18 +5,9 @@ export type ContextMenuTrigger = 'pointer' | 'keyboard' | 'both';
 export type ContextMenuPosition = 'cursor' | 'target';
 export type ContextMenuOpenSource = 'pointer' | 'keyboard' | 'long-press' | 'programmatic';
 export type ContextMenuCloseReason =
-  | 'programmatic'
-  | 'dismiss'
-  | 'select'
-  | 'scroll'
-  | 'target-removed'
-  | 'disabled';
+  'programmatic' | 'dismiss' | 'select' | 'scroll' | 'target-removed' | 'disabled';
 export type ContextMenuLongPressCancelReason =
-  | 'move'
-  | 'release'
-  | 'pointer-cancel'
-  | 'disabled'
-  | 'target-removed';
+  'move' | 'release' | 'pointer-cancel' | 'disabled' | 'target-removed';
 
 export interface ContextMenuPoint {
   x: number;
@@ -393,14 +384,12 @@ function handleKeydown(event: KeyboardEvent): void {
   if (!keyboardEnabled.value || props.disabled) return;
   const fallbackButtonActivation =
     managedTarget === targetHost.value && (event.key === 'Enter' || event.key === ' ');
-  if (
-    !(
-      fallbackButtonActivation ||
-      event.key === 'ContextMenu' ||
-      event.key === 'Apps' ||
-      (event.shiftKey && event.key === 'F10')
-    )
-  )
+  if (!(
+    fallbackButtonActivation ||
+    event.key === 'ContextMenu' ||
+    event.key === 'Apps' ||
+    (event.shiftKey && event.key === 'F10')
+  ))
     return;
   if (openForTarget(eventTarget(event), 'keyboard')) event.preventDefault();
 }

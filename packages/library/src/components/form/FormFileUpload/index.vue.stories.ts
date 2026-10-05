@@ -136,3 +136,5 @@ export const Danger: Story = {
     dataTestId: 'form-file-upload-danger',
   },
 };
+
+export const LegacyFileModel: Story = { args: { valueMode: 'file' } };

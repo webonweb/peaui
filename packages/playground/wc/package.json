@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@peaui/ui": "*"
+    "@peaui/ui": "*",
+    "vue": "^3.5.22"
   },
   "devDependencies": {
     "@types/node": "^24.8.1",

@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -7,10 +8,12 @@ import {
 import FormRatingInputVueComponent from './index.vue';
 import type { RatingValue } from './rating-input.shared';
 
-const FormRatingInputVueElement = createVueCustomElement(
-  FormRatingInputVueComponent,
-  `${UIKIT_NAME}-form-rating-input`,
-);
+const FormRatingInputVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormRatingInputVueComponent, `${UIKIT_NAME}-form-rating-input`);
 
 /** Light-DOM custom element preserving the Vue FormRatingInput contract. */
 export class FormRatingInputElement extends FormRatingInputVueElement {

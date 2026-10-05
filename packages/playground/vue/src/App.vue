@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import ButtonAction from '@peaui/ui/data-entry/ButtonAction'
+import ButtonAction from '@peaui/ui/vue/data-entry/ButtonAction'
 </script>
 
 <template>
-  <ButtonAction size="xs"> Dodaj </ButtonAction>
+  <ButtonAction size="m"> Dodaj </ButtonAction>
 </template>

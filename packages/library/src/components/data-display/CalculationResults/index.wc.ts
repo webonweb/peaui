@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import CalculationResultsVueComponent from './index.ce.vue';
 
-export const CalculationResultsElement = createVueCustomElement(
-  CalculationResultsVueComponent,
-  `${UIKIT_NAME}-calculation-results`,
-);
+export const CalculationResultsElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(CalculationResultsVueComponent, `${UIKIT_NAME}-calculation-results`);
 
 export function defineCalculationResults(): void {
   definePeauiCustomElement(CalculationResultsElement);

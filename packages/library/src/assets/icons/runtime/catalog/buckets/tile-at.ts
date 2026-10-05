@@ -1,6 +1,0 @@
-// Ten plik jest generowany przez scripts/sync-icon-catalog.mjs.
-const icons: Readonly<Record<string, string>> = {
-  "tile/tile-at-sign": "<rect x=\"2.5\" y=\"2.5\" width=\"19\" height=\"19\" rx=\"4.5\"/><g transform=\"translate(3 3) scale(.75)\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M16 8v7a2 2 0 0 0 4 0v-3a8 8 0 1 0-3 6\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g>",
-};
-
-export default icons;

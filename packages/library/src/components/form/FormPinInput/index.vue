@@ -71,7 +71,8 @@ export type {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
-import { computed, nextTick, ref, useAttrs, useId, useSlots, watch, type CSSProperties } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, nextTick, ref, useAttrs, useId, watch, type CSSProperties } from 'vue';
 
 import {
   applyPinInput,
@@ -120,7 +121,9 @@ const emit = defineEmits<{
 }>();
 
 const attrs = useAttrs();
-const slots = useSlots();
+const labelSlot = useSlotPresence('label');
+const descriptionSlot = useSlotPresence('description');
+const errorSlot = useSlotPresence('error');
 const classNameComponent = `${UIKIT_NAME}-form-pin-input`;
 const generatedId = useId();
 const resolvedId = computed(() => props.id?.trim() || `${classNameComponent}-${generatedId}`);
@@ -145,9 +148,9 @@ const cells = computed(() =>
 );
 const isComplete = computed(() => normalizedValue.value.length === normalizedLength.value);
 const blocked = computed(() => props.disabled || props.loading);
-const hasLabel = computed(() => Boolean(slots.label || props.label.trim()));
-const hasDescription = computed(() => Boolean(slots.description || props.description.trim()));
-const hasError = computed(() => Boolean(slots.error || props.error.trim()));
+const hasLabel = computed(() => Boolean(labelSlot.value || props.label.trim()));
+const hasDescription = computed(() => Boolean(descriptionSlot.value || props.description.trim()));
+const hasError = computed(() => Boolean(errorSlot.value || props.error.trim()));
 const resolvedInputMode = computed<FormPinInputInputMode>(() =>
   props.inputmode?.trim() ? props.inputmode : props.type === 'numeric' ? 'numeric' : 'text',
 );
@@ -302,6 +305,8 @@ function handlePaste(index: number, event: ClipboardEvent): void {
 }
 
 function handleFocus(index: number, event: FocusEvent): void {
+  const target = event.target as HTMLInputElement;
+  target.scrollIntoView?.({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
   activeIndex.value = index;
   (event.currentTarget as HTMLInputElement).select();
   emit('focus', event, index);
@@ -359,6 +364,7 @@ watch(normalizedValue, (next) => {
         <input
           :id="`${resolvedId}-cell-${index}`"
           :ref="(element) => setInputRef(element, index)"
+          :form="form"
           :class="`${classNameComponent}__cell`"
           :value="cell"
           :type="mask ? 'password' : 'text'"
@@ -376,7 +382,7 @@ watch(normalizedValue, (next) => {
           :aria-readonly="readonly || undefined"
           :aria-required="required || undefined"
           :autofocus="autoFocus && index === Math.min(normalizedValue.length, normalizedLength - 1)"
-          autocapitalize="off"
+          autocapitalize="none"
           spellcheck="false"
           :data-index="index"
           :data-testid="dataTestId ? `${dataTestId}-cell-${index}` : undefined"

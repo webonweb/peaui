@@ -89,8 +89,7 @@ afterEach(() => {
 });
 
 function mountPicker(props: Record<string, unknown> = {}) {
-  let wrapper: ReturnType<typeof mount>;
-  wrapper = mount(FormColorPicker, {
+  const wrapper = mount(FormColorPicker, {
     attachTo: document.body,
     props: {
       id: 'brand-color',
@@ -273,7 +272,7 @@ describe('FormColorPicker Vue', () => {
       expect(wrapper.find('[role="dialog"]').exists()).toBe(false);
       if (state === 'readonly') expect(input.element).toHaveAttribute('aria-readonly', 'true');
       else expect(input.element).toBeDisabled();
-      if (state === 'loading') expect(wrapper.get('[role="status"]').exists()).toBe(true);
+      if (state === 'loading') expect(wrapper.find('[role="status"]').exists()).toBe(true);
     },
   );
 });

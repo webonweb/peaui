@@ -1,12 +1,17 @@
 @use '@/assets/mixins.scss' as *;
 
+html.peaui-fullscreen-container--scroll-hidden,
+body.peaui-fullscreen-container--scroll-hidden {
+  overflow: hidden !important;
+}
+
 .peaui-fullscreen-container {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   width: 100%;
   min-width: 0;
   min-height: 0;
-  border-radius: 1rem;
+  border-radius: var(--peaui-radius-xl);
   background-color: transparent;
   overflow: hidden;
 }
@@ -73,6 +78,8 @@
   @include set-size-text(xs);
 
   display: inline-flex;
+  min-inline-size: var(--peaui-target-min);
+  min-block-size: var(--peaui-target-min);
   align-items: center;
   justify-content: center;
   gap: 0.375rem;

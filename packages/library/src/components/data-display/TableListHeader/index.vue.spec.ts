@@ -148,7 +148,6 @@ function mountComponent(
   props?: Partial<InstanceType<typeof Component>['$props']>,
   slots?: Parameters<typeof mount<typeof Component>>[0]['slots'],
 ) {
-  let wrapper: ReturnType<typeof mount<typeof Component>>;
   const mergedSlots = {
     'filters-drawer': ({ open }: { open: boolean }) =>
       h('div', { 'data-testid': 'filters-slot' }, `drawer-${String(open)}`),
@@ -164,7 +163,7 @@ function mountComponent(
     }
   }
 
-  wrapper = mount(Component, {
+  const wrapper: ReturnType<typeof mount<typeof Component>> = mount(Component, {
     props: {
       canCreate: true,
       canExport: true,
@@ -205,9 +204,9 @@ describe('TableListHeader (index.vue)', () => {
     expect(root.classes()).toContain('peaui-table-list-header--with-description');
     expect(root.attributes('role')).toBe('region');
     expect(root.attributes('aria-label')).toBe('Nag\u0142\u00f3wek listy tabeli');
-    expect(wrapper.get('[data-testid="table-list-header-controls"]').exists()).toBe(true);
-    expect(wrapper.get('[data-testid="extra-content"]').exists()).toBe(true);
-    expect(wrapper.get('[data-testid="extra-description"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="table-list-header-controls"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="extra-content"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="extra-description"]').exists()).toBe(true);
   });
 
   it('keeps the legacy misspelled additional slots working', () => {

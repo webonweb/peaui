@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/yup';
-import { useForm } from 'vee-validate';
-import { computed, defineAsyncComponent, ref, useId, watch, type Component } from 'vue';
-import { number, object, string } from 'yup';
+import { formComponentsDictionary } from './editor-components';
+import { computed, ref, useId, watch } from 'vue';
 
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import FormContainer from '@/components/form/FormContainer/index.vue';
 import GridItem from '@/components/layout/GridItem/index.vue';
 import GridSection from '@/components/layout/GridSection/index.vue';
 import { ERROR_MESSAGES } from '@/constants/error.const';
-import { mergeArrayObjects } from '@/helpers/array.helper';
-import { unflatten } from '@/helpers/object.helper';
+import { setDeepValue } from '@/helpers/object.helper';
 import type { TableColumn, TableManageColumn } from '../index.vue';
 
+import { validateEditableValue } from '../editable-validation.shared';
 import { TABLE_LIST_CLASS, resolveTableManageOptions } from '../shared';
 
 const { column, manage, record } = defineProps<{
   manage?: TableManageColumn;
   deep?: string;
-  record?: Record<string, any>;
+  record?: Record<string, unknown>;
   column: TableColumn;
 }>();
 
@@ -29,12 +27,6 @@ defineEmits<{
 const modelValue = defineModel<string | number | undefined>('value');
 const isEditActive = ref(false);
 const uid = useId();
-
-const formComponentsDictionary: Readonly<Record<string, Component>> = {
-  number: defineAsyncComponent(() => import('@/components/form/FormNumber/index.vue')),
-  select: defineAsyncComponent(() => import('@/components/form/FormSelect/index.vue')),
-  text: defineAsyncComponent(() => import('@/components/form/FormInput/index.vue')),
-} as const;
 
 const generateInitialValues = () => ({
   [column.key]: ((currentManage: TableManageColumn) => {
@@ -51,56 +43,8 @@ const generateInitialValues = () => ({
   })(column.manage as TableManageColumn),
 });
 
-const generateInitialValuesValidation = () => {
-  const validationShape = unflatten(
-    mergeArrayObjects([
-      {
-        [column.key]: ((currentManage: TableManageColumn) => {
-          if (!currentManage) {
-            return '';
-          }
-
-          switch (currentManage.type) {
-            case 'number':
-              return number()
-                .test('is-required', ERROR_MESSAGES.required, (value: number | undefined) => {
-                  return !currentManage.required ? true : !Number.isNaN(value as number);
-                })
-                .test('is-integer', ERROR_MESSAGES.integer, (value: number | undefined) => {
-                  return (
-                    !currentManage.integer || (currentManage.integer && Number.isInteger(value))
-                  );
-                });
-            default:
-              return string().test(
-                'is-required',
-                ERROR_MESSAGES.required,
-                (value: string | undefined) => {
-                  return !currentManage.required ? true : (value || '').trim() !== '';
-                },
-              );
-          }
-        })(column.manage as TableManageColumn),
-      },
-    ]),
-    (value) => object(value as Record<string, any>),
-  ) as Record<string, any>;
-
-  return object({
-    ...validationShape,
-  });
-};
-
-const { defineField, errors, handleSubmit, resetForm } = useForm<any>({
-  initialValues: generateInitialValues(),
-  validationSchema: toTypedSchema(generateInitialValuesValidation()),
-  validateOnMount: false,
-  keepValuesOnUnmount: false,
-});
-
-const [columnValue] = defineField(`${column.key}`);
-
-const fieldError = computed(() => errors.value[column.key]);
+const columnValue = ref<string | number | undefined>(generateInitialValues()[column.key]);
+const fieldError = ref<string>();
 const fieldComponentKey = computed(() =>
   [column.key, fieldError.value ?? 'valid', isEditActive.value ? 'edit' : 'preview'].join('-'),
 );
@@ -108,13 +52,12 @@ const fieldIdentifier = computed(() =>
   ['dynamical', manage?.type ?? 'field', column.key, uid].join('-'),
 );
 
-function resolveOptions(): any[] | undefined {
+function resolveOptions(): import('../shared').TableManageOption[] | undefined {
+  const currentRecord = { ...record };
+  setDeepValue(currentRecord, column.key, columnValue.value);
   return resolveTableManageOptions({
     columnKey: column.key,
-    currentRecord: {
-      ...(record || {}),
-      [column.key]: columnValue.value,
-    },
+    currentRecord,
     manageType: manage?.type,
     options: manage?.options,
   });
@@ -134,28 +77,25 @@ function resolvePlacement(): 'top' | 'bottom' | undefined {
 
 watch(modelValue, () => {
   columnValue.value = modelValue.value;
+  fieldError.value = undefined;
 });
 
-const handleOnSubmit = handleSubmit(async (values) => {
-  modelValue.value = values[column.key];
+async function handleOnSubmit(): Promise<void> {
+  fieldError.value = validateEditableValue(columnValue.value, manage, ERROR_MESSAGES);
+  if (fieldError.value) return;
+
+  modelValue.value = columnValue.value;
   isEditActive.value = false;
 
-  resetForm({
-    values: generateInitialValues(),
-  });
-
-  manage?.onUpdate?.({
-    ...record,
-    [column.key]: modelValue.value,
-  });
-});
+  const updatedRecord = { ...record };
+  setDeepValue(updatedRecord, column.key, modelValue.value);
+  manage?.onUpdate?.(updatedRecord);
+}
 
 function handleOnCancel(): void {
   isEditActive.value = false;
-
-  resetForm({
-    values: generateInitialValues(),
-  });
+  columnValue.value = modelValue.value;
+  fieldError.value = undefined;
 }
 </script>
 
@@ -200,12 +140,13 @@ function handleOnCancel(): void {
           :id="fieldIdentifier"
           :max="
             typeof manage.max === 'function'
-              ? manage.max(record as Record<string, any>)
+              ? manage.max(record as Record<string, unknown>)
               : manage.max
           "
           :min="manage.min"
           :name="fieldIdentifier"
           :options="resolveOptions()"
+          :value-mode="manage?.valueMode"
           :placeholder="manage.placeholder"
           :placement="resolvePlacement()"
           :readonly="manage.disabled"
@@ -213,7 +154,9 @@ function handleOnCancel(): void {
           :step="manage.step"
           :value="columnValue"
           @update:value="(value: string | undefined | number) => (columnValue = value)"
-        />
+        >
+          <template v-if="fieldError" #error>{{ fieldError }}</template>
+        </component>
 
         <div :class="`${TABLE_LIST_CLASS}__editable-editor-actions`">
           <button

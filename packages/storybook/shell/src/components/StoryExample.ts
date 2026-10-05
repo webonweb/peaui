@@ -122,6 +122,7 @@ export class StoryExampleElement extends HTMLElement {
     const highlighter = await getSingletonHighlighter();
     const html = highlighter.codeToHtml(this.code, {
       lang: this.language,
+      defaultColor: "light-dark()",
       themes: {
         light: "github-light-high-contrast",
         dark: "github-dark-high-contrast",

@@ -14,7 +14,8 @@ export type ButtonGroupSize = 'xs' | 's' | 'm' | 'l';
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots } from 'vue';
+import { getRequiredValueAttributes, focusInvalidValue } from '@/helpers/form-validation.helper';
+import { computed, getCurrentInstance, useAttrs, useSlots } from 'vue';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -44,6 +45,7 @@ const {
   label?: string;
   size?: ButtonGroupSize;
   isToggle?: boolean;
+  /** Empty selection blocks native form submission; readonly and disabled are exempt. */
   required?: boolean;
   disabled?: boolean;
   readonly?: boolean;
@@ -57,6 +59,10 @@ const classNameComponent = `${UIKIT_NAME}-form-button-group`;
 const modelValue = defineModel<string | number | undefined>('value', {
   default: undefined,
 });
+// Legacy active options provide an initial uncontrolled selection, never override a model.
+if (!Object.prototype.hasOwnProperty.call(getCurrentInstance()?.vnode.props ?? {}, 'value')) {
+  modelValue.value = options.find((option) => option.active)?.key;
+}
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -132,11 +138,7 @@ function getButtonHintTestId(index: number): string | undefined {
 }
 
 function isOptionSelected(option: ButtonGroupOption): boolean {
-  if (!isModelValueEmpty(modelValue.value)) {
-    return option.key === modelValue.value;
-  }
-
-  return !!option.active;
+  return option.key === modelValue.value;
 }
 
 function getOptionHint(option: ButtonGroupOption): string | undefined {
@@ -288,9 +290,29 @@ function handleKeydown(event: KeyboardEvent, index: number): void {
       <input
         type="hidden"
         :name="name"
+        :form="typeof attrs.form === 'string' ? attrs.form : undefined"
         :value="modelValue ?? ''"
         :disabled="disabled"
         :data-testid="hiddenInputTestId"
+      />
+      <input
+        v-bind="
+          getRequiredValueAttributes(
+            !isModelValueEmpty(modelValue),
+            required,
+            disabled,
+            readonly,
+            typeof attrs.form === 'string' ? attrs.form : undefined,
+          )
+        "
+        @invalid="
+          focusInvalidValue(
+            $event,
+            ($event.target as HTMLElement).parentElement?.querySelector(
+              '[role=radio]:not(:disabled)',
+            ),
+          )
+        "
       />
 
       <div :class="layoutClasses">

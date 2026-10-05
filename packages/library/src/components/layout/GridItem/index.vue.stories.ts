@@ -30,15 +30,16 @@ const meta: Meta<typeof GridItemComponent> = {
       description: 'Ile kolumn ma zajmować element (span).',
       table: {
         type: { summary: 'number | undefined' },
-        defaultValue: { summary: '2' },
+        defaultValue: { summary: '1' },
       },
     },
     columns: {
       control: { type: 'number' },
-      description: 'Liczba kolumn wewnętrznego grida (opcjonalnie).',
+      description:
+        'Liczba kolumn wewnętrznego grida; domyślnie 2. Wartość 0 dobiera kolumny do dzieci.',
       table: {
         type: { summary: 'number | undefined' },
-        defaultValue: { summary: undefined },
+        defaultValue: { summary: '2' },
       },
     },
     gap: {

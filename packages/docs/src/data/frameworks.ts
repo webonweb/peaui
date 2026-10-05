@@ -24,7 +24,7 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     label: 'Vue',
     shortLabel: 'Vue',
     compactLabel: 'Vue',
-    badge: 'Vue 3',
+    badge: 'Vue 3.5+',
     description: {
       en: 'Native Vue 3 components with Composition API and TypeScript.',
       pl: 'Natywne komponenty Vue 3 wykorzystujące Composition API i TypeScript.',
@@ -36,7 +36,7 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     label: 'React',
     shortLabel: 'React',
     compactLabel: 'React',
-    badge: 'React 19',
+    badge: 'React 19.2+',
     description: {
       en: 'Native React components with fully typed APIs.',
       pl: 'Natywne komponenty React z w pełni typowanym API.',
@@ -50,8 +50,8 @@ const frameworkDefinitions: Record<FrameworkId, LocalizedFrameworkDefinition> = 
     compactLabel: 'WC',
     badge: 'Custom Elements',
     description: {
-      en: 'Framework-independent custom elements powered by the same design system.',
-      pl: 'Niezależne od frameworka custom elements oparte na tym samym systemie projektowym.',
+      en: 'Standard Custom Elements with light DOM, shared styles and a Vue runtime requirement for the complete catalog.',
+      pl: 'Standardowe Custom Elements z light DOM i wspólnymi stylami; pełny katalog wymaga runtime’u Vue.',
     },
     availability: { en: 'Stable', pl: 'Stabilne' },
   },

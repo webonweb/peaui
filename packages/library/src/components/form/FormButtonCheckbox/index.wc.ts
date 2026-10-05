@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormButtonCheckboxVueComponent from './index.ce.vue';
 
-export const FormButtonCheckboxElement = createVueCustomElement(
-  FormButtonCheckboxVueComponent,
-  `${UIKIT_NAME}-form-button-checkbox`,
-);
+export const FormButtonCheckboxElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormButtonCheckboxVueComponent, `${UIKIT_NAME}-form-button-checkbox`);
 
 export function defineFormButtonCheckbox(): void {
   definePeauiCustomElement(FormButtonCheckboxElement);

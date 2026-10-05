@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { InfoTooltipElement, defineInfoTooltip } from '@/components/overlayer/InfoTooltip/index.wc';
 import { UIKIT_NAME } from '@/constants';
 import { syncNodeChildren } from '@/helpers/dom.helper';
@@ -90,7 +91,7 @@ export class DescriptionFieldElement extends HTMLElement {
   #labelTextElement = document.createElement('span');
   #valueElement = document.createElement('dd');
   #addonAfterElement = document.createElement('dd');
-  #tooltipElement = document.createElement(InfoTooltipElement.tagName) as InfoTooltipElement;
+  #tooltipElement = document.createElement(InfoTooltipElement.tagName);
   #hintDescriptionElement = document.createElement('span');
   #hintIconElement = createHintIcon();
   #defaultNodes: Node[] = [];
@@ -105,6 +106,7 @@ export class DescriptionFieldElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -122,7 +124,8 @@ export class DescriptionFieldElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -296,7 +299,7 @@ export class DescriptionFieldElement extends HTMLElement {
       this.#labelElement.removeAttribute('data-testid');
     }
 
-    this.#labelTextElement.innerHTML = this.label;
+    this.#labelTextElement.textContent = this.label;
 
     const children: Node[] = [this.#labelTextElement];
 

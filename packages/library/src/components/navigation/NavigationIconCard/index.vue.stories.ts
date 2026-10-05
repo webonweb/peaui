@@ -122,3 +122,23 @@ export const Grid: Story = {
     `,
   }),
 };
+
+export const Disabled: Story = {
+  ...NavigationIconCard,
+  args: { icon: 'home', text: 'Unavailable', path: '' },
+  parameters: {
+    docs: {
+      description: {
+        story: 'An empty path exposes a disabled named link outside the Tab order.',
+      },
+    },
+  },
+};
+
+export const DownloadLink: Story = {
+  render: () => ({
+    components: { NavigationIconCardComponent },
+    template:
+      '<NavigationIconCardComponent path="#report" icon="home" text="Download report" target="_blank" rel="noopener" download="report.txt" />',
+  }),
+};

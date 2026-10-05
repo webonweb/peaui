@@ -86,12 +86,14 @@ describe('FormTimePicker Web Component', () => {
     await flush();
     const input = getInput(element);
 
-    expect(input).toHaveAttribute('aria-labelledby', 'label-meeting-time-wc');
-    expect(element.querySelector('#label-meeting-time-wc')).toHaveTextContent('Godzina spotkania');
+    expect(input).toHaveAttribute('aria-labelledby', 'label-meeting-time-wc-control');
+    expect(element.querySelector('#label-meeting-time-wc-control')).toHaveTextContent(
+      'Godzina spotkania',
+    );
     expect(input).toHaveAccessibleName(/^Godzina spotkania/);
     expect(input).toHaveAttribute('aria-haspopup', 'dialog');
     expect(input).toHaveAttribute('aria-expanded', 'false');
-    expect(input).toHaveAttribute('aria-controls', 'meeting-time-wc-time-panel');
+    expect(input).toHaveAttribute('aria-controls', 'meeting-time-wc-control-time-panel');
     expect(input).toHaveAttribute('aria-describedby');
     expect(input).toHaveValue('09:30');
     expect(element.querySelector('[role="tooltip"]')).toBeNull();

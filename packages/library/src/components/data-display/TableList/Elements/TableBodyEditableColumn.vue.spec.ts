@@ -344,7 +344,7 @@ describe('TableBodyEditableColumn.vue', () => {
   });
 
   it('resolves select options from function with current editable row values', async () => {
-    const options = vi.fn((currentRecord: Record<string, any>) =>
+    const options = vi.fn((currentRecord: Record<string, unknown>) =>
       Number(currentRecord.limit) >= 10
         ? [
             { label: 'Formalny', value: 'formalny' },
@@ -508,7 +508,7 @@ describe('TableBodyEditableColumn.vue', () => {
     const fields = wrapper.findAll('input[data-type="input"]');
 
     expect(fields).toHaveLength(2);
-    expect(fields[0].attributes('id')).not.toBe(fields[1].attributes('id'));
-    expect(fields[0].attributes('name')).not.toBe(fields[1].attributes('name'));
+    expect(fields[0]!.attributes('id')).not.toBe(fields[1]!.attributes('id'));
+    expect(fields[0]!.attributes('name')).not.toBe(fields[1]!.attributes('name'));
   }, 15000);
 });

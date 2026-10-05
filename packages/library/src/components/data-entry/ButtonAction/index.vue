@@ -2,7 +2,8 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { Comment, computed, isVNode, useAttrs, useSlots } from 'vue';
+import { Comment, computed, getCurrentInstance, inject, isVNode, useAttrs, useSlots } from 'vue';
+import { NATIVE_SLOT_VERSION } from '@/composables/useSlotPresence';
 
 // TYPES
 //-----------------------------------------------------------------------------------------------//
@@ -35,6 +36,8 @@ const {
 
 const attrs = useAttrs();
 const slots = useSlots();
+const instance = getCurrentInstance();
+const nativeSlotVersion = inject(NATIVE_SLOT_VERSION, undefined);
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -71,6 +74,25 @@ const hasVisibleTextContent = (nodes: unknown): boolean => {
     return false;
   }
 
+  if (nodes.type === 'slot') {
+    const name = typeof nodes.props?.name === 'string' ? nodes.props.name : 'default';
+    // A forwarded WC slot is projected after this nested Vue button renders.
+    // Inspect its existing light-DOM nodes without replacing their identity.
+    for (let owner = instance; owner; owner = owner.parent) {
+      const host: unknown = Reflect.get(owner, 'ce');
+      if (typeof HTMLElement === 'undefined' || !(host instanceof HTMLElement)) continue;
+      const projected: unknown = Reflect.get(host, '_slots');
+      const content: unknown =
+        typeof projected === 'object' && projected !== null
+          ? Reflect.get(projected, name)
+          : undefined;
+      return (
+        Array.isArray(content) &&
+        content.some((node: unknown) => node instanceof Node && Boolean(node.textContent?.trim()))
+      );
+    }
+  }
+
   if (typeof nodes.children === 'string') {
     return nodes.children.trim().length > 0;
   }
@@ -89,6 +111,8 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
 }
 
 const getButtonAttrs = () => {
+  // Native text mutations need to invalidate even a compiler-stable forwarded slot.
+  void nativeSlotVersion?.value;
   const shouldUseAriaLabel = useAriaLabel || !hasVisibleTextContent(slots.default?.());
 
   return {

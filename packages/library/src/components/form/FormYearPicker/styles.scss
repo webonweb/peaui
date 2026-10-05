@@ -123,13 +123,13 @@
 
 @container peaui-year-picker (max-width: 24rem) {
   .peaui-form-year-picker__panel {
-    gap: 0.75rem;
+    gap: var(--peaui-space-3);
     padding: 0.75rem;
   }
 
   .peaui-form-year-picker__grid,
   .peaui-form-year-picker__row {
-    gap: 0.25rem;
+    gap: var(--peaui-space-1);
   }
 }
 

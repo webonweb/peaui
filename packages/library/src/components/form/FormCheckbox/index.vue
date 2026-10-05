@@ -2,7 +2,8 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { computed, nextTick, useAttrs } from 'vue';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
@@ -22,11 +23,10 @@ const {
   dataTestId?: string;
 }>();
 
-const slots = useSlots();
 const attrs = useAttrs();
 const classNameComponent = `${UIKIT_NAME}-form-field-checkbox`;
 const modelValue = defineModel<boolean | undefined>('value', { required: true });
-const hasDefaultSlot = computed(() => !!slots.default);
+const hasDefaultSlot = useSlotPresence('default');
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -49,6 +49,7 @@ const bindings = computed(() => {
     'aria-invalid': !isValid,
     'aria-label': inputAriaLabel.value,
     'aria-required': required || false,
+    required: required || undefined,
     id,
     name,
     type: 'checkbox',
@@ -63,6 +64,14 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
   const normalizedValue = `${value ?? ''}`.trim();
 
   return normalizedValue ? normalizedValue : undefined;
+}
+
+async function handleOnChange(event: Event): Promise<void> {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement) || disabled) return;
+  modelValue.value = input.checked;
+  await nextTick();
+  input.checked = Boolean(modelValue.value);
 }
 
 function handleEnterToggle(): void {
@@ -88,8 +97,8 @@ function handleEnterToggle(): void {
       :class="`${classNameComponent}__element ${disabled ? `${classNameComponent}__element--disabled` : ''} ${!isValid ? `${classNameComponent}__element--in-valid` : ''}`"
       v-bind="bindings"
       :data-testid="elementTestId"
-      :checked="disabled ? false : modelValue"
-      @change="(event: Event) => (modelValue = (event.target as HTMLInputElement).checked)"
+      :checked="modelValue"
+      @change="handleOnChange"
       @keydown.enter.prevent.stop="handleEnterToggle"
       data-type="checkbox"
     />
@@ -98,7 +107,7 @@ function handleEnterToggle(): void {
         `${classNameComponent}__label`,
         {
           [`${classNameComponent}__label--disabled`]: disabled,
-          [`${classNameComponent}__label--medium`]: disabled ? false : modelValue,
+          [`${classNameComponent}__label--medium`]: modelValue,
           [`${classNameComponent}__label--normal`]: !modelValue,
           [`${classNameComponent}__label--in-valid`]: !isValid,
         },

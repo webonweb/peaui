@@ -50,8 +50,8 @@ describe('FormSwitchToggle Vue', () => {
     });
 
     await fireEvent.click(screen.getByRole('switch', { name: 'Tryb ekspercki' }));
-    expect(emitted()['update:value']?.[0]?.[0]).toStrictEqual(enabled);
-    expect(emitted().change?.[0]?.[0]).toStrictEqual(enabled);
+    expect((emitted()['update:value'] as unknown[][])?.[0]?.[0]).toStrictEqual(enabled);
+    expect((emitted().change as unknown[][])?.[0]?.[0]).toStrictEqual(enabled);
   });
 
   it.each(['disabled', 'readonly', 'loading'] as const)(

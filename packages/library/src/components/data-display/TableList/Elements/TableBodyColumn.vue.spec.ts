@@ -152,7 +152,7 @@ function getGlobal() {
 }
 
 describe('TableBodyColumn.vue', () => {
-  const inlineSelectColumn = {
+  const inlineSelectColumn: import('../table.types').TableColumn = {
     inline: true,
     key: 'category',
     label: 'Kategoria',
@@ -222,7 +222,9 @@ describe('TableBodyColumn.vue', () => {
   }, 15000);
 
   it('passes the whole record as second argument to column template', async () => {
-    const template = vi.fn((value: string, row?: Record<string, any>) => `${value} (${row?.id})`);
+    const template = vi.fn(
+      (value: unknown, row?: Record<string, unknown>) => `${value} (${row?.id})`,
+    );
     const wrapper = mount(TableBodyColumn, {
       props: {
         column: {

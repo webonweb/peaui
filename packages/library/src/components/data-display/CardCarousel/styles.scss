@@ -64,6 +64,16 @@
   @include set-param(gap, 0.5rem);
 }
 
+.peaui-card-carousel__rotation {
+  @include unset-safe;
+  @include outline(var(--peaui-color-primary-400));
+  @include set-size-text(s);
+  @include set-param(padding, 0.5rem);
+  justify-self: start;
+  color: var(--peaui-color-primary-700);
+  cursor: pointer;
+}
+
 .peaui-card-carousel__controls--navigation-only {
   justify-content: space-between;
   width: 100%;
@@ -130,6 +140,11 @@
   border-radius: 999px;
   background-color: var(--peaui-color-grey-300);
   cursor: pointer;
+  box-sizing: border-box;
+  min-inline-size: var(--peaui-target-min, 24px);
+  min-block-size: var(--peaui-target-min, 24px);
+  border: 7px solid transparent;
+  background-clip: padding-box;
 
   @include set-param(width, 0.625rem);
   @include set-param(height, 0.625rem);

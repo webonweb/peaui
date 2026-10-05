@@ -228,7 +228,7 @@ describe('SelectableCard (index.vue)', () => {
     expect(hint.attributes('data-open')).toBe('true');
 
     await hint.trigger('mouseleave');
-    expect(hint.attributes('data-open')).toBeUndefined();
+    await vi.waitFor(() => expect(hint.attributes('data-open')).toBeUndefined());
 
     await hint.trigger('focusin');
     expect(hint.attributes('data-open')).toBe('true');

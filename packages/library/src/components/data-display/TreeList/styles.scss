@@ -135,6 +135,8 @@
 }
 
 .peaui-tree-list__remove {
+  min-inline-size: var(--peaui-target-min, 24px);
+  min-block-size: var(--peaui-target-min, 24px);
   @include unset-safe;
   @include outline(var(--peaui-color-danger-600));
 

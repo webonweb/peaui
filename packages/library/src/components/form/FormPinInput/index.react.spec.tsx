@@ -7,6 +7,15 @@ import FormPinInput from './index';
 afterEach(cleanup);
 
 describe('FormPinInput React', () => {
+  it('scrolls an externally focused cell into view', () => {
+    render(<FormPinInput length={12} />);
+    const last = screen.getAllByRole('textbox').at(-1)!;
+    const scroll = vi.fn();
+    last.scrollIntoView = scroll;
+    fireEvent.focus(last);
+    expect(scroll).toHaveBeenCalledWith({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+  });
+
   it('renderuje identyczną nazwaną grupę, relacje błędu i etykiety komórek', () => {
     render(
       <FormPinInput

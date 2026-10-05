@@ -16,3 +16,16 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Disabled: Story = { args: { disabled: true } };
+
+export const KeyboardBetweenControls: Story = {
+  args: {
+    ariaLabel: 'Open panel',
+    children: 'Open panel',
+    content: (
+      <>
+        <button type="button">First action</button>
+        <button type="button">Second action</button>
+      </>
+    ),
+  },
+};

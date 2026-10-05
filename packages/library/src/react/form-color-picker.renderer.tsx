@@ -1,4 +1,7 @@
 /** @jsxImportSource react */
+import { useModel, useFormControlModel } from './renderers/runtime.shared';
+import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
+import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
 import {
   useEffect,
   useId,
@@ -8,7 +11,6 @@ import {
   type CSSProperties,
   type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MutableRefObject,
   type PointerEvent as ReactPointerEvent,
   type ReactElement,
   type ReactNode,
@@ -32,17 +34,12 @@ import {
   type FormColorPickerVariant,
   type HsvaColor,
 } from '../components/form/FormColorPicker/color-picker.shared';
-import { reactIconData } from './generated-icon-data';
+import { iconArrow } from './generated-static-icons';
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
   className?: string;
   style?: CSSProperties;
-};
-
-type NativePopoverElement = HTMLDivElement & {
-  hidePopover?: () => void;
-  showPopover?: () => void;
 };
 
 type EyeDropperInstance = { open: () => Promise<{ sRGBHex: string }> };
@@ -53,7 +50,7 @@ const cx = (...values: Array<string | false | null | undefined>): string =>
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
     .join(' ');
 
-const arrowIcon = reactIconData.arrow;
+const arrowIcon = iconArrow;
 
 const text = (props: RuntimeProps, name: string, fallback = ''): string => {
   const value = props[name];
@@ -69,45 +66,6 @@ const call = (props: RuntimeProps, name: string, ...args: unknown[]): void => {
   const handler = props[name];
   if (typeof handler === 'function') (handler as (...values: unknown[]) => void)(...args);
 };
-
-function useRuntimeModel<T>(
-  props: RuntimeProps,
-  name: string,
-  fallback: T,
-): readonly [T, (value: T) => void] {
-  const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-  const controlled = Object.prototype.hasOwnProperty.call(props, name);
-  const valueFromProps = props[name] as T | undefined;
-  const defaultValue = props[`default${capitalized}`] as T | undefined;
-  const [internal, setInternal] = useState<T>(defaultValue ?? fallback);
-  const value = controlled ? (valueFromProps as T) : internal;
-  const update = (next: T): void => {
-    if (!controlled) setInternal(next);
-    call(props, `on${capitalized}Change`, next);
-  };
-  return [value, update] as const;
-}
-
-function useNativePopover(open: boolean): MutableRefObject<NativePopoverElement | null> {
-  const ref = useRef<NativePopoverElement | null>(null);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (typeof element.showPopover !== 'function' || typeof element.hidePopover !== 'function') {
-      element.hidden = !open;
-      return;
-    }
-    element.hidden = false;
-    try {
-      const visible = element.matches(':popover-open');
-      if (open && !visible) element.showPopover();
-      if (!open && visible) element.hidePopover();
-    } catch {
-      element.hidden = !open;
-    }
-  }, [open]);
-  return ref;
-}
 
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
@@ -164,8 +122,24 @@ export function FormColorPickerRenderer({
   const externalError = (props.errorContent ?? props.error) as ReactNode;
   const hintContent = props.hintContent as ReactNode;
   const placeholder = text(props, 'placeholder') || defaultPlaceholder(format, alpha);
-  const [modelValue, setModelValue] = useRuntimeModel<string>(props, 'value', '#4C9A2A');
-  const [open, setOpen] = useRuntimeModel<boolean>(props, 'open', false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [modelValue, setModelValue] = useFormControlModel<string>(
+    props,
+    'value',
+    '#4C9A2A',
+    rootRef,
+    true,
+    (next) => {
+      setReason(undefined);
+      const parsed = parseColor(next);
+      if (parsed) {
+        const normalized = normalizeHsva({ ...parsed, a: alpha ? parsed.a : 1 });
+        setColor(normalized);
+        setInputText(serializeColor(normalized, format, alpha));
+      } else setInputText(next);
+    },
+  );
+  const [open, setOpen] = useModel<boolean>(props, 'open', false, true);
   const initialColor = parseColor(modelValue) ?? DEFAULT_COLOR;
   const [color, setColor] = useState<HsvaColor>(
     normalizeHsva({ ...initialColor, a: alpha ? initialColor.a : 1 }),
@@ -215,24 +189,35 @@ export function FormColorPickerRenderer({
     ]
       .filter(Boolean)
       .join(' ') || undefined;
+  const synchronizationRef = useRef({ color, modelValue, open, updateModel, updateOpen });
+  synchronizationRef.current = { color, modelValue, open, updateModel, updateOpen };
 
   useEffect(() => {
     if (publishedValues.current.delete(modelValue)) return;
     const parsed = parseColor(modelValue);
-    setInputText(modelValue);
-    if (parsed) setColor(normalizeHsva({ ...parsed, a: alpha ? parsed.a : 1 }));
-  }, [modelValue]);
+    if (parsed) {
+      const normalized = normalizeHsva({ ...parsed, a: alpha ? parsed.a : 1 });
+      setColor(normalized);
+      setInputText(serializeColor(normalized, format, alpha));
+    } else setInputText(modelValue);
+  }, [alpha, format, modelValue]);
 
   useEffect(() => {
-    const nextColor = normalizeHsva({ ...color, a: alpha ? color.a : 1 });
+    const {
+      color: currentColor,
+      modelValue: currentModelValue,
+      updateModel: publishModel,
+    } = synchronizationRef.current;
+    const nextColor = normalizeHsva({ ...currentColor, a: alpha ? currentColor.a : 1 });
     setColor(nextColor);
     const next = serializeColor(nextColor, format, alpha);
     setInputText(next);
-    if (modelValue !== '' && modelValue !== next) updateModel(next);
+    if (currentModelValue !== '' && currentModelValue !== next) publishModel(next);
   }, [alpha, format]);
 
   useEffect(() => {
-    if (variant === 'inline' && open) updateOpen(false);
+    const state = synchronizationRef.current;
+    if (variant === 'inline' && state.open) state.updateOpen(false);
   }, [variant]);
 
   useEffect(
@@ -253,14 +238,14 @@ export function FormColorPickerRenderer({
     [],
   );
 
-  const updateModel = (next: string): void => {
+  function updateModel(next: string): void {
     publishedValues.current.add(next);
     if (publishedValues.current.size > 64) {
       const oldest = publishedValues.current.values().next().value;
       if (oldest !== undefined) publishedValues.current.delete(oldest);
     }
     setModelValue(next);
-  };
+  }
 
   const publishColor = (nextColor: HsvaColor, commit = false): void => {
     if (blocked) return;
@@ -327,7 +312,7 @@ export function FormColorPickerRenderer({
     setAvailablePanelHeight(Math.max(240, (nextPlacement === 'bottom' ? below : above) - 10));
   };
 
-  const updateOpen = (next: boolean, restoreFocus = false): void => {
+  function updateOpen(next: boolean, restoreFocus = false): void {
     if (next && (blocked || variant !== 'popover')) return;
     if (next) {
       updatePanelGeometry();
@@ -336,7 +321,7 @@ export function FormColorPickerRenderer({
     } else if (open) call(props, 'onClose');
     setOpen(next);
     if (!next && restoreFocus) requestAnimationFrame(() => inputRef.current?.focus());
-  };
+  }
 
   const updateFromPointer = (event: ReactPointerEvent<HTMLDivElement>): HsvaColor => {
     const rect = saturationRef.current?.getBoundingClientRect();
@@ -393,15 +378,12 @@ export function FormColorPickerRenderer({
   };
 
   const renderTrigger = props.renderTrigger as
-    | ((state: { color: string; open: boolean; toggle: () => void }) => ReactNode)
-    | undefined;
+    ((state: { color: string; open: boolean; toggle: () => void }) => ReactNode) | undefined;
   const renderSwatch = props.renderSwatch as ((state: { color: string }) => ReactNode) | undefined;
   const renderSavedColor = props.renderSavedColor as
-    | ((state: { color: FormColorPickerSwatch; index: number }) => ReactNode)
-    | undefined;
+    ((state: { color: FormColorPickerSwatch; index: number }) => ReactNode) | undefined;
   const renderRecentColor = props.renderRecentColor as
-    | ((state: { color: FormColorPickerSwatch; index: number }) => ReactNode)
-    | undefined;
+    ((state: { color: FormColorPickerSwatch; index: number }) => ReactNode) | undefined;
   const renderFooter = props.renderFooter as ((state: { color: string }) => ReactNode) | undefined;
 
   const swatchLabel = (swatch: FormColorPickerSwatch): string =>
@@ -635,24 +617,13 @@ export function FormColorPickerRenderer({
             ) : null}
           </span>
           {hasContent(hintContent) ? (
-            <>
-              <span
-                aria-describedby={`${id}-hint`}
-                aria-label="Dodatkowa informacja"
-                className="peaui-info-tooltip"
-                role="button"
-                tabIndex={0}
-              >
-                i
-              </span>
-              <span
-                className="peaui-info-tooltip__content peaui-info-tooltip__content--placement-right"
-                id={`${id}-hint`}
-                role="tooltip"
-              >
-                <span className="peaui-info-tooltip__description">{hintContent}</span>
-              </span>
-            </>
+            <InfoTooltipRenderer
+              description={hintContent}
+              placement="right"
+              ariaLabel="Dodatkowa informacja"
+            >
+              i
+            </InfoTooltipRenderer>
           ) : null}
         </label>
       ) : null}
@@ -672,7 +643,9 @@ export function FormColorPickerRenderer({
             aria-expanded={variant === 'popover' ? open : undefined}
             aria-haspopup={variant === 'popover' ? 'dialog' : undefined}
             aria-invalid={hasError || undefined}
-            aria-label={text(props, 'ariaLabel') || (!label ? name : undefined)}
+            aria-label={
+              text(props, 'aria-label') || text(props, 'ariaLabel') || (!label ? name : undefined)
+            }
             aria-labelledby={label ? `label-${id}` : undefined}
             aria-readonly={readonly || undefined}
             autoComplete="off"
@@ -721,9 +694,9 @@ export function FormColorPickerRenderer({
               <svg
                 aria-hidden="true"
                 className={cx('peaui-svg-icon', `${root}__toggle-icon`)}
-                dangerouslySetInnerHTML={{ __html: arrowIcon?.body ?? '' }}
+                dangerouslySetInnerHTML={{ __html: arrowIcon.body }}
                 focusable="false"
-                viewBox={arrowIcon?.viewBox ?? '0 0 24 24'}
+                viewBox={arrowIcon.viewBox}
               />
             </button>
           ) : null}
@@ -797,6 +770,7 @@ export function FormColorPickerRenderer({
           hasError && `${root}--error`,
           props.className,
         )}
+        ref={rootRef}
         style={{ ...props.style, '--unique-anchor': anchorName } as CSSProperties}
       >
         <div className={`${root}__trigger-host`} ref={triggerRef}>
@@ -820,12 +794,7 @@ export function FormColorPickerRenderer({
           )}
           hidden={!open}
           data-testid={baseTestId ? `${baseTestId}-popover-content` : undefined}
-          popover={
-            typeof HTMLElement !== 'undefined' &&
-            typeof HTMLElement.prototype.showPopover === 'function'
-              ? 'auto'
-              : undefined
-          }
+          popover={getNativePopoverValue()}
           ref={popoverRef}
           style={
             {

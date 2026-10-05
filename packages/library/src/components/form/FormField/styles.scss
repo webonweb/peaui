@@ -1,5 +1,11 @@
 @use '@/assets/mixins.scss' as *;
 
+.peaui-form-field__native-select {
+  @include sr-only;
+  // WebKit native select appearance otherwise overrides overflow clipping.
+  appearance: none;
+}
+
 .peaui-form-field {
   position: relative;
   display: grid;
@@ -15,7 +21,7 @@
 .peaui-form-field__element {
   position: relative;
   width: 100%;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   @include set-param(padding, 0.75rem);
   box-sizing: border-box;
 

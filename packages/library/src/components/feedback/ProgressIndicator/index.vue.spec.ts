@@ -51,7 +51,7 @@ describe('ProgressIndicator (index.vue)', () => {
     expect(circles.length).toBe(2);
 
     const progressCircle = circles[1];
-    const dashOffset = parseFloat(progressCircle.attributes('stroke-dashoffset'));
+    const dashOffset = parseFloat(progressCircle!.attributes('stroke-dashoffset')!);
     expect(dashOffset).toBeCloseTo(0, 6);
   });
 
@@ -74,10 +74,10 @@ describe('ProgressIndicator (index.vue)', () => {
     const progressPct = 1 / 4;
     const expectedDashOffset = circumference * (1 - progressPct);
 
-    const dashOffset = parseFloat(progressCircle.attributes('stroke-dashoffset'));
+    const dashOffset = parseFloat(progressCircle!.attributes('stroke-dashoffset')!);
     expect(dashOffset).toBeCloseTo(expectedDashOffset, 4);
 
-    const dashArray = parseFloat(progressCircle.attributes('stroke-dasharray'));
+    const dashArray = parseFloat(progressCircle!.attributes('stroke-dasharray')!);
     expect(dashArray).toBeCloseTo(circumference, 4);
   });
 
@@ -101,11 +101,11 @@ describe('ProgressIndicator (index.vue)', () => {
     const trackCircle = circles[0];
     const progressCircle = circles[1];
 
-    expect(trackCircle.attributes('class')).toContain('uikit-progress-indicator__track');
-    expect(trackCircle.attributes('class')).toContain('uikit-progress-indicator__track--inactive');
+    expect(trackCircle!.attributes('class')).toContain('uikit-progress-indicator__track');
+    expect(trackCircle!.attributes('class')).toContain('uikit-progress-indicator__track--inactive');
 
-    expect(progressCircle.attributes('class')).toContain('uikit-progress-indicator__progress');
-    expect(progressCircle.attributes('class')).toContain(
+    expect(progressCircle!.attributes('class')).toContain('uikit-progress-indicator__progress');
+    expect(progressCircle!.attributes('class')).toContain(
       'uikit-progress-indicator__progress--hidden',
     );
   });

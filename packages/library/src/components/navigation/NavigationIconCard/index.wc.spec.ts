@@ -17,6 +17,15 @@ afterEach(() => {
 });
 
 describe('NavigationIconCard (index.wc.ts)', () => {
+  it('keeps its valid navigation link in the explicit tab order', async () => {
+    const element = new NavigationIconCardElement();
+    element.path = '/profile';
+    element.text = 'Profile';
+    document.body.append(element);
+    await nextTick();
+    expect(element.querySelector('a')?.getAttribute('tabindex')).toBe('0');
+  });
+
   it('registers the public custom element', () => {
     expect(customElements.get(NavigationIconCardElement.tagName)).toBe(NavigationIconCardElement);
   });
@@ -32,7 +41,8 @@ describe('NavigationIconCard (index.wc.ts)', () => {
     await Promise.resolve();
 
     expect(element.childNodes.length).toBeGreaterThan(0);
-    expect(element.getAttribute('role')).toBe('group');
+    expect(element.hasAttribute('role')).toBe(false);
+    expect(element.querySelector('a')?.getAttribute('role')).toBe('link');
     expect(consoleWarnSpy).toHaveBeenCalledWith(
       '[NavigationIconCard] Missing path. Rendering a disabled card without navigation.',
     );

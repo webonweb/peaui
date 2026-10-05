@@ -129,3 +129,23 @@ export const WithoutBackground: Story = {
     dataTestId: 'navigation-tabs-without-background',
   },
 };
+
+export const KeyboardInteraction: Story = {
+  ...NavigationTabs,
+  args: {
+    ariaLabel: 'Keyboard navigation',
+    tabs: [
+      { key: 'account', label: 'Account', active: true },
+      { key: 'blocked', label: 'Unavailable', disabled: true },
+      { key: 'settings', label: 'Settings' },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Use Left/Right, Home and End to move focus; Enter or Space selects the original tab object, including its key.',
+      },
+    },
+  },
+};

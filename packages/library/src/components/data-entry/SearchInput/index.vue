@@ -2,11 +2,11 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, nextTick, ref, useAttrs, useId, useTemplateRef } from 'vue';
+import { computed, nextTick, onBeforeUnmount, useAttrs, useId, useTemplateRef, watch } from 'vue';
 
 // HELPERS
 //-----------------------------------------------------------------------------------------------//
-import { debounce } from '@/helpers/functions.helper';
+import { createSearchScheduler } from './search-scheduler.shared';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -24,11 +24,15 @@ const {
   ariaLabel = 'Pole wyszukiwania',
   placeholder = 'Wpisz czego szukasz',
   debounceTime = 1000,
+  disabled = false,
+  readonly = false,
   dataTestId,
 } = defineProps<{
   ariaLabel?: string;
   placeholder?: string;
   debounceTime?: number;
+  disabled?: boolean;
+  readonly?: boolean;
   dataTestId?: string;
 }>();
 
@@ -42,15 +46,10 @@ const uid = useId();
 const inputReference = useTemplateRef<HTMLInputElement>('inputReference');
 const classNameComponent = `${UIKIT_NAME}-search-input`;
 const searchButtonAriaLabel = 'Wyszukaj';
-const disabled = false;
-const readonly = false;
 const canErase = true;
 const required = false;
-const minimumDebouncedSearchLength = 3;
-const minimumImmediateSearchLength = 3;
 
 const modelValue = defineModel<string | undefined>('value');
-const searchRequestVersion = ref(0);
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
@@ -61,7 +60,9 @@ const buttonTestId = computed(() => (dataTestId ? `${dataTestId}-search-button` 
 const eraseButtonTestId = computed(() =>
   fieldDataTestId.value ? `${fieldDataTestId.value}-erase-button` : undefined,
 );
-const isEraseButtonVisible = computed(() => canErase && normalizedValue.value !== '' && !disabled);
+const isEraseButtonVisible = computed(
+  () => canErase && normalizedValue.value !== '' && !disabled && !readonly,
+);
 const fieldId = computed(() => String(attrs.id ?? `${classNameComponent}-${uid}`));
 const fieldName = computed(() => String(attrs.name ?? 'search-input'));
 
@@ -70,21 +71,19 @@ const fieldInputClass = computed(() => [
   `${classNameComponent}__input--interactive`,
 ]);
 
-const debouncedSearch = debounce(
-  ((...args: unknown[]) => {
-    const payload = String(args[0] ?? '');
-    const separatorIndex = payload.indexOf('::');
-    const version = Number(payload.slice(0, separatorIndex));
-    const phrase = payload.slice(separatorIndex + 2);
-
-    if (version !== searchRequestVersion.value) {
-      return;
-    }
-
-    emit('on:search', phrase);
-  }) as (...args: unknown[]) => void,
-  debounceTime,
-) as (payload: string) => void;
+const searchScheduler = createSearchScheduler(
+  (phrase) => emit('on:search', phrase),
+  () => debounceTime,
+  () => disabled || readonly,
+);
+onBeforeUnmount(searchScheduler.cancel);
+watch(() => debounceTime, searchScheduler.cancel);
+watch(
+  () => disabled || readonly,
+  (blocked) => {
+    if (blocked) searchScheduler.cancel();
+  },
+);
 
 // FUNCTIONS
 //-----------------------------------------------------------------------------------------------//
@@ -95,11 +94,11 @@ function getInputBindings(): Record<string, unknown> {
     name: fieldName.value,
     type: 'search',
     autocomplete: 'off',
-    autocapitalize: 'off',
+    autocapitalize: 'none',
     spellcheck: false,
     enterkeyhint: 'search',
-    role: 'searchbox',
-    'aria-label': ariaLabel,
+    role: attrs.role ?? 'searchbox',
+    'aria-label': attrs['aria-label'] ?? (attrs['aria-labelledby'] ? undefined : ariaLabel),
     'aria-disabled': disabled,
     'aria-required': required,
     disabled,
@@ -109,22 +108,11 @@ function getInputBindings(): Record<string, unknown> {
 }
 
 function scheduleSearch(phrase: string): void {
-  searchRequestVersion.value += 1;
-
-  if (phrase !== '' && phrase.length < minimumDebouncedSearchLength) {
-    return;
-  }
-
-  debouncedSearch(`${searchRequestVersion.value}::${phrase}`);
+  searchScheduler.schedule(phrase);
 }
 
 function handleSearch(phrase = inputReference.value?.value ?? normalizedValue.value): void {
-  if (disabled || readonly || phrase.length < minimumImmediateSearchLength) {
-    return;
-  }
-
-  searchRequestVersion.value += 1;
-  emit('on:search', phrase);
+  searchScheduler.search(phrase);
 }
 
 function handleInput(event: Event): void {
@@ -158,8 +146,7 @@ function handleRemove(): void {
 
   modelValue.value = '';
   emit('on:remove');
-  searchRequestVersion.value += 1;
-  emit('on:search', '');
+  searchScheduler.clear();
 
   void nextTick(() => {
     inputReference.value?.focus();

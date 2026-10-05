@@ -1,7 +1,6 @@
 <script lang="ts">
 import type {
   FormTagsInputInvalidDetail,
-  FormTagsInputItem,
   FormTagsInputKeyGetter,
   FormTagsInputLayout,
   FormTagsInputMode,
@@ -94,6 +93,7 @@ export type {
 
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
+import { useSlotPresence } from '@/composables/useSlotPresence';
 import {
   computed,
   nextTick,
@@ -110,7 +110,7 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import FormFieldLabel from '@/components/form/FormFieldLabel/index.vue';
 import PopoverOverlayer from '@/components/overlayer/PopoverOverlayer/index.vue';
 import {
-  areTagsInputTagsEqual,
+  createTagsInputMatcher,
   commitTagsInput,
   getTagsInputKey,
   getTagsInputLabel,
@@ -191,6 +191,9 @@ defineSlots<{
 
 const attrs = useAttrs();
 const slots = useSlots();
+const labelSlot = useSlotPresence('label');
+const descriptionSlot = useSlotPresence('description');
+const errorSlot = useSlotPresence('error');
 const classNameComponent = `${UIKIT_NAME}-form-tags-input`;
 const generatedId = useId();
 const resolvedId = computed(() => props.id?.trim() || `${classNameComponent}-${generatedId}`);
@@ -235,22 +238,20 @@ const effectiveLoading = computed(() => props.loading || internalLoading.value);
 const sourceSuggestions = computed(() =>
   props.suggestionProvider ? internalSuggestions.value : props.suggestions,
 );
+const matchesSelectedTag = computed(() => createTagsInputMatcher(tags.value, props.getTagKey));
 const filteredSuggestions = computed(() => {
   const query = inputValue.value.trim().toLocaleLowerCase();
   return sourceSuggestions.value.filter((suggestion) => {
-    if (
-      !props.allowDuplicates &&
-      tags.value.some((tag) => areTagsInputTagsEqual(tag, suggestion, props.getTagKey))
-    ) {
+    if (!props.allowDuplicates && matchesSelectedTag.value(suggestion)) {
       return false;
     }
     return !query || getTagsInputLabel(suggestion).toLocaleLowerCase().includes(query);
   });
 });
 const showPanel = computed(() => panelOpen.value && hasSuggestionSource.value);
-const hasLabel = computed(() => Boolean(slots.label || props.label.trim()));
-const hasDescription = computed(() => Boolean(slots.description || props.description.trim()));
-const hasError = computed(() => Boolean(slots.error || props.error.trim()));
+const hasLabel = computed(() => Boolean(labelSlot.value || props.label.trim()));
+const hasDescription = computed(() => Boolean(descriptionSlot.value || props.description.trim()));
+const hasError = computed(() => Boolean(errorSlot.value || props.error.trim()));
 const blocked = computed(() => props.disabled || props.loading);
 const activeSuggestionId = computed(() =>
   activeSuggestionIndex.value >= 0
@@ -708,6 +709,7 @@ onBeforeUnmount(() => suggestionAbortController?.abort());
       popup-type="listbox"
       @update:open="handlePopoverState"
     >
+      <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -- Clicking this wrapper only focuses the native input, which is reachable with Tab. -->
       <div
         ref="controlRef"
         :class="`${classNameComponent}__control`"
@@ -781,13 +783,14 @@ onBeforeUnmount(() => suggestionAbortController?.abort());
         <input
           :id="inputId"
           ref="inputRef"
+          :form="form"
           v-bind="{ ...inputAttrs, ...inputLabelAttrs }"
           :class="`${classNameComponent}__input`"
           :value="inputValue"
           type="text"
           role="combobox"
           autocomplete="off"
-          autocapitalize="off"
+          autocapitalize="none"
           spellcheck="false"
           :placeholder="atMax && editingTagIndex < 0 ? '' : placeholder"
           :disabled="blocked"
@@ -837,6 +840,7 @@ onBeforeUnmount(() => suggestionAbortController?.abort());
             role="listbox"
             :aria-label="`${accessibleName}: sugestie`"
           >
+            <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/mouse-events-have-key-events -- The combobox input owns focus and keyboard selection with aria-activedescendant. -->
             <li
               v-for="(suggestion, index) in filteredSuggestions"
               :id="`${resolvedId}-suggestion-${index}`"

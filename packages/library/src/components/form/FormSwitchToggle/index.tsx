@@ -1,6 +1,7 @@
 import type { ChangeEvent, FocusEvent, ReactElement, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { FormSwitchToggleRenderer } from '@/react/renderer-entries/form-switch-toggle.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 type GeneratedFormSwitchToggleProps = PeauiReactProps<'FormSwitchToggle'>;
@@ -26,7 +27,10 @@ export type FormSwitchToggleProps<Value = boolean> = Omit<
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
 };
 
-const FormSwitchToggleBase = createPeauiReactComponent('FormSwitchToggle');
+const FormSwitchToggleBase = createDirectReactComponent(
+  'FormSwitchToggle',
+  FormSwitchToggleRenderer,
+);
 
 const FormSwitchToggle = FormSwitchToggleBase as unknown as <Value = boolean>(
   props: FormSwitchToggleProps<Value> & RefAttributes<HTMLInputElement>,

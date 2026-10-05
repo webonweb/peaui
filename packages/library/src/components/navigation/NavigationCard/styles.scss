@@ -12,7 +12,7 @@
   width: 100%;
 
   border: 1px solid var(--peaui-color-grey-100);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background-color: var(--peaui-color-grey-0);
   color: inherit;
   text-decoration: none;
@@ -104,7 +104,7 @@
   @include set-param(width, 2rem);
   @include set-param(height, 2rem);
 
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   color: var(--peaui-color-primary-600);
 }
 

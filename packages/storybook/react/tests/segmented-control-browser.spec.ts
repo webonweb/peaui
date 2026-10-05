@@ -130,3 +130,15 @@ test("SegmentedControl React utrzymuje aktywny segment w mobilnym overflow i cel
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(320);
 });
+
+
+test("SegmentedControl exposes all disabled labels without keyboard scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await gotoSegmentedControlStory(page, "disabled-states");
+  const group = page.locator('.peaui-segmented-control[aria-disabled="true"]');
+  await expect(group).toBeVisible();
+  const metrics = await group.evaluate(element => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.width + 1);
+  await expect(group.locator('button:not(:disabled), [tabindex="0"]')).toHaveCount(0);
+  expect((await new AxeBuilder({ page }).include('.peaui-segmented-control').analyze()).violations).toEqual([]);
+});

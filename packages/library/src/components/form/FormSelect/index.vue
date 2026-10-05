@@ -13,6 +13,7 @@ export interface SelectFieldOption<T = string> {
 <script lang="ts" setup>
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
+import { useVirtualListWindow } from '@/composables/useVirtualListWindow';
 import { UIKIT_NAME } from '@/constants';
 import {
   computed,
@@ -36,6 +37,17 @@ import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import FormField from '@/components/form/FormField/index.vue';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
 import PopoverOverlayer from '@/components/overlayer/PopoverOverlayer/index.vue';
+import {
+  getSelectLabels,
+  getSelectFormValues,
+  focusInvalidSelect,
+  resolveSelectPlacement,
+  createSelectValueIndex,
+  getSelectOptionValue,
+  isSelectOptionSelected,
+  type SelectValueMode,
+  type SelectLabels,
+} from './select.shared';
 
 defineOptions({
   inheritAttrs: false,
@@ -63,7 +75,11 @@ const {
   iconBefore,
   required,
   placement,
-  placeholder = 'wybierz/wyszukaj',
+  placeholder,
+  labels,
+  valueMode = 'value',
+  virtual = false,
+  optionHeight = 48,
   disabled,
   readonly,
   canWrite,
@@ -83,13 +99,20 @@ const {
   /** Preferred list placement. The list flips when the preferred side has insufficient space. */
   placement?: SelectPopoverPlacement;
   placeholder?: string;
+  labels?: Partial<SelectLabels>;
+  /** Value is the default; label preserves the pre-3.0 Vue/WC model contract. */
+  valueMode?: SelectValueMode;
+  /** Render only visible fixed-height options for large lists. */
+  virtual?: boolean;
+  /** Row height in pixels when virtual is enabled (minimum 24). */
+  optionHeight?: number;
   disabled?: boolean;
   readonly?: boolean;
   canWrite?: boolean;
   searchable?: boolean;
   size?: SelectSize;
   dataTestId?: string;
-  options: SelectFieldOption[];
+  options: SelectFieldOption<unknown>[];
 }>();
 
 const emit = defineEmits<{
@@ -98,6 +121,7 @@ const emit = defineEmits<{
 
 const attrs = useAttrs();
 const slots = useSlots();
+const listboxReference = useTemplateRef<HTMLElement>('listboxReference');
 const inputReference = useTemplateRef('inputReference');
 const popoverReference = useTemplateRef<PopoverOverlayerReference>('popoverReference');
 const classNameComponent = `${UIKIT_NAME}-form-select`;
@@ -123,9 +147,15 @@ const listboxLabelledBy = computed(() => (label ? `label-${id}` : explicitAriaLa
 const listboxAriaLabel = computed(
   () => explicitAriaLabel.value ?? (!label && !explicitAriaLabelledBy.value ? name : undefined),
 );
+const nativeInvalid = ref(false);
+watch(modelValue, () => {
+  nativeInvalid.value = false;
+});
+const formValues = computed(() => getSelectFormValues(modelValue.value, false));
 const inputIsReadonly = computed(() => readonly || !searchable);
 const normalizedSearchPhrase = computed(() => normalizeText(searchPhrase.value));
 
+const selectedValueIndex = computed(() => createSelectValueIndex([modelValue.value], valueMode));
 const selectedOption = computed(() =>
   options.find((option) => {
     if (!isModelValueEmpty(modelValue.value)) {
@@ -146,12 +176,25 @@ const filteredOptions = computed(() => {
   );
 });
 
+const { visibleOptions, beforeSize, afterSize, optionStyle, handleScroll, revealActive } =
+  useVirtualListWindow({
+    items: filteredOptions,
+    viewport: listboxReference,
+    activeIndex: currentIndex,
+    enabled: () => virtual,
+    itemSize: () => optionHeight,
+    open: isOpen,
+  });
+
 const currentOption = computed(() =>
   currentIndex.value >= 0 ? filteredOptions.value[currentIndex.value] : undefined,
 );
 
 const activeDescendantId = computed(() =>
-  currentOption.value ? getOptionId(currentIndex.value) : undefined,
+  currentOption.value &&
+  (!virtual || visibleOptions.value.some(({ index }) => index === currentIndex.value))
+    ? getOptionId(currentIndex.value)
+    : undefined,
 );
 
 const displayValue = computed(() => {
@@ -170,8 +213,13 @@ const displayValue = computed(() => {
   return toDisplayText(capitalizeFirstLetter(`${modelValue.value}`));
 });
 
+const resolvedLabels = computed(() => getSelectLabels(labels));
 const currentPlaceholder = computed(() =>
-  isOpen.value && searchable ? 'wyszukaj opcję' : searchable ? placeholder : 'wybierz opcję',
+  isOpen.value && searchable
+    ? resolvedLabels.value.searchPlaceholder
+    : searchable
+      ? (placeholder ?? resolvedLabels.value.placeholder)
+      : resolvedLabels.value.selectPlaceholder,
 );
 
 const inputClass = computed(() => [
@@ -198,7 +246,7 @@ const bindings = computed(() => {
     type: 'text',
     role: 'combobox',
     autocomplete: 'off',
-    autocapitalize: 'off',
+    autocapitalize: 'none',
     spellcheck: false,
     readonly: inputIsReadonly.value,
     'aria-autocomplete': searchable ? 'list' : 'none',
@@ -233,7 +281,7 @@ watch(
     syncCurrentIndex();
     await nextTick();
     popoverReference.value?.refreshPopoverPosition?.();
-    scrollActiveOptionIntoView();
+    void scrollActiveOptionIntoView();
   },
   { deep: true },
 );
@@ -270,31 +318,15 @@ function isModelValueEmpty(value: unknown): boolean {
   return value === null || value === undefined || value === '';
 }
 
-function isOptionMatchingModelValue(option: SelectFieldOption): boolean {
-  if (isModelValueEmpty(modelValue.value)) {
-    return false;
-  }
-
-  if (option.value !== undefined && option.value === modelValue.value) {
-    return true;
-  }
-
-  if (option.label === modelValue.value) {
-    return true;
-  }
-
-  const optionLabel = normalizeText(option.label);
-  const optionValue = normalizeText(option.value);
-  const normalizedValue = normalizeText(modelValue.value);
-
-  return optionLabel === normalizedValue || (optionValue !== '' && optionValue === normalizedValue);
+function isOptionMatchingModelValue(option: SelectFieldOption<unknown>): boolean {
+  return isSelectOptionSelected(option, selectedValueIndex.value, valueMode);
 }
 
 function getOptionId(index: number): string {
   return `${id}-option-${index}`;
 }
 
-function isOptionSelected(option: SelectFieldOption): boolean {
+function isOptionSelected(option: SelectFieldOption<unknown>): boolean {
   if (isModelValueEmpty(modelValue.value)) {
     return !!option.active;
   }
@@ -345,12 +377,13 @@ function syncCurrentIndex(): void {
   currentIndex.value = getFirstEnabledIndex();
 }
 
-function scrollActiveOptionIntoView(): void {
+async function scrollActiveOptionIntoView(): Promise<void> {
+  await revealActive();
   if (!currentOption.value) {
     return;
   }
 
-  document.getElementById(activeDescendantId.value ?? '')?.scrollIntoView({
+  document.getElementById(activeDescendantId.value ?? '')?.scrollIntoView?.({
     block: 'nearest',
   });
 }
@@ -378,18 +411,12 @@ function syncPopoverPlacement(): void {
 
   const rect = inputReference.value.getBoundingClientRect();
   const estimatedPopoverHeight = getEstimatedPopoverHeight() + 5;
-  const availableAbove = rect.top;
-  const availableBelow = window.innerHeight - rect.bottom;
-  const preferredPlacement = placement ?? 'bottom';
-  const preferredSpace = preferredPlacement === 'bottom' ? availableBelow : availableAbove;
-  const fallbackPlacement: SelectPopoverPlacement =
-    preferredPlacement === 'bottom' ? 'top' : 'bottom';
-  const fallbackSpace = fallbackPlacement === 'bottom' ? availableBelow : availableAbove;
-
-  popoverPlacement.value =
-    preferredSpace >= estimatedPopoverHeight || preferredSpace >= fallbackSpace
-      ? preferredPlacement
-      : fallbackPlacement;
+  popoverPlacement.value = resolveSelectPlacement(
+    rect,
+    estimatedPopoverHeight,
+    window.innerHeight,
+    placement ?? 'bottom',
+  );
 }
 
 function refreshOpenPopoverPosition(): void {
@@ -451,7 +478,7 @@ async function handlePopoverState(open: boolean): Promise<void> {
     syncCurrentIndex();
     await nextTick();
     popoverReference.value?.refreshPopoverPosition?.();
-    scrollActiveOptionIntoView();
+    void scrollActiveOptionIntoView();
     return;
   }
 
@@ -467,7 +494,7 @@ function selectOption(index: number): void {
     return;
   }
 
-  modelValue.value = option.label;
+  modelValue.value = getSelectOptionValue(option, valueMode);
   searchPhrase.value = '';
 
   closeSelect();
@@ -597,9 +624,14 @@ onBeforeUnmount(() => {
     @update:open="handlePopoverState"
   >
     <FormField
+      :aria-label="attrs['aria-label']"
+      :aria-labelledby="attrs['aria-labelledby']"
+      :aria-describedby="attrs['aria-describedby']"
+      :aria-invalid="nativeInvalid || attrs['aria-invalid']"
       :after
       :before
       :can-erase="canErase"
+      :clear-label="resolvedLabels.clear"
       :disabled
       iconAfter="arrow"
       :iconBefore
@@ -620,6 +652,12 @@ onBeforeUnmount(() => {
       <template #default="{ props: fieldProps }">
         <input
           v-bind="{ ...bindings, ...fieldProps }"
+          :name="undefined"
+          :required="false"
+          @invalid="
+            nativeInvalid = true;
+            focusInvalidSelect($event, inputReference);
+          "
           :class="inputClass"
           :readonly="inputIsReadonly"
           :style="fieldProps.style as StyleValue"
@@ -629,7 +667,6 @@ onBeforeUnmount(() => {
           @keydown.up.stop.prevent="moveCurrentIndex(-1)"
           @keydown.enter.stop.prevent="handleEnter"
           @keydown.space.stop.prevent="handleEnter"
-          @keydown.spacebar.stop.prevent="handleEnter"
           @keydown.esc.stop="handleEscape"
           @keydown.home.stop="handleHome"
           @keydown.end.stop="handleEnd"
@@ -638,6 +675,29 @@ onBeforeUnmount(() => {
           data-type="select"
           :data-testid="elementTestId"
         />
+        <select
+          aria-hidden="true"
+          :tabindex="-1"
+          class="peaui-form-field__native-select"
+          :name="name"
+          :form="typeof attrs.form === 'string' ? attrs.form : undefined"
+          :disabled="disabled"
+          :required="required && !readonly"
+          @invalid="
+            nativeInvalid = true;
+            focusInvalidSelect($event, inputReference);
+          "
+        >
+          <option value="" :selected="formValues.length === 0" />
+          <option
+            v-for="(entry, index) in formValues"
+            :key="`${index}:${entry}`"
+            :value="entry"
+            selected
+          >
+            {{ entry }}
+          </option>
+        </select>
       </template>
 
       <template v-if="slots.description" #description>
@@ -654,18 +714,30 @@ onBeforeUnmount(() => {
     </FormField>
 
     <template #content>
-      <div :class="`${classNameComponent}__panel`">
+      <div v-if="isOpen" :class="`${classNameComponent}__panel`">
         <ul
+          ref="listboxReference"
           :id="listboxId"
           :class="`${classNameComponent}__listbox`"
           :aria-label="listboxAriaLabel"
           :aria-labelledby="listboxLabelledBy"
+          @scroll="handleScroll"
           role="listbox"
           tabindex="-1"
           :data-testid="listboxTestId"
         >
           <li
-            v-for="(option, index) in filteredOptions"
+            v-if="beforeSize"
+            role="presentation"
+            aria-hidden="true"
+            :style="{ height: `${beforeSize}px` }"
+          />
+          <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/mouse-events-have-key-events -- The combobox input owns focus and keyboard selection; pointer hover only changes its active descendant. -->
+          <li
+            v-for="{ item: option, index } in visibleOptions"
+            :style="optionStyle"
+            :aria-setsize="virtual ? filteredOptions.length : undefined"
+            :aria-posinset="virtual ? index + 1 : undefined"
             :id="getOptionId(index)"
             :key="option.id ?? `${option.label}-${index}`"
             :class="[
@@ -709,6 +781,12 @@ onBeforeUnmount(() => {
               </template>
             </InfoTooltip>
           </li>
+          <li
+            v-if="afterSize"
+            role="presentation"
+            aria-hidden="true"
+            :style="{ height: `${afterSize}px` }"
+          />
         </ul>
 
         <p
@@ -718,7 +796,7 @@ onBeforeUnmount(() => {
           aria-live="polite"
           :data-testid="emptyStateTestId"
         >
-          - brak wyników {{ canWrite ? '(wartość można wpisać ręcznie)' : '' }} -
+          {{ canWrite ? resolvedLabels.emptyWritable : resolvedLabels.empty }}
         </p>
       </div>
     </template>

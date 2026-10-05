@@ -401,6 +401,29 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
   },
   PopoverButton: { children: 'Otwórz menu', content: card('Zawartość popovera') },
   PopoverOverlayer: { children: 'Otwórz warstwę', content: card('Dowolna zawartość warstwy') },
+  CommandPalette: {
+    commands: [{ id: 'search', label: 'Szukaj', description: 'Przejdź do wyszukiwania' }],
+    mode: 'embedded',
+    open: true,
+  },
+  GuidedTour: {
+    mode: 'modal',
+    open: true,
+    step: 0,
+    steps: [{ id: 'welcome', title: 'Witaj', description: 'Poznaj najważniejsze funkcje.' }],
+  },
+  NotificationCenter: {
+    activeFilter: 'all',
+    items: [
+      {
+        id: 'release',
+        title: 'Wdrożenie zakończone',
+        description: 'Wersja 2.5.0 jest dostępna na produkcji.',
+        createdAt: '2026-08-10T08:45:00.000Z',
+        read: false,
+      },
+    ],
+  },
 };
 
 export function getReactStoryArgs<Name extends ReactComponentName>(

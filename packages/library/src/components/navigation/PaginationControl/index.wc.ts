@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import PaginationControlVueComponent from './index.ce.vue';
 
-export const PaginationControlElement = createVueCustomElement(
-  PaginationControlVueComponent,
-  `${UIKIT_NAME}-pagination-control`,
-);
+export const PaginationControlElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(PaginationControlVueComponent, `${UIKIT_NAME}-pagination-control`);
 
 export function definePaginationControl(): void {
   definePeauiCustomElement(PaginationControlElement);

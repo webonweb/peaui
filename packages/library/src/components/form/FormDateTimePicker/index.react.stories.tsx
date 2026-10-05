@@ -104,7 +104,7 @@ export const ValidationAndStates: Story = {
 };
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<LocalDateTimeValue>();
     const [open, setOpen] = useState(false);
     return (
@@ -143,5 +143,21 @@ export const MobileAndLongLabel: Story = {
         variant="split-input"
       />
     </div>
+  ),
+};
+
+export const NativeRequiredAndReset: Story = {
+  render: () => (
+    <form onSubmit={(event) => event.preventDefault()}>
+      <FormDateTimePicker
+        id="native-datetime"
+        name="value"
+        label="Required value"
+        variant="split-input"
+        required
+      />
+      <button type="submit">Validate</button>
+      <button type="reset">Reset</button>
+    </form>
   ),
 };

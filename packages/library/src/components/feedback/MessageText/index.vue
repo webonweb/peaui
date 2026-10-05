@@ -21,16 +21,7 @@ const {
   id: string;
   dataTestId?: string;
   size?:
-    | 'xxs'
-    | 'xs'
-    | 's'
-    | 'm'
-    | 'l'
-    | 'xl'
-    | 'heading-xs'
-    | ' heading-s'
-    | 'heading-m'
-    | 'heading-l';
+    'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | ' heading-s' | 'heading-m' | 'heading-l';
   variant?: 'info' | 'error' | 'success' | 'danger' | 'default' | 'white';
   withIcon?: boolean;
   ownIcon?: string;
@@ -54,7 +45,7 @@ const showVariantIcon = computed(
 );
 </script>
 <template>
-  <div :class="classes" :data-testid="dataTestId" :id="`${id}-${variant}`">
+  <div :class="classes" :data-testid="dataTestId" :id="id">
     <SvgIcon
       v-if="ownIcon"
       :name="ownIcon"

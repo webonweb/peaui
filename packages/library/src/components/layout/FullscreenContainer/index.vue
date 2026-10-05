@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { UIKIT_NAME } from '@/constants';
-import { computed, onBeforeUnmount, ref, useAttrs, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, useAttrs, useTemplateRef, watch } from 'vue';
+
+import { acquireDocumentScrollLock } from '@/helpers/browser.helper';
+import { collectFocusableElements, trapTabKey } from '@/helpers/focus.helper';
 
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 
@@ -24,9 +27,9 @@ const attrs = useAttrs();
 const classNameComponent = `${UIKIT_NAME}-fullscreen-container`;
 const isFullscreenActive = ref(false);
 
-let hasStoredDocumentOverflow = false;
-let previousBodyOverflow = '';
-let previousDocumentOverflow = '';
+const toggleRef = useTemplateRef<HTMLButtonElement>('toggleRef');
+const rootRef = useTemplateRef<HTMLDivElement>('rootRef');
+let releaseScrollLock: (() => void) | undefined;
 
 const rootAttrs = computed(() => ({
   ...attrs,
@@ -47,44 +50,42 @@ const toggleTestId = computed(() => (dataTestId ? `${dataTestId}-toggle` : undef
 const contentTestId = computed(() => (dataTestId ? `${dataTestId}-content` : undefined));
 const iconTestId = computed(() => (dataTestId ? `${dataTestId}-icon` : undefined));
 
-function restoreDocumentOverflow(): void {
-  if (typeof document === 'undefined' || !hasStoredDocumentOverflow) {
-    return;
-  }
-
-  document.body.style.overflow = previousBodyOverflow;
-  document.documentElement.style.overflow = previousDocumentOverflow;
-  hasStoredDocumentOverflow = false;
-}
-
 function handleToggleFullscreen(): void {
   isFullscreenActive.value = !isFullscreenActive.value;
+  toggleRef.value?.focus();
 }
 
-watch(isFullscreenActive, (nextIsFullscreen) => {
-  if (typeof document === 'undefined') {
+function handleKeydown(event: KeyboardEvent): void {
+  if (!isFullscreenActive.value || event.defaultPrevented) return;
+  if (event.key === 'Tab') {
+    trapTabKey(event, collectFocusableElements([rootRef.value]), toggleRef.value);
     return;
   }
+  if (event.key !== 'Escape') return;
+  event.preventDefault();
+  event.stopPropagation();
+  isFullscreenActive.value = false;
+  toggleRef.value?.focus();
+}
 
-  if (nextIsFullscreen) {
-    hasStoredDocumentOverflow = true;
-    previousBodyOverflow = document.body.style.overflow;
-    previousDocumentOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
-    return;
-  }
-
-  restoreDocumentOverflow();
+watch(isFullscreenActive, (active) => {
+  releaseScrollLock?.();
+  releaseScrollLock = active
+    ? acquireDocumentScrollLock('peaui-fullscreen-container--scroll-hidden')
+    : undefined;
 });
-
-onBeforeUnmount(() => {
-  restoreDocumentOverflow();
-});
+onBeforeUnmount(() => releaseScrollLock?.());
 </script>
 
 <template>
-  <div v-bind="rootAttrs" :aria-label="ariaLabel" :class="rootClasses" :data-testid="dataTestId">
+  <div
+    ref="rootRef"
+    @keydown="handleKeydown"
+    v-bind="rootAttrs"
+    :aria-label="ariaLabel"
+    :class="rootClasses"
+    :data-testid="dataTestId"
+  >
     <div :class="`${classNameComponent}__content`" :data-testid="contentTestId">
       <div :class="`${classNameComponent}__content-inner`">
         <slot />
@@ -93,6 +94,7 @@ onBeforeUnmount(() => {
 
     <div :class="`${classNameComponent}__actions`">
       <button
+        ref="toggleRef"
         :aria-label="toggleLabel"
         :aria-pressed="isFullscreenActive ? 'true' : 'false'"
         :class="`${classNameComponent}__toggle`"

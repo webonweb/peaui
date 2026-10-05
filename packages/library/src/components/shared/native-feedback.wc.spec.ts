@@ -1,0 +1,36 @@
+import { afterEach, expect, it } from 'vitest';
+import { CounterBadgeElement, defineCounterBadge } from '../data-display/CounterBadge/index.wc';
+import { SpinnerLoaderElement, defineSpinnerLoader } from '../feedback/SpinnerLoader/index.wc';
+defineCounterBadge();
+defineSpinnerLoader();
+afterEach(() => document.body.replaceChildren());
+it('updates badge text and variants in place, preserving live region identity on reconnect', async () => {
+  const badge = document.createElement(CounterBadgeElement.tagName) as CounterBadgeElement;
+  Object.assign(badge, { value: 2, variant: 'success', size: 'l', dataTestId: 'count' });
+  document.body.append(badge);
+  await Promise.resolve();
+  const live = badge.querySelector('[role="status"]')!;
+  expect(live.textContent?.trim()).toBe('2');
+  badge.value = 3;
+  await Promise.resolve();
+  expect(badge.querySelector('[role="status"]')).toBe(live);
+  expect(live.textContent?.trim()).toBe('3');
+  expect(live.classList.contains('peaui-counter-badge--variant-success')).toBe(true);
+  badge.remove();
+  document.body.append(badge);
+  expect(badge.querySelector('[role="status"]')).toBe(live);
+});
+it('exposes loading status and forwards late attribute changes without duplicate IDs', async () => {
+  const spinner = document.createElement(SpinnerLoaderElement.tagName) as SpinnerLoaderElement;
+  spinner.id = 'loading';
+  document.body.append(spinner);
+  await Promise.resolve();
+  const status = spinner.querySelector('[role="status"]')!;
+  expect(status.textContent).toContain('Ładowanie');
+  expect(spinner.querySelector('[aria-busy="true"]')).toBeTruthy();
+  spinner.dataTestId = 'busy';
+  spinner.setAttribute('aria-label', 'Loading records');
+  await Promise.resolve();
+  expect(spinner.querySelector('[data-testid="busy"]')).toBeTruthy();
+  expect(document.querySelectorAll('#loading')).toHaveLength(1);
+});

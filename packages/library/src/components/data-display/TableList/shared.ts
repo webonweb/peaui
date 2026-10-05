@@ -1,6 +1,31 @@
 import { UIKIT_NAME } from '@/constants';
 import { getDeepValue } from '@/helpers/object.helper';
 import { sanitizeToSlug } from '@/helpers/string.helper';
+import type { TableColumnBase, TableRecord } from './table.types';
+
+export function resolveTableColumnType(
+  column: Pick<TableColumnBase, 'type'>,
+  record: TableRecord,
+): string {
+  return typeof column.type === 'function' ? column.type(record) : column.type || 'text';
+}
+
+export function resolveTableColumnValue(
+  column: Pick<TableColumnBase, 'key' | 'template'>,
+  record: TableRecord,
+): unknown {
+  return column.template
+    ? column.template(record[column.key], record)
+    : getDeepValue(record, column.key);
+}
+
+export function resolveTableTextValue(value: unknown, deep?: string): unknown {
+  const resolved =
+    deep && typeof value === 'object' && value !== null
+      ? getDeepValue(value as TableRecord, deep)
+      : value;
+  return resolved === null || resolved === undefined || resolved === '' ? '-/-' : resolved;
+}
 
 export const TABLE_LIST_CLASS = `${UIKIT_NAME}-table-list`;
 export const TABLE_LIST_DEFAULT_COLUMN_WIDTH = 170;
@@ -119,6 +144,22 @@ export function getTableRecordKey(
   }
 
   return String(index);
+}
+
+/** Keep editor identity separate from the legacy index emitted by on:submit. */
+export function getTableRecordIdentity(record: TableRecord): unknown {
+  return record.id === undefined || record.id === null || record.id === '' ? record : record.id;
+}
+
+/** Ambiguous identities must not turn an edit into a write to an unrelated record. */
+export function findTableRecordIndex(records: readonly TableRecord[], identity: unknown): number {
+  let match = -1;
+  for (let index = 0; index < records.length; index += 1) {
+    if (!Object.is(getTableRecordIdentity(records[index]!), identity)) continue;
+    if (match >= 0) return -1;
+    match = index;
+  }
+  return match;
 }
 
 export function getTableColumnIdentifier(column: TableColumnIdentifierSource): string {

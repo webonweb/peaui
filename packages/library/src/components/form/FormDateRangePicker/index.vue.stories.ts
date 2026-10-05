@@ -15,6 +15,7 @@ import type { DateRangeValue } from './date-range-picker.shared';
 const meta = {
   title: '5. Form/FormDateRangePicker',
   component: FormDateRangePickerComponent,
+  args: { ...formDateRangePickerDemoProps },
   parameters: {
     name: 'FormDateRangePicker',
     description:

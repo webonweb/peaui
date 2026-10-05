@@ -1,3 +1,4 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { UIKIT_NAME } from '@/constants';
 import { isCustomElementNode, syncNodeChildren } from '@/helpers/dom.helper';
 
@@ -141,6 +142,7 @@ export class ButtonActionElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -158,7 +160,8 @@ export class ButtonActionElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -382,7 +385,10 @@ export class ButtonActionElement extends HTMLElement {
         continue;
       }
 
-      forwardedAttributes.set(attribute.name, attribute.value);
+      forwardedAttributes.set(
+        attribute.name,
+        attribute.name === 'id' && attribute.value ? `${attribute.value}-control` : attribute.value,
+      );
     }
 
     const externalStyle = getNormalizedAttributeValue(this.getAttribute('style'));

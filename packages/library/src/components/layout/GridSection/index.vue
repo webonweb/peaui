@@ -2,23 +2,24 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, useAttrs, useSlots } from 'vue';
+import { computed, useAttrs } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
 const { columns = 4, gap = 6 } = defineProps<{
+  /** Liczba kolumn siatki; domyślnie 4. */
   columns?: number;
   gap?: number;
 }>();
 
 const attrs = useAttrs();
-const slots = useSlots();
 
 const classNameComponent = `${UIKIT_NAME}-grid-section`;
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
-const hasAdditional = computed(() => Boolean(slots.additional));
+const hasAdditional = useSlotPresence('additional');
 const rootAttrs = computed(() => ({
   ...attrs,
 }));

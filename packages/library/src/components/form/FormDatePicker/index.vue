@@ -18,6 +18,7 @@ export interface DatePickerOption {
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
+import { getRequiredValueAttributes, focusInvalidValue } from '@/helpers/form-validation.helper';
 import { computed, nextTick, ref, useAttrs, useSlots, useTemplateRef, watch } from 'vue';
 
 // HELPERS
@@ -150,6 +151,7 @@ const {
   name: string;
   label?: string;
   iconBefore?: string;
+  /** Empty selection blocks native form submission; readonly and disabled are exempt. */
   required?: boolean;
   placeholder?: string;
   range?: boolean;
@@ -1422,7 +1424,7 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
           role="combobox"
           readonly
           autocomplete="off"
-          autocapitalize="off"
+          autocapitalize="none"
           :spellcheck="false"
           inputmode="none"
           :aria-activedescendant="activeDescendant"
@@ -1436,6 +1438,18 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
           data-type="date-picker"
           :data-testid="elementTestId"
           @keydown="handleInputKeydown"
+        />
+        <input
+          v-bind="
+            getRequiredValueAttributes(
+              Boolean(displayValue),
+              required,
+              disabled,
+              readonly,
+              typeof attrs.form === 'string' ? attrs.form : undefined,
+            )
+          "
+          @invalid="focusInvalidValue($event, inputReference)"
         />
       </template>
 

@@ -12,6 +12,10 @@ import type {
 } from './transfer-list.shared';
 
 export interface TransferListProps {
+  /** Render a bounded fixed-height window in each panel. */
+  virtual?: boolean;
+  /** Height of a virtual row, in pixels. */
+  optionHeight?: number;
   /** Stabilny identyfikator komponentu i jego relacji ARIA. */
   id?: string;
   /** Pełny katalog elementów. Pierwszy element o danym kluczu wygrywa. */
@@ -67,6 +71,7 @@ export type {
 </script>
 
 <script setup lang="ts">
+import { useVirtualListWindow } from '@/composables/useVirtualListWindow';
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 import SearchInput from '@/components/data-entry/SearchInput/index.vue';
@@ -79,6 +84,8 @@ import { computed, nextTick, ref, useAttrs, useId, watch, type CSSProperties, ty
 
 import {
   areTransferListKeysEqual,
+  createTransferListKeySet,
+  getTransferListKeyIdentity,
   filterTransferListItems,
   findTransferListEdgeIndex,
   findTransferListEnabledIndex,
@@ -195,12 +202,35 @@ const visibleSourceItems = computed(() =>
 const visibleTargetItems = computed(() =>
   filterTransferListItems(targetItems.value, targetQuery.value, props.locale),
 );
+const virtualOpen = computed(() => true);
+const sourceWindow = useVirtualListWindow({
+  items: visibleSourceItems,
+  activeIndex: sourceActiveIndex,
+  viewport: sourceListbox,
+  enabled: () => props.virtual ?? false,
+  itemSize: () => props.optionHeight ?? 64,
+  open: virtualOpen,
+});
+const targetWindow = useVirtualListWindow({
+  items: visibleTargetItems,
+  activeIndex: targetActiveIndex,
+  viewport: targetListbox,
+  enabled: () => props.virtual ?? false,
+  itemSize: () => props.optionHeight ?? 64,
+  open: virtualOpen,
+});
+const panelWindow = (panel: TransferListPanel) =>
+  panel === 'source' ? sourceWindow : targetWindow;
 const normalizedSourceSelection = computed(() =>
   normalizeTransferListSelection(sourceSelected.value, sourceItems.value),
 );
 const normalizedTargetSelection = computed(() =>
   normalizeTransferListSelection(targetSelected.value, targetItems.value),
 );
+const sourceMembership = computed(() => createTransferListKeySet(normalizedSourceSelection.value));
+const targetMembership = computed(() => createTransferListKeySet(normalizedTargetSelection.value));
+const selectionIndex = (panel: TransferListPanel) =>
+  panel === 'source' ? sourceMembership.value : targetMembership.value;
 const hasError = computed(() => Boolean(props.error.trim()));
 const errorId = computed(() => `${resolvedId.value}-error`);
 const rootClasses = computed(() => [
@@ -280,7 +310,11 @@ function optionId(panel: TransferListPanel, index: number): string {
 
 function activeDescendant(panel: TransferListPanel): string | undefined {
   const index = activeIndexRef(panel).value;
-  return visibleItems(panel)[index] ? optionId(panel, index) : undefined;
+  return visibleItems(panel)[index] &&
+    (!props.virtual ||
+      panelWindow(panel).visibleOptions.value.some((entry) => entry.index === index))
+    ? optionId(panel, index)
+    : undefined;
 }
 
 function isPanelBlocked(panel: TransferListPanel): boolean {
@@ -288,7 +322,7 @@ function isPanelBlocked(panel: TransferListPanel): boolean {
 }
 
 function isSelected(panel: TransferListPanel, key: TransferListKey): boolean {
-  return panelSelection(panel).some((candidate) => Object.is(candidate, key));
+  return selectionIndex(panel).has(getTransferListKeyIdentity(key));
 }
 
 function setSelection(panel: TransferListPanel, keys: readonly TransferListKey[]): void {
@@ -334,19 +368,20 @@ function allVisibleSelected(panel: TransferListPanel): boolean {
   const eligible = eligibleVisibleItems(panel);
   return (
     eligible.length > 0 &&
-    eligible.every((item) => panelSelection(panel).some((key) => Object.is(key, item.key)))
+    eligible.every((item) => selectionIndex(panel).has(getTransferListKeyIdentity(item.key)))
   );
 }
 
 function toggleAllVisible(panel: TransferListPanel, checked: boolean): void {
   if (isPanelBlocked(panel)) return;
   const visibleKeys = eligibleVisibleItems(panel).map((item) => item.key);
+  const visibleKeySet = createTransferListKeySet(visibleKeys);
   const current = panelSelection(panel);
   setSelection(
     panel,
     checked
       ? [...current, ...visibleKeys]
-      : current.filter((key) => !visibleKeys.some((visibleKey) => Object.is(visibleKey, key))),
+      : current.filter((key) => !visibleKeySet.has(getTransferListKeyIdentity(key))),
   );
 }
 
@@ -446,21 +481,18 @@ function performMove(direction: TransferListDirection, mode: 'selected' | 'all')
     value: normalizedValue.value,
   });
   if (result.movedKeys.length === 0) return;
+  const movedKeySet = createTransferListKeySet(result.movedKeys);
 
   value.value = result.value;
   if (panel === 'source') {
     setSelection(
       'source',
-      panelSelection('source').filter(
-        (key) => !result.movedKeys.some((movedKey) => Object.is(movedKey, key)),
-      ),
+      panelSelection('source').filter((key) => !movedKeySet.has(getTransferListKeyIdentity(key))),
     );
   } else {
     setSelection(
       'target',
-      panelSelection('target').filter(
-        (key) => !result.movedKeys.some((movedKey) => Object.is(movedKey, key)),
-      ),
+      panelSelection('target').filter((key) => !movedKeySet.has(getTransferListKeyIdentity(key))),
     );
   }
 
@@ -658,11 +690,22 @@ watch(visibleTargetItems, (items) => {
                 :aria-describedby="hasError ? errorId : undefined"
                 :tabindex="isPanelBlocked(panel) ? -1 : 0"
                 :data-testid="dataTestId ? `${dataTestId}-${panel}-listbox` : undefined"
+                @scroll="panelWindow(panel).handleScroll($event)"
                 @focus="handleListboxFocus(panel)"
                 @keydown="handleListboxKeydown(panel, $event)"
               >
                 <div
-                  v-for="(item, index) in visibleItems(panel)"
+                  v-if="panelWindow(panel).beforeSize.value"
+                  role="presentation"
+                  aria-hidden="true"
+                  :style="{ height: `${panelWindow(panel).beforeSize.value}px` }"
+                />
+                <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -- The owning listbox handles keyboard selection with aria-activedescendant. -->
+                <div
+                  v-for="{ item, index } in panelWindow(panel).visibleOptions.value"
+                  :style="panelWindow(panel).optionStyle.value"
+                  :aria-setsize="props.virtual ? visibleItems(panel).length : undefined"
+                  :aria-posinset="props.virtual ? index + 1 : undefined"
                   :id="optionId(panel, index)"
                   :key="item.key"
                   :class="[
@@ -706,6 +749,12 @@ watch(visibleTargetItems, (items) => {
                     </slot>
                   </span>
                 </div>
+                <div
+                  v-if="panelWindow(panel).afterSize.value"
+                  role="presentation"
+                  aria-hidden="true"
+                  :style="{ height: `${panelWindow(panel).afterSize.value}px` }"
+                />
               </div>
 
               <div v-if="loadingState[panel]" :class="`${classNameComponent}__loading`">
@@ -742,7 +791,7 @@ watch(visibleTargetItems, (items) => {
 
     <MessageText
       v-if="hasError"
-      :id="resolvedId"
+      :id="errorId"
       :data-test-id="dataTestId ? `${dataTestId}-error` : undefined"
       variant="error"
       size="xs"

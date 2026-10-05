@@ -60,7 +60,8 @@ const meta: Meta<typeof TableListFooterComponent> = {
     },
     total: {
       control: { type: 'number' },
-      description: 'Liczba rekordow uzywana do warunku wyswietlenia paginacji.',
+      description:
+        'Liczba wszystkich stron. Zero ukrywa paginacje; liczba przyciskow stron wynika z rowsNumber i rowsPerPage.',
       table: {
         type: { summary: 'number' },
       },
@@ -96,8 +97,13 @@ export default meta;
 
 type Story = StoryObj<typeof TableListFooterComponent>;
 
+export const NinePages: Story = {
+  render: createRender(),
+  args: { rowsNumber: 90, rowsPerPage: 10, total: 9, page: 1 },
+};
+
 function createRender() {
-  return (args: Record<string, unknown>) => ({
+  return (args: InstanceType<typeof TableListFooterComponent>['$props']) => ({
     components: {
       StoryContent,
       TableListFooterComponent,

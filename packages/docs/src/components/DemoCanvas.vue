@@ -8,6 +8,7 @@ import type { ComponentDefinition } from '../types';
 import { useI18n } from '../i18n';
 import CodeBlock from './CodeBlock.vue';
 import DemoErrorBoundary from './DemoErrorBoundary.vue';
+import GuidedTourDemoScene from './GuidedTourDemoScene.vue';
 import LiveRenderer from './LiveRenderer.vue';
 import PropControl from './PropControl.vue';
 
@@ -48,6 +49,12 @@ const renderedBindings = computed(() => {
     if (bindings[eventBinding]) continue;
 
     bindings[eventBinding] = (...values: unknown[]) => {
+      if (event.name.startsWith('update:')) {
+        const inputName = event.name.slice('update:'.length);
+        if (inputEntries.value.some((entry) => entry.name === inputName)) {
+          interactiveProps.value = { ...interactiveProps.value, [inputName]: values[0] };
+        }
+      }
       if (props.definition.name === 'TableList') {
         if (event.name === 'on:select:row' && Array.isArray(values[0])) {
           interactiveProps.value = { ...interactiveProps.value, selectedRows: values[0] };
@@ -80,6 +87,32 @@ function selectVariant(id: string) {
 
 function updateProp(name: string, value: unknown) {
   interactiveProps.value = { ...interactiveProps.value, [name]: value };
+}
+
+function startGuidedTour(): void {
+  interactiveProps.value = { ...interactiveProps.value, open: true, step: 0 };
+}
+
+function guidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip'): string {
+  const labels = interactiveProps.value.labels;
+  if (labels && typeof labels === 'object' && !Array.isArray(labels)) {
+    const value = (labels as Record<string, unknown>)[name];
+    if (typeof value === 'string') return value;
+  }
+  if (name === 'back') return 'Back';
+  if (name === 'complete') return 'Complete';
+  return name === 'next' ? 'Next' : 'Skip tour';
+}
+
+function updateGuidedTourLabel(name: 'back' | 'complete' | 'next' | 'skip', value: string): void {
+  const labels = interactiveProps.value.labels;
+  interactiveProps.value = {
+    ...interactiveProps.value,
+    labels: {
+      ...(labels && typeof labels === 'object' && !Array.isArray(labels) ? labels : {}),
+      [name]: value,
+    },
+  };
 }
 
 function logEvent(name: string, value: unknown) {
@@ -132,7 +165,24 @@ watch(
       </div>
 
       <div v-if="panel === 'preview'" ref="demoStage" class="demo-stage">
-        <DemoErrorBoundary :reset-key="resetKey">
+        <GuidedTourDemoScene
+          v-if="definition.name === 'GuidedTour'"
+          :back-label="guidedTourLabel('back')"
+          :complete-label="guidedTourLabel('complete')"
+          :next-label="guidedTourLabel('next')"
+          :skip-label="guidedTourLabel('skip')"
+          @label-change="updateGuidedTourLabel"
+          @start="startGuidedTour"
+        >
+          <DemoErrorBoundary :reset-key="resetKey">
+            <LiveRenderer
+              :component="definition.component"
+              :bindings="renderedBindings"
+              :slot-content="slotContent"
+            />
+          </DemoErrorBoundary>
+        </GuidedTourDemoScene>
+        <DemoErrorBoundary v-else :reset-key="resetKey">
           <LiveRenderer
             :component="definition.component"
             :bindings="renderedBindings"

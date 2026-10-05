@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-if (!window.matchMedia) {
+if (typeof window !== 'undefined' && !window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     configurable: true,
     value: (query: string) => ({
@@ -16,7 +16,7 @@ if (!window.matchMedia) {
   });
 }
 
-if (!HTMLElement.prototype.animate) {
+if (typeof HTMLElement !== 'undefined' && !HTMLElement.prototype.animate) {
   Object.defineProperty(HTMLElement.prototype, 'animate', {
     configurable: true,
     writable: true,
@@ -24,11 +24,11 @@ if (!HTMLElement.prototype.animate) {
       ({
         cancel: () => undefined,
         finished: Promise.resolve(),
-      }) as Animation,
+      }) as unknown as Animation,
   });
 }
 
-if (!HTMLDialogElement.prototype.showModal) {
+if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.showModal) {
   Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
     configurable: true,
     value(this: HTMLDialogElement) {
@@ -37,7 +37,7 @@ if (!HTMLDialogElement.prototype.showModal) {
   });
 }
 
-if (!HTMLDialogElement.prototype.close) {
+if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.close) {
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true,
     value(this: HTMLDialogElement) {

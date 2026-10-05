@@ -19,7 +19,7 @@ test("FormSwitchToggle Web Component exposes native keyboard and ARIA semantics"
   await expect(input).toHaveAttribute("aria-checked", "false");
   await expect(input).toHaveAttribute(
     "aria-describedby",
-    /notifications-switch-description/,
+    /notifications-switch-control-description/,
   );
   await input.focus();
   await page.keyboard.press("Space");

@@ -76,3 +76,4 @@ Desktop.ini
 # Local agent instructions and workspace state
 .codex/
 AGENTS.md
+.release/

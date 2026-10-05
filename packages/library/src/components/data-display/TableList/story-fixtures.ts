@@ -1,3 +1,4 @@
+import type { TableColumn, TableStepperStep } from './table.types';
 export const tableListStoryRecords = [
   {
     id: '1',
@@ -41,7 +42,7 @@ const statusDictionary = {
   Aktywny: 'green',
   Roboczy: 'orange',
   'Do weryfikacji': 'blue',
-};
+} as const;
 
 export function resolveTableListStoryActions() {
   return [
@@ -51,9 +52,9 @@ export function resolveTableListStoryActions() {
   ];
 }
 
-export function resolveTableListStorySteps(record: Record<string, unknown>) {
+export function resolveTableListStorySteps(record: Record<string, unknown>): TableStepperStep[] {
   const progress = Number(record.progress ?? 0);
-  let verificationStatus = 'disabled';
+  let verificationStatus: TableStepperStep['status'] = 'disabled';
 
   if (progress >= 3) {
     verificationStatus = 'complete';
@@ -72,7 +73,7 @@ export function resolveTableListStorySteps(record: Record<string, unknown>) {
   ];
 }
 
-export const tableListStoryColumns = [
+export const tableListStoryColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -88,7 +89,7 @@ export const tableListStoryColumns = [
   { key: 'actions', label: 'Akcje', resolve: resolveTableListStoryActions, width: 90 },
 ];
 
-export const tableListAllTypeColumns = [
+export const tableListAllTypeColumns: TableColumn[] = [
   { key: 'index', label: 'Lp.', type: 'index', width: 72 },
   ...tableListStoryColumns.slice(0, 3),
   { key: 'isPublished', label: 'Opublikowany', type: 'status', width: 140 },
@@ -114,8 +115,8 @@ export const tableListAllTypeColumns = [
   { key: 'actions', label: 'Akcje', resolve: resolveTableListStoryActions, width: 90 },
 ];
 
-export const tableListWorkflowColumns = [
-  tableListStoryColumns[0],
+export const tableListWorkflowColumns: TableColumn[] = [
+  tableListStoryColumns[0]!,
   {
     key: 'stepper',
     label: 'Etapy',
@@ -126,7 +127,7 @@ export const tableListWorkflowColumns = [
   { key: 'status', label: 'Szczegóły', type: 'expandable', width: 140 },
 ];
 
-export const tableListEditableColumns = [
+export const tableListEditableColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -137,7 +138,7 @@ export const tableListEditableColumns = [
   {
     key: 'limit',
     label: 'Limit',
-    type: 'number',
+    type: 'text',
     width: 120,
     manage: { type: 'number', integer: true, min: 0, max: 100, step: 1 },
   },
@@ -155,5 +156,17 @@ export const tableListEditableColumns = [
         { label: 'Kontrola', value: 'Kontrola' },
       ],
     },
+  },
+];
+export const tableListReorderRecords = [
+  { id: 'a', name: 'Alice' },
+  { id: 'b', name: 'Bob' },
+];
+export const tableListReorderColumns: TableColumn[] = [
+  { key: 'name', label: 'Nazwa', manage: { type: 'text' } },
+  {
+    key: 'actions',
+    label: 'Akcje',
+    resolve: () => [{ key: 'edit', label: 'Edytuj', simple: true }],
   },
 ];

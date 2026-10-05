@@ -9,18 +9,18 @@ vi.mock('./styles.scss', () => ({}));
 
 function patchDialogInstance(dialog: HTMLDialogElement) {
   Object.defineProperty(dialog, 'showModal', {
-    value: vi.fn(function (this: any) {
+    value: vi.fn(function (this: HTMLDialogElement) {
       this.open = true;
     }),
     configurable: true,
   });
   Object.defineProperty(dialog, 'close', {
-    value: vi.fn(function (this: any) {
+    value: vi.fn(function (this: HTMLDialogElement) {
       this.open = false;
     }),
     configurable: true,
   });
-  return dialog as any;
+  return dialog;
 }
 
 describe('ModalDialog (index.vue)', () => {
@@ -32,21 +32,17 @@ describe('ModalDialog (index.vue)', () => {
       finished: Promise.resolve(),
       cancel: vi.fn(),
       play: vi.fn(),
-    })) as any;
+    })) as unknown as typeof HTMLElement.prototype.animate;
 
     // matchMedia if your component reads prefers-reduced-motion
-    vi.stubGlobal(
-      'matchMedia',
-      () =>
-        ({
-          matches: true,
-          addListener: vi.fn(),
-          removeListener: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-        }) as any,
-    );
+    vi.stubGlobal('matchMedia', () => ({
+      matches: true,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
   });
 
   it('opens when open changes to true (without dialog.showModal crash)', async () => {

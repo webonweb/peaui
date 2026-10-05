@@ -99,3 +99,8 @@ export const ProgressIndicator: Story = {
     dataTestId: 'progress-indicator',
   },
 };
+
+export const NotStarted: Story = {
+  ...ProgressIndicator,
+  args: { ...ProgressIndicator.args, steps: 4, active: undefined },
+};

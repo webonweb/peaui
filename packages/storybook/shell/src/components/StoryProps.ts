@@ -57,7 +57,7 @@ const styles = `
 
   .story-props__th {
     padding: 0.75rem 1.5rem;
-    color: #374151;
+    color: light-dark(#374151, #e4e4e4);
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -108,7 +108,7 @@ export class StoryPropsElement extends HTMLElement {
             </p>
           </div>
 
-          <div class="story-props__table-wrapper">
+          <div class="story-props__table-wrapper" tabindex="0" role="region" aria-label="API komponentu">
             <br />
             <table class="story-props__table">
               <thead class="story-props__thead">

@@ -4,12 +4,12 @@ import { RouterLink } from 'vue-router';
 
 import HomeComponentPreview from '../components/HomeComponentPreview.vue';
 import InstallCommand from '../components/InstallCommand.vue';
-import { getFrameworkComponents } from '../data/catalog';
+import { getCatalogComponents } from '../data/catalog-summary';
 import { frameworkOrder, getFrameworkDefinition } from '../data/frameworks';
 import { icons } from '../data/icons';
 import { getCategoryLabel, getComponentCopy } from '../data/localized-content';
 import { useI18n } from '../i18n';
-import type { FrameworkComponentDefinition, FrameworkId } from '../types';
+import type { ComponentCatalogDefinition, FrameworkId } from '../types';
 import { getPreferredFramework, setPreferredFramework } from '../utils/preferred-framework';
 
 const GITHUB_URL = 'https://github.com/webonweb/peaui';
@@ -39,11 +39,9 @@ const startTarget = computed(() =>
 );
 const featuredComponents = computed(() =>
   FEATURED_COMPONENT_NAMES.map((name) =>
-    getFrameworkComponents(documentationFramework.value).find(
-      (component) => component.name === name,
-    ),
+    getCatalogComponents(documentationFramework.value).find((component) => component.name === name),
   )
-    .filter((component): component is FrameworkComponentDefinition => Boolean(component))
+    .filter((component): component is ComponentCatalogDefinition => Boolean(component))
     .map((component) => ({
       ...component,
       categoryLabel: getCategoryLabel(component.category, component.categoryLabel),
@@ -128,7 +126,7 @@ function chooseFramework(framework: FrameworkId): void {
           </a>
         </div>
 
-        <InstallCommand />
+        <InstallCommand :framework="selectedFramework" />
       </div>
 
       <div class="home-hero__preview">
@@ -138,15 +136,15 @@ function chooseFramework(framework: FrameworkId): void {
 
     <section class="home-stats" :aria-label="t('home.docsInfo')">
       <div>
-        <strong>{{ getFrameworkComponents('vue').length }}</strong>
+        <strong>{{ getCatalogComponents('vue').length }}</strong>
         <span>{{ t('home.vueComponents') }}</span>
       </div>
       <div>
-        <strong>{{ getFrameworkComponents('react').length }}</strong>
+        <strong>{{ getCatalogComponents('react').length }}</strong>
         <span>{{ t('home.reactComponents') }}</span>
       </div>
       <div>
-        <strong>{{ getFrameworkComponents('web-components').length }}</strong>
+        <strong>{{ getCatalogComponents('web-components').length }}</strong>
         <span>{{ t('home.webComponents') }}</span>
       </div>
       <div>
@@ -175,7 +173,7 @@ function chooseFramework(framework: FrameworkId): void {
           <p>{{ getFrameworkDefinition(frameworkId).description }}</p>
           <footer>
             <span>
-              <strong>{{ getFrameworkComponents(frameworkId).length }}</strong>
+              <strong>{{ getCatalogComponents(frameworkId).length }}</strong>
               {{ t('home.components') }}
             </span>
             <RouterLink :to="`/${frameworkId}/start`" @click="chooseFramework(frameworkId)">

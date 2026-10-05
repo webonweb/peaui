@@ -13,10 +13,9 @@ import { ContextMenuElement, defineContextMenu } from './index.wc';
 defineContextMenu();
 
 function renderContextMenu(args: VueCustomElementStoryArgs): HTMLElement {
-  const element = document.createElement(ContextMenuElement.tagName) as HTMLElement &
-    Record<string, unknown>;
+  const element = document.createElement(ContextMenuElement.tagName);
   for (const [name, value] of Object.entries(args)) {
-    if (value !== undefined) element[name] = value;
+    if (value !== undefined) Reflect.set(element, name, value);
   }
   const target = document.createElement('button');
   target.className = 'context-story-target';

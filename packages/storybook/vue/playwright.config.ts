@@ -1,30 +1,32 @@
-import { defineConfig } from '@playwright/test';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { defineConfig } from "@playwright/test";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const port = Number(process.env.STORYBOOK_PORT ?? '6007');
+const port = Number(process.env.STORYBOOK_PORT ?? "6007");
 const baseURL = process.env.STORYBOOK_URL ?? `http://127.0.0.1:${port}`;
 const configDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   fullyParallel: true,
-  reporter: 'list',
-  timeout: 30_000,
+  workers: 4,
+  reporter: "list",
+  timeout: 45_000,
+  expect: { timeout: 15_000 },
   use: {
     baseURL,
-    browserName: 'chromium',
+    browserName: (process.env.PEAUI_BROWSER ?? 'chromium') as 'chromium' | 'firefox' | 'webkit',
     headless: true,
-    screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
-    video: 'off',
+    screenshot: "only-on-failure",
+    trace: "retain-on-failure",
+    video: "off",
     viewport: {
       width: 1280,
       height: 900,
     },
   },
   webServer: {
-    command: 'npm run storybook',
+    command: "npm run storybook",
     cwd: configDirectory,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

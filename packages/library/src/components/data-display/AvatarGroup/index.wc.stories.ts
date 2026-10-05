@@ -45,6 +45,15 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+export const SmallTargetsAndViewportEdge: Story = {
+  args: { size: 'xs', direction: 'end', open: true },
+};
+export const LargeClosedGroup: Story = {
+  args: {
+    open: false,
+    items: Array.from({ length: 1000 }, (_, id) => ({ id, name: `Member ${id}` })),
+  },
+};
 export const Empty: Story = { args: { items: [] } };
 export const OverflowCount: Story = { args: { maxVisible: 2, overflowMode: 'count' } };
 export const OpenPopover: Story = { args: { maxVisible: 2, open: true, overflowMode: 'popover' } };

@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useModel, useFormControlModel } from './renderers/runtime.shared';
 import {
   useEffect,
   useId,
@@ -43,7 +44,13 @@ import {
   type FormDateRangePickerVariant,
 } from '../components/form/FormDateRangePicker/date-range-picker.shared';
 import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
-import { reactIconData } from './generated-icon-data';
+import type { ReactIconData } from './generated-icon-data';
+import { iconArrow, iconCalendar, iconCross } from './generated-static-icons';
+const controlIcons: Readonly<Record<string, ReactIconData>> = {
+  arrow: iconArrow,
+  calendar: iconCalendar,
+  cross: iconCross,
+};
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -71,24 +78,6 @@ const call = (props: RuntimeProps, name: string, ...args: unknown[]): void => {
   if (typeof handler === 'function') (handler as (...values: unknown[]) => void)(...args);
 };
 
-function useRuntimeModel<T>(
-  props: RuntimeProps,
-  name: string,
-  fallback: T,
-): readonly [T, (value: T) => void] {
-  const capitalized = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-  const controlled = Object.prototype.hasOwnProperty.call(props, name);
-  const valueFromProps = props[name] as T | undefined;
-  const defaultValue = props[`default${capitalized}`] as T | undefined;
-  const [internal, setInternal] = useState<T>(defaultValue ?? fallback);
-  const value = controlled ? (valueFromProps as T) : internal;
-  const update = (next: T): void => {
-    if (!controlled) setInternal(next);
-    call(props, `on${capitalized}Change`, next);
-  };
-  return [value, update] as const;
-}
-
 function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
   else if (ref) ref.current = value;
@@ -99,7 +88,7 @@ function hasContent(value: unknown): boolean {
 }
 
 function Icon({ name, className }: { name: string; className?: string }): ReactElement {
-  const icon = reactIconData[name] ?? reactIconData.info;
+  const icon = controlIcons[name] ?? controlIcons.info;
   return (
     <svg
       aria-hidden="true"
@@ -156,25 +145,35 @@ export function FormDateRangePickerRenderer({
   const startLabel = text(props, 'startLabel', 'Data początkowa');
   const endLabel = text(props, 'endLabel', 'Data końcowa');
   const panelLabel = text(props, 'panelAriaLabel', 'Wybierz zakres dat');
+  const isDateDisabled = props.isDateDisabled as ((date: string) => boolean) | undefined;
+  const maxDate = text(props, 'maxDate') || undefined;
+  const minDate = text(props, 'minDate') || undefined;
   const validationOptions = useMemo<DateRangeValidationOptions>(
     () => ({
-      isDateDisabled: props.isDateDisabled as ((date: string) => boolean) | undefined,
-      maxDate: text(props, 'maxDate') || undefined,
-      minDate: text(props, 'minDate') || undefined,
+      isDateDisabled,
+      maxDate,
+      minDate,
     }),
-    [props.isDateDisabled, props.maxDate, props.minDate],
+    [isDateDisabled, maxDate, minDate],
   );
   const formatOptions = useMemo(
     () => ({ dateFormat, format, locale }),
     [dateFormat, format, locale],
   );
   const parseOptions = useMemo(() => ({ dateFormat, locale, parse }), [dateFormat, locale, parse]);
-  const [modelValue, setModelValue] = useRuntimeModel<DateRangeValue | undefined>(
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [modelValue, setModelValue] = useFormControlModel<DateRangeValue | undefined>(
     props,
     'value',
     undefined,
+    rootRef,
+    true,
+    (next) => {
+      syncDraft(next);
+      setReason(undefined);
+    },
   );
-  const [open, setOpen] = useRuntimeModel<boolean>(props, 'open', false);
+  const [open, setOpen] = useModel<boolean>(props, 'open', false, true);
   const [draft, setDraft] = useState<DateRangeValue>(cloneDateRange(modelValue));
   const [singleText, setSingleText] = useState(formatDateRange(modelValue, formatOptions));
   const [startText, setStartText] = useState(
@@ -191,7 +190,6 @@ export function FormDateRangePickerRenderer({
   const [popoverPlacement, setPopoverPlacement] = useState(placement);
   const [availablePanelHeight, setAvailablePanelHeight] = useState(640);
   const [triggerWidth, setTriggerWidth] = useState(0);
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const popoverRef = useNativePopover(open);
   const root = 'peaui-form-date-range-picker';
@@ -217,7 +215,7 @@ export function FormDateRangePickerRenderer({
   const draftReason = validateDateRange(draft, validationOptions, required);
   const anchorName = `--anchor-${id.replaceAll(':', '')}`;
 
-  const syncDraft = (value: DateRangeValue | undefined = modelValue): void => {
+  const syncDraft = (value: DateRangeValue | undefined): void => {
     const next = cloneDateRange(value);
     setDraft(next);
     setSingleText(formatDateRange(value, formatOptions));
@@ -228,10 +226,15 @@ export function FormDateRangePickerRenderer({
     setActiveDate(value?.[0] ?? getTodayModelDate());
     setHoverDate(undefined);
   };
+  const synchronizationRef = useRef({ modelValue, syncDraft });
+  synchronizationRef.current = { modelValue, syncDraft };
+  const modelStart = modelValue?.[0];
+  const modelEnd = modelValue?.[1];
 
   useEffect(() => {
-    if (!open || !confirm) syncDraft(modelValue);
-  }, [modelValue?.[0], modelValue?.[1], dateFormat, locale, format]);
+    const state = synchronizationRef.current;
+    if (!open || !confirm) state.syncDraft(state.modelValue);
+  }, [confirm, dateFormat, format, locale, modelEnd, modelStart, open]);
 
   useEffect(() => {
     const element = rootRef.current;
@@ -454,8 +457,7 @@ export function FormDateRangePickerRenderer({
     'aria-readonly': readonly || undefined,
   };
   const customTrigger = props.renderTrigger as
-    | ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode)
-    | undefined;
+    ((state: { displayValue: string; open: boolean; toggle: () => void }) => ReactNode) | undefined;
   const renderDay = props.renderDay as
     | ((state: {
         day: ReturnType<typeof buildRangeCalendarDays>[number];
@@ -463,8 +465,7 @@ export function FormDateRangePickerRenderer({
       }) => ReactNode)
     | undefined;
   const renderPreset = props.renderPreset as
-    | ((state: { preset: DateRangePreset; select: () => void }) => ReactNode)
-    | undefined;
+    ((state: { preset: DateRangePreset; select: () => void }) => ReactNode) | undefined;
 
   const defaultTrigger = (
     <div className="peaui-form-field" data-testid={baseTestId}>
@@ -486,6 +487,9 @@ export function FormDateRangePickerRenderer({
           <input
             {...inputAria}
             aria-autocomplete="none"
+            aria-controls={panelId}
+            aria-expanded={open}
+            aria-haspopup="dialog"
             aria-label={text(props, 'ariaLabel') || (!label ? name : undefined)}
             aria-labelledby={label ? `label-${id}` : undefined}
             autoComplete="off"
@@ -531,6 +535,9 @@ export function FormDateRangePickerRenderer({
               <input
                 {...inputAria}
                 aria-autocomplete="none"
+                aria-controls={panelId}
+                aria-expanded={open}
+                aria-haspopup="dialog"
                 aria-label={startLabel}
                 autoComplete="off"
                 className={`${root}__range-input`}
@@ -565,6 +572,9 @@ export function FormDateRangePickerRenderer({
               <input
                 {...inputAria}
                 aria-autocomplete="none"
+                aria-controls={panelId}
+                aria-expanded={open}
+                aria-haspopup="dialog"
                 aria-label={endLabel}
                 autoComplete="off"
                 className={`${root}__range-input`}
@@ -666,8 +676,18 @@ export function FormDateRangePickerRenderer({
               {text(props, 'loadingLabel', 'Ładowanie wyboru zakresu dat')}
             </span>
           ) : null}
-          <input name={`${name}.start`} type="hidden" value={modelValue?.[0] ?? ''} />
-          <input name={`${name}.end`} type="hidden" value={modelValue?.[1] ?? ''} />
+          <input
+            disabled={disabled}
+            name={`${name}.start`}
+            type="hidden"
+            value={modelValue?.[0] ?? ''}
+          />
+          <input
+            disabled={disabled}
+            name={`${name}.end`}
+            type="hidden"
+            value={modelValue?.[1] ?? ''}
+          />
         </div>
       </div>
       <div

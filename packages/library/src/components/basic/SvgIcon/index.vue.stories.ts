@@ -9,18 +9,10 @@ import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 
 const { getSettings } = useSettingsStorie();
 
-type WebpackContext = {
-  keys: () => string[];
-};
-
-declare const require: {
-  context: (path: string, useSubdirectories?: boolean, regExp?: RegExp) => WebpackContext;
-};
-
-const legacyIconNames = require
-  .context('../../../assets/icons', false, /\.svg$/)
-  .keys()
-  .map((key) => key.replace('./', '').replace('.svg', ''))
+const legacyIconModules = import.meta.glob('../../../assets/icons/*.svg');
+const legacyIconNames = Object.keys(legacyIconModules)
+  .map((path) => path.split('/').pop()?.replace('.svg', ''))
+  .filter((name): name is string => Boolean(name))
   .sort((left, right) => left.localeCompare(right));
 
 const iconNames = [

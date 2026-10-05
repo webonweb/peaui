@@ -38,3 +38,5 @@ export default meta;
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
 export const Default: Story = {};
+
+export const NotStarted: Story = { args: { steps: 4, active: undefined } };

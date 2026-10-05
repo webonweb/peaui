@@ -90,7 +90,7 @@ function getSettings(storyMeta: Meta<StoryArgs>) {
   return {
     ...storyMeta.parameters,
     props: Object.keys(argTypes).map((key) => {
-      const argType = argTypes[key] as Record<string, unknown> & {
+      const argType = argTypes[key as keyof typeof argTypes] as Record<string, unknown> & {
         type?: unknown;
         types?: unknown;
       };
@@ -280,4 +280,17 @@ export const Destinations: Story = {
 
     return preview;
   }),
+};
+
+export const DownloadLink: Story = {
+  render: () => {
+    const element = createNavigationLink({ path: '#report' }, { content: 'Download report' });
+    for (const [key, value] of Object.entries({
+      target: '_blank',
+      rel: 'noopener',
+      download: 'report.txt',
+    }))
+      element.setAttribute(key, value);
+    return element;
+  },
 };

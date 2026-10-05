@@ -2,11 +2,19 @@
 import { computed, onBeforeUnmount, ref } from 'vue';
 
 import { useI18n } from '../i18n';
+import type { FrameworkId } from '../types';
 import { copyText } from '../utils/clipboard';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
-const command = 'npm install @peaui/ui';
+const props = defineProps<{ framework?: FrameworkId | null }>();
+const command = computed(() =>
+  props.framework === 'react'
+    ? 'npm install @peaui/ui "react@^19.2.0" "react-dom@^19.2.0"'
+    : props.framework
+      ? 'npm install @peaui/ui "vue@^3.5.0"'
+      : 'npm install @peaui/ui',
+);
 const state = ref<CopyState>('idle');
 const { t } = useI18n();
 let resetTimer: ReturnType<typeof setTimeout> | undefined;
@@ -29,7 +37,7 @@ function scheduleReset(): void {
 
 async function copyCommand(): Promise<void> {
   try {
-    await copyText(command);
+    await copyText(command.value);
     state.value = 'copied';
   } catch {
     state.value = 'error';

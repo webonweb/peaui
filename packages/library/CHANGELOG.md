@@ -1,5 +1,51 @@
 # @peaui/ui
 
+## 3.0.0
+
+2026-10-05
+
+### Zmiany wymagające migracji
+
+- FormSelect i FormMultiSelect domyślnie używają `option.value`, zachowując rozróżnienie liczb i stringów. Dotychczasowe modele Vue/WC oparte na etykietach można zachować przez `valueMode="label"`; edytory TableList udostępniają `manage.valueMode`. FormMultiSelect wysyła osobny wpis formularza dla każdej wartości — odczytuj je przez `FormData.getAll(name)`.
+- React FormFileUpload domyślnie emituje `{ file, image }`, zgodnie z Vue i Web Components. Dotychczasowy callback otrzymujący sam `File` wymaga `valueMode="file"`. FormFileUploadSimple zachowuje odrębny model `files: File[]`.
+- FormNumber zatwierdza wpis przy utracie fokusu, normalizuje precyzję i respektuje granice, również równe zero. Pusty wpis daje `undefined`; akcja czyszczenia zachowuje dotychczasowy pusty string.
+- React FormDateTimePicker w wariancie `split-input` wysyła datę i czas pod wspólnym `name`, zgodnie z Vue/WC. Zamiast dawnych pól `name-date` i `name-time` używaj `FormData.getAll(name)`.
+- MessageText w Vue zachowuje dokładne przekazane `id`; usuń ręcznie dopisywane sufiksy wariantu z odwołań do komunikatu. Natywne WC ButtonAction i FormFieldLabel zachowują `id` na hoście, a wewnętrzny element otrzymuje `id-control`. Zewnętrzne etykiety ButtonAction należy powiązać z natywnym przyciskiem lub przez `aria-labelledby`.
+- React FullscreenContainer powiększa zawartość w obrębie strony przez CSS. Ujednolicono domyślny wygląd i semantykę m.in. TagChip, SectionHeading, siatek i nawigacji; jawne propsy nadal mają pierwszeństwo. FormButtonGroup używa `active` tylko przy pominiętym modelu, bez zastępowania jawnej pustej wartości kontrolowanej.
+- Minimalna wersja Vue to 3.5. Opcjonalny plugin Vite obsługuje `^6.4.0 || ^7.0.0`; zwykłe importy komponentów nie wymagają Vite.
+
+Szczegółowe instrukcje zawiera [Instalacja, importy i kontrakty komponentów](https://github.com/webonweb/peaui/blob/main/docs/IMPORTY_I_KONTRAKTY.md).
+
+### Nowe komponenty i możliwości
+
+- Dodano CommandPalette dla Vue, Reacta i Web Components: wyszukiwanie przybliżone, grupy, ostatnie polecenia, zagnieżdżone poziomy, operacje asynchroniczne, skróty globalne i opcjonalną wirtualizację.
+- Dodano kontrolowany GuidedTour dla wszystkich trzech frameworków.
+- Dodano kontrolowany NotificationCenter dla wszystkich trzech frameworków: filtry, grupowanie, akcje, stronicowanie i stany ładowania.
+- TableList obsługuje opcjonalną paginację przez `paginate`, `rowsPerPage` i `page`, wykorzystując PaginationControl i zachowując zaznaczenia między stronami.
+- FormSelect, FormMultiSelect i TransferList obsługują opcjonalną wirtualizację elementów o stałej wysokości. Zamknięte selektory nie montują list opcji.
+
+### Importy, wydajność i SSR
+
+- Dodano jawne zbiorcze wejścia `@peaui/ui/vue` i `@peaui/ui/react` oraz transformację `peauiImports` z `@peaui/ui/vite`. Główne wejście i historyczne ścieżki bez nazwy frameworka zachowują API Vue.
+- Bezpośrednie importy ograniczają zależności i CSS; dotychczasowe wejścia zbiorcze zachowują pełny arkusz stylów. Rozdzielono renderery React i ikony oraz ograniczono koszt filtrowania tagów, renderowania tabel i ukrytych elementów AvatarGroup.
+- Dodano wejścia Node/SSR bez importów CSS, zachowując ESM i CommonJS. Popovery React zachowują markup podczas hydratacji; formatowanie dat i natywne atrybuty nie powodują rozbieżności między serwerem a klientem.
+- Importy WC rejestrujące elementy zachowują efekt uboczny podczas tree shakingu. Dodano publiczne typy DOM i manifest Custom Elements, poprawiono zapisywalne właściwości i ich synchronizację. CounterBadge i SpinnerLoader mają natywne implementacje WC bez Vue.
+- VirtualList zachowuje pozycję po dodaniu rekordów na początku, reaguje na zmianę rozmiaru i ogranicza powtarzane żądania `reachEnd`. NotificationCenter i TreeList nadal renderują cały przekazany widoczny zbiór; duże historie należy pobierać stronami.
+
+### Poprawki zachowania i dostępności
+
+- Ujednolicono natywne atrybuty formularzy, walidację wymaganych pól, serializację, przypisanie do formularza, reset niekontrolowanych pól, `disabled` i `readonly`. Kontrolowane modele nadal resetuje aplikacja.
+- Poprawiono edycję zagnieżdżonych danych i śledzenie tożsamości wierszy TableList, wybór wierszy, usuwanie potomków TreeList, walidację plików oraz obsługę wpisywanych wartości i filtrowanego zaznaczenia wszystkich opcji w selektorach.
+- Ujednolicono klawiaturę, fokus, nazwy dostępne, identyfikatory, dynamiczne sloty i treści kontrolek, nawigacji oraz warstw. Poprawiono opóźnianie i anulowanie wyszukiwania SearchInput.
+- Uspójniono rotację i jawne wznawianie CardCarousel, animacje dialogów i obsługę ograniczonego ruchu. Ponowne otwarcie anuluje nieaktualną animację zamknięcia.
+- Natywny ScrollArea jest domyślnie osiągalny z klawiatury; jawny `tabindex` / `tabIndex` ma pierwszeństwo. Poprawiono układy w wąskich kontenerach, kontrast przykładów jasnego i ciemnego motywu oraz natywne selektory w WebKit.
+
+### Dokumentacja i proces wydania
+
+- Uaktualniono instalację npm, importy, style, SSR, API, przykłady i migrację dla 87 komponentów Vue, Reacta i Web Components, portal PL/EN, README oraz Storybook.
+- Uzupełniono dokumentację lokalizacji, dostępności, klawiatury, ograniczeń dużych zbiorów i pracy z monorepo.
+- Dodano regresje wszystkich frameworków, kontrolę hydratacji i kontraktów w przeglądarkach, kontrolę izolowanych importów i budżetów JS/CSS oraz sprawdzanie dokładnego archiwum npm używanego do wydania.
+
 ## 2.3.0
 
 ### Minor Changes
@@ -274,7 +320,7 @@
 
 ### Patch Changes
 
-- 36c620f: Poprawki po kolejnym audycie wcag
+- 36c620f: Poprawki dostępności WCAG
 
 ## 1.17.11
 

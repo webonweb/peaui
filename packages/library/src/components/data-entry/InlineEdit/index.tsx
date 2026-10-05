@@ -1,7 +1,8 @@
 /** @jsxImportSource react */
 import type { CSSProperties, ReactElement, ReactNode, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { InlineEditRuntimeRenderer } from '@/react/renderer-entries/inline-edit.renderer-entry';
 
 import type {
   InlineEditActions,
@@ -80,7 +81,7 @@ export type {
   InlineEditValue,
 } from './inline-edit.shared';
 
-const InlineEditBase = createPeauiReactComponent('InlineEdit');
+const InlineEditBase = createDirectReactComponent('InlineEdit', InlineEditRuntimeRenderer);
 const InlineEdit = InlineEditBase as unknown as (
   props: InlineEditProps & RefAttributes<HTMLElement>,
 ) => ReactElement | null;

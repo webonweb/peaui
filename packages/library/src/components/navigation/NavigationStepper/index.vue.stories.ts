@@ -127,3 +127,18 @@ export const NavigationStepper: Story = {
     ],
   },
 };
+
+export const RtlResizableContainer: Story = {
+  render: () => ({
+    components: { NavigationStepperComponent },
+    setup: () => ({
+      options: Array.from({ length: 8 }, (_, i) => ({
+        key: `step-${i}`,
+        label: `Long step ${i + 1}`,
+        status: 'complete' as const,
+      })),
+    }),
+    template:
+      '<div dir="rtl" style="resize:horizontal;overflow:auto;width:24rem;max-width:100%"><NavigationStepperComponent :options="options" /></div>',
+  }),
+};

@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormPinInputVueComponent from './index.ce.vue';
 
-const FormPinInputVueElement = createVueCustomElement(
-  FormPinInputVueComponent,
-  `${UIKIT_NAME}-form-pin-input`,
-);
+const FormPinInputVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormPinInputVueComponent, `${UIKIT_NAME}-form-pin-input`);
 
 /** Light-DOM custom element preserving the Vue FormPinInput contract. */
 export class FormPinInputElement extends FormPinInputVueElement {

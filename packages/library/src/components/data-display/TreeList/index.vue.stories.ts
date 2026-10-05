@@ -142,12 +142,12 @@ export const TreeList: Story = {
   render: (args) => ({
     components: { StoryContent, TreeListComponent },
     setup() {
-      const tree = ref(cloneTree(args.tree));
+      const tree = ref(cloneTree(args.tree!));
 
       watch(
         () => args.tree,
         (nextTree) => {
-          tree.value = cloneTree(nextTree);
+          tree.value = cloneTree(nextTree!);
         },
         {
           deep: true,
@@ -227,12 +227,12 @@ export const DisabledBranch: Story = {
   render: (args) => ({
     components: { StoryContent, TreeListComponent },
     setup() {
-      const tree = ref(cloneTree(args.tree));
+      const tree = ref(cloneTree(args.tree!));
 
       watch(
         () => args.tree,
         (nextTree) => {
-          tree.value = cloneTree(nextTree);
+          tree.value = cloneTree(nextTree!);
         },
         {
           deep: true,

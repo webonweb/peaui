@@ -3,7 +3,7 @@
 .peaui-grid-section {
   display: grid;
   grid-auto-flow: row;
-  row-gap: 1rem;
+  row-gap: var(--peaui-space-4);
 
   @include set-param(row-gap, 1rem);
 }

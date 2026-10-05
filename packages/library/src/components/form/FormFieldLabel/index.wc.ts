@@ -1,6 +1,7 @@
+import { upgradeCustomElementProperties } from '@/helpers/dom.helper';
 import { InfoTooltipElement, defineInfoTooltip } from '@/components/overlayer/InfoTooltip/index.wc';
 import { UIKIT_NAME } from '@/constants';
-import { syncNodeChildren } from '@/helpers/dom.helper';
+import { renderCustomElement, syncNodeChildren } from '@/helpers/dom.helper';
 
 const FORM_FIELD_LABEL_TAG_NAME = `${UIKIT_NAME}-form-field-label`;
 const FORM_FIELD_LABEL_CLASS_NAME = `${UIKIT_NAME}-form-label`;
@@ -105,13 +106,14 @@ export class FormFieldLabelElement extends HTMLElement {
   static readonly tagName = FORM_FIELD_LABEL_TAG_NAME;
 
   static get observedAttributes(): string[] {
-    return ['for', 'text', 'readonly', 'required', 'data-testid', 'class'];
+    return ['id', 'for', 'text', 'readonly', 'required', 'data-testid', 'class'];
   }
 
   #contentElement = document.createElement('span');
   #hintDescriptionElement = document.createElement('span');
   #hintIconElement = createHintIcon();
   #hintNodes: Node[] = [];
+  #defaultNodes: Node[] = [];
   #isMounted = false;
   #isSyncingDom = false;
   #labelElement = document.createElement('label');
@@ -120,7 +122,7 @@ export class FormFieldLabelElement extends HTMLElement {
   #mutationObserver: MutationObserver | null = null;
   #optionalElement = document.createElement('span');
   #textElement = document.createElement('span');
-  #tooltipElement = document.createElement(InfoTooltipElement.tagName) as InfoTooltipElement;
+  #tooltipElement = document.createElement(InfoTooltipElement.tagName);
 
   constructor() {
     super();
@@ -129,6 +131,7 @@ export class FormFieldLabelElement extends HTMLElement {
   }
 
   connectedCallback(): void {
+    upgradeCustomElementProperties(this);
     if (this.#isMounted) {
       this.render();
       return;
@@ -146,7 +149,8 @@ export class FormFieldLabelElement extends HTMLElement {
     this.#mutationObserver = null;
   }
 
-  attributeChangedCallback(): void {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
+    if (oldValue === newValue) return;
     if (!this.#isMounted || this.#isSyncingDom) {
       return;
     }
@@ -202,6 +206,7 @@ export class FormFieldLabelElement extends HTMLElement {
       this.#syncContent();
       this.#syncChildren();
       this.#syncHintTooltip();
+      if (this.#hintNodes.length > 0) renderCustomElement(this.#tooltipElement);
     });
   }
 
@@ -234,6 +239,7 @@ export class FormFieldLabelElement extends HTMLElement {
     this.#mutationObserver.observe(this, {
       childList: true,
     });
+    this.#mutationObserver.observe(this.#textElement, { childList: true });
   }
 
   #shouldIgnoreMutations(records: MutationRecord[]): boolean {
@@ -242,6 +248,12 @@ export class FormFieldLabelElement extends HTMLElement {
     }
 
     return records.every((record) => {
+      if (
+        Array.from(record.removedNodes).some(
+          (node) => this.#defaultNodes.includes(node) && !this.contains(node),
+        )
+      )
+        return false;
       if (record.type === 'attributes') {
         return this.#isManagedNode(record.target);
       }
@@ -261,13 +273,19 @@ export class FormFieldLabelElement extends HTMLElement {
 
       if (record.target === this) {
         return changedNodes.every(
-          (node) => this.#isManagedNode(node) || this.#hintNodes.includes(node),
+          (node) =>
+            this.#isManagedNode(node) ||
+            this.#hintNodes.includes(node) ||
+            this.#defaultNodes.includes(node),
         );
       }
 
       if (this.#isManagedNode(record.target)) {
         return changedNodes.every(
-          (node) => this.#isManagedNode(node) || this.#hintNodes.includes(node),
+          (node) =>
+            this.#isManagedNode(node) ||
+            this.#hintNodes.includes(node) ||
+            this.#defaultNodes.includes(node),
         );
       }
 
@@ -293,21 +311,23 @@ export class FormFieldLabelElement extends HTMLElement {
       Array.from(this.childNodes).filter((node) => node !== this.#rootElement),
     );
     const sourceNodes = normalizeNodes(
-      Array.from(new Set([...directNodes, ...this.#hintNodes])).filter(
+      Array.from(new Set([...directNodes, ...this.#hintNodes, ...this.#defaultNodes])).filter(
         (node) => directNodes.includes(node) || this.contains(node),
       ),
     );
     const nextHintNodes: Node[] = [];
+    const nextDefaultNodes: Node[] = [];
 
     sourceNodes.forEach((node) => {
       const slotName = node instanceof Element ? node.getAttribute('slot') : null;
 
       if (slotName === 'hint') {
         nextHintNodes.push(node);
-      }
+      } else if (!slotName) nextDefaultNodes.push(node);
     });
 
     this.#hintNodes = nextHintNodes;
+    this.#defaultNodes = nextDefaultNodes;
   }
 
   #syncHost(): void {
@@ -319,10 +339,10 @@ export class FormFieldLabelElement extends HTMLElement {
   #syncRoot(): void {
     this.#rootElement.className = this.#resolvedRootClassName;
     this.#labelElement.removeAttribute('class');
-    this.#labelElement.id = `label-${this['for']}`;
     this.#labelElement.setAttribute('for', this['for']);
     this.#labelElement.style.width = '100%';
     this.#syncForwardedAttributes();
+    this.#labelElement.id = this.id ? `${this.id}-control` : `label-${this['for']}`;
   }
 
   #syncForwardedAttributes(): void {
@@ -333,7 +353,10 @@ export class FormFieldLabelElement extends HTMLElement {
         continue;
       }
 
-      forwardedAttributes.set(attribute.name, attribute.value);
+      forwardedAttributes.set(
+        attribute.name,
+        attribute.name === 'id' && attribute.value ? `${attribute.value}-control` : attribute.value,
+      );
     }
 
     for (const name of this.#managedForwardedAttributes) {
@@ -354,7 +377,8 @@ export class FormFieldLabelElement extends HTMLElement {
     this.#textElement.className = this['readonly']
       ? `${FORM_FIELD_LABEL_CLASS_NAME}__text ${FORM_FIELD_LABEL_CLASS_NAME}__text--readonly`
       : `${FORM_FIELD_LABEL_CLASS_NAME}__text`;
-    this.#textElement.innerHTML = this.text;
+    if (this.#defaultNodes.length) syncNodeChildren(this.#textElement, this.#defaultNodes);
+    else if (this.#textElement.textContent !== this.text) this.#textElement.textContent = this.text;
 
     if (this.#labelTestId) {
       this.#textElement.setAttribute('data-testid', this.#labelTestId);
@@ -390,6 +414,8 @@ export class FormFieldLabelElement extends HTMLElement {
       this.#tooltipElement.placement = 'right';
       this.#tooltipElement.dataTestId = this.#hintTestId;
       children.push(this.#tooltipElement);
+      const popup = this.#tooltipElement.nextElementSibling;
+      if (popup?.getAttribute('role') === 'tooltip') children.push(popup);
     } else {
       this.#tooltipElement.dataTestId = undefined;
       this.#tooltipElement.remove();

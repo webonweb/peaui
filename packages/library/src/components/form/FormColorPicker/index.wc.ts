@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import FormColorPickerVueComponent from './index.ce.vue';
 
-const FormColorPickerVueElement = createVueCustomElement(
-  FormColorPickerVueComponent,
-  `${UIKIT_NAME}-form-color-picker`,
-);
+const FormColorPickerVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(FormColorPickerVueComponent, `${UIKIT_NAME}-form-color-picker`);
 
 /** Light-DOM custom element preserving the Vue FormColorPicker contract. */
 export class FormColorPickerElement extends FormColorPickerVueElement {

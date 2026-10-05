@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import ToggleButtonVueComponent from './index.vue';
 
-const ToggleButtonVueElement = createVueCustomElement(
-  ToggleButtonVueComponent,
-  `${UIKIT_NAME}-toggle-button`,
-);
+const ToggleButtonVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ToggleButtonVueComponent, `${UIKIT_NAME}-toggle-button`);
 
 /**
  * The light-DOM adapter mirrors the boolean model property and exposes one

@@ -1,8 +1,9 @@
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { DropdownMenuRenderer } from '@/react/renderer-entries/dropdown-menu.renderer-entry';
 import type { PeauiReactProps } from '@/react/generated-react-props';
 
 export type DropdownMenuProps = PeauiReactProps<'DropdownMenu'>;
 
-const DropdownMenu = createPeauiReactComponent('DropdownMenu');
+const DropdownMenu = createDirectReactComponent('DropdownMenu', DropdownMenuRenderer);
 
 export default DropdownMenu;

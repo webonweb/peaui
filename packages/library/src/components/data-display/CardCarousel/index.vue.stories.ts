@@ -1,8 +1,10 @@
 import StoryContent from '@peaui/storybook-shell/src/components/StoryContent.vue';
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 import type { Meta, StoryObj } from '@storybook/vue3';
+import { ref } from 'vue';
 
 import CardCarouselComponent from './index.vue';
+import ButtonAction from '../../data-entry/ButtonAction/index.vue';
 
 const { getSettings } = useSettingsStorie();
 
@@ -116,7 +118,7 @@ export default meta;
 type Story = StoryObj<typeof CardCarouselComponent>;
 
 function createRender(cards = demoCards) {
-  return (args: Record<string, unknown>) => ({
+  return (args: InstanceType<typeof CardCarouselComponent>['$props']) => ({
     components: { StoryContent, CardCarouselComponent },
     setup() {
       return {
@@ -214,4 +216,15 @@ export const WithAnimation: Story = {
     isNavigationVisible: true,
     withAnimation: true,
   },
+};
+
+export const DynamicSlides: Story = {
+  render: () => ({
+    components: { CardCarouselComponent, ButtonAction },
+    setup: () => ({ cards: ref(['A', 'B', 'C']) }),
+    template: `<div>
+      <ButtonAction @click="cards = ['A', 'X']">Zaktualizuj karty</ButtonAction>
+      <CardCarouselComponent :default-visible-slides="1"><article v-for="key in cards" :key="key">Karta {{ key }}</article></CardCarouselComponent>
+    </div>`,
+  }),
 };

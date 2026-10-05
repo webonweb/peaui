@@ -6,8 +6,8 @@ vi.mock('@/constants', () => ({
   UIKIT_NAME: 'peaui',
 }));
 
-vi.mock('@/assets/global.scss', () => ({}), { virtual: true });
-vi.mock('./styles.scss', () => ({}), { virtual: true });
+vi.mock('@/assets/global.scss', () => ({}));
+vi.mock('./styles.scss', () => ({}));
 
 vi.mock('vue', async () => {
   const actual = await vi.importActual<typeof import('vue')>('vue');
@@ -261,5 +261,16 @@ describe('ToastAlert (index.vue)', () => {
       const root = wrapper.get('div');
       expect(root.classes()).toContain(`peaui-toast-alert--variant-${v}`);
     }
+  });
+
+  it('does not interpret HTML from title and description props', () => {
+    const title = '<img src=x onerror="alert(1)">Title';
+    const description = '<script>alert(1)</script>Description';
+    const wrapper = mount(ToastAlert, { props: { title, description } });
+
+    expect(wrapper.get('strong').text()).toBe(title);
+    expect(wrapper.get('p').text()).toBe(description);
+    expect(wrapper.find('img').exists()).toBe(false);
+    expect(wrapper.find('script').exists()).toBe(false);
   });
 });

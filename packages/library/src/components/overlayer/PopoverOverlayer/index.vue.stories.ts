@@ -6,14 +6,7 @@ import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 const { getSettings } = useSettingsStorie();
 
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 type PopupType = 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
 
@@ -157,4 +150,12 @@ export const PopoverOverlayer: Story = {
     ariaLabel: 'Otworz popover',
     dataTestId: 'popover-overlayer',
   },
+};
+
+export const KeyboardBetweenControls: Story = {
+  render: () => ({
+    components: { PopoverOverlayerComponent },
+    template:
+      '<PopoverOverlayerComponent aria-label="Open panel">Open panel<template #content><button type="button">First action</button><button type="button">Second action</button></template></PopoverOverlayerComponent>',
+  }),
 };

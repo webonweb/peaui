@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
 import ApiTable from '../components/ApiTable.vue';
 import CodeBlock from '../components/CodeBlock.vue';
-import DemoCanvas from '../components/DemoCanvas.vue';
-import ReactDemoCanvas from '../components/ReactDemoCanvas.vue';
-import WebComponentDemo from '../components/WebComponentDemo.vue';
 import { findComponent, findFrameworkComponent, getFrameworkComponents } from '../data/catalog';
 import { getFrameworkDefinition, normalizeFramework } from '../data/frameworks';
 import { getCategoryLabel, getComponentCopy, localizeApiEntries } from '../data/localized-content';
 import { useI18n } from '../i18n';
+
+const DemoCanvas = defineAsyncComponent(() => import('../components/DemoCanvas.vue'));
+const ReactDemoCanvas = defineAsyncComponent(() => import('../components/ReactDemoCanvas.vue'));
+const WebComponentDemo = defineAsyncComponent(() => import('../components/WebComponentDemo.vue'));
 
 const route = useRoute();
 const { localize } = useI18n();
@@ -83,13 +84,18 @@ const copy = computed(() =>
       vueProps:
         'This table is generated automatically from the component TypeScript declaration. Required entries must be provided.',
       wcProps:
-        'The list is generated from the public contract and Custom Element implementation. Pass kebab-case names as HTML attributes and assign complex values as properties.',
+        'Use kebab-case HTML attributes and camelCase JavaScript properties. Assign arrays, objects, functions and explicit false values through properties. A present boolean attribute enables the option. Browser and bundler component imports include their required styles.',
       reactProps:
-        'Props are generated from the same public contract as Vue. Models support controlled values, default… values and on…Change callbacks.',
+        'Props come from the exported React TypeScript declarations. Pair controlled values with their on…Change callback. Use default… only when it appears in this table, and avoid passing a controlled value at the same time. Standard native attributes follow the component element. Browser and bundler component imports include their required styles.',
       noInput: 'This component does not require any input data.',
       callbacks: 'Callbacks',
       events: 'Events',
-      wcEvents: 'Listen with addEventListener. Event data is available in event.detail.',
+      wcEvents:
+        'Listen with addEventListener using the exact event name. event.detail is the single emitted argument, or an array when multiple arguments are emitted. Keep controlled properties synchronized in update:… listeners.',
+      vueEvents:
+        'Use @event-name or v-model:property for update:property events. Event signatures list the emitted arguments in order.',
+      reactEvents:
+        'Pass callbacks as props. Callback and render-function signatures below describe the public React API.',
       htmlSlots: 'HTML slots',
       reactContent: 'ReactNode content',
       slots: 'Slots',
@@ -125,13 +131,18 @@ const copy = computed(() =>
       vueProps:
         'Tabela powstaje automatycznie z deklaracji TypeScript komponentu. Pozycje oznaczone jako wymagane muszą zostać przekazane.',
       wcProps:
-        'Lista jest generowana z publicznego kontraktu komponentu i implementacji Custom Element. Nazwy z myślnikami przekazuj jako atrybuty HTML; wartości złożone ustawiaj jako properties.',
+        'Atrybuty HTML mają nazwy z myślnikami, a właściwości JavaScript używają camelCase. Tablice, obiekty, funkcje i jawne false ustawiaj przez properties. Obecność atrybutu boolean włącza opcję. Importy komponentów dla przeglądarki i bundlera dołączają wymagane style.',
       reactProps:
-        'Props są generowane z tego samego publicznego kontraktu co Vue. Modele obsługują wariant kontrolowany, wartość default… oraz callback on…Change.',
+        'Props pochodzą z eksportowanych deklaracji TypeScript dla Reacta. Kontrolowaną wartość połącz z callbackiem on…Change. Używaj default… tylko wtedy, gdy występuje w tabeli, bez jednoczesnego przekazywania wartości kontrolowanej. Natywne atrybuty zależą od elementu komponentu. Importy dla przeglądarki i bundlera dołączają wymagane style.',
       noInput: 'Ten komponent nie wymaga żadnych danych wejściowych.',
       callbacks: 'Callbacki',
       events: 'Zdarzenia',
-      wcEvents: 'Nasłuchuj ich przez addEventListener. Dane zdarzenia są dostępne w event.detail.',
+      wcEvents:
+        'Używaj addEventListener z dokładną nazwą zdarzenia. event.detail zawiera pojedynczy argument albo tablicę argumentów, jeśli emitowano ich kilka. Synchronizuj kontrolowane właściwości w listenerach update:….',
+      vueEvents:
+        'Używaj @nazwa-zdarzenia lub v-model:właściwość dla zdarzeń update:właściwość. Sygnatury pokazują emitowane argumenty w kolejności.',
+      reactEvents:
+        'Przekazuj callbacki jako propsy. Sygnatury callbacków i funkcji renderujących poniżej opisują publiczne API Reacta.',
       htmlSlots: 'Sloty HTML',
       reactContent: 'Treść ReactNode',
       slots: 'Sloty',
@@ -256,6 +267,8 @@ const importCode = computed(() => {
         <div>
           <h2>{{ framework === 'react' ? copy.callbacks : copy.events }}</h2>
           <p v-if="framework === 'web-components'">{{ copy.wcEvents }}</p>
+          <p v-else-if="framework === 'react'">{{ copy.reactEvents }}</p>
+          <p v-else>{{ copy.vueEvents }}</p>
           <ApiTable :entries="eventEntries" kind="event" />
         </div>
       </section>

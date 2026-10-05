@@ -1,100 +1,6 @@
-﻿<script lang="ts">
-export interface TableManageColumn {
-  default?: string | number;
-  disabled?: boolean;
-  integer?: boolean;
-  max?: number | ((record: Record<string, any>) => number);
-  maxLength?: number;
-  min?: number;
-  onUpdate?: (record: any, index?: number) => any;
-  options?: any[] | ((record: Record<string, any>, options?: any[]) => any[]);
-  placement?: 'top' | 'bottom' | 'left' | 'right';
-  required?: boolean;
-  step?: number;
-  canWrite?: boolean;
-  withSelectAll?: boolean;
-  placeholder?: string;
-  type: 'select' | 'number' | 'text' | 'multiselect';
-  mask?: string;
-  regex?: RegExp;
-}
-
-type WithOverrides<Base, Overrides extends Partial<Record<keyof Base, unknown>> = {}> = Omit<
-  Base,
-  keyof Overrides
-> &
-  Overrides;
-
-type PrimitiveRecord = Record<string, string | number | boolean>;
-type TableColumnType =
-  | 'array'
-  | 'date'
-  | 'edit'
-  | 'editAction'
-  | 'EditActionColumn'
-  | 'editable'
-  | 'expandable'
-  | 'empty'
-  | 'index'
-  | 'link'
-  | 'status'
-  | 'stepper'
-  | 'tag'
-  | 'text'
-  | 'action'
-  | ((record: Record<string, any>) => string);
-
-export type TableStepperStepStatus = 'default' | 'current' | 'disabled' | 'complete';
-export type TableTagVariant = 'blue' | 'green' | 'red' | 'orange' | 'grey' | 'violet' | 'outline';
-
-export interface TableStepperStepCollapse {
-  activeElements: number;
-  count: number;
-}
-
-export interface TableStepperStep {
-  collapse?: TableStepperStepCollapse;
-  isSeparate?: boolean;
-  key: string;
-  label: string;
-  onRedirect?: () => void;
-  status: TableStepperStepStatus;
-}
-
-export interface TableColumnBase {
-  actionName?: string;
-  canCopy?: boolean;
-  withLock?: boolean;
-  border?: 'left' | 'right';
-  canSort?: boolean;
-  deep?: string;
-  hint?: boolean;
-  key: string;
-  label: string;
-  manage?: TableManageColumn;
-  subKey?: string;
-  statusDictionary?: Record<string, TableTagVariant>;
-  visible?: boolean;
-  inline?: boolean;
-  resolve?: (
-    data: PrimitiveRecord,
-  ) => Record<string, string>[] | Record<string, Record<string, string | undefined>[]>;
-  steps?: <T = Record<string, any>>(record: T, collapse?: boolean) => TableStepperStep[];
-  template?: <TEntry, TRecord = Record<string, any>>(
-    entry: string | TEntry,
-    record?: TRecord,
-  ) => string;
-  type?: TableColumnType;
-  visibleColumn?: (record: Record<string, unknown>) => boolean;
-  width?: number;
-  actionLabel?: string;
-  hintColumn?: string;
-}
-
-export type TableColumn<
-  Overrides extends Partial<Record<keyof TableColumnBase, unknown>> = {},
-  Extra extends Record<string, unknown> = {},
-> = WithOverrides<TableColumnBase, Overrides> & Extra;
+<script lang="ts">
+import type { TableColumn, TableManageColumn, TableRecord } from './table.types';
+export type * from './table.types';
 </script>
 
 <script lang="ts" setup>
@@ -102,26 +8,27 @@ import { UIKIT_NAME } from '@/constants';
 import { ERROR_MESSAGES } from '@/constants/error.const';
 import { mergeArrayObjects } from '@/helpers/array.helper';
 import { unflatten } from '@/helpers/object.helper';
-import { toTypedSchema } from '@vee-validate/yup';
-import { useForm } from 'vee-validate';
 import {
   computed,
   nextTick,
   onBeforeUnmount,
   onMounted,
+  reactive,
   ref,
+  shallowRef,
   useAttrs,
   useId,
   useSlots,
   watch,
 } from 'vue';
-import { array, number, object, string, type ObjectShape } from 'yup';
 
 import SectionHeading from '@/components/data-display/SectionHeading/index.vue';
 import ButtonAction from '@/components/data-entry/ButtonAction/index.vue';
 import EmptyState from '@/components/feedback/EmptyState/index.vue';
 import SpinnerLoader from '@/components/feedback/SpinnerLoader/index.vue';
 import ModalDialog from '@/components/overlayer/ModalDialog/index.vue';
+import PaginationControl from '@/components/navigation/PaginationControl/index.vue';
+import { getTablePage } from './table-page.shared';
 import TableBodyActionsColumn from './Elements/TableBodyActionsColumn.vue';
 import TableBodyAddtionalRow from './Elements/TableBodyAddtionalRow.vue';
 import TableBodyCheckColumn from './Elements/TableBodyCheckColumn.vue';
@@ -134,6 +41,12 @@ import TableHeadActionsColumn from './Elements/TableHeadActionsColumn.vue';
 import TableHeadColumn from './Elements/TableHeadColumn.vue';
 import TableHeadSelectColumn from './Elements/TableHeadSelectColumn.vue';
 import {
+  getDeepEditableValue,
+  replaceEditableValues,
+  setDeepEditableValue,
+  validateEditableValue,
+} from './editable-validation.shared';
+import {
   TABLE_LIST_ACTIONS_STICKY_WIDTH,
   TABLE_LIST_DEFAULT_COLUMN_WIDTH,
   TABLE_LIST_EDITABLE_ACTIONS_STICKY_WIDTH,
@@ -143,6 +56,8 @@ import {
   createTableSortState,
   getTableColumnIdentifier,
   getTableRecordKey,
+  getTableRecordIdentity,
+  findTableRecordIndex,
   getTableSortKey,
   getTableSortType,
   normalizeTableSortStates,
@@ -161,7 +76,7 @@ const lockedColumns = ref<Record<string, boolean>>({});
 const columnVisibilityOverrides = ref<Record<string, boolean | undefined>>({});
 
 const {
-  id = 'list',
+  id,
   ariaLabel = 'Tabela danych',
   canCreate = true,
   canCheckRows = false,
@@ -176,6 +91,8 @@ const {
   isDetails,
   isDetials,
   rowsPerPage = 10,
+  paginate = false,
+  paginationLabel = 'Strony tabeli',
   selectedRows = [],
   sortColumn = 'updatedAt',
   sortColumns = [],
@@ -195,18 +112,21 @@ const {
   isDetails?: boolean;
   /** @deprecated Use `isDetails`. */
   isDetials?: boolean;
-  additional?: Record<string, any>;
+  additional?: Record<string, unknown>;
   canCreate?: boolean;
   canSelectRows?: boolean;
   canCheckRows?: boolean;
   canHideColumns?: boolean;
   canMultiSort?: boolean;
-  columns: TableColumn[] | any[];
+  columns: TableColumn[];
   editable?: boolean;
   emptyDescription?: boolean;
   emptyDescriptionInline?: string;
-  records: any[];
+  records: Record<string, unknown>[];
   rowsPerPage?: number;
+  /** Render one client-side page of records. Leave false for server-side pagination. */
+  paginate?: boolean;
+  paginationLabel?: string;
   currentCheckedRow?: number | string;
   rowsTotal?: number;
   selectedRows?: string[];
@@ -221,10 +141,17 @@ const {
   dataTestId?: string;
 }>();
 
+const page = defineModel<number>('page', { default: 1 });
+const pageRange = computed(() => getTablePage(records.length, page.value, rowsPerPage, paginate));
+const pageRecords = computed(() => records.slice(pageRange.value.start, pageRange.value.end));
+const visibleRecords = computed(() =>
+  pageRecords.value.map((record, index) => ({ record, index: index + pageRange.value.start })),
+);
+
 const attrs = useAttrs();
 const slots = useSlots();
 const isDialogWindowOpen = ref(false);
-const currentRecordDelete = ref<Record<string, any> | null>(null);
+const currentRecordDelete = ref<{ id?: string | number; record: TableRecord } | null>(null);
 const currentEditableAction = ref<'create' | 'update' | undefined>(undefined);
 const collapseRecord = ref<string | undefined>(undefined);
 const editingRowHeight = ref<number | undefined>(undefined);
@@ -240,23 +167,27 @@ const emit = defineEmits<{
     e: 'on:action',
     record: string | number | undefined,
     action: string,
-    currentRecord?: Record<string, any>,
+    currentRecord?: Record<string, unknown>,
   ): void;
   (e: 'on:createRecord'): void;
   /** Prefer this correctly spelled event for row double-clicks. */
   (
     e: 'on:dblclick',
     record: string | number | undefined,
-    currentRecord?: Record<string, any>,
+    currentRecord?: Record<string, unknown>,
   ): void;
   /** @deprecated Use `on:dblclick`. Kept for backwards compatibility. */
-  (e: 'on:dbclick', record: string | number | undefined, currentRecord?: Record<string, any>): void;
+  (
+    e: 'on:dbclick',
+    record: string | number | undefined,
+    currentRecord?: Record<string, unknown>,
+  ): void;
   (e: 'on:select:row', records: string[]): void;
   (e: 'on:sort', column: string): void;
   (e: 'on:sort', columns: TableSortState[]): void;
   (e: 'on:cancel'): void;
-  (e: 'on:check:row', record: Record<string, any>): void;
-  (e: 'on:submit', record: Record<string, any>): void;
+  (e: 'on:check:row', record: Record<string, unknown>): void;
+  (e: 'on:submit', record: Record<string, unknown>): void;
   (
     e: 'on:changeValue',
     recordId: string | number | undefined,
@@ -349,10 +280,11 @@ const inlineEmptyTestId = computed(() => buildTableTestId(dataTestId, 'empty-inl
 const loaderTestId = computed(() => buildTableTestId(dataTestId, 'loader'));
 const shouldRenderEmptyState = computed(() => !isLoading && !records.length && emptyDescription);
 
+const selectedRowKeys = computed(() => new Set(selectedRows.map(String)));
 const isAllRecordsOnPageChecked = computed<boolean>({
   get: () =>
-    records.filter((item) => selectedRows.includes(item.id as string)).length ===
-    (records.length < rowsPerPage ? records.length : rowsPerPage),
+    pageRecords.value.length > 0 &&
+    pageRecords.value.every((item) => selectedRowKeys.value.has(String(item.id ?? ''))),
   set: (value) => value,
 });
 
@@ -430,85 +362,45 @@ const generateInitialValues = () => ({
   ),
 });
 
-const generateInitialValuesValidation = () => {
-  const shape = unflatten(
-    mergeArrayObjects(
-      visibleDataColumns.value
-        .filter((column) => column.manage && column.manage.required)
-        .map((column) => ({
-          [column.key]: ((manage: TableManageColumn) => {
-            if (!manage) {
-              return '';
-            }
-
-            switch (manage.type) {
-              case 'number':
-                return number()
-                  .transform((value: any) => (isNaN(value) ? undefined : value))
-                  .test('is-required', ERROR_MESSAGES.required, (value: number | undefined) => {
-                    return !column.manage?.required
-                      ? true
-                      : value === 0
-                        ? true
-                        : value !== undefined && value !== null && !isNaN(value);
-                  });
-              case 'multiselect':
-                return array().test(
-                  'is-required',
-                  ERROR_MESSAGES.required,
-                  (value: unknown[] | undefined) => {
-                    return !column.manage?.required
-                      ? true
-                      : Array.isArray(value) && value.length > 0;
-                  },
-                );
-              default:
-                return string().test('is-required', ERROR_MESSAGES.required, (value) => {
-                  if (column.manage?.mask && column.manage.regex) {
-                    return new RegExp(column.manage.regex).test(value || '');
-                  }
-
-                  return column.manage?.required ? (value || '').trim() !== '' : true;
-                });
-            }
-          })(column.manage as TableManageColumn),
-        })),
-    ),
-    (value) => object(value as ObjectShape),
-  ) as ObjectShape;
-
-  return object(shape);
-};
-
-const validationSchema = computed(() => toTypedSchema(generateInitialValuesValidation()));
-
-const {
-  handleSubmit,
-  errors,
-  setFieldValue,
-  values: formEditableValues,
-  resetForm,
-} = useForm<any>({
-  initialValues: generateInitialValues(),
-  validationSchema,
-  validateOnMount: false,
-  keepValuesOnUnmount: false,
+const formEditableValues = reactive<Record<string, unknown>>(generateInitialValues());
+const editableErrors = ref<Record<string, string | undefined>>({});
+const editedRecordIdentity = shallowRef<unknown>();
+const editedRecordIndex = computed(() =>
+  currentEditableAction.value === 'update'
+    ? findTableRecordIndex(records, editedRecordIdentity.value)
+    : -1,
+);
+watch([editedRecordIndex, pageRange], ([index]) => {
+  if (currentEditableAction.value !== 'update') return;
+  if (index < 0 || index < pageRange.value.start || index >= pageRange.value.end)
+    handleCancelEditable();
+  else formEditableValues.id = index;
 });
 
-const editableErrors = ref<Record<string, string | undefined>>({});
+function setFieldValue(field: string, value: unknown): void {
+  setDeepEditableValue(formEditableValues, field, value);
+  if (editableErrors.value[field]) {
+    editableErrors.value[field] = undefined;
+  }
+}
 
-watch(
-  errors,
-  (nextErrors) => {
-    editableErrors.value = {
-      ...nextErrors,
-    };
-  },
-  {
-    deep: true,
-    immediate: true,
-  },
-);
+function resetForm({ values }: { values: Record<string, unknown> }): void {
+  replaceEditableValues(formEditableValues, values);
+  editableErrors.value = {};
+}
+
+function validateEditableForm(): boolean {
+  const nextErrors: Record<string, string | undefined> = {};
+
+  visibleDataColumns.value.forEach((column) => {
+    const value = getDeepEditableValue(formEditableValues, column.key);
+    const error = validateEditableValue(value, column.manage, ERROR_MESSAGES);
+    if (error) nextErrors[column.key] = error;
+  });
+
+  editableErrors.value = nextErrors;
+  return Object.keys(nextErrors).length === 0;
+}
 
 watch(
   parsedColumns,
@@ -550,10 +442,18 @@ watch(
   },
 );
 
-const onSubmit = handleSubmit(async (values) => {
-  emit('on:submit', values as Record<string, any>);
+const onSubmit = async (): Promise<void> => {
+  if (currentEditableAction.value === 'update') {
+    if (editedRecordIndex.value < 0) {
+      handleCancelEditable();
+      return;
+    }
+    formEditableValues.id = editedRecordIndex.value;
+  }
+  if (!validateEditableForm()) return;
+  emit('on:submit', { ...formEditableValues });
   handleCancelEditable();
-});
+};
 
 function updateHorizontalMetrics(): void {
   horizontalScrollLeft.value = rootReference.value?.scrollLeft ?? 0;
@@ -564,7 +464,7 @@ function handleRootScroll(): void {
   updateHorizontalMetrics();
 }
 
-function getRowTestId(record: Record<string, any>, index: number): string | undefined {
+function getRowTestId(record: Record<string, unknown>, index: number): string | undefined {
   return buildTableTestId(dataTestId, 'row', getTableRecordKey(record, index));
 }
 
@@ -723,7 +623,7 @@ function buildLockedColumnsMap(baseRightOffset = 0): Record<string, TableLockedC
 }
 
 function getRowClasses(
-  record: Record<string, any>,
+  record: Record<string, unknown>,
   index: number,
 ): Array<string | false | undefined> {
   return [
@@ -733,7 +633,7 @@ function getRowClasses(
       currentEditableAction.value === 'update' &&
       formEditableValues.id === index &&
       `${classNameComponent}__row--editing`,
-    canSelectRows && selectedRows.includes(record.id as string)
+    canSelectRows && selectedRowKeys.value.has(String(record.id ?? ''))
       ? `${classNameComponent}__row--selected`
       : undefined,
   ];
@@ -783,6 +683,7 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
 }
 
 function handleCancelEditable(): void {
+  editedRecordIdentity.value = undefined;
   resetForm({
     values: generateInitialValues(),
   });
@@ -796,7 +697,7 @@ function resetField(field: string, value: undefined): void {
   setFieldValue(field, value);
 }
 
-function isRecordValue(value: unknown): value is Record<string, any> {
+function isRecordValue(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
@@ -804,7 +705,7 @@ function getInlineUpdatedRecord(
   value: string | number | undefined | object,
   column: TableColumn,
   index?: number,
-): Record<string, any> | undefined {
+): Record<string, unknown> | undefined {
   if (!column.inline || index === undefined || !records[index]) {
     return undefined;
   }
@@ -815,7 +716,7 @@ function getInlineUpdatedRecord(
   };
 }
 
-function rerunStepsForRecord(record: Record<string, any> | undefined): void {
+function rerunStepsForRecord(record: Record<string, unknown> | undefined): void {
   if (!record) {
     return;
   }
@@ -839,7 +740,11 @@ function handleUpdateValueColumn(
     typeof rawColumnValue === 'string' || typeof rawColumnValue === 'number'
       ? rawColumnValue
       : undefined;
-  emit('on:changeValue', index === undefined ? undefined : records[index]?.id, emittedValue);
+  emit(
+    'on:changeValue',
+    index === undefined ? undefined : getRecordId(records[index]),
+    emittedValue,
+  );
 
   if (column.manage?.onUpdate) {
     const inlineUpdatedRecord = getInlineUpdatedRecord(value, column, index);
@@ -893,21 +798,20 @@ function handleCreateEditableRecord(): void {
 }
 
 function handleToggleSelectAllRows(): void {
+  const recordKeys = new Set(pageRecords.value.map((record) => String(record.id ?? '')));
   if (isAllRecordsOnPageChecked.value) {
     emit(
       'on:select:row',
-      selectedRows.filter(
-        (item) => !(records.map((record) => record.id) as string[]).includes(item),
-      ),
+      selectedRows.filter((item) => !recordKeys.has(item)),
     );
     return;
   }
 
-  const toAssign = records
-    .filter((record) => !selectedRows.includes(record.id as string))
-    .map((record) => record.id) as string[];
+  const toAssign = pageRecords.value
+    .filter((record) => !selectedRowKeys.value.has(String(record.id ?? '')))
+    .map((record) => String(record.id ?? ''));
 
-  emit('on:select:row', selectedRows.concat(toAssign));
+  emit('on:select:row', [...selectedRowKeys.value, ...toAssign]);
 }
 
 function toggleSortDirection(direction: TableSortDirection): TableSortDirection {
@@ -954,14 +858,20 @@ function handleSort(column: string): void {
   emit('on:sort', buildNextMultiSort(column));
 }
 
-function handleRowAction(record: Record<string, any>, action: string, index: number): void {
+function getRecordId(record: TableRecord | undefined): string | number | undefined {
+  const id = record?.id;
+  return typeof id === 'string' || typeof id === 'number' ? id : undefined;
+}
+
+function handleRowAction(record: Record<string, unknown>, action: string, index: number): void {
   if (editable) {
     if (action === 'edit') {
       rememberRowHeight(index);
 
-      nextTick(() => {
+      void nextTick(() => {
         emit('on:action', index, 'beforeEdit', record);
         currentEditableAction.value = 'update';
+        editedRecordIdentity.value = getTableRecordIdentity(record);
         resetForm({
           values: {
             ...record,
@@ -980,13 +890,13 @@ function handleRowAction(record: Record<string, any>, action: string, index: num
   if (action === 'delete') {
     isDialogWindowOpen.value = true;
     currentRecordDelete.value = {
-      id: record.id,
+      id: getRecordId(record),
       record,
     };
     return;
   }
 
-  emit('on:action', record.id, action, record);
+  emit('on:action', getRecordId(record), action, record);
 }
 
 function handleOnDeleteSubmit(): void {
@@ -1002,7 +912,7 @@ function handleToggleCollapseRecord(idValue: string): void {
   collapseRecord.value = collapseRecord.value === idValue ? undefined : idValue;
 }
 
-function getResolvedColumnType(record: Record<string, any>, column: TableColumn): string {
+function getResolvedColumnType(record: Record<string, unknown>, column: TableColumn): string {
   if (typeof column.type === 'function') {
     return column.type(record);
   }
@@ -1011,19 +921,19 @@ function getResolvedColumnType(record: Record<string, any>, column: TableColumn)
 }
 
 function handleBodyColumnClick(
-  record: Record<string, any>,
+  record: Record<string, unknown>,
   column: TableColumn,
   collapseId?: string,
 ): void {
   const resolvedType = getResolvedColumnType(record, column);
 
   if (resolvedType === 'action') {
-    emit('on:action', record.id, column.actionName || 'edit', record);
+    emit('on:action', getRecordId(record), column.actionName || 'edit', record);
     return;
   }
 
   if (resolvedType === 'editAction' || resolvedType === 'EditActionColumn') {
-    emit('on:action', record.id, column.actionName || 'edit-inline', record);
+    emit('on:action', getRecordId(record), column.actionName || 'edit-inline', record);
     return;
   }
 
@@ -1040,18 +950,18 @@ function handleBodyColumnClick(
     return;
   }
 
-  emit('on:dbclick', record.id, record);
+  emit('on:dbclick', getRecordId(record), record);
 }
 
-function handleBodyColumnDblClick(record: Record<string, any>, column: TableColumn): void {
+function handleBodyColumnDblClick(record: Record<string, unknown>, column: TableColumn): void {
   const resolvedType = getResolvedColumnType(record, column);
 
   if (editable || resolvedType === 'editable' || resolvedType === 'expandable' || column.steps) {
     return;
   }
 
-  emit('on:dblclick', record.id, record);
-  emit('on:dbclick', record.id, record);
+  emit('on:dblclick', getRecordId(record), record);
+  emit('on:dbclick', getRecordId(record), record);
 }
 
 function handleToggleLockColumn(columnKey: string): void {
@@ -1112,7 +1022,7 @@ function getRowTabIndex(): number | undefined {
   return canCheckRows && !editable ? 0 : undefined;
 }
 
-function handleRowClick(event: MouseEvent, record: Record<string, any>): void {
+function handleRowClick(event: MouseEvent, record: Record<string, unknown>): void {
   if (!canHandleRowSelection(event)) {
     return;
   }
@@ -1120,7 +1030,7 @@ function handleRowClick(event: MouseEvent, record: Record<string, any>): void {
   emit('on:check:row', record);
 }
 
-function handleRowKeydown(event: KeyboardEvent, record: Record<string, any>): void {
+function handleRowKeydown(event: KeyboardEvent, record: Record<string, unknown>): void {
   if (!['Enter', ' ', 'Spacebar'].includes(event.key)) {
     return;
   }
@@ -1190,7 +1100,7 @@ watch(
     <SpinnerLoader v-if="isLoading" :dataTestId="loaderTestId" />
 
     <table
-      v-bind:id="id"
+      v-bind:id="id ?? tableSelectionScopeId.replace('table-selection-', 'table-')"
       :class="`${classNameComponent}__table`"
       :data-testid="tableTestId"
       :data-sort-by-column="activeSortColumn"
@@ -1209,6 +1119,10 @@ watch(
             :dataTestId="buildTableTestId(dataTestId, 'select-all')"
             :disabled="records.length === 0"
             :is-all-selected="isAllRecordsOnPageChecked"
+            :is-partially-selected="
+              !isAllRecordsOnPageChecked &&
+              pageRecords.some((record) => selectedRowKeys.has(String(record.id ?? '')))
+            "
             @on:toggle:select:row="handleToggleSelectAllRows"
           />
 
@@ -1244,7 +1158,10 @@ watch(
       </thead>
 
       <tbody :class="`${classNameComponent}__body`" :data-testid="bodyTestId">
-        <template v-for="(record, index) in records" :key="record?.id ?? index">
+        <template
+          v-for="{ record, index } in visibleRecords"
+          :key="getTableRecordKey(record, index)"
+        >
           <tr
             :ref="(element) => setRowReference(element, index)"
             :class="getRowClasses(record, index)"
@@ -1258,7 +1175,7 @@ watch(
             <TableBodyCheckColumn
               v-if="canCheckRows && !editable"
               :dataTestId="buildTableTestId(dataTestId, 'check', getTableRecordKey(record, index))"
-              :id="record?.id ?? ''"
+              :id="String(getRecordId(record) ?? '')"
               :row="currentCheckedRow"
               :table-scope-id="tableSelectionScopeId"
               @on:check:row="emit('on:check:row', record)"
@@ -1268,38 +1185,38 @@ watch(
               v-if="canSelectRows && !editable"
               :dataTestId="buildTableTestId(dataTestId, 'select', getTableRecordKey(record, index))"
               :id="String(record.id ?? '')"
-              :selected="canSelectRows ? selectedRows.includes(record.id as string) : false"
+              :selected="canSelectRows ? selectedRowKeys.has(String(record.id ?? '')) : false"
               :selected-rows="selectedRows"
               :table-scope-id="tableSelectionScopeId"
               @on:select:row="(selected) => emit('on:select:row', selected)"
             />
 
-            <TableBodyColumn
-              v-for="(column, columnIndex) in parsedColumns.filter((item) =>
-                item.visible === undefined ? true : item.visible,
-              )"
-              v-if="formEditableValues.id !== index"
-              :key="`${record?.id ?? index}-${getTableColumnIdentifier(column)}-${columnIndex}`"
-              :column
-              :dataTestId="
-                buildTableTestId(
-                  dataTestId,
-                  'record',
-                  getTableRecordKey(record, index),
-                  getTableColumnIdentifier(column),
-                )
-              "
-              :index
-              :is-expanded="collapseRecord === String(record?.id ?? '')"
-              :locked-column="bodyLockedColumns[column.key]"
-              :record
-              @dblclick="handleBodyColumnDblClick(record, column)"
-              @on:click="(collapseId: string) => handleBodyColumnClick(record, column, collapseId)"
-              @on:update="
-                (value, currentColumn) => handleUpdateValueColumn(value, currentColumn, index)
-              "
-            />
-
+            <template v-if="formEditableValues.id !== index">
+              <TableBodyColumn
+                v-for="(column, columnIndex) in visibleDataColumns"
+                :key="`${record?.id ?? index}-${getTableColumnIdentifier(column)}-${columnIndex}`"
+                :column
+                :dataTestId="
+                  buildTableTestId(
+                    dataTestId,
+                    'record',
+                    getTableRecordKey(record, index),
+                    getTableColumnIdentifier(column),
+                  )
+                "
+                :index
+                :is-expanded="collapseRecord === String(record?.id ?? '')"
+                :locked-column="bodyLockedColumns[column.key]"
+                :record
+                @dblclick="handleBodyColumnDblClick(record, column)"
+                @on:click="
+                  (collapseId: string) => handleBodyColumnClick(record, column, collapseId)
+                "
+                @on:update="
+                  (value, currentColumn) => handleUpdateValueColumn(value, currentColumn, index)
+                "
+              />
+            </template>
             <TableBodyEditableColumn
               v-if="formEditableValues.id === index && currentEditableAction === 'update'"
               :columns="parsedColumns"
@@ -1397,6 +1314,18 @@ watch(
         </TableBodyAddtionalRow>
       </tbody>
     </table>
+    <div
+      v-if="paginate && pageRange.totalPages > 1"
+      :class="`${classNameComponent}__pagination`"
+      :inert="isLoading || currentEditableAction !== undefined"
+    >
+      <PaginationControl
+        :ariaLabel="paginationLabel"
+        :page="pageRange.page"
+        :total-pages="pageRange.totalPages"
+        @update:page="page = $event"
+      />
+    </div>
   </div>
 
   <EmptyState
@@ -1433,7 +1362,9 @@ watch(
               {{
                 titleRemoveLabel.replace(
                   '${name}',
-                  currentRecordDelete?.record?.name ? currentRecordDelete.record.name : '',
+                  typeof currentRecordDelete?.record.name === 'string'
+                    ? currentRecordDelete.record.name
+                    : '',
                 )
               }}
             </span>

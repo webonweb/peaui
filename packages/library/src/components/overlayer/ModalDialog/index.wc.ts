@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import ModalDialogVueComponent from './index.ce.vue';
 
-export const ModalDialogElement = createVueCustomElement(
-  ModalDialogVueComponent,
-  `${UIKIT_NAME}-modal-dialog`,
-);
+export const ModalDialogElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ModalDialogVueComponent, `${UIKIT_NAME}-modal-dialog`);
 
 export function defineModalDialog(): void {
   definePeauiCustomElement(ModalDialogElement);

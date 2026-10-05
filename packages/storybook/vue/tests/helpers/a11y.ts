@@ -65,7 +65,7 @@ export async function expectNoA11yViolations(page: Page, context: string): Promi
   const results = await new AxeBuilder({ page })
     .include('#storybook-root')
     .exclude('[class*="story-settings"]')
-    .withTags(['wcag2a', 'wcag2aa'])
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .disableRules(AXE_DISABLED_RULES)
     .analyze();
 

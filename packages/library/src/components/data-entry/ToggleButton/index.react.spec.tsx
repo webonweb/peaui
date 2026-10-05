@@ -54,9 +54,9 @@ describe('ToggleButton React', () => {
 
   it('emituje zmianę przed click dokładnie raz i przekazuje ref', () => {
     const order: string[] = [];
-    const onChange = vi.fn(() => order.push('change'));
-    const onClick = vi.fn(() => order.push('click'));
-    const onValueChange = vi.fn(() => order.push('value'));
+    const onChange = vi.fn((..._args: unknown[]) => order.push('change'));
+    const onClick = vi.fn((..._args: unknown[]) => order.push('click'));
+    const onValueChange = vi.fn((..._args: unknown[]) => order.push('value'));
     const ref = createRef<HTMLButtonElement>();
     render(
       <ToggleButton

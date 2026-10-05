@@ -134,7 +134,9 @@ function extractBody(fileName, source) {
   return body;
 }
 
-function getBucketName(publicName) {
+const CATALOG_BUCKET_COUNT = 32;
+
+function getLegacyBucketName(publicName) {
   if (!publicName.includes('/')) {
     return publicName.replaceAll('-', '').toLowerCase().slice(0, 2);
   }
@@ -151,7 +153,18 @@ function getBucketName(publicName) {
   return `${category}-${bucketSource.replaceAll('-', '').toLowerCase().slice(0, 2)}`;
 }
 
-function buildRuntimeBuckets(icons) {
+function getCatalogBucketName(publicName) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < publicName.length; index += 1) {
+    hash ^= publicName.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return `catalog-${((hash >>> 0) % CATALOG_BUCKET_COUNT).toString(16).padStart(2, '0')}`;
+}
+
+function buildRuntimeBuckets(icons, getBucketName) {
   const buckets = new Map();
 
   for (const icon of icons) {
@@ -250,7 +263,7 @@ function buildExpectedFiles() {
     null,
     2,
   )}\n`;
-  const buckets = buildRuntimeBuckets(icons);
+  const buckets = buildRuntimeBuckets(icons, getCatalogBucketName);
   const legacyIcons = fs
     .readdirSync(iconsRoot, { withFileTypes: true })
     .filter((entry) => entry.isFile() && entry.name.endsWith('.svg'))
@@ -277,7 +290,7 @@ function buildExpectedFiles() {
         publicName: path.basename(fileName, '.svg'),
       };
     });
-  const legacyBuckets = buildRuntimeBuckets(legacyIcons);
+  const legacyBuckets = buildRuntimeBuckets(legacyIcons, getLegacyBucketName);
 
   return {
     buckets,

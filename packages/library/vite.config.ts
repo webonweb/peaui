@@ -11,6 +11,7 @@ import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgLoader from 'vite-svg-loader';
 
 import { peauiVueCustomElementPlugin } from './vue-custom-element-plugin';
+import { deduplicateSourceMaps } from './source-map-plugin';
 
 const projectRootDir = resolve(__dirname);
 const componentSourceRoot = resolve(projectRootDir, 'src/components');
@@ -25,7 +26,10 @@ function isInsideComponentSource(filePath: string): boolean {
   return relativePath !== '' && !relativePath.startsWith('..') && !path.isAbsolute(relativePath);
 }
 
-function resolveVueComponentImport(specifier: string, importerDirectory: string): string | undefined {
+function resolveVueComponentImport(
+  specifier: string,
+  importerDirectory: string,
+): string | undefined {
   let importedPath: string;
 
   if (specifier.startsWith('@/components/')) {
@@ -39,16 +43,14 @@ function resolveVueComponentImport(specifier: string, importerDirectory: string)
   const candidates = [
     importedPath,
     `${importedPath}.vue`,
+    `${importedPath}.ts`,
     path.join(importedPath, 'index.vue'),
   ];
 
   for (const candidate of candidates) {
     if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) continue;
-    if (path.basename(candidate) !== 'index.vue') continue;
-
-    const componentDirectory = path.dirname(candidate);
-
-    if (isInsideComponentSource(componentDirectory)) return componentDirectory;
+    if (!/\.(vue|ts)$/.test(candidate) || candidate.endsWith('.wc.ts')) continue;
+    if (isInsideComponentSource(candidate)) return candidate;
   }
 
   return undefined;
@@ -65,24 +67,22 @@ function collectComponentStyles(componentDirectory: string): string[] {
   if (cachedStyles) return cachedStyles;
 
   const styles = new Set<string>();
-  const visitedComponents = new Set<string>();
+  const visitedSources = new Set<string>();
+  const visitedDirectories = new Set<string>();
 
-  function visit(directory: string) {
-    if (visitedComponents.has(directory)) return;
-    visitedComponents.add(directory);
-
-    const vueEntry = path.join(directory, 'index.vue');
-
-    if (fs.existsSync(vueEntry)) {
-      const source = fs.readFileSync(vueEntry, 'utf8');
-
-      for (const match of source.matchAll(/(?:from\s+|import\s+)["']([^"']+)["']/g)) {
-        const dependencyDirectory = resolveVueComponentImport(match[1], directory);
-
-        if (dependencyDirectory) visit(dependencyDirectory);
-      }
+  function visit(sourceFile: string) {
+    if (visitedSources.has(sourceFile) || !fs.existsSync(sourceFile)) return;
+    visitedSources.add(sourceFile);
+    const directory = path.dirname(sourceFile);
+    const source = fs.readFileSync(sourceFile, 'utf8').replace(/import\s+type\b[^;]+;/g, '');
+    for (const match of source.matchAll(/(?:from\s+|import\s*(?:\(\s*)?)["']([^"']+)["']/g)) {
+      const dependency = resolveVueComponentImport(match[1], directory);
+      if (dependency) visit(dependency);
     }
-
+    // Shared TypeScript utilities do not render their directory's component.
+    // Follow their Vue imports, but do not attach unrelated sibling CSS.
+    if (!sourceFile.endsWith('.vue') || visitedDirectories.has(directory)) return;
+    visitedDirectories.add(directory);
     for (const entry of fs
       .readdirSync(directory, { withFileTypes: true })
       .filter((entry) => entry.isFile() && entry.name.endsWith('.scss'))
@@ -91,7 +91,7 @@ function collectComponentStyles(componentDirectory: string): string[] {
     }
   }
 
-  visit(componentDirectory);
+  visit(path.join(componentDirectory, 'index.vue'));
 
   const collectedStyles = [...styles];
   componentStyleCache.set(componentDirectory, collectedStyles);
@@ -134,6 +134,53 @@ function peauiComponentStylesPlugin(): Plugin {
         code: `${styleImports}\n${code}`,
         map: null,
       };
+    },
+  };
+}
+
+/**
+ * Node cannot execute CSS through CommonJS `require()`. ESM entries retain
+ * their component-level CSS imports for bundlers, while CommonJS entries stay
+ * directly loadable in SSR and build tooling. Consumers using CommonJS import
+ * `@peaui/ui/styles.css` from their application stylesheet or bundler entry.
+ */
+function stripCommonJsCssRequiresPlugin(): Plugin {
+  return {
+    name: 'peaui:strip-commonjs-css-requires',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(outputOptions, bundle) {
+      if (outputOptions.format !== 'cjs') return undefined;
+
+      for (const artifact of Object.values(bundle)) {
+        if (artifact.type !== 'chunk') continue;
+        artifact.code = artifact.code.replace(/require\((["'])[^"']+\.css\1\);?/g, '');
+      }
+    },
+  };
+}
+
+/** Native Node ESM facades share the CSS-free CommonJS runtime and unwrap its default export. */
+function nodeEsmFacadesPlugin(): Plugin {
+  return {
+    name: 'peaui:node-esm-facades',
+    generateBundle(outputOptions, bundle) {
+      if (outputOptions.format !== 'cjs') return;
+      for (const artifact of Object.values(bundle)) {
+        if (artifact.type !== 'chunk' || !artifact.isEntry) continue;
+        if (artifact.fileName.startsWith('components/wc/')) continue;
+        const fileName = `node/${artifact.fileName.replace(/\.umd\.cjs$/, '.mjs')}`;
+        const specifier = path.posix.relative(path.posix.dirname(fileName), artifact.fileName);
+        const source = [
+          `import runtime from '${specifier.startsWith('.') ? specifier : `./${specifier}`}';`,
+          ...artifact.exports.map((name) =>
+            name === 'default'
+              ? 'export default runtime.default;'
+              : `export const ${name} = runtime.${name};`,
+          ),
+        ].join('\n');
+        this.emitFile({ type: 'asset', fileName, source });
+      }
     },
   };
 }
@@ -205,6 +252,11 @@ export function collectComponents(componentsDir = 'src/components'): ComponentsM
 function collectLibraryEntries(): ComponentsMap {
   return {
     index: 'src/index.ts',
+    react: 'src/react.ts',
+    vite: 'src/vite.ts',
+    'web-components': 'src/web-components.ts',
+    'internal/html-decoder': 'src/helpers/html-decoder.ts',
+    'internal/html-decoder.browser': 'src/helpers/html-decoder.browser.ts',
     ...collectComponents(),
     styles: 'src/styles.ts',
   };
@@ -238,12 +290,27 @@ function collectLibraryEntries(): ComponentsMap {
 export default defineConfig(() => {
   return {
     plugins: [
+      {
+        name: 'peaui:conditional-html-decoder',
+        enforce: 'pre',
+        resolveId(source, importer) {
+          if (
+            source === './html-decoder' &&
+            importer?.replaceAll('\\', '/').endsWith('/helpers/functions.helper.ts')
+          ) {
+            return { id: '#peaui-html-decoder', external: true };
+          }
+        },
+      },
       peauiVueCustomElementPlugin(),
       vue(),
       svgLoader(),
       react(),
       peauiComponentStylesPlugin(),
       libInjectCss(),
+      stripCommonJsCssRequiresPlugin(),
+      nodeEsmFacadesPlugin(),
+      deduplicateSourceMaps(),
       dts({
         compilerOptions: {
           noCheck: true,
@@ -251,6 +318,14 @@ export default defineConfig(() => {
         insertTypesEntry: true,
         tsconfigPath: resolve(projectRootDir, 'tsconfig.build.json'),
         exclude: ['**/*.spec.*', '**/*.test.*', '**/*.stories.*'],
+        beforeWriteFile(filePath, content) {
+          // The generated entry facade must expose named types as well as the default component.
+          if (/\/dist\/(?:react|vue)\//.test(filePath.replace(/\\/g, '/'))) {
+            const modulePath = content.match(/import peauiui from ['"]([^'"]+)['"]/);
+            if (modulePath) content += `\nexport * from '${modulePath[1]}';\n`;
+          }
+          return { filePath, content };
+        },
       }),
       GlobPlugin({
         restoreQueryExtension: true,
@@ -269,6 +344,7 @@ export default defineConfig(() => {
       },
     },
     build: {
+      sourcemap: true,
       lib: {
         name: '@peaui/ui',
         entry: collectLibraryEntries(),
@@ -280,6 +356,10 @@ export default defineConfig(() => {
 
           if (name === 'index') {
             return `index.${format === 'es' ? 'js' : 'umd.cjs'}`;
+          }
+
+          if (name === 'web-components') {
+            return `web-components.${format === 'es' ? 'js' : 'umd.cjs'}`;
           }
 
           const normalizedName = name.replace(/\\/g, '/').replace(/^src\//, '');

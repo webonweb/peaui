@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -17,10 +18,12 @@ import {
   type ScrollAreaType,
 } from './scroll-area.shared';
 
-const ScrollAreaVueElement = createVueCustomElement(
-  ScrollAreaVueComponent,
-  `${UIKIT_NAME}-scroll-area`,
-);
+const ScrollAreaVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(ScrollAreaVueComponent, `${UIKIT_NAME}-scroll-area`);
 
 /** Light-DOM adapter exposing the same programmatic viewport API as Vue and React. */
 export class ScrollAreaElement extends ScrollAreaVueElement implements ScrollAreaHandle {

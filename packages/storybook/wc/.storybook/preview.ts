@@ -12,6 +12,9 @@ const preview: Preview = {
         "dark-mode",
         configuredBackground === "dark" || activeBackground === "dark",
       );
+      const scheme = document.body.classList.contains("dark-mode") ? "dark" : "light";
+      document.documentElement.style.colorScheme = scheme;
+      document.body.style.colorScheme = scheme;
 
       return story();
     },

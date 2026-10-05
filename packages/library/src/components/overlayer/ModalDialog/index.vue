@@ -2,22 +2,22 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
-import { computed, nextTick, onMounted, ref, useId, useSlots, watch } from 'vue';
+import { useSlotPresence } from '@/composables/useSlotPresence';
+import { createDialogMotion } from '@/helpers/dialog-motion.helper';
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
 
 // VARIABLES
 //-----------------------------------------------------------------------------------------------//
 const { dataTestId, ariaLabel } = defineProps<{
   dataTestId?: string;
-  ariaLabel: string;
+  ariaLabel?: string;
 }>();
 
 const model = defineModel<boolean>('open', { required: true });
 
-const slots = useSlots();
 const dialogRef = ref<HTMLDialogElement | null>(null);
 const innerRef = ref<HTMLElement | null>(null);
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const classNameComponent = `${UIKIT_NAME}-modal-dialog`;
 const uid = useId();
 
@@ -26,74 +26,55 @@ const uid = useId();
 const innerTestId = computed(() => (dataTestId ? `${dataTestId}-inner` : undefined));
 const headerTestId = computed(() => (dataTestId ? `${dataTestId}-header` : undefined));
 const headerId = computed(() => `${classNameComponent}-header-${uid}`);
-const hasHeaderSlot = computed(() => Boolean(slots.header));
+const hasHeaderSlot = useSlotPresence('header');
 
 // FUNCTIONS
 //-----------------------------------------------------------------------------------------------//
+const motion = createDialogMotion('ModalDialog');
+
 onMounted(() => {
   if (model.value) {
     openDialog();
   }
 });
 
-watch(model, async (open) => {
-  if (open) {
-    await openDialog();
-  } else {
-    await closeDialog();
-  }
+watch(model, (open) => {
+  if (open) openDialog();
+  else closeDialog();
 });
 
-const animateIn = async (el: HTMLElement) => {
-  if (prefersReducedMotion) return;
-
-  el.animate([{ opacity: 0 }, { opacity: 1 }], {
-    duration: 180,
-    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-    fill: 'forwards',
-  });
-};
-
-const animateOut = async (el: HTMLElement) => {
-  if (prefersReducedMotion) return;
-
-  const animation = el.animate([{ opacity: 1 }, { opacity: 0 }], {
-    duration: 160,
-    easing: 'cubic-bezier(0.4, 0, 1, 1)',
-    fill: 'forwards',
-  });
-
-  await animation.finished;
-};
-
-const openDialog = async () => {
+const openDialog = () => {
   const dialog = dialogRef.value;
   const inner = innerRef.value;
   if (!dialog || !inner) return;
-
-  if (!dialog.open) {
-    dialog.showModal();
-  }
-
-  await nextTick();
-  await animateIn(inner);
+  if (!dialog.open) dialog.showModal();
+  motion.run(inner, true);
 };
 
-const closeDialog = async () => {
+const closeDialog = () => {
   const dialog = dialogRef.value;
   const inner = innerRef.value;
-  if (!dialog || !inner) return;
-
-  await animateOut(inner);
-
-  if (dialog.open) {
-    dialog.close();
+  if (!dialog?.open || !inner) {
+    motion.cancel();
+    return;
   }
+  motion.run(inner, false, () => {
+    if (dialog.open) dialog.close();
+  });
 };
 
-const onNativeClose = () => {
+const onNativeClose = (event: Event) => {
+  // A queued native close must not overwrite a newer open request.
+  if (event.type === 'close' && dialogRef.value?.open) return;
+  if (event.type === 'close') {
+    motion.cancel();
+  }
   model.value = false;
 };
+
+onBeforeUnmount(() => {
+  motion.cancel();
+});
 </script>
 
 <template>

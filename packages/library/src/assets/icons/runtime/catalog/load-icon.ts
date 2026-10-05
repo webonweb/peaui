@@ -17,16 +17,14 @@ const bucketRequests = new Map<string, Promise<IconBucket | undefined>>();
 const iconCache = new Map<string, CatalogIconData | undefined>();
 
 function getBucketName(publicName: string): string {
-  const [category = 'core', name = ''] = publicName.split('/');
-  let bucketSource = name;
+  let hash = 2166136261;
 
-  if (bucketSource.startsWith(`${category}-`)) {
-    bucketSource = bucketSource.slice(category.length + 1);
-  } else if (category === 'core' && bucketSource.startsWith('badge-')) {
-    bucketSource = bucketSource.slice('badge-'.length);
+  for (let index = 0; index < publicName.length; index += 1) {
+    hash ^= publicName.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
   }
 
-  return `${category}-${bucketSource.replaceAll('-', '').slice(0, 2)}`;
+  return `catalog-${((hash >>> 0) % 32).toString(16).padStart(2, '0')}`;
 }
 
 async function loadBucket(name: string): Promise<IconBucket | undefined> {

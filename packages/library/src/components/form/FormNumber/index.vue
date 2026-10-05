@@ -6,7 +6,7 @@ import { computed, useAttrs, useSlots, useTemplateRef } from 'vue';
 
 // HELPERS
 //-----------------------------------------------------------------------------------------------//
-import { countDecimalPlaces } from '@/helpers/number.helper';
+import { normalizeNumberInput, stepNumberInput } from '@/helpers/number.helper';
 
 // COMPONENTS
 //-----------------------------------------------------------------------------------------------//
@@ -55,7 +55,7 @@ const {
 
 const slots = useSlots();
 const attrs = useAttrs();
-const inputReference = useTemplateRef('inputReference');
+const inputReference = useTemplateRef<HTMLInputElement>('inputReference');
 const classNameComponent = `${UIKIT_NAME}-form-field-number`;
 const modelValue = defineModel<number | undefined | string>('value', {
   required: true,
@@ -81,12 +81,12 @@ const bindings = computed(() => {
     'aria-valuetext': modelValue.value,
   };
 
-  if (min) {
+  if (min !== undefined) {
     bindings['min'] = min;
     bindings['aria-valuemin'] = min;
   }
 
-  if (max) {
+  if (max !== undefined) {
     bindings['max'] = max;
     bindings['aria-valuemax'] = max;
   }
@@ -102,29 +102,14 @@ const elementTestId = computed(() => (dataTestId ? `${dataTestId}-element` : und
 
 // FUNCTIONS
 //-----------------------------------------------------------------------------------------------//
-const handleBlurValue = (value: number) => {
+const handleBlurValue = (value: string | number | undefined) => {
   if (disabled || readonly) {
     return;
   }
 
-  if (typeof min === 'number' && value <= min) {
-    modelValue.value = min as number;
-    // @ts-ignore
-    inputReference.value.value = min as number;
-    return;
-  }
-
-  if (typeof max === 'number' && value >= max) {
-    modelValue.value = max as number;
-    // @ts-ignore
-    inputReference.value.value = max as number;
-    return;
-  }
-
-  const decimalFix = step ? (step.toString().split('.')[1] || '').length || 0 : 0;
-  modelValue.value = parseFloat(value.toFixed(decimalFix));
-  // @ts-ignore
-  inputReference.value.value = parseFloat(value.toFixed(decimalFix));
+  const next = normalizeNumberInput(value, { min, max, step });
+  modelValue.value = next;
+  if (inputReference.value) inputReference.value.value = next === undefined ? '' : String(next);
 };
 
 const onArrowClick = (type: 'up' | 'down') => {
@@ -132,17 +117,13 @@ const onArrowClick = (type: 'up' | 'down') => {
     return;
   }
 
-  const currentStep = step ? step : 1;
-
-  let startValue = type === 'up' && min ? min : 0;
-  startValue = type === 'down' && max ? max : startValue;
-
-  let value =
-    type === 'up'
-      ? (modelValue.value === undefined ? startValue : (modelValue.value as number)) + currentStep
-      : (modelValue.value === undefined ? startValue : (modelValue.value as number)) - currentStep;
-
-  handleBlurValue(Number(value.toFixed(countDecimalPlaces(currentStep))));
+  handleBlurValue(
+    stepNumberInput(inputReference.value?.value ?? modelValue.value, type === 'up' ? 1 : -1, {
+      min,
+      max,
+      step,
+    }),
+  );
 };
 </script>
 
@@ -180,7 +161,7 @@ const onArrowClick = (type: 'up' | 'down') => {
         ]"
         :data-testid="elementTestId"
         @blur.stop.prevent="
-          (event: Event) => handleBlurValue(Number((event.target as HTMLInputElement).value))
+          (event: Event) => handleBlurValue((event.target as HTMLInputElement).value)
         "
         @keydown.down.prevent="onArrowClick('down')"
         @keydown.up.prevent="onArrowClick('up')"

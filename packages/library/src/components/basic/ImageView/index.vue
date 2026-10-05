@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { getHumanizedSourceText } from './image-view.shared';
 import { UIKIT_NAME } from '@/constants';
 import { computed, useAttrs, type StyleValue } from 'vue';
 
@@ -57,36 +58,6 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
   return undefined;
 }
 
-function getHumanizedSourceText(src: string | undefined): string | undefined {
-  if (!src) {
-    return undefined;
-  }
-
-  const normalizedSource = src.trim();
-
-  if (
-    normalizedSource.length === 0 ||
-    normalizedSource.startsWith('data:') ||
-    normalizedSource.startsWith('blob:')
-  ) {
-    return undefined;
-  }
-
-  const sourceWithoutHash = normalizedSource.split('#')[0] ?? normalizedSource;
-  const sourceWithoutQuery = sourceWithoutHash.split('?')[0] ?? sourceWithoutHash;
-  const lastSegment = sourceWithoutQuery.split('/').filter(Boolean).pop();
-
-  if (!lastSegment) {
-    return undefined;
-  }
-
-  const decodedSegment = decodeURIComponent(lastSegment);
-  const segmentWithoutExtension = decodedSegment.replace(/\.[^.]+$/, '');
-  const humanizedText = segmentWithoutExtension.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
-
-  return humanizedText.length > 0 ? humanizedText : undefined;
-}
-
 const normalizedSrc = computed(() => getNormalizedAttributeValue(props.src));
 const normalizedMax = computed(() => getNormalizedAttributeValue(props.max));
 const ariaLabel = computed(() => getNormalizedAttributeValue(attrs['aria-label']));
@@ -132,7 +103,6 @@ const rootStyle = computed<StyleValue | undefined>(() => {
 });
 const imageAttrs = computed<Record<string, string>>(() => {
   const nextAttrs: Record<string, string> = {
-    alt: resolvedAlt.value,
     class: `${classNameComponent}__image`,
     src: normalizedSrc.value ?? '',
   };
@@ -164,6 +134,6 @@ const imageAttrs = computed<Record<string, string>>(() => {
 
 <template>
   <span :class="classes" :style="rootStyle" v-bind="rootAttrs">
-    <img v-if="normalizedSrc" v-bind="imageAttrs" />
+    <img v-if="normalizedSrc" v-bind="imageAttrs" :alt="resolvedAlt" />
   </span>
 </template>

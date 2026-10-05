@@ -21,9 +21,11 @@ const {
   isFlex = false,
   dataTestId,
 } = defineProps<{
+  /** Total record count used to calculate the visible range and page count. */
   rowsNumber: number;
   rowsPerPage: number;
   page: number;
+  /** Total page count; zero suppresses pagination. Pages are derived from rowsNumber/rowsPerPage. */
   total: number;
   under?: boolean;
   isFlex?: boolean;

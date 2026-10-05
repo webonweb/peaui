@@ -14,7 +14,7 @@ export default defineConfig({
   timeout: 30_000,
   use: {
     baseURL,
-    browserName: "chromium",
+    browserName: (process.env.PEAUI_BROWSER ?? 'chromium') as 'chromium' | 'firefox' | 'webkit',
     headless: true,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",

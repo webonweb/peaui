@@ -17,7 +17,7 @@ peaui-transfer-list {
   color: var(--peaui-color-grey-900);
   font-family: inherit;
   container-type: inline-size;
-  row-gap: 0.5rem;
+  row-gap: var(--peaui-space-2);
 }
 
 .peaui-transfer-list__layout {
@@ -25,7 +25,7 @@ peaui-transfer-list {
   min-inline-size: 0;
   align-items: center;
   grid-template-columns: minmax(0, 1fr) 2.75rem minmax(0, 1fr);
-  gap: 0.75rem;
+  gap: var(--peaui-space-3);
 }
 
 .peaui-transfer-list__panel {
@@ -34,7 +34,7 @@ peaui-transfer-list {
   min-inline-size: 0;
   overflow: hidden;
   border: 1px solid var(--peaui-color-grey-200);
-  border-radius: 0.75rem;
+  border-radius: var(--peaui-radius-lg);
   background: var(--peaui-color-grey-0);
   box-shadow: 0 0.125rem 0.5rem rgb(from var(--peaui-color-grey-900) r g b / 0.05);
 }
@@ -54,7 +54,7 @@ peaui-transfer-list {
   justify-content: space-between;
   padding: 0.875rem 1rem;
   border-block-end: 1px solid var(--peaui-color-grey-200);
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-transfer-list__panel-title {
@@ -99,7 +99,7 @@ peaui-transfer-list {
   min-inline-size: 0;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-transfer-list__selection-summary .peaui-form-field-checkbox {
@@ -126,7 +126,7 @@ peaui-transfer-list {
   min-inline-size: 0;
   overflow: hidden;
   border: 1px solid var(--peaui-color-grey-200);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background: var(--peaui-color-grey-0);
 }
 
@@ -162,7 +162,7 @@ peaui-transfer-list {
   align-items: center;
   padding: 0.5rem 0.625rem;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   grid-template-columns: 1.25rem minmax(0, 1fr);
   gap: 0.625rem;
   cursor: pointer;
@@ -203,7 +203,7 @@ peaui-transfer-list {
   block-size: 1.125rem;
   place-items: center;
   border: 1px solid var(--peaui-color-grey-400);
-  border-radius: 0.25rem;
+  border-radius: var(--peaui-radius-sm);
   color: var(--peaui-color-grey-0);
 }
 
@@ -282,7 +282,7 @@ peaui-transfer-list {
   min-inline-size: 0;
   align-content: center;
   grid-column: 2;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-transfer-list__control.peaui-button-action {

@@ -20,7 +20,7 @@ function factory(props?: Partial<InstanceType<typeof Component>['$props']>) {
       ariaLabel: 'Navigation tabs',
       tabs: [],
       ...props,
-    } as any,
+    },
   });
 }
 

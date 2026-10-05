@@ -50,9 +50,7 @@ const mountComponent = (
   props: Record<string, unknown> = {},
   attrs: Record<string, unknown> = {},
 ) => {
-  let wrapper: ReturnType<typeof mount<typeof SearchInput>>;
-
-  wrapper = mount(SearchInput, {
+  const wrapper: ReturnType<typeof mount<typeof SearchInput>> = mount(SearchInput, {
     props: {
       value: '',
       debounceTime: 300,
@@ -107,11 +105,11 @@ describe('SearchInput (index.vue)', () => {
 
     expect(wrapper.get('input').attributes('id')).toContain('peaui-search-input-');
     expect(wrapper.get('input').attributes('name')).toBe('search-input');
-    expect(field.get('[data-icon="search"]').exists()).toBe(true);
+    expect(field.find('[data-icon="search"]').exists()).toBe(true);
     expect(button.attributes('aria-label')).toBe('Wyszukaj');
     expect(button.attributes('disabled')).toBeUndefined();
     expect(button.text()).toBe('');
-    expect(button.get('[data-icon="search"]').exists()).toBe(true);
+    expect(button.find('[data-icon="search"]').exists()).toBe(true);
   });
 
   it('preserves explicit id and name attrs passed to the input', () => {

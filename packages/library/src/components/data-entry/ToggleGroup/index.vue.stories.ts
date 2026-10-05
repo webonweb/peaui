@@ -23,10 +23,12 @@ const meta = {
     type: { control: 'select', options: ['single', 'multiple'] },
     variant: { control: 'select', options: ['default', 'outline', 'ghost'] },
   },
-} satisfies Meta<typeof ToggleGroupComponent>;
+} satisfies Meta<InstanceType<typeof ToggleGroupComponent>['$props'] & { dir?: 'ltr' | 'rtl' }>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<
+  InstanceType<typeof ToggleGroupComponent>['$props'] & { dir?: 'ltr' | 'rtl' }
+>;
 const { getSettings } = useSettingsStorie();
 
 export const Playground: Story = {

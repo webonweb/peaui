@@ -1,4 +1,5 @@
 /** @jsxImportSource react */
+import { useFormReset } from './renderers/runtime.shared';
 import {
   Fragment,
   useEffect,
@@ -110,6 +111,14 @@ export function FormPinInputRenderer({
   const cells = Array.from({ length }, (_, index) => modelValue[index] ?? '');
   const [activeIndex, setActiveIndex] = useState(() => Math.min(modelValue.length, length - 1));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const resetRef = useRef<HTMLInputElement>(null);
+  const initialResetValue = useRef(normalizePinValue(defaultValue, options));
+  useFormReset(resetRef, () => {
+    if (!isControlled) {
+      setInternalValue(initialResetValue.current);
+      setActiveIndex(Math.min(initialResetValue.current.length, length - 1));
+    }
+  });
   const lastCompletedValue = useRef(complete ? modelValue : '');
   const labelId = `${id}-label`;
   const descriptionId = `${id}-description`;
@@ -304,7 +313,7 @@ export function FormPinInputRenderer({
                 aria-label={getPinCellLabel(type, index, length)}
                 aria-readonly={readonly || undefined}
                 aria-required={required || undefined}
-                autoCapitalize="off"
+                autoCapitalize="none"
                 autoComplete={index === 0 ? autocomplete : 'off'}
                 autoFocus={autoFocus && index === Math.min(modelValue.length, length - 1)}
                 className="peaui-form-pin-input__cell"
@@ -320,6 +329,13 @@ export function FormPinInputRenderer({
                   }
                 }}
                 onFocus={(event) => {
+                  if (typeof event.currentTarget.scrollIntoView === 'function') {
+                    event.currentTarget.scrollIntoView({
+                      behavior: 'auto',
+                      block: 'nearest',
+                      inline: 'nearest',
+                    });
+                  }
                   setActiveIndex(index);
                   event.currentTarget.select();
                   call(props, 'onFocus', event, index);
@@ -329,9 +345,13 @@ export function FormPinInputRenderer({
                 readOnly={readonly}
                 ref={(element) => {
                   inputRefs.current[index] = element;
-                  if (index === 0) assignRef(forwardedRef, element);
+                  if (index === 0) {
+                    resetRef.current = element;
+                    assignRef(forwardedRef, element);
+                  }
                 }}
                 required={required}
+                form={text(props, 'form') || undefined}
                 spellCheck={false}
                 tabIndex={index === activeIndex ? 0 : -1}
                 type={mask ? 'password' : 'text'}

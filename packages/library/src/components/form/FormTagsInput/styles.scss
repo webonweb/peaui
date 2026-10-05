@@ -40,7 +40,7 @@ peaui-form-tags-input {
   box-sizing: border-box;
   cursor: text;
   border: 1px solid var(--peaui-color-grey-300);
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   background-color: var(--peaui-color-grey-0);
 
   @include set-param(gap, 0.375rem);
@@ -263,7 +263,7 @@ peaui-form-tags-input {
   min-height: 2.75rem;
   box-sizing: border-box;
   cursor: pointer;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   overflow-wrap: anywhere;
 
   @include transition(background-color, color);

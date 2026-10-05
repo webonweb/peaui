@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import SelectableCardVueComponent from './index.ce.vue';
 
-export const SelectableCardElement = createVueCustomElement(
-  SelectableCardVueComponent,
-  `${UIKIT_NAME}-selectable-card`,
-);
+export const SelectableCardElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(SelectableCardVueComponent, `${UIKIT_NAME}-selectable-card`);
 
 export function defineSelectableCard(): void {
   definePeauiCustomElement(SelectableCardElement);

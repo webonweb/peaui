@@ -68,12 +68,12 @@ const PopoverOverlayerStub = defineComponent({
     }
 
     function handleClick(event: MouseEvent) {
-      attrs.onClick?.(event);
+      if (typeof attrs.onClick === 'function') attrs.onClick(event);
       togglePopover();
     }
 
     function handleKeydown(event: KeyboardEvent) {
-      attrs.onKeydown?.(event);
+      if (typeof attrs.onKeydown === 'function') attrs.onKeydown(event);
 
       if (['Enter', ' ', 'Spacebar', 'ArrowDown'].includes(event.key)) {
         showPopover();
@@ -128,7 +128,7 @@ describe('TableBodyActionsColumn.vue', () => {
           key: 'actions',
           label: 'Akcje',
           resolve: () => [{ key: 'edit', label: 'Edytuj', icon: 'edit', simple: true }],
-        } as any,
+        },
       },
       global: {
         stubs: {
@@ -157,7 +157,7 @@ describe('TableBodyActionsColumn.vue', () => {
             { key: 'edit', label: 'Edytuj', icon: 'edit' },
             { key: 'copy', label: 'Kopiuj', icon: 'copy' },
           ],
-        } as any,
+        },
       },
       global: {
         stubs: {
@@ -196,7 +196,7 @@ describe('TableBodyActionsColumn.vue', () => {
             { key: 'edit', label: 'Edytuj', icon: 'edit' },
             { key: 'copy', label: 'Kopiuj', icon: 'copy' },
           ],
-        } as any,
+        },
       },
       global: {
         stubs: {

@@ -86,7 +86,7 @@ describe('FormDateTimePicker Web Component', () => {
     const input = getInput(element);
     expect(input).toHaveAccessibleName(/^Termin spotkania/);
     expect(input).toHaveAttribute('aria-haspopup', 'dialog');
-    expect(input).toHaveAttribute('aria-controls', 'meeting-date-time-wc-panel');
+    expect(input).toHaveAttribute('aria-controls', 'meeting-date-time-wc-control-panel');
     expect(input).toHaveAttribute('aria-describedby');
     expect(input).toHaveValue('18.08.2026 09:30');
   });

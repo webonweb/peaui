@@ -42,6 +42,7 @@ watchEffect(async () => {
 
   html.value = highlighter.codeToHtml(props.code, {
     lang: props.language,
+    defaultColor: "light-dark()",
     themes: {
       light: "github-light-high-contrast",
       dark: "github-dark-high-contrast",
@@ -80,7 +81,7 @@ watchEffect(async () => {
   justify-content: space-between;
   padding: 0 0.85rem 0 1rem;
   border-bottom: 1px solid var(--docs-border, #dce3ec);
-  color: #5d6878;
+  color: var(--docs-muted, #5d6878);
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -118,6 +119,7 @@ watchEffect(async () => {
 }
 
 :global(body.dark-mode .story-source) {
+  color-scheme: dark;
   background: #0c1220;
 }
 

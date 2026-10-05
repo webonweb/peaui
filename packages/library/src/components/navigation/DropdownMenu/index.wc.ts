@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,10 +7,12 @@ import {
 
 import DropdownMenuVueComponent from './index.vue';
 
-const DropdownMenuVueElement = createVueCustomElement(
-  DropdownMenuVueComponent,
-  `${UIKIT_NAME}-dropdown-menu`,
-);
+const DropdownMenuVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(DropdownMenuVueComponent, `${UIKIT_NAME}-dropdown-menu`);
 
 /**
  * Vue Custom Elements consume projected light-DOM content as the default slot.

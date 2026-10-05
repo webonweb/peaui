@@ -2,6 +2,7 @@
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
 import { UIKIT_NAME } from '@/constants';
+import { bindTooltipVisibility } from './tooltip-visibility.shared';
 import {
   Comment,
   computed,
@@ -23,14 +24,7 @@ defineOptions({
 // TYPES
 //-----------------------------------------------------------------------------------------------//
 type Placement =
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+  'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 type Variant = 'default' | 'disabled';
 
@@ -60,6 +54,7 @@ let animationFrameId: number | null = null;
 let describedTriggerElements: HTMLElement[] = [];
 let hoverTriggerElement: HTMLElement | null = null;
 let focusTriggerElement: HTMLElement | null = null;
+let stopVisibility: (() => void) | undefined;
 const focusableTriggerSelector =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
 const managedTriggerAncestorSelector =
@@ -97,8 +92,6 @@ const sharedStyles = computed(() => ({
 const triggerStyles = computed<StyleValue>(() =>
   attrs.style === undefined ? sharedStyles.value : [attrs.style as StyleValue, sharedStyles.value],
 );
-const triangleClass = computed(() => `${classNameComponent}__triangle`);
-
 const contentTestId = computed(() =>
   props.dataTestId ? `${props.dataTestId}-content` : undefined,
 );
@@ -218,78 +211,11 @@ function hasVisibleTextContent(nodes: unknown): boolean {
   return false;
 }
 
-const onTriggerMouseEnter = () => {
-  if (props.disabled) {
-    return;
-  }
-
-  isTooltipVisible.value = true;
-};
-
-const onTriggerMouseLeave = () => {
-  isTooltipVisible.value = false;
-};
-
-const onTriggerFocusIn = () => {
-  if (props.disabled) {
-    return;
-  }
-
-  isTooltipVisible.value = true;
-};
-
-const onTriggerFocusOut = (event: FocusEvent) => {
-  const currentTarget = event.currentTarget as HTMLElement | null;
-  const relatedTarget = event.relatedTarget as Node | null;
-
-  if (currentTarget && relatedTarget && currentTarget.contains(relatedTarget)) {
-    return;
-  }
-
-  isTooltipVisible.value = false;
-};
-
-const attachHoverListeners = (element: HTMLElement | null) => {
-  if (!element) {
-    return;
-  }
-
-  element.addEventListener('mouseenter', onTriggerMouseEnter);
-  element.addEventListener('mouseleave', onTriggerMouseLeave);
-};
-
-const detachHoverListeners = (element: HTMLElement | null) => {
-  if (!element) {
-    return;
-  }
-
-  element.removeEventListener('mouseenter', onTriggerMouseEnter);
-  element.removeEventListener('mouseleave', onTriggerMouseLeave);
-};
-
-const attachFocusListeners = (element: HTMLElement | null) => {
-  if (!element) {
-    return;
-  }
-
-  element.addEventListener('focusin', onTriggerFocusIn);
-  element.addEventListener('focusout', onTriggerFocusOut);
-};
-
-const detachFocusListeners = (element: HTMLElement | null) => {
-  if (!element) {
-    return;
-  }
-
-  element.removeEventListener('focusin', onTriggerFocusIn);
-  element.removeEventListener('focusout', onTriggerFocusOut);
-};
-
 const syncVisibilityTriggers = () => {
   if (props.disabled) {
     isTooltipVisible.value = false;
-    detachHoverListeners(hoverTriggerElement);
-    detachFocusListeners(focusTriggerElement);
+    stopVisibility?.();
+    stopVisibility = undefined;
     hoverTriggerElement = null;
     focusTriggerElement = null;
     return;
@@ -298,16 +224,20 @@ const syncVisibilityTriggers = () => {
   const nextHoverTrigger = triggerReference.value;
   const nextFocusTrigger = managedTriggerAncestor.value ?? triggerReference.value;
 
-  if (hoverTriggerElement !== nextHoverTrigger) {
-    detachHoverListeners(hoverTriggerElement);
+  if (hoverTriggerElement !== nextHoverTrigger || focusTriggerElement !== nextFocusTrigger) {
+    stopVisibility?.();
     hoverTriggerElement = nextHoverTrigger;
-    attachHoverListeners(hoverTriggerElement);
-  }
-
-  if (focusTriggerElement !== nextFocusTrigger) {
-    detachFocusListeners(focusTriggerElement);
     focusTriggerElement = nextFocusTrigger;
-    attachFocusListeners(focusTriggerElement);
+    if (nextHoverTrigger && nextFocusTrigger && tooltipReference.value) {
+      stopVisibility = bindTooltipVisibility(
+        nextHoverTrigger,
+        tooltipReference.value,
+        (visible) => {
+          isTooltipVisible.value = visible;
+        },
+        nextFocusTrigger,
+      );
+    }
   }
 };
 
@@ -428,8 +358,7 @@ onUpdated(() => {
 
 onBeforeUnmount(() => {
   describedTriggerElements.forEach(removeTooltipDescriptionFromTrigger);
-  detachHoverListeners(hoverTriggerElement);
-  detachFocusListeners(focusTriggerElement);
+  stopVisibility?.();
   window.removeEventListener('resize', onHandleViewportChange);
   window.visualViewport?.removeEventListener('resize', onHandleViewportChange);
   if (animationFrameId !== null) {

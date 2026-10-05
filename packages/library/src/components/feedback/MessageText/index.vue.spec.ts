@@ -28,8 +28,8 @@ const SvgIconStub = defineComponent({
 });
 
 const mountMessageText = (options: {
-  props: Record<string, unknown>;
-  slots?: Record<string, unknown>;
+  props: InstanceType<typeof MessageText>['$props'];
+  slots?: Record<string, string | (() => import('vue').VNode[])>;
 }) =>
   mount(MessageText, {
     ...options,
@@ -41,7 +41,7 @@ const mountMessageText = (options: {
   });
 
 describe('MessageText (index.vue)', () => {
-  it('renders root div with correct id `${id}-${variant}`', () => {
+  it('preserves the supplied id for external ARIA relationships', () => {
     const wrapper = mountMessageText({
       props: {
         id: 'msg',
@@ -53,7 +53,7 @@ describe('MessageText (index.vue)', () => {
     });
 
     const root = wrapper.get('div');
-    expect(root.attributes('id')).toBe('msg-info');
+    expect(root.attributes('id')).toBe('msg');
   });
 
   it('sets data-testid on root when provided', () => {
@@ -104,7 +104,7 @@ describe('MessageText (index.vue)', () => {
     const root = wrapper.get('div');
     const cls = root.attributes('class') ?? '';
 
-    expect(root.attributes('id')).toBe('msg-white');
+    expect(root.attributes('id')).toBe('msg');
     expect(cls).toContain('peaui-message-text--variant-white');
     expect(wrapper.find('svg').exists()).toBe(false);
     expect(wrapper.findAll('path')).toHaveLength(0);
@@ -263,6 +263,6 @@ describe('MessageText (index.vue)', () => {
       slots: { default: 'Hello' },
     });
 
-    expect(wrapper.get('div').attributes('id')).toBe('msg-danger');
+    expect(wrapper.get('div').attributes('id')).toBe('msg');
   });
 });

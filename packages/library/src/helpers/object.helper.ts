@@ -23,19 +23,40 @@
  * //   active: true
  * // }
  */
-import { ArraySchema, NumberSchema, StringSchema } from 'yup';
-
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isTransformableRecord(value: unknown): value is Record<string, unknown> {
-  return (
-    isPlainRecord(value) &&
-    !(value instanceof StringSchema) &&
-    !(value instanceof NumberSchema) &&
-    !(value instanceof ArraySchema)
-  );
+  return isPlainRecord(value);
+}
+
+/** Object paths are data only; prototype-related keys are never traversed or assigned. */
+export function isSafeObjectPath(path: string): boolean {
+  return path.split('.').every((key) => !['__proto__', 'constructor', 'prototype'].includes(key));
+}
+
+export function setDeepValue(target: Record<string, unknown>, path: string, value: unknown): void {
+  if (!isSafeObjectPath(path)) return;
+  const keys = path.split('.');
+  let cursor = target;
+  keys.forEach((key, index) => {
+    if (index === keys.length - 1) {
+      cursor[key] = value;
+      return;
+    }
+    const next = Object.hasOwn(cursor, key) ? cursor[key] : undefined;
+    if (!isPlainRecord(next)) {
+      const child: Record<string, unknown> = {};
+      cursor[key] = child;
+      cursor = child;
+    } else {
+      // Copy the path so a draft does not mutate nested objects owned by the consumer.
+      const child = { ...next };
+      cursor[key] = child;
+      cursor = child;
+    }
+  });
 }
 
 export function unflatten(
@@ -45,27 +66,7 @@ export function unflatten(
   const result: Record<string, unknown> = {};
 
   for (const [flatKey, value] of Object.entries(obj)) {
-    const keys = flatKey.split('.');
-    let cursor: Record<string, unknown> = result;
-
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-
-      if (i === keys.length - 1) {
-        cursor[String(key)] = value;
-      } else {
-        const nextValue = cursor[String(key)];
-
-        if (!isPlainRecord(nextValue)) {
-          const nextCursor: Record<string, unknown> = {};
-          cursor[String(key)] = nextCursor;
-          cursor = nextCursor;
-          continue;
-        }
-
-        cursor = nextValue;
-      }
-    }
+    setDeepValue(result, flatKey, value);
   }
 
   if (inner !== undefined) {
@@ -92,10 +93,11 @@ export function getDeepValue<T = unknown>(
   obj: Record<string, unknown>,
   path: string,
 ): T | undefined {
+  if (!isSafeObjectPath(path)) return undefined;
   let current: unknown = obj;
 
   for (const key of path.split('.')) {
-    if (!isPlainRecord(current)) {
+    if (!isPlainRecord(current) || !Object.hasOwn(current, key)) {
       return undefined;
     }
 

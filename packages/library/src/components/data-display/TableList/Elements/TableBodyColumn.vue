@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import type { Component } from 'vue';
+import { columnsDictionary } from './column-components';
 import type { TableColumn } from '../index.vue';
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 import { copyToClipboard, stripHtmlUsingDom } from '@/helpers/functions.helper';
-import { getDeepValue } from '@/helpers/object.helper';
 import { notificationSuccess } from '@/helpers/notifications.helper';
 import InfoTooltip from '@/components/overlayer/InfoTooltip/index.vue';
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import {
   buildTableTestId,
+  resolveTableColumnType,
+  resolveTableColumnValue,
+  resolveTableTextValue,
   TABLE_LIST_CLASS,
   TABLE_LIST_DEFAULT_COLUMN_WIDTH,
   type TableLockedColumnMeta,
@@ -18,7 +20,7 @@ const { column, dataTestId, index, lockedColumn, record } = defineProps<{
   index?: number;
   column: TableColumn;
   lockedColumn?: TableLockedColumnMeta;
-  record: Record<string, any>;
+  record: Record<string, unknown>;
   dataTestId?: string;
   isExpanded?: boolean;
 }>();
@@ -28,35 +30,16 @@ const emit = defineEmits<{
   (e: 'on:update', value: string | undefined | number, column: TableColumn): void;
 }>();
 
-const columnsDictionary: Readonly<Record<string, Component>> = {
-  action: defineAsyncComponent(() => import('./ActionColumn.vue')),
-  array: defineAsyncComponent(() => import('./ArrayColumn.vue')),
-  date: defineAsyncComponent(() => import('./DateColumn.vue')),
-  editAction: defineAsyncComponent(() => import('./EditActionColumn.vue')),
-  EditActionColumn: defineAsyncComponent(() => import('./EditActionColumn.vue')),
-  editable: defineAsyncComponent(() => import('./EditableColumn.vue')),
-  editableInline: defineAsyncComponent(() => import('./EditableInline.vue')),
-  expandable: defineAsyncComponent(() => import('./ExpandableColumn.vue')),
-  empty: defineAsyncComponent(() => import('./EmptyColumn.vue')),
-  index: defineAsyncComponent(() => import('./IndexColumn.vue')),
-  link: defineAsyncComponent(() => import('./LinkColumn.vue')),
-  status: defineAsyncComponent(() => import('./StatusColumn.vue')),
-  stepper: defineAsyncComponent(() => import('./StepperColumn.vue')),
-  tag: defineAsyncComponent(() => import('./TagColumn.vue')),
-  text: defineAsyncComponent(() => import('./TextColumn.vue')),
-} as const;
-
 const resolvedType = computed(() => {
   if (column.inline) {
     return 'editableInline';
   }
 
-  if (typeof column.type === 'function') {
-    return column.type(record) as string;
-  }
-
-  return (column.type || 'text') as string;
+  return resolveTableColumnType(column, record);
 });
+const isPlainText = computed(
+  () => resolvedType.value === 'text' && !column.canCopy && !column.hintColumn,
+);
 
 const cellTestId = computed(() =>
   buildTableTestId(dataTestId, 'cell', stripHtmlUsingDom(column.key || 'column')),
@@ -81,9 +64,7 @@ const cellStyles = computed(() => {
 });
 
 function getResolvedValue(): unknown {
-  return column.template
-    ? column.template(record[column.key] as string, record)
-    : getDeepValue(record, column.key);
+  return resolveTableColumnValue(column, record);
 }
 
 async function handleCopyText(text: string): Promise<void> {
@@ -99,7 +80,14 @@ async function handleCopyText(text: string): Promise<void> {
     :style="cellStyles"
     :width="column.width ? `${column.width}px` : '100%'"
   >
+    <span
+      v-if="isPlainText"
+      :class="`${TABLE_LIST_CLASS}__text-value ${TABLE_LIST_CLASS}__plain-text-column`"
+      :data-test-id="cellTestId"
+      >{{ resolveTableTextValue(getResolvedValue(), column.deep) }}</span
+    >
     <div
+      v-else
       :class="[
         `${TABLE_LIST_CLASS}__body-cell-content`,
         column.canCopy && `${TABLE_LIST_CLASS}__body-cell-content--copyable`,

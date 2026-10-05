@@ -1,6 +1,13 @@
 <script setup lang="ts">
 // LIBRARIES
 //-----------------------------------------------------------------------------------------------//
+import { prefersReducedMotion } from '@/helpers/browser.helper';
+import {
+  getCarouselMetrics,
+  createCarouselRotationToggle,
+  CAROUSEL_PAUSE_LABEL,
+  CAROUSEL_RESUME_LABEL,
+} from './carousel.shared';
 import SvgIcon from '@/components/basic/SvgIcon/index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
@@ -37,12 +44,16 @@ const props = withDefaults(
     isNavigationDotsVisible?: boolean;
     isNavigationVisible?: boolean;
     withAnimation?: boolean;
+    pauseLabel?: string;
+    resumeLabel?: string;
   }>(),
   {
     animationDelay: 2000,
     isNavigationDotsVisible: true,
     isNavigationVisible: true,
     withAnimation: false,
+    pauseLabel: CAROUSEL_PAUSE_LABEL,
+    resumeLabel: CAROUSEL_RESUME_LABEL,
   },
 );
 
@@ -57,6 +68,20 @@ const visibleSlidesCount = ref(
 const slideStep = ref(0);
 const isPointerDragging = ref(false);
 const totalSlides = ref(0);
+const rotationPaused = ref(false);
+const rotationToggle = createCarouselRotationToggle();
+const isPointerHovering = ref(false);
+let motionQuery: MediaQueryList | undefined;
+function updateMotionPreference(): void {
+  if (motionQuery?.matches) rotationPaused.value = true;
+}
+function handleFocusIn(event: FocusEvent): void {
+  if (
+    !(event.relatedTarget instanceof Node) ||
+    !(event.currentTarget as HTMLElement).contains(event.relatedTarget)
+  )
+    rotationPaused.value = true;
+}
 
 let resizeObserver: ResizeObserver | null = null;
 let pointerStartX = 0;
@@ -71,7 +96,6 @@ const INTERACTIVE_TARGET_SELECTOR =
 
 // COMPUTED PROPERTIES
 //-----------------------------------------------------------------------------------------------//
-const renderedSlides = computed(() => normalizeSlides(slots.default?.() ?? []));
 
 const requestedVisibleSlides = computed(() => {
   const value = props.defaultVisibleSlides ?? props.defualtVisibleSlides ?? 4;
@@ -246,26 +270,13 @@ function updateMetrics() {
   const nextTotalSlides = viewportElement.querySelectorAll(`.${classNameComponent}__slide`).length;
   totalSlides.value = nextTotalSlides;
 
-  const gap = getViewportGap(viewportElement);
-  const slideWidth = getSlideWidth();
-
-  slideStep.value = slideWidth > 0 ? slideWidth + gap : 0;
-
-  if (slideWidth > 0 && slideStep.value > 0) {
-    const calculatedVisibleSlides = Math.round(
-      (viewportElement.clientWidth + gap) / slideStep.value,
-    );
-
-    visibleSlidesCount.value = Math.max(
-      1,
-      Math.min(totalSlides.value || 1, calculatedVisibleSlides || 1),
-    );
-  } else {
-    visibleSlidesCount.value = Math.min(
-      requestedVisibleSlides.value,
-      totalSlides.value || requestedVisibleSlides.value,
-    );
-  }
+  const metrics = getCarouselMetrics(
+    viewportElement,
+    totalSlides.value,
+    requestedVisibleSlides.value,
+  );
+  slideStep.value = metrics.step;
+  visibleSlidesCount.value = metrics.visible;
 
   const nextIndex = clampIndex(currentIndex.value);
 
@@ -308,7 +319,7 @@ function scrollToIndex(index: number, behavior: ScrollBehavior = 'smooth') {
   currentIndex.value = clampedIndex;
   viewportElement.scrollTo({
     left: clampedIndex * calculatedStep,
-    behavior,
+    behavior: prefersReducedMotion() ? 'auto' : behavior,
   });
 }
 
@@ -473,7 +484,13 @@ function clearAnimationInterval() {
 function syncAnimationInterval() {
   clearAnimationInterval();
 
-  if (!props.withAnimation || !hasOverflow.value || isPointerDragging.value) {
+  if (
+    !props.withAnimation ||
+    !hasOverflow.value ||
+    isPointerDragging.value ||
+    rotationPaused.value ||
+    isPointerHovering.value
+  ) {
     return;
   }
 
@@ -483,6 +500,9 @@ function syncAnimationInterval() {
 }
 
 onMounted(async () => {
+  motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  updateMotionPreference();
+  motionQuery?.addEventListener('change', updateMotionPreference);
   await nextTick();
   updateMetrics();
   syncIndexFromScroll();
@@ -500,6 +520,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  motionQuery?.removeEventListener('change', updateMotionPreference);
   resizeObserver?.disconnect();
   resizeObserver = null;
   clearAnimationInterval();
@@ -528,7 +549,14 @@ watch(
 );
 
 watch(
-  [() => props.withAnimation, resolvedAnimationDelay, hasOverflow, isPointerDragging],
+  [
+    () => props.withAnimation,
+    resolvedAnimationDelay,
+    hasOverflow,
+    isPointerDragging,
+    rotationPaused,
+    isPointerHovering,
+  ],
   () => {
     syncAnimationInterval();
   },
@@ -539,7 +567,26 @@ watch(
 </script>
 
 <template>
-  <div v-bind="rootAttrs" :class="rootClasses" :style="rootStyle" @keydown="handleKeydown">
+  <div
+    v-bind="rootAttrs"
+    :class="rootClasses"
+    :style="rootStyle"
+    @keydown="handleKeydown"
+    @focusin="handleFocusIn"
+    @focusout="syncAnimationInterval"
+    @mouseenter="isPointerHovering = true"
+    @mouseleave="isPointerHovering = false"
+  >
+    <button
+      v-if="withAnimation && hasOverflow"
+      type="button"
+      :class="`${classNameComponent}__rotation`"
+      :aria-controls="viewportId"
+      @pointerdown="rotationToggle.capturePointerState(rotationPaused)"
+      @click="rotationPaused = rotationToggle.toggle(rotationPaused, $event)"
+    >
+      {{ rotationPaused ? resumeLabel : pauseLabel }}
+    </button>
     <div
       ref="viewportRef"
       :id="viewportId"
@@ -555,17 +602,22 @@ watch(
       @pointerup="handlePointerEnd"
       @scroll.passive="handleScroll"
     >
-      <div
-        v-for="(slide, index) in renderedSlides"
-        :key="index"
-        :class="`${classNameComponent}__slide`"
-        :aria-label="getSlideAriaLabel(index, renderedSlides.length)"
-        :data-testid="getSlideTestId(index)"
-        aria-roledescription="slide"
-        role="group"
+      <template
+        v-for="(renderedSlides, groupIndex) in [normalizeSlides(slots.default?.() ?? [])]"
+        :key="groupIndex"
       >
-        <component :is="slide" />
-      </div>
+        <div
+          v-for="(slide, index) in renderedSlides"
+          :key="slide.key ?? index"
+          :class="`${classNameComponent}__slide`"
+          :aria-label="getSlideAriaLabel(index, renderedSlides.length)"
+          :data-testid="getSlideTestId(index)"
+          aria-roledescription="slide"
+          role="group"
+        >
+          <component :is="slide" />
+        </div>
+      </template>
     </div>
 
     <div v-if="hasControls" :class="controlsClasses" :data-testid="controlsTestId">
@@ -601,6 +653,8 @@ watch(
             index === currentIndex && `${classNameComponent}__dot--active`,
           ]"
           :aria-current="index === currentIndex ? 'true' : undefined"
+          :aria-disabled="index === currentIndex ? 'true' : undefined"
+          :aria-controls="viewportId"
           :aria-label="getDotAriaLabel(index)"
           :data-testid="getDotTestId(index)"
           @click="scrollToIndex(index)"

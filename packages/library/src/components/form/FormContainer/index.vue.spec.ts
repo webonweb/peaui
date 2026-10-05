@@ -54,7 +54,7 @@ const mountComponent = (
     sizeButton?: 'xxs' | 'xs' | 's' | 'm' | 'l';
     useAriaLabelledby?: boolean;
   }> = {},
-  slots: Record<string, any> = {},
+  slots: Record<string, string | (() => import('vue').VNode[])> = {},
 ) =>
   mount(FormContainer, {
     props: {

@@ -11,7 +11,7 @@
 .peaui-context-menu__target {
   display: block;
   max-inline-size: 100%;
-  border-radius: 0.75rem;
+  border-radius: var(--peaui-radius-lg);
 
   @include outline(var(--peaui-color-primary-600));
 }
@@ -33,7 +33,7 @@
   cursor: context-menu;
   background: var(--peaui-color-grey-50);
   border: 1px dashed var(--peaui-color-grey-300);
-  border-radius: 0.75rem;
+  border-radius: var(--peaui-radius-lg);
 }
 
 .peaui-context-menu--disabled .peaui-context-menu__placeholder {

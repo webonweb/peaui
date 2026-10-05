@@ -43,7 +43,7 @@ function factory(props?: Partial<InstanceType<typeof Component>['$props']>) {
     props: {
       label: 'Label',
       ...props,
-    } as any,
+    },
     global: {
       stubs: {
         ButtonAction: ButtonActionStub,
@@ -57,18 +57,20 @@ describe('Calculation result component', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders label (v-html) and result when not loading', () => {
+  it('renders consumer label and result as text when not loading', () => {
     const wrapper = factory({
       label: '<b>Result</b>',
-      result: '123',
+      result: '<img src=x onerror="alert(1)">123',
       isLoading: false,
     });
 
     const labelSpan = wrapper.get('label span');
-    expect((labelSpan.element as HTMLElement).innerHTML).toBe('<b>Result</b>');
+    expect(labelSpan.text()).toBe('<b>Result</b>');
+    expect(labelSpan.find('b').exists()).toBe(false);
 
     const output = wrapper.get('output');
-    expect(output.text()).toContain('123');
+    expect(output.text()).toContain('<img src=x onerror="alert(1)">123');
+    expect(output.find('img').exists()).toBe(false);
     expect(output.attributes('role')).toBe('status');
     expect(output.attributes('aria-live')).toBe('polite');
     expect(output.attributes('aria-atomic')).toBe('true');

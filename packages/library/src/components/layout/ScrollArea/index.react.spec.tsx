@@ -77,13 +77,13 @@ describe('ScrollArea React', () => {
     expect(ref.current?.scrollIntoView('#missing')).toBe(false);
   });
 
-  it('does not add redundant tab stops for native mode', () => {
+  it('makes the native viewport keyboard reachable without adding custom scrollbars', () => {
     render(
       <ScrollArea ariaLabel="Lista" orientation="vertical" type="native">
         Treść
       </ScrollArea>,
     );
-    expect(screen.getByRole('region', { name: 'Lista' })).not.toHaveAttribute('tabindex');
+    expect(screen.getByRole('region', { name: 'Lista' })).toHaveAttribute('tabindex', '0');
     expect(screen.queryAllByRole('scrollbar')).toHaveLength(0);
   });
 });

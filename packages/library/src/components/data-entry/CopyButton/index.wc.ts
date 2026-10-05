@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -12,10 +13,12 @@ import type {
   CopyButtonVariant,
 } from './copy-button.shared';
 
-const CopyButtonVueElement = createVueCustomElement(
-  CopyButtonVueComponent,
-  `${UIKIT_NAME}-copy-button`,
-);
+const CopyButtonVueElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(CopyButtonVueComponent, `${UIKIT_NAME}-copy-button`);
 
 /** Light-DOM adapter exposing asynchronous text resolution as a property. */
 export class CopyButtonElement extends CopyButtonVueElement {

@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  workflow_call:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --global npm@11.6.0
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run react:check
+      - run: npm run library:lint
+      - run: npm run library:format
+      - run: npm run library:typecheck
+      - run: npm run library:typecheck:tests
+      - run: npm run playground:lint
+      - run: npm run docs:lint
+      - run: npm run docs:format
+      - run: npm run docs:typecheck
+      - run: npm run docs:test
+      - run: npm -w packages/library run test:coverage:all
+      - run: npm -w packages/library run test:coverage:wc:behavior
+      - run: npm run library:build
+      - run: npm run playground:build
+      - run: npm run docs:build
+      - run: npm run release:types:check
+      - run: npm run release:pack:dry-run
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: packages/library/coverage
+          if-no-files-found: ignore
+
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --global npm@11.6.0
+      - run: npm ci
+      - run: npm run library:build
+      - run: npm run storybook:build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run storybook:check:catalog
+      - run: npm run storybook:check:catalog
+        env:
+          STORYBOOK_CHECK_THEME: dark
+
+  browser:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    env:
+      PEAUI_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --global npm@11.6.0
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npm run library:build
+      - run: npm run test:hydration
+      - run: npm run test:browser:contracts
+      - run: npm run test:production
+        if: matrix.browser == 'chromium'
+      - run: npm run test:vue:browser
+      - run: npm run test:react:browser
+      - run: npm run test:wc:browser
+      - run: npm run docs:test:browser

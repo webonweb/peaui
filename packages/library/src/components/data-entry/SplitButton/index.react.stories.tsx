@@ -67,7 +67,7 @@ export const LoadingAndDisabled: Story = {
 };
 
 export const Controlled: Story = {
-  render: (args) => {
+  render: function Render(args) {
     const [open, setOpen] = useState(false);
     const [selection, setSelection] = useState('Brak');
     return (

@@ -1,6 +1,7 @@
 import type { MouseEvent, ReactElement, RefAttributes } from 'react';
 
-import { createPeauiReactComponent } from '@/react/create-peaui-react-component';
+import { createDirectReactComponent } from '@/react/create-direct-react-component';
+import { ToggleGroupRenderer } from '@/react/renderer-entries/toggle-group.renderer-entry';
 import type {
   PeauiReactProps,
   PeauiToggleGroupItem,
@@ -36,7 +37,7 @@ export type ToggleGroupProps = ToggleGroupCommonProps &
 export type ToggleGroupItem = PeauiToggleGroupItem;
 export type ToggleGroupValue = PeauiToggleGroupValue;
 
-const ToggleGroupBase = createPeauiReactComponent('ToggleGroup');
+const ToggleGroupBase = createDirectReactComponent('ToggleGroup', ToggleGroupRenderer);
 const ToggleGroup = ToggleGroupBase as unknown as (
   props: ToggleGroupProps & RefAttributes<HTMLDivElement>,
 ) => ReactElement | null;

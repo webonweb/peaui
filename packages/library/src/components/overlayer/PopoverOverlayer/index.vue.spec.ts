@@ -21,6 +21,32 @@ describe('PopoverOverlayerComponent', () => {
     vi.restoreAllMocks();
   });
 
+  it('attaches viewport listeners only while open and coalesces repeated events', async () => {
+    const add = vi.spyOn(window, 'addEventListener');
+    const remove = vi.spyOn(window, 'removeEventListener');
+    const frame = vi.spyOn(window, 'requestAnimationFrame');
+    const wrapper = mount(PopoverOverlayerComponent, { slots: { default: 'Open' } });
+    expect(add.mock.calls.filter(([name]) => name === 'scroll' || name === 'resize')).toHaveLength(
+      0,
+    );
+    wrapper
+      .get('[popover]')
+      .element.dispatchEvent(Object.assign(new Event('toggle'), { newState: 'open' }));
+    expect(add.mock.calls.filter(([name]) => name === 'scroll' || name === 'resize')).toHaveLength(
+      2,
+    );
+    for (let index = 0; index < 10; index++) window.dispatchEvent(new Event('resize'));
+    expect(frame).toHaveBeenCalledTimes(1);
+    wrapper
+      .get('[popover]')
+      .element.dispatchEvent(Object.assign(new Event('toggle'), { newState: 'closed' }));
+    expect(
+      remove.mock.calls.filter(([name]) => name === 'scroll' || name === 'resize'),
+    ).toHaveLength(2);
+    await nextTick();
+    wrapper.unmount();
+  });
+
   it('renders trigger slot and popover content with matching aria-controls / id', () => {
     const wrapper = mount(PopoverOverlayerComponent, {
       props: {
@@ -593,6 +619,7 @@ describe('PopoverOverlayerComponent', () => {
     });
 
     window.dispatchEvent(new Event('resize'));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     await nextTick();
 
     expect(popover.attributes('style')).toContain(

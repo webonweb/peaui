@@ -28,6 +28,39 @@ function createGroup(): AvatarGroupTestElement {
 afterEach(() => document.body.replaceChildren());
 
 describe('AvatarGroup Web Component', () => {
+  it('does not mount hidden members until the overflow opens', async () => {
+    const element = createGroup();
+    Object.assign(element, {
+      items: Array.from({ length: 1000 }, (_, id) => ({ id, name: `Person ${id}` })),
+      overflowMode: 'popover',
+    });
+    await flush();
+    expect(element.querySelectorAll('.peaui-avatar-group__popover-button')).toHaveLength(0);
+    expect(element.querySelectorAll('*').length).toBeLessThan(60);
+  });
+
+  it.each(['disabled', 'loading'] as const)(
+    'preserves focus when %s is enabled while open',
+    async (state) => {
+      const element = createGroup();
+      element.overflowMode = 'popover';
+      await flush();
+      element.querySelector<HTMLButtonElement>('.peaui-avatar-group__overflow-button')!.click();
+      await flush();
+      element.setAttribute(state, '');
+      await flush();
+      const popup = element.querySelector<HTMLElement>('[role="dialog"]')!;
+      if (state === 'disabled') {
+        expect(popup).not.toBeVisible();
+        expect(document.activeElement).toBe(element.querySelector('.peaui-avatar-group'));
+      } else {
+        expect(popup).toHaveFocus();
+        popup.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        await flush();
+        expect(popup).not.toBeVisible();
+      }
+    },
+  );
   it('rejestruje publiczny custom element i renderuje ten sam kontrakt BEM', async () => {
     expect(defineAvatarGroup()).toBe(AvatarGroupElement);
     expect(customElements.get(AvatarGroupElement.tagName)).toBe(AvatarGroupElement);

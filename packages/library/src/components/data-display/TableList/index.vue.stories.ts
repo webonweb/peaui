@@ -4,6 +4,9 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 import { ref, watch } from 'vue';
 
 import TableListComponent from './index.vue';
+import ButtonAction from '../../data-entry/ButtonAction/index.vue';
+import { tableListReorderColumns, tableListReorderRecords } from './story-fixtures';
+import type { TableColumn, TableStepperStep } from './table.types';
 
 const { getSettings } = useSettingsStorie();
 
@@ -77,7 +80,7 @@ const tagStatusDictionary = {
   'Do weryfikacji': 'orange',
 } as const;
 
-function buildStepperSteps(record: Record<string, any>) {
+function buildStepperSteps(record: Record<string, unknown>): TableStepperStep[] {
   const progress = Number(record.progress ?? 0);
 
   return [
@@ -99,7 +102,7 @@ function buildStepperSteps(record: Record<string, any>) {
   ];
 }
 
-function buildStepperStepsWithSeparate(record: Record<string, any>) {
+function buildStepperStepsWithSeparate(record: Record<string, unknown>): TableStepperStep[] {
   return buildStepperSteps(record).map((step) =>
     step.key === 'publication'
       ? {
@@ -110,7 +113,7 @@ function buildStepperStepsWithSeparate(record: Record<string, any>) {
   );
 }
 
-function buildExpandableSteps(record: Record<string, any>) {
+function buildExpandableSteps(record: Record<string, unknown>): TableStepperStep[] {
   const steps = buildStepperSteps(record);
 
   return steps.map((step) => {
@@ -181,7 +184,7 @@ const editableRecords = [
   },
 ];
 
-function resolveDynamicCategoryOptions(record: Record<string, any>) {
+function resolveDynamicCategoryOptions(record: Record<string, unknown>) {
   return Number(record.limit ?? 0) >= 10
     ? [
         { label: 'Formalny', value: 'Formalny' },
@@ -208,7 +211,7 @@ const editableDynamicRecords = [
   },
 ];
 
-const defaultColumns = [
+const defaultColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -240,7 +243,7 @@ const defaultColumns = [
   },
 ];
 
-const borderColumns = [
+const borderColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -271,7 +274,7 @@ const borderColumns = [
   },
 ];
 
-const textColumns = [
+const textColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa rekordu',
@@ -284,7 +287,7 @@ const textColumns = [
   },
 ];
 
-const dateColumns = [
+const dateColumns: TableColumn[] = [
   {
     key: 'updatedAt',
     label: 'Data aktualizacji',
@@ -294,7 +297,7 @@ const dateColumns = [
   },
 ];
 
-const statusColumns = [
+const statusColumns: TableColumn[] = [
   {
     key: 'isPublished',
     label: 'Opublikowany',
@@ -303,7 +306,7 @@ const statusColumns = [
   },
 ];
 
-const tagColumns = [
+const tagColumns: TableColumn[] = [
   {
     key: 'workflowStatus',
     label: 'Status procesu',
@@ -313,7 +316,7 @@ const tagColumns = [
   },
 ];
 
-const arrayColumns = [
+const arrayColumns: TableColumn[] = [
   {
     key: 'owners',
     label: 'Opiekunowie',
@@ -322,7 +325,7 @@ const arrayColumns = [
   },
 ];
 
-const linkColumns = [
+const linkColumns: TableColumn[] = [
   {
     key: 'resourceLink',
     label: 'Powiazanie',
@@ -331,7 +334,7 @@ const linkColumns = [
   },
 ];
 
-const actionTypeColumns = [
+const actionTypeColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -347,7 +350,7 @@ const actionTypeColumns = [
   },
 ];
 
-const editActionColumns = [
+const editActionColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -363,7 +366,7 @@ const editActionColumns = [
   },
 ];
 
-const indexColumns = [
+const indexColumns: TableColumn[] = [
   {
     key: 'index',
     label: 'Lp.',
@@ -378,7 +381,7 @@ const indexColumns = [
   },
 ];
 
-const emptyColumns = [
+const emptyColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -393,7 +396,7 @@ const emptyColumns = [
   },
 ];
 
-const stepperColumns = [
+const stepperColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -409,7 +412,7 @@ const stepperColumns = [
   },
 ];
 
-const expandableColumns = [
+const expandableColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -425,7 +428,7 @@ const expandableColumns = [
   },
 ];
 
-const expandableTypeColumns = [
+const expandableTypeColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -440,7 +443,7 @@ const expandableTypeColumns = [
   },
 ];
 
-const actionsMenuColumns = [
+const actionsMenuColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -455,7 +458,7 @@ const actionsMenuColumns = [
   },
 ];
 
-const lockableColumns = [
+const lockableColumns: TableColumn[] = [
   {
     key: 'index',
     label: 'Lp.',
@@ -512,7 +515,7 @@ const lockableColumns = [
   },
 ];
 
-const columnVisibilityColumns = [
+const columnVisibilityColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa rekordu',
@@ -551,7 +554,7 @@ const columnVisibilityColumns = [
   },
 ];
 
-const allColumnTypesColumns = [
+const allColumnTypesColumns: TableColumn[] = [
   {
     key: 'index',
     label: 'Lp.',
@@ -599,7 +602,7 @@ const allColumnTypesColumns = [
   },
 ];
 
-const editableColumns = [
+const editableColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -662,7 +665,7 @@ const editableColumns = [
   },
 ];
 
-const editableInlineColumns = [
+const editableInlineColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -707,7 +710,7 @@ const editableInlineColumns = [
   },
 ];
 
-const editableDynamicColumns = [
+const editableDynamicColumns: TableColumn[] = [
   {
     key: 'name',
     label: 'Nazwa',
@@ -849,7 +852,7 @@ const meta: Meta<typeof TableListComponent> = {
     records: {
       control: false,
       description: 'Lista rekordow do wyswietlenia.',
-      table: { type: { summary: 'Record<string, any>[]' } },
+      table: { type: { summary: 'Record<string, unknown>[]' } },
     },
     sortColumns: {
       control: false,
@@ -879,7 +882,7 @@ function cloneRecords<T>(records: T): T {
   return JSON.parse(JSON.stringify(records)) as T;
 }
 
-function getFirstSortableColumn(columns: Array<Record<string, any>>): string {
+function getFirstSortableColumn(columns: TableColumn[]): string {
   const firstSortableColumn = columns.find((column) => column.canSort);
   return firstSortableColumn ? firstSortableColumn.subKey || firstSortableColumn.key : 'name';
 }
@@ -892,12 +895,12 @@ function createSingleSortState(
 }
 
 function createRender(options: RenderOptions = {}) {
-  return (args: any) => ({
+  return (args: InstanceType<typeof TableListComponent>['$props']) => ({
     components: { StoryContent, TableListComponent },
     setup() {
       const selectedRows = ref<string[]>([]);
       const checkedRow = ref<string | number | undefined>(undefined);
-      const recordsModel = ref<any[]>([]);
+      const recordsModel = ref<Record<string, unknown>[]>([]);
       const sortColumn = ref('name');
       const sortColumns = ref<TableSortState[]>([]);
       const sortType = ref<TableSortDirection>('ASC');
@@ -954,7 +957,7 @@ function createRender(options: RenderOptions = {}) {
       function handleAction(
         recordId: string | number | undefined,
         action: string,
-        currentRecord?: Record<string, any>,
+        currentRecord?: Record<string, unknown>,
       ) {
         if (action === 'delete') {
           recordsModel.value = recordsModel.value.filter((record) => {
@@ -988,7 +991,7 @@ function createRender(options: RenderOptions = {}) {
         ];
       }
 
-      function handleSubmit(record: Record<string, any>) {
+      function handleSubmit(record: Record<string, unknown>) {
         const normalizedRecord = {
           ...record,
         };
@@ -1064,10 +1067,10 @@ function createRender(options: RenderOptions = {}) {
 }
 
 function createEditableColumnsRender() {
-  return (args: any) => ({
+  return (args: InstanceType<typeof TableListComponent>['$props']) => ({
     components: { StoryContent, TableListComponent },
     setup() {
-      const recordsModel = ref<any[]>([]);
+      const recordsModel = ref<Record<string, unknown>[]>([]);
 
       watch(
         () => args.records,
@@ -1077,13 +1080,13 @@ function createEditableColumnsRender() {
         { deep: true, immediate: true },
       );
 
-      function handleUpdateRecord(nextRecord: Record<string, any>) {
+      function handleUpdateRecord(nextRecord: Record<string, unknown>) {
         recordsModel.value = recordsModel.value.map((record) =>
           String(record.id) === String(nextRecord.id) ? { ...record, ...nextRecord } : record,
         );
       }
 
-      const editableColumns = [
+      const editableColumns: TableColumn[] = [
         {
           key: 'name',
           label: 'Nazwa',
@@ -1150,10 +1153,10 @@ function createEditableColumnsRender() {
 }
 
 function createEditableInlineColumnsRender(visibleKeys?: string[]) {
-  return (args: any) => ({
+  return (args: InstanceType<typeof TableListComponent>['$props']) => ({
     components: { StoryContent, TableListComponent },
     setup() {
-      const recordsModel = ref<any[]>([]);
+      const recordsModel = ref<Record<string, unknown>[]>([]);
 
       watch(
         () => args.records,
@@ -1163,7 +1166,7 @@ function createEditableInlineColumnsRender(visibleKeys?: string[]) {
         { deep: true, immediate: true },
       );
 
-      function handleUpdateRecord(nextRecord: Record<string, any>) {
+      function handleUpdateRecord(nextRecord: Record<string, unknown>) {
         recordsModel.value = recordsModel.value.map((record) =>
           String(record.id) === String(nextRecord.id) ? { ...record, ...nextRecord } : record,
         );
@@ -1539,4 +1542,52 @@ export const Loading: Story = {
     records: demoRecords,
     scroll: true,
   },
+};
+
+/** The same large-data scenario across all adapters, limited to 20 DOM rows. */
+export const PaginatedLargeData: Story = {
+  args: {
+    columns: [{ key: 'name', label: 'Nazwa' }],
+    records: Array.from({ length: 5000 }, (_, index) => ({
+      id: String(index),
+      name: `Rekord ${index + 1}`,
+    })),
+    paginate: true,
+    page: 1,
+    rowsPerPage: 20,
+    paginationLabel: 'Strony rekordow',
+    canSelectRows: true,
+    canCheckRows: false,
+  },
+  render: (args) => ({
+    components: { TableListComponent },
+    setup() {
+      const page = ref(1);
+      return { args, page };
+    },
+    template: '<TableListComponent v-bind="args" v-model:page="page" />',
+  }),
+};
+
+export const ReorderDuringEditing: Story = {
+  render: () => ({
+    components: { TableListComponent, ButtonAction },
+    setup() {
+      const records = ref([...tableListReorderRecords]);
+      const reverse = () => {
+        records.value = [...records.value].reverse();
+      };
+      const submit = (values: Record<string, unknown>) => {
+        records.value = records.value.map((record, index) =>
+          index === Number(values.id) ? { ...record, name: String(values.name) } : record,
+        );
+      };
+      return { records, columns: tableListReorderColumns, reverse, submit };
+    },
+    template: `<div>
+      <p>Rozpocznij edycję Alice, zmień tekst i odwróć kolejność. Zapis nadal dotyczy Alice.</p>
+      <ButtonAction @click="reverse">Odwróć kolejność</ButtonAction>
+      <TableListComponent :records="records" :columns="columns" editable :can-create="false" :can-select-rows="false" @on:submit="submit" />
+    </div>`,
+  }),
 };

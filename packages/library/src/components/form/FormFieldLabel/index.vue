@@ -42,9 +42,10 @@ const optionalTestId = computed(() => (dataTestId ? `${dataTestId}-optional` : u
       <span
         v-if="!slots.default"
         :data-testid="labelTestId"
-        v-html="text"
         :class="[`${classNameComponent}__text`, classText]"
-      />
+      >
+        {{ text }}
+      </span>
       <span v-else :data-testid="labelTestId" :class="[`${classNameComponent}__text`, classText]">
         <slot />
       </span>

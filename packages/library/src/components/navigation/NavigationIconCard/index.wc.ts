@@ -1,3 +1,4 @@
+import type PublicVueComponent from './index.vue';
 import { UIKIT_NAME } from '@/constants';
 import {
   createVueCustomElement,
@@ -6,11 +7,12 @@ import {
 
 import NavigationIconCardVueComponent from './index.ce.vue';
 
-export const NavigationIconCardElement = createVueCustomElement(
-  NavigationIconCardVueComponent,
-  `${UIKIT_NAME}-navigation-icon-card`,
-  { hostRole: 'group' },
-);
+export const NavigationIconCardElement = createVueCustomElement<
+  Omit<
+    InstanceType<typeof PublicVueComponent>['$props'],
+    keyof HTMLElement | 'ref' | 'key' | 'class' | 'style'
+  >
+>(NavigationIconCardVueComponent, `${UIKIT_NAME}-navigation-icon-card`);
 
 export function defineNavigationIconCard(): void {
   definePeauiCustomElement(NavigationIconCardElement);

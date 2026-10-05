@@ -156,7 +156,7 @@
     var(--peaui-form-date-time-picker-available-height, 38rem)
   );
   box-sizing: border-box;
-  gap: 1rem;
+  gap: var(--peaui-space-4);
   padding: var(--peaui-overlay-padding);
   overflow: auto;
   background: var(--peaui-color-grey-0);
@@ -168,7 +168,7 @@
   display: grid;
   min-width: 0;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1rem;
+  gap: var(--peaui-space-4);
 }
 
 .peaui-form-date-time-picker__panel--stacked .peaui-form-date-time-picker__sections {
@@ -225,7 +225,7 @@
   min-height: 2.75rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: var(--peaui-space-3);
 }
 
 .peaui-form-date-time-picker__calendar-header .peaui-form-date-picker-navigation__button {
@@ -321,7 +321,7 @@
   display: grid;
   grid-auto-columns: minmax(3.25rem, 1fr);
   grid-auto-flow: column;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
 }
 
 .peaui-form-date-time-picker__time-column {
@@ -349,7 +349,7 @@
   min-height: 2.75rem;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   color: var(--peaui-color-grey-700);
   cursor: pointer;
 }
@@ -395,7 +395,7 @@
 .peaui-form-date-time-picker__footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--peaui-space-2);
   padding-top: 0.875rem;
   border-top: 1px solid var(--peaui-color-grey-200);
 }
@@ -404,7 +404,7 @@
   min-height: 2.75rem;
   padding: 0.625rem 1rem;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: var(--peaui-radius-md);
   font-weight: 600;
   cursor: pointer;
 
@@ -450,7 +450,7 @@
 
 @container peaui-date-time-picker (max-width: 24rem) {
   .peaui-form-date-time-picker__panel {
-    gap: 0.75rem;
+    gap: var(--peaui-space-3);
     padding: 0.75rem;
   }
 
@@ -465,7 +465,7 @@
 
   .peaui-form-date-time-picker__time-controls {
     min-width: 0;
-    gap: 0.25rem;
+    gap: var(--peaui-space-1);
   }
 }
 

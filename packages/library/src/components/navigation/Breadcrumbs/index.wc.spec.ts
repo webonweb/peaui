@@ -30,6 +30,25 @@ describe('Breadcrumbs (index.wc.ts)', () => {
     await Promise.resolve();
 
     expect(element.childNodes.length).toBeGreaterThan(0);
-    expect(element.getAttribute('role')).toBe('group');
+    expect(element.hasAttribute('role')).toBe(false);
+    expect(element.querySelector('nav')?.hasAttribute('role')).toBe(false);
+  });
+
+  it('does not interpret HTML from breadcrumb labels', async () => {
+    const label = '<img src=x onerror="alert(1)">Current';
+    const element = document.createElement(BreadcrumbsElement.tagName) as InstanceType<
+      typeof BreadcrumbsElement
+    >;
+    element.items = [{ key: 'current', label }];
+    document.body.appendChild(element);
+    await nextTick();
+    await Promise.resolve();
+
+    expect(
+      element
+        .querySelector('.peaui-breadcrumbs__content [aria-current="page"]')
+        ?.textContent?.trim(),
+    ).toBe(label);
+    expect(element.querySelector('img')).toBeNull();
   });
 });

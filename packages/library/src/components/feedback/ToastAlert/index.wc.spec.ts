@@ -245,4 +245,15 @@ describe('ToastAlert (index.wc.ts)', () => {
       );
     }
   });
+
+  it('does not interpret HTML from title and description properties', () => {
+    const title = '<img src=x onerror="alert(1)">Title';
+    const description = '<script>alert(1)</script>Description';
+    const element = mountToastAlert({ title, description });
+
+    expect(element.querySelector('strong')?.textContent).toBe(title);
+    expect(element.querySelector('p')?.textContent).toBe(description);
+    expect(element.querySelector('img')).toBeNull();
+    expect(element.querySelector('script')).toBeNull();
+  });
 });

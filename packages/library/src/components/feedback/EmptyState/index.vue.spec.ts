@@ -6,8 +6,8 @@ vi.mock('@/constants', () => ({
   UIKIT_NAME: 'peaui',
 }));
 
-vi.mock('@/assets/global.scss', () => ({}), { virtual: true });
-vi.mock('./styles.scss', () => ({}), { virtual: true });
+vi.mock('@/assets/global.scss', () => ({}));
+vi.mock('./styles.scss', () => ({}));
 
 vi.mock('vue', async () => {
   const actual = await vi.importActual<typeof import('vue')>('vue');
@@ -111,7 +111,7 @@ describe('EmptyState (index.vue)', () => {
       },
     });
 
-    const additional = wrapperWithSlot.get('.peaui-empty-state__additional');
+    const additional = wrapperWithSlot.find('.peaui-empty-state__additional');
     expect(additional.exists()).toBe(true);
     expect(additional.text()).toContain('Dodaj');
   });

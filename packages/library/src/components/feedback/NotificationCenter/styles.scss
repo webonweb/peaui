@@ -1,0 +1,343 @@
+.peaui-notification-center {
+  --peaui-notification-center-surface: var(--peaui-color-grey-0);
+  --peaui-notification-center-border: var(--peaui-color-grey-200);
+  --peaui-notification-center-muted: var(--peaui-color-grey-600);
+  --peaui-notification-center-hover: var(--peaui-color-grey-50);
+  --peaui-notification-center-selected: var(--peaui-color-primary-50);
+  --peaui-notification-center-accent: var(--peaui-color-primary-500);
+  --peaui-notification-center-gap: var(--peaui-spacing-3, 0.75rem);
+
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--peaui-color-grey-900);
+  background: var(--peaui-notification-center-surface);
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  &--panel {
+    border: 1px solid var(--peaui-notification-center-border);
+    border-radius: var(--peaui-radius-l, 0.75rem);
+    box-shadow: var(--peaui-shadow-m, 0 0.5rem 1.5rem rgb(15 23 42 / 10%));
+  }
+
+  &--page {
+    width: min(100%, 64rem);
+    margin-inline: auto;
+  }
+
+  &__header,
+  &__filters,
+  &__footer,
+  &__inline-error {
+    padding-inline: var(--peaui-spacing-4, 1rem);
+  }
+
+  &__header {
+    display: flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--peaui-notification-center-gap);
+    padding-block: var(--peaui-spacing-3, 0.75rem);
+    border-bottom: 1px solid var(--peaui-notification-center-border);
+    background: var(--peaui-notification-center-surface);
+  }
+
+  &__title-row {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--peaui-spacing-2, 0.5rem);
+  }
+
+  &__title {
+    margin: 0;
+    font: inherit;
+    font-size: var(--peaui-font-size-l, 1.125rem);
+    font-weight: var(--peaui-font-weight-semibold, 600);
+  }
+
+  &__filters {
+    display: flex;
+    overflow-x: auto;
+    gap: var(--peaui-spacing-1, 0.25rem);
+    padding-block: var(--peaui-spacing-2, 0.5rem);
+    border-bottom: 1px solid var(--peaui-notification-center-border);
+    scrollbar-width: thin;
+  }
+
+  &__filter {
+    flex: 0 0 auto;
+    padding: var(--peaui-spacing-2, 0.5rem) var(--peaui-spacing-3, 0.75rem);
+    border: 0;
+    border-radius: var(--peaui-radius-pill, 999px);
+    color: var(--peaui-notification-center-muted);
+    background: transparent;
+    font: inherit;
+    font-size: var(--peaui-font-size-s, 0.875rem);
+    font-weight: var(--peaui-font-weight-medium, 500);
+    cursor: pointer;
+    transition:
+      color 160ms ease,
+      background-color 160ms ease;
+
+    &:hover {
+      color: var(--peaui-color-grey-900);
+      background: var(--peaui-notification-center-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--peaui-notification-center-accent);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      color: var(--peaui-color-primary-700);
+      background: var(--peaui-notification-center-selected);
+    }
+  }
+
+  &__scroll-area {
+    width: 100%;
+    min-height: 0;
+    max-height: var(--peaui-notification-center-max-height);
+  }
+
+  &__groups,
+  &__group,
+  &__list {
+    min-width: 0;
+  }
+
+  &__group-title {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    margin: 0;
+    padding: var(--peaui-spacing-2, 0.5rem) var(--peaui-spacing-4, 1rem);
+    border-bottom: 1px solid var(--peaui-notification-center-border);
+    color: var(--peaui-notification-center-muted);
+    background: color-mix(in srgb, var(--peaui-notification-center-surface) 94%, transparent);
+    font-size: var(--peaui-font-size-xs, 0.75rem);
+    font-weight: var(--peaui-font-weight-semibold, 600);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    backdrop-filter: blur(0.5rem);
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, auto);
+    align-items: start;
+    border-bottom: 1px solid var(--peaui-notification-center-border);
+    background: var(--peaui-notification-center-surface);
+    transition: background-color 160ms ease;
+
+    &:hover {
+      background: var(--peaui-notification-center-hover);
+    }
+
+    &--unread {
+      background: color-mix(
+        in srgb,
+        var(--peaui-notification-center-selected) 60%,
+        var(--peaui-notification-center-surface)
+      );
+    }
+
+    &--selected {
+      box-shadow: inset 0.1875rem 0 var(--peaui-notification-center-accent);
+    }
+
+    &--disabled {
+      opacity: 0.56;
+    }
+
+    &[data-priority='urgent'] {
+      box-shadow: inset 0.1875rem 0 var(--peaui-color-danger-500);
+    }
+  }
+
+  &__item-main {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    gap: var(--peaui-spacing-3, 0.75rem);
+    padding: var(--peaui-spacing-4, 1rem);
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:focus-visible {
+      outline: 2px solid var(--peaui-notification-center-accent);
+      outline-offset: -0.25rem;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &__indicator {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 auto;
+    margin-top: 0.4rem;
+    border-radius: 50%;
+    background: transparent;
+
+    &--visible {
+      background: var(--peaui-notification-center-accent);
+      box-shadow: 0 0 0 0.1875rem var(--peaui-notification-center-selected);
+    }
+  }
+
+  &__content,
+  &__item-heading,
+  &__description,
+  &__meta {
+    display: block;
+    min-width: 0;
+  }
+
+  &__item-title {
+    font-weight: var(--peaui-font-weight-semibold, 600);
+    overflow-wrap: anywhere;
+  }
+
+  &__description {
+    margin-top: var(--peaui-spacing-1, 0.25rem);
+    color: var(--peaui-notification-center-muted);
+    font-size: var(--peaui-font-size-s, 0.875rem);
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--peaui-spacing-2, 0.5rem);
+    margin-top: var(--peaui-spacing-2, 0.5rem);
+    color: var(--peaui-notification-center-muted);
+    font-size: var(--peaui-font-size-xs, 0.75rem);
+  }
+
+  &__priority {
+    padding: 0.125rem var(--peaui-spacing-2, 0.5rem);
+    border-radius: var(--peaui-radius-pill, 999px);
+    color: var(--peaui-color-warning-800);
+    background: var(--peaui-color-warning-100);
+    font-weight: var(--peaui-font-weight-semibold, 600);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--peaui-spacing-1, 0.25rem);
+    padding: var(--peaui-spacing-2, 0.5rem) var(--peaui-spacing-4, 1rem)
+      var(--peaui-spacing-2, 0.5rem) 0;
+  }
+
+  &__inline-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--peaui-notification-center-gap);
+    padding-block: var(--peaui-spacing-2, 0.5rem);
+    color: var(--peaui-color-danger-800);
+    background: var(--peaui-color-danger-50);
+    font-size: var(--peaui-font-size-s, 0.875rem);
+  }
+
+  &__loading,
+  &__state,
+  &__loading-more {
+    display: grid;
+    gap: var(--peaui-notification-center-gap);
+    padding: var(--peaui-spacing-4, 1rem);
+  }
+
+  &__state {
+    justify-items: center;
+  }
+
+  &__loading-more {
+    color: var(--peaui-notification-center-muted);
+    font-size: var(--peaui-font-size-s, 0.875rem);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    padding-block: var(--peaui-spacing-3, 0.75rem);
+    border-top: 1px solid var(--peaui-notification-center-border);
+  }
+
+  &--compact &__item-main {
+    padding-block: var(--peaui-spacing-2, 0.5rem);
+  }
+
+  &--compact &__actions {
+    padding-block: var(--peaui-spacing-1, 0.25rem);
+  }
+}
+
+.peaui-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 48rem) {
+  .peaui-notification-center {
+    &__header {
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    &__item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    &__actions {
+      justify-content: flex-start;
+      padding: 0 var(--peaui-spacing-4, 1rem) var(--peaui-spacing-3, 0.75rem) 2.25rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peaui-notification-center__filter,
+  .peaui-notification-center__item {
+    transition: none;
+  }
+}

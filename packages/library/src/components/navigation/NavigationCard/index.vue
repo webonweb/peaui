@@ -143,12 +143,9 @@ const descriptionClass = computed(() => [
       <h4 :id="titleId" :class="titleClass" :data-testid="titleTestId">
         {{ title }}
       </h4>
-      <p
-        :id="descriptionId"
-        :class="descriptionClass"
-        :data-testid="descriptionTestId"
-        v-html="description"
-      />
+      <p :id="descriptionId" :class="descriptionClass" :data-testid="descriptionTestId">
+        {{ description }}
+      </p>
     </div>
 
     <div v-if="hasTooltip" :class="`${classNameComponent}__tooltip`">

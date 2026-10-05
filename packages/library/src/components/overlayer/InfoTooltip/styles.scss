@@ -5,6 +5,10 @@
   cursor: help;
   width: max-content;
   display: flex;
+  min-inline-size: var(--peaui-target-min, 24px);
+  min-block-size: var(--peaui-target-min, 24px);
+  align-items: center;
+  justify-content: center;
   @include outline(var(--peaui-color-primary-400));
 }
 
@@ -12,11 +16,8 @@
   cursor: default;
 }
 
-.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):hover + .peaui-info-tooltip__content,
-.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):focus-visible + .peaui-info-tooltip__content,
 .peaui-info-tooltip:not(.peaui-info-tooltip--disabled)[data-open='true']
-  + .peaui-info-tooltip__content,
-.peaui-info-tooltip:not(.peaui-info-tooltip--disabled):focus-within + .peaui-info-tooltip__content {
+  + .peaui-info-tooltip__content {
   opacity: 1;
   pointer-events: auto;
 }

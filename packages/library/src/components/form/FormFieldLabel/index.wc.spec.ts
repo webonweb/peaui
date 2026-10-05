@@ -8,7 +8,7 @@ type MountOptions = {
   attrs?: Record<string, string>;
   dataTestId?: string;
   for?: string;
-  hint?: Node | string;
+  hint?: HTMLElement | string;
   readonly?: boolean;
   required?: boolean;
   text?: string;
@@ -113,7 +113,7 @@ describe('FormFieldLabel (index.wc.ts)', () => {
     expect(label?.getAttribute('id')).toBe('label-first-name');
   });
 
-  it('renders text using innerHTML and sets data-testid for text when dataTestId is provided', async () => {
+  it('renders the text property safely and sets data-testid for text', async () => {
     const element = mountFormFieldLabel({
       for: 'email',
       text: 'E-mail <strong>firmowy</strong>',
@@ -124,7 +124,8 @@ describe('FormFieldLabel (index.wc.ts)', () => {
 
     const text = element.querySelector<HTMLElement>('[data-testid="my-label-text"]');
 
-    expect(text?.innerHTML).toContain('<strong>firmowy</strong>');
+    expect(text?.textContent).toBe('E-mail <strong>firmowy</strong>');
+    expect(text?.querySelector('strong')).toBeNull();
     expect(text?.classList.contains('peaui-form-label__text')).toBe(true);
   });
 

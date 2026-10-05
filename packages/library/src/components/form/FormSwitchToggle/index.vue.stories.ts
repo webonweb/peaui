@@ -1,3 +1,5 @@
+import type { ComponentProps } from 'vue-component-type-helpers';
+import type { ConcreteComponent } from 'vue';
 import StoryContent from '@peaui/storybook-shell/src/components/StoryContent.vue';
 import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 import type { Meta, StoryObj } from '@storybook/vue3';
@@ -8,7 +10,8 @@ import { formSwitchToggleDemoProps, formSwitchToggleLongLabel } from './form-swi
 
 const meta = {
   title: '5. Form/FormSwitchToggle',
-  component: FormSwitchToggleComponent,
+  // Storybook expects the concrete runtime SFC; Vue exposes its generic call signature.
+  component: FormSwitchToggleComponent as unknown as ConcreteComponent,
   parameters: {
     name: 'FormSwitchToggle',
     description:
@@ -18,7 +21,7 @@ const meta = {
     labelPosition: { control: 'select', options: ['start', 'end'] },
     size: { control: 'select', options: ['s', 'm', 'l'] },
   },
-} satisfies Meta<typeof FormSwitchToggleComponent>;
+} satisfies Meta<ComponentProps<typeof FormSwitchToggleComponent>>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

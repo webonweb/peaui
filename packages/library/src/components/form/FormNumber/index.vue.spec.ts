@@ -14,6 +14,7 @@ const FormFieldStub = defineComponent({
   props: {
     id: { type: String, required: false },
     name: { type: String, required: false },
+    value: { type: [String, Number], required: false },
   },
   emits: ['on:remove'],
   setup(props, { slots, emit }) {
@@ -23,6 +24,7 @@ const FormFieldStub = defineComponent({
           props: {
             id: props.id,
             name: props.name,
+            value: props.value,
             class: 'field-element',
           },
         }),
@@ -42,9 +44,7 @@ const FormFieldStub = defineComponent({
 import FormNumber from './index.vue';
 
 const mountComponent = (props: Record<string, unknown> = {}) => {
-  let wrapper: ReturnType<typeof mount>;
-
-  wrapper = mount(FormNumber, {
+  const wrapper = mount(FormNumber, {
     props: {
       id: 'building-count',
       name: 'buildingCount',

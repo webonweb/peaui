@@ -18,3 +18,11 @@ export const Default: Story = {};
 export const Disabled: Story = { args: { disabled: true } };
 
 export const Loading: Story = { args: { isLoading: true, showCalculateButton: true } };
+
+export const SimpleLongResult: Story = {
+  args: {
+    label: 'Wynik uproszczony',
+    result: '123456789.123456789 kWh/m²',
+    isSimple: true,
+  },
+};

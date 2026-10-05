@@ -3,6 +3,8 @@ import { useSettingsStorie } from '@peaui/storybook-shell/stories.helper';
 import type { Meta, StoryObj } from '@storybook/vue3';
 import { ref } from 'vue';
 
+import ButtonAction from '../../data-entry/ButtonAction/index.vue';
+
 import {
   formDateTimePickerDemoProps,
   formDateTimePickerDemoValue,
@@ -145,9 +147,14 @@ export const MobileAndLongLabel: Story = {
 
 export const NativeRequiredAndReset: Story = {
   render: () => ({
-    components: { FormDateTimePickerComponent },
+    components: { ButtonAction, FormDateTimePickerComponent },
     setup: () => ({ value: ref<LocalDateTimeValue | undefined>(undefined) }),
-    template:
-      '<form @submit.prevent @reset="value = undefined"><FormDateTimePickerComponent id="native-datetime" name="value" label="Required value" variant="split-input" required v-model:value="value" /><button type="submit">Validate</button><button type="reset">Reset</button></form>',
+    template: `<form @submit.prevent @reset="value = undefined">
+        <FormDateTimePickerComponent id="native-datetime" name="value" label="Required value" variant="split-input" required v-model:value="value" />
+        <div style="display:flex;gap:var(--peaui-space-2);margin-top:var(--peaui-space-2)">
+          <ButtonAction type="submit">Validate</ButtonAction>
+          <ButtonAction type="reset" variant="secondary">Reset</ButtonAction>
+        </div>
+      </form>`,
   }),
 };

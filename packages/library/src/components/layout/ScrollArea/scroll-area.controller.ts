@@ -117,7 +117,8 @@ export function createScrollAreaController(
   let previousPosition: ScrollAreaPosition | undefined;
   let lastStartAxes = '';
   let lastEndAxes = '';
-  let frame = 0;
+  let scrollFrame = 0;
+  let resizeFrame = 0;
   let scrollEndTimer = 0;
   let autoHideTimer = 0;
   let scrolling = false;
@@ -222,7 +223,7 @@ export function createScrollAreaController(
   };
 
   const flushScroll = (): void => {
-    frame = 0;
+    scrollFrame = 0;
     const current = sync();
     if (!areScrollAreaPositionsEqual(previousPosition, current)) {
       options.onEvent('scroll', current);
@@ -238,11 +239,11 @@ export function createScrollAreaController(
       options.onEvent('scrollStart', position());
     }
     setActive();
-    if (!frame) frame = window.requestAnimationFrame(flushScroll);
+    if (!scrollFrame) scrollFrame = window.requestAnimationFrame(flushScroll);
     window.clearTimeout(scrollEndTimer);
     scrollEndTimer = window.setTimeout(() => {
-      if (frame) {
-        window.cancelAnimationFrame(frame);
+      if (scrollFrame) {
+        window.cancelAnimationFrame(scrollFrame);
         flushScroll();
       }
       scrolling = false;
@@ -372,9 +373,10 @@ export function createScrollAreaController(
   window.addEventListener('pointercancel', handlePointerUp);
 
   const scheduleResize = (): void => {
-    if (destroyed || frame) return;
-    frame = window.requestAnimationFrame(() => {
-      frame = 0;
+    // Resize and scroll must each flush when they occur in the same frame.
+    if (destroyed || resizeFrame) return;
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = 0;
       sync(true);
       setActive();
     });
@@ -451,7 +453,8 @@ export function createScrollAreaController(
       window.removeEventListener('pointercancel', handlePointerUp);
       resizeObserver?.disconnect();
       mutationObserver?.disconnect();
-      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(scrollFrame);
+      window.cancelAnimationFrame(resizeFrame);
       window.clearTimeout(scrollEndTimer);
       window.clearTimeout(autoHideTimer);
     },

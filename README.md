@@ -445,6 +445,8 @@ npm run storybook:check:catalog
 
 `npm run check` covers source and test types, lint, formatting, unit tests and application/package builds. Storybook builds and browser suites have separate commands. For import contracts, migrations and development details, see [Installation and component contracts](https://github.com/webonweb/peaui/blob/main/docs/IMPORTY_I_KONTRAKTY.md) (Polish).
 
+Framework browser suites start a development Storybook by default. CI builds the Storybooks first and sets `STORYBOOK_TEST_STATIC=1` to test those files without Vite compilation during a test. To reproduce this locally after `npm run storybook:build`, run `npx cross-env STORYBOOK_TEST_STATIC=1 PEAUI_BROWSER=firefox npm run test:react:browser` (the same applies to Vue and Web Components). Rebuild after source changes. `STORYBOOK_PORT` overrides the local server port; `STORYBOOK_URL` uses an already running server.
+
 ## Releasing to npm
 
 The project follows semantic versioning and supports Changesets. Before publishing, run the complete release verification:
@@ -888,6 +890,8 @@ npm run storybook:check:catalog
 ```
 
 `npm run check` obejmuje typy źródeł i testów, lint, format, testy jednostkowe oraz buildy aplikacji i paczki. Buildy Storybooka i testy przeglądarkowe mają osobne polecenia. Szczegóły importów, migracji i pracy z repozytorium opisuje [Instalacja i kontrakty komponentów](https://github.com/webonweb/peaui/blob/main/docs/IMPORTY_I_KONTRAKTY.md).
+
+Testy przeglądarkowe frameworków domyślnie uruchamiają deweloperski Storybook. CI najpierw buduje Storybooki i ustawia `STORYBOOK_TEST_STATIC=1`, aby testować gotowe pliki bez kompilacji Vite podczas testu. Lokalnie po `npm run storybook:build` uruchom np. `npx cross-env STORYBOOK_TEST_STATIC=1 PEAUI_BROWSER=firefox npm run test:react:browser` (analogicznie dla Vue i Web Components). Po zmianie źródeł ponów build. `STORYBOOK_PORT` zmienia port lokalnego serwera, a `STORYBOOK_URL` wskazuje już działający serwer.
 
 ## Publikowanie na NPM-ie
 

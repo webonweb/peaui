@@ -1,9 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { chromium, firefox, webkit } from '@playwright/test';
-import { createReadStream, existsSync, statSync } from 'node:fs';
-import { createServer } from 'node:http';
-import { extname, join, normalize, resolve, sep } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { startStaticServer } from './storybook-server.mjs';
 
 const repositoryRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const theme = process.env.STORYBOOK_CHECK_THEME ?? 'light';
@@ -33,61 +33,6 @@ const axeDisabledRules = [
   'page-has-heading-one',
   'region',
 ];
-const mimeTypes = {
-  '.css': 'text/css; charset=utf-8',
-  '.html': 'text/html; charset=utf-8',
-  '.ico': 'image/x-icon',
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.map': 'application/json; charset=utf-8',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
-};
-
-function resolveRequestPath(root, requestUrl) {
-  const pathname = decodeURIComponent(new URL(requestUrl, 'http://localhost').pathname);
-  const relativePath = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
-  const candidate = resolve(root, normalize(relativePath));
-
-  if (candidate !== root && !candidate.startsWith(`${root}${sep}`)) return undefined;
-  if (!existsSync(candidate)) return undefined;
-
-  return statSync(candidate).isDirectory() ? join(candidate, 'index.html') : candidate;
-}
-
-async function startStaticServer(root) {
-  const server = createServer((request, response) => {
-    const filePath = resolveRequestPath(root, request.url ?? '/');
-
-    if (!filePath || !existsSync(filePath)) {
-      response.writeHead(404).end('Not found');
-      return;
-    }
-
-    response.writeHead(200, {
-      'cache-control': 'no-store',
-      'content-type': mimeTypes[extname(filePath).toLowerCase()] ?? 'application/octet-stream',
-    });
-    createReadStream(filePath).pipe(response);
-  });
-
-  await new Promise((resolveListen, rejectListen) => {
-    server.once('error', rejectListen);
-    server.listen(0, '127.0.0.1', resolveListen);
-  });
-  const address = server.address();
-  if (!address || typeof address === 'string') throw new Error(`Cannot serve ${root}.`);
-
-  return {
-    close: () => new Promise((resolveClose) => server.close(resolveClose)),
-    url: `http://127.0.0.1:${address.port}`,
-  };
-}
-
 async function waitForStableLayout(page) {
   await page.evaluate(
     () =>

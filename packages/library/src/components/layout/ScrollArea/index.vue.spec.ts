@@ -57,6 +57,24 @@ afterEach(() => {
 });
 
 describe('ScrollArea Vue', () => {
+  it('emits scroll when a resize frame is already pending', async () => {
+    const wrapper = mount(ScrollArea, {
+      props: { ariaLabel: 'Lista', orientation: 'vertical' },
+      slots: { default: 'Content' },
+    });
+    const observer = ResizeObserverMock.instances[0]!;
+    observer.callback([], observer as never);
+    const viewport = wrapper.get('.peaui-scroll-area__viewport').element;
+    viewport.scrollTop = 280;
+    viewport.dispatchEvent(new Event('scroll'));
+    await vi.runAllTimersAsync();
+
+    expect(wrapper.emitted('resize')).toHaveLength(1);
+    expect(wrapper.emitted('scroll')).toEqual([[expect.objectContaining({ y: 280 })]]);
+    expect(wrapper.emitted('reachEnd')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
   it('keeps the viewport out of Tab order by default and names it only when requested', () => {
     const unnamed = mount(ScrollArea, { slots: { default: 'Treść' } });
     const unnamedViewport = unnamed.get('.peaui-scroll-area__viewport');

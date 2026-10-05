@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 
+import { ButtonActionElement, defineButtonAction } from '../../data-entry/ButtonAction/index.wc';
+
 import {
   createVueCustomElementArgTypes,
   createVueCustomElementStoryArgs,
@@ -15,6 +17,7 @@ import FormDateTimePickerVueComponent from './index.vue';
 import { defineFormDateTimePicker, FormDateTimePickerElement } from './index.wc';
 
 defineFormDateTimePicker();
+defineButtonAction();
 
 function renderDateTimePicker(args: VueCustomElementStoryArgs): HTMLElement {
   const element = document.createElement(FormDateTimePickerElement.tagName) as HTMLElement &
@@ -167,12 +170,20 @@ export const NativeRequiredAndReset: Story = {
         value: undefined,
       }),
     );
+    const actions = document.createElement('div');
+    Object.assign(actions.style, {
+      display: 'flex',
+      gap: 'var(--peaui-space-2)',
+      marginTop: 'var(--peaui-space-2)',
+    });
     for (const type of ['submit', 'reset'] as const) {
-      const button = document.createElement('button');
+      const button = new ButtonActionElement();
       button.type = type;
+      button.variant = type === 'submit' ? 'primary' : 'secondary';
       button.textContent = type === 'submit' ? 'Validate' : 'Reset';
-      form.append(button);
+      actions.append(button);
     }
+    form.append(actions);
     return form;
   },
 };

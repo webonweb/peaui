@@ -78,6 +78,7 @@
   &__input {
     box-sizing: border-box;
     inline-size: 100%;
+    min-inline-size: 0;
     min-block-size: 3rem;
     padding: 0.75rem 1rem 0.75rem 2.75rem;
     color: var(--peaui-color-grey-900);
@@ -217,7 +218,6 @@
 }
 
 @media (max-width: 40rem) {
-  .peaui-command-palette,
   .peaui-command-palette__panel {
     inline-size: 100%;
     max-block-size: 100dvh;

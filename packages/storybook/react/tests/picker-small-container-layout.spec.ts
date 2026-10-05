@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
+
 const datePickers = [
   [
     "FormDatePicker",
@@ -43,16 +45,17 @@ async function constrainPicker(
   await root.locator('[aria-haspopup="dialog"]').first().click();
 }
 
-test("date pickers React keep controls separated inside containers down to 200px", async ({
-  page,
-}) => {
-  for (const containerWidth of [400, 320, 200]) {
-    for (const [name, storyId, rootClass] of datePickers) {
+for (const containerWidth of [400, 320, 200]) {
+  for (const [name, storyId, rootClass] of datePickers) {
+    test(`${name} React keeps controls separated in a ${containerWidth}px container`, async ({
+      page,
+    }) => {
       await constrainPicker(page, storyId, rootClass, containerWidth);
       const surface = page
         .locator(`.${rootClass}__popover-content:visible`)
         .first();
       await expect(surface, name).toBeVisible();
+      await waitForFiniteAnimations(surface);
 
       const layout = await surface.evaluate((element) => {
         const surface = element as HTMLElement;
@@ -156,6 +159,6 @@ test("date pickers React keep controls separated inside containers down to 200px
         `${name} has controls below 24px at ${containerWidth}px`,
       ).toEqual([]);
       await page.keyboard.press("Escape");
-    }
+    });
   }
-});
+}

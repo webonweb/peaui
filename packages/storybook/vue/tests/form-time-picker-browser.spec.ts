@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -38,6 +39,7 @@ test("FormTimePicker Vue zachowuje ARIA, listboxy i pełną obsługę klawiatury
 
   await input.click();
   await expect(dialog).toBeVisible();
+  await waitForFiniteAnimations(dialog);
   const metrics = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const options = [
@@ -81,6 +83,7 @@ test("FormTimePicker Vue mieści długą etykietę i panel w mobilnym viewporcie
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
 
+  await waitForFiniteAnimations(dialog);
   const bounds = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     return { left: rect.left, right: rect.right, width: rect.width };

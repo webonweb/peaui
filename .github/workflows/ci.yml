@@ -51,6 +51,8 @@ jobs:
 
   storybook:
     runs-on: ubuntu-latest
+    env:
+      STORYBOOK_CHECK_VERBOSE: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,6 +77,7 @@ jobs:
         browser: [chromium, firefox, webkit]
     env:
       PEAUI_BROWSER: ${{ matrix.browser }}
+      STORYBOOK_TEST_STATIC: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -85,6 +88,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run library:build
+      - run: npm run storybook:build
       - run: npm run test:hydration
       - run: npm run test:browser:contracts
       - run: npm run test:production
@@ -93,3 +97,12 @@ jobs:
       - run: npm run test:react:browser
       - run: npm run test:wc:browser
       - run: npm run docs:test:browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-results-${{ matrix.browser }}
+          path: |
+            packages/storybook/*/test-results
+            packages/docs/test-results
+          if-no-files-found: ignore
+          retention-days: 7

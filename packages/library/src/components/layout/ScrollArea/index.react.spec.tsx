@@ -6,8 +6,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ScrollArea, { type ScrollAreaHandle } from './index';
 
 class ResizeObserverMock {
+  static instances: ResizeObserverMock[] = [];
   disconnect = vi.fn();
   observe = vi.fn();
+
+  constructor(readonly callback: ResizeObserverCallback) {
+    ResizeObserverMock.instances.push(this);
+  }
 }
 
 function metric(element: HTMLElement, property: string): number {
@@ -23,6 +28,7 @@ function metric(element: HTMLElement, property: string): number {
 
 beforeEach(() => {
   vi.useFakeTimers();
+  ResizeObserverMock.instances = [];
   vi.stubGlobal('ResizeObserver', ResizeObserverMock);
   for (const property of ['clientWidth', 'scrollWidth', 'clientHeight', 'scrollHeight']) {
     vi.spyOn(HTMLElement.prototype, property as 'clientWidth', 'get').mockImplementation(function (
@@ -48,6 +54,36 @@ afterEach(() => {
 });
 
 describe('ScrollArea React', () => {
+  it('emits scroll when a resize frame is already pending', async () => {
+    const onScroll = vi.fn();
+    const onResize = vi.fn();
+    const onReachEnd = vi.fn();
+    render(
+      <ScrollArea
+        ariaLabel="Lista"
+        orientation="vertical"
+        onScroll={onScroll}
+        onResize={onResize}
+        onReachEnd={onReachEnd}
+      >
+        Content
+      </ScrollArea>,
+    );
+    onResize.mockClear();
+    const observer = ResizeObserverMock.instances[0]!;
+    act(() => {
+      observer.callback([], observer as never);
+      const viewport = screen.getByRole('region', { name: 'Lista' });
+      viewport.scrollTop = 280;
+      viewport.dispatchEvent(new Event('scroll'));
+    });
+    await act(async () => vi.runAllTimersAsync());
+
+    expect(onResize).toHaveBeenCalledOnce();
+    expect(onScroll).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ y: 280 }));
+    expect(onReachEnd).toHaveBeenCalledOnce();
+  });
+
   it('matches the Vue DOM, ARIA contract and imperative API', async () => {
     const ref = createRef<ScrollAreaHandle>();
     const onScrollEnd = vi.fn();

@@ -7,8 +7,10 @@
   border-radius: 8px;
 
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  row-gap: var(--peaui-space-3);
 
   @include set-param(column-gap, 2rem);
 
@@ -27,7 +29,10 @@
 .peaui-calculation-results__content {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
 }
 
 .peaui-calculation-results__content-label {
@@ -36,6 +41,7 @@
   width: 100%;
 
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 
   @include set-param(column-gap, 0.5rem);
@@ -57,12 +63,15 @@
   flex-shrink: 0;
   text-align: right;
   width: max-content;
-  min-width: max-content;
-  white-space: nowrap;
+  min-width: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
 }
 
 .peaui-calculation-results__content-button {
+  flex-shrink: 0;
   width: 7.875rem !important;
+  max-inline-size: 100%;
 }
 
 .peaui-calculation-results__hint-icon {

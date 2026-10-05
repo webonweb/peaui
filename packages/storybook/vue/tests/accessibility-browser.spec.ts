@@ -63,6 +63,10 @@ const accessibilityScenarios: AccessibilityScenario[] = [
     setup: async (page) => {
       const input = page.getByTestId('form-date-picker-smoke-element');
 
+      // Keep the contrast check independent of how quickly the panel fades in.
+      await page.addStyleTag({
+        content: '.peaui-popover-overlayer__content[popover] { transition-duration: 3s; }',
+      });
       await input.press('Enter');
       await expect(page.getByTestId('form-date-picker-smoke-panel')).toBeVisible();
     },
@@ -74,6 +78,10 @@ const accessibilityScenarios: AccessibilityScenario[] = [
     setup: async (page) => {
       const input = page.getByTestId('form-year-picker-smoke-element');
 
+      // Keep the contrast check independent of how quickly the panel fades in.
+      await page.addStyleTag({
+        content: '.peaui-popover-overlayer__content[popover] { transition-duration: 3s; }',
+      });
       await input.press('Enter');
       await expect(page.getByTestId('form-year-picker-smoke-panel')).toBeVisible();
     },

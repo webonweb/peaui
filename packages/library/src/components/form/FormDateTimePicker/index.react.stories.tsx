@@ -2,6 +2,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
+import ButtonAction from '../../data-entry/ButtonAction';
+
 import {
   formDateTimePickerDemoProps,
   formDateTimePickerDemoValue,
@@ -156,8 +158,14 @@ export const NativeRequiredAndReset: Story = {
         variant="split-input"
         required
       />
-      <button type="submit">Validate</button>
-      <button type="reset">Reset</button>
+      <div
+        style={{ display: 'flex', gap: 'var(--peaui-space-2)', marginTop: 'var(--peaui-space-2)' }}
+      >
+        <ButtonAction type="submit">Validate</ButtonAction>
+        <ButtonAction type="reset" variant="secondary">
+          Reset
+        </ButtonAction>
+      </div>
     </form>
   ),
 };

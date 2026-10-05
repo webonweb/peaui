@@ -70,6 +70,8 @@ for (const framework of frameworks) {
 
     await expect(root).toBeVisible();
     await expect(valueLabel).toContainText('3,5 z 5');
+    // Font swapping above the example can move its page coordinates independently of rating.
+    await page.evaluate(() => document.fonts.ready);
     const before = await geometry();
 
     await lastItem.click();

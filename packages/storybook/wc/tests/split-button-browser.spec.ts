@@ -86,8 +86,9 @@ test("SplitButton WC rozdziela akcje, zachowuje ARIA i pełną obsługę klawiat
       triggerRadiusStart: getComputedStyle(menuButton).borderTopLeftRadius,
     };
   });
-  expect(metrics).toEqual({
-    gap: 0,
+  // Layout engines can differ by a fraction of a CSS pixel at the shared edge.
+  expect(metrics.gap).toBeCloseTo(0, 3);
+  expect(metrics).toMatchObject({
     primaryHeight: 54,
     primaryRadiusEnd: "0px",
     triggerHeight: 54,

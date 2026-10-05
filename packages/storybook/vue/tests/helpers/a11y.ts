@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Locator, type Page } from '@playwright/test';
 
+import { waitForFiniteAnimations } from '../../../helpers/animations.mts';
+
 const AXE_DISABLED_RULES = [
   'landmark-one-main',
   'page-has-heading-one',
@@ -62,6 +64,7 @@ export async function tabToTarget(page: Page, target: Locator, maxTabs = 30): Pr
 }
 
 export async function expectNoA11yViolations(page: Page, context: string): Promise<void> {
+  await waitForFiniteAnimations(page.locator('#storybook-root'));
   const results = await new AxeBuilder({ page })
     .include('#storybook-root')
     .exclude('[class*="story-settings"]')

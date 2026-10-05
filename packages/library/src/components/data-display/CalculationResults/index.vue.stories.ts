@@ -98,7 +98,7 @@ const renderStory = (args: Story['args']) => ({
   },
   template: `
     <StoryContent :settings>
-      <div style="width:400px">
+      <div style="width: min(100%, 25rem)">
         <CalculationResultsComponent v-bind="args" @on:simulate="() => console.log('simulate')">
           <template #hint>
             Lorem ipsum

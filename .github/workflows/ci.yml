@@ -52,7 +52,7 @@ jobs:
   storybook:
     runs-on: ubuntu-latest
     env:
-      STORYBOOK_CHECK_VERBOSE: 'true'
+      STORYBOOK_CHECK_VERBOSE: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -80,7 +80,7 @@ jobs:
         browser: [chromium, firefox, webkit]
     env:
       PEAUI_BROWSER: ${{ matrix.browser }}
-      STORYBOOK_TEST_STATIC: '1'
+      STORYBOOK_TEST_STATIC: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -95,6 +95,10 @@ jobs:
         id: build_storybooks
       - run: npm run test:hydration
       - run: npm run test:browser:contracts
+      - run: npm run library:verify:browser:table
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' }}
+      - run: npm run library:verify:browser:visual
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' && matrix.browser == 'chromium' }}
       - run: npm run test:production
         if: matrix.browser == 'chromium'
       - run: npm run test:vue:browser
@@ -110,6 +114,7 @@ jobs:
         with:
           name: browser-results-${{ matrix.browser }}
           path: |
+            test-results
             packages/storybook/*/test-results
             packages/docs/test-results
           if-no-files-found: ignore

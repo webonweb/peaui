@@ -186,6 +186,161 @@ withPage(async ({ page, mount, snapshot, update, errors }) => {
     await update({ id: 'updated-id' }); assert.equal(await page.locator(nativeSelector).first().getAttribute('id'), 'updated-id-control');
     return { nativeId, dynamicId: 'updated-id-control', hostIsNotFormAssociated: true };
   });
+  for (const framework of ['vue', 'react', 'wc']) {
+    await check('V-F15', framework, 'FormInput:clear-icon-alignment', async () => {
+      await mount(framework, 'FormInput', { canErase: true });
+      const geometry = await page.locator('.peaui-form-field__erase-button').evaluate(button => {
+        const control = button.getBoundingClientRect();
+        const icon = button.querySelector('svg').getBoundingClientRect();
+        return { controlCenter: control.y + control.height / 2, iconCenter: icon.y + icon.height / 2 };
+      });
+      assert(Math.abs(geometry.controlCenter - geometry.iconCenter) < 0.1, JSON.stringify(geometry));
+      return geometry;
+    });
+    for (const component of ['FormDatePicker', 'FormYearPicker']) await check('V-F15', framework, component + ':readonly-clear', async () => {
+      await mount(framework, component, { readonly: true });
+      const before = await nativeData();
+      assert.equal(await page.locator('.peaui-form-field__erase-button').count(), 0);
+      assert.deepEqual(await nativeData(), before);
+      await update({ readonly: false });
+      await page.locator('.peaui-form-field__erase-button').click();
+      assert.equal(await page.locator(native).first().inputValue(), '');
+      return { readonlyValue: before, editableClear: true };
+    });
+    for (const component of ['FormDateRangePicker', 'FormDateTimePicker']) await check('V-F15', framework, component + ':alignment', async () => {
+      await mount(framework, component, { description: 'Supporting text' });
+      const geometry = await page.evaluate(() => {
+        document.documentElement.style.fontSize = '16px';
+        document.documentElement.style.setProperty('--peaui-font-scale', '0.95');
+        const host = document.querySelector('#root').getBoundingClientRect();
+        const trigger = document.querySelector('#root .peaui-popover-overlayer').getBoundingClientRect();
+        return { hostTop: host.top, triggerTop: trigger.top, hostWidth: host.width, triggerWidth: trigger.width };
+      });
+      assert.equal(geometry.triggerTop, geometry.hostTop);
+      assert.equal(geometry.triggerWidth, geometry.hostWidth);
+      return geometry;
+    });
+    await check('V-F15', framework, 'FormColorPicker:optional', async () => {
+      await page.evaluate(framework => window.componentTest.mount({ framework, name: 'FormColorPicker', props: { label: 'Brand color' } }), framework);
+      assert.equal(await page.locator('.peaui-form-label__optional').count(), 1);
+      await update({ required: true });
+      assert.equal(await page.locator('.peaui-form-label__optional').count(), 0);
+      return { optionalByDefault: true, requiredHidesNote: true };
+    });
+    await check('V-F15', framework, 'FormFieldLabel:hint-fill', async () => {
+      await mount(framework, 'FormFieldLabel', {}, { slots: { hint: 'Field help' } });
+      const colors = await page.locator('.peaui-form-label__hint-icon').evaluate(icon => ({
+        icon: getComputedStyle(icon).fill,
+        path: getComputedStyle(icon.querySelector('path')).fill,
+      }));
+      assert.equal(colors.path, colors.icon);
+      return colors;
+    });
+    await check('V-F15', framework, 'FormFileUploadSimple:format-spacing', async () => {
+      await mount(framework, 'FormFileUploadSimple');
+      const description = (await page.locator('.peaui-form-file-upload-simple__description').textContent()).replace(/\s+/g, ' ');
+      assert(description.includes('DOC ,PDF ,DOCX ,JPEG ,JPG ,PNG '), description);
+      return { description };
+    });
+  }
+  for (const framework of ['vue', 'react', 'wc']) {
+    for (const component of ['FormFieldLabel', 'FormInput', 'FormTextarea', 'FormButtonGroup', 'FormDateRangePicker', 'FormDateTimePicker', 'FormTimePicker', 'FormColorPicker', 'FormTagsInput']) await check('V-F16', framework, component + ':hint', async () => {
+      const slot = framework === 'react' && ['FormColorPicker', 'FormTagsInput'].includes(component) ? 'hintContent' : 'hint';
+      await mount(framework, component, {}, { slots: { [slot]: 'Field help' } });
+      const icon = page.locator('.peaui-form-label__hint-icon');
+      assert.equal(await icon.count(), 1);
+      const colors = await icon.evaluate(icon => ({ icon: getComputedStyle(icon).fill, path: getComputedStyle(icon.querySelector('path')).fill }));
+      assert.equal(colors.path, colors.icon);
+      const trigger = page.locator('.peaui-info-tooltip[tabindex="0"]');
+      assert.equal(await trigger.count(), 1);
+      await trigger.focus();
+      await page.waitForFunction(() => document.querySelector('.peaui-info-tooltip[data-open=true]'));
+      const tooltipId = await page.locator('[role=tooltip]').getAttribute('id');
+      assert((await trigger.getAttribute('aria-describedby')).split(' ').includes(tooltipId));
+      await trigger.press('Escape');
+      await page.waitForFunction(() => !document.querySelector('.peaui-info-tooltip[data-open=true]'));
+      return { colors, keyboardFocus: 'opens', escape: 'closes', description: tooltipId };
+    });
+  }
+  const messageIcons = new Map();
+  for (const framework of ['vue', 'react', 'wc']) {
+    for (const [component, state] of [
+      ['FormInput', 'error'], ['FormInput', 'success'], ['FormInput', 'maxLength'],
+      ['FormColorPicker', 'error'], ['FormDateRangePicker', 'error'],
+      ['FormDateTimePicker', 'error'], ['FormTimePicker', 'error'],
+    ]) await check('V-F17', framework, component + ':' + state, async () => {
+      await mount(framework, component, state === 'maxLength' ? { value: 'Alpha', maxLength: 5 } : {}, { slots: state === 'maxLength' ? {} : { [state]: 'Validation message' } });
+      const icon = page.locator('svg.peaui-message-text__icon');
+      assert.equal(await icon.count(), 1);
+      const shape = await icon.evaluate(icon => ({
+        viewBox: icon.getAttribute('viewBox'),
+        paths: [...icon.querySelectorAll('path')].map(path => ({ d: path.getAttribute('d').replace(/\s+/g, ''), fill: getComputedStyle(path).fill })),
+      }));
+      const key = component + ':' + state;
+      if (framework === 'vue') messageIcons.set(key, shape);
+      else assert.deepEqual(shape, messageIcons.get(key));
+      return shape;
+    });
+  }
+  const disabledStyles = new Map();
+  for (const framework of ['vue', 'react', 'wc']) {
+    for (const [component, state] of [['FormButtonGroup', 'disabled'], ['FormFileUpload', 'disabled'], ['FormFileUploadSimple', 'disabled'], ['FormColorPicker', 'disabled'], ['SearchInput', 'disabled'], ['SearchInput', 'readonly']]) await check('V-F18', framework, component + ':' + state, async () => {
+      await mount(framework, component, { [state]: true });
+      const styles = await page.locator('#root').evaluate(root => ({
+        buttons: [...root.querySelectorAll('button')].filter(button => button.getBoundingClientRect().height > 0).map(button => ({
+          disabled: button.disabled, color: getComputedStyle(button).color,
+          background: getComputedStyle(button).backgroundColor, opacity: getComputedStyle(button).opacity,
+        })),
+        overlayOpacity: root.querySelector('.peaui-form-color-picker') ? getComputedStyle(root.querySelector('.peaui-form-color-picker')).opacity : null,
+      }));
+      assert(styles.buttons.every(button => button.disabled));
+      const key = component + ':' + state;
+      if (framework === 'vue') disabledStyles.set(key, styles);
+      else assert.deepEqual(styles, disabledStyles.get(key));
+      return styles;
+    });
+    for (const component of ['FormInput', 'FormPassword', 'FormNumber', 'FormTextarea', 'FormSelect', 'FormMultiSelect', 'FormDatePicker', 'FormYearPicker', 'FormTimePicker', 'FormDateTimePicker', 'FormDateRangePicker', 'FormColorPicker', 'FormButtonGroup']) await check('V-F19', framework, component + ':readonly-label', async () => {
+      await mount(framework, component, { readonly: true, required: false });
+      assert.equal(await page.locator('.peaui-form-label__optional').count(), 0);
+      assert.equal(await page.locator('.peaui-form-label__text--readonly').count(), 1);
+      await update({ readonly: false });
+      assert.equal(await page.locator('.peaui-form-label__optional').count(), 1);
+      assert.equal(await page.locator('.peaui-form-label__text--readonly').count(), 0);
+      return { readonlyHidesOptional: true, restoresEditableLabel: true };
+    });
+  }
+  const variantStyles = new Map();
+  for (const framework of ['vue', 'react', 'wc']) {
+    for (const variant of ['loading', 'inline']) await check('V-F20', framework, 'FormColorPicker:' + variant, async () => {
+      await mount(framework, 'FormColorPicker', { value: '#4C9A2AE6', alpha: true, description: 'Pick a color or enter its HEX value.', savedColors: ['#4C9A2A', '#17314B', '#2C7CB5', '#C63C35'], recentColors: ['#744EA7', '#D97024'], ...(variant === 'loading' ? { loading: true } : { variant: 'inline' }) });
+      const geometry = await page.locator('.peaui-form-color-picker').evaluate(root => {
+        const input = root.querySelector('input'), panel = root.querySelector('[role=group]');
+        return { opacity: getComputedStyle(root).opacity, inputOpacity: getComputedStyle(input).opacity, inputDisabled: input.disabled, panelHeight: panel?.getBoundingClientRect().height ?? null, inputTop: input.getBoundingClientRect().top - root.getBoundingClientRect().top, hiddenPanelContent: panel ? panel.scrollHeight - panel.clientHeight : null };
+      });
+      assert.equal(geometry.inputDisabled, variant === 'loading');
+      if (framework === 'vue') variantStyles.set(variant, geometry);
+      else assert.deepEqual(geometry, variantStyles.get(variant));
+      return geometry;
+    });
+    await check('V-F20', framework, 'FormFileUpload:danger-message', async () => {
+      await mount(framework, 'FormFileUpload', { variant: 'danger' });
+      const message = await page.locator('.peaui-form-file-upload__message').textContent();
+      assert.equal(message.trim(), 'Pole jest wymagane');
+      return { message: message.trim() };
+    });
+  }
+  for (const framework of ['vue', 'react', 'wc']) {
+    for (const state of ['disabled', 'readonly']) await check('V-F21', framework, 'FormNumber:' + state + '-inset', async () => {
+      await mount(framework, 'FormNumber', { value: 42, canErase: true, [state]: true });
+      const input = page.locator('input');
+      const padding = await input.evaluate(element => getComputedStyle(element).paddingRight);
+      assert.equal(padding, '48px');
+      assert.equal(await page.locator('.peaui-form-field__erase-button').count(), 0);
+      await update({ canErase: false });
+      await page.waitForFunction(() => getComputedStyle(document.querySelector('#root input')).paddingRight === '12px');
+      return { padding, clearAction: false };
+    });
+  }
   fs.writeFileSync(path.join(reportDirectory, `browser-${engine}.json`), JSON.stringify({ engine, generatedAt: new Date().toISOString(), results, errors, summary: { cases: results.length, passed: results.filter(result => result.pass).length } }, null, 2));
   if (errors.length || results.some(result => !result.pass)) process.exitCode = 1;
 }, engine).catch(error => { console.error(error); process.exitCode = 1; });

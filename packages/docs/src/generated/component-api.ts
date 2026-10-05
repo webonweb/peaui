@@ -3255,7 +3255,7 @@ export const generatedComponentApi = [
       },
       {
         name: 'size',
-        type: "'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | ' heading-s' | 'heading-m' | 'heading-l'",
+        type: "'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'heading-xs' | 'heading-s' | 'heading-m' | 'heading-l'",
         required: false,
         default: 's',
         description: 'Wariant rozmiaru komponentu.',

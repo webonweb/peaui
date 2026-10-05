@@ -1873,7 +1873,7 @@ export const generatedReactComponentApi = [
       generatedComponentApi[86].props[1],
       {
         name: 'size',
-        type: "| 'xxs'\n      | 'xs'\n      | 's'\n      | 'm'\n      | 'l'\n      | 'xl'\n      | 'heading-xs'\n      | ' heading-s'\n      | 'heading-m'\n      | 'heading-l'",
+        type: "| 'xxs'\n      | 'xs'\n      | 's'\n      | 'm'\n      | 'l'\n      | 'xl'\n      | 'heading-xs'\n      | 'heading-s'\n      | 'heading-m'\n      | 'heading-l'",
         required: false,
         default: 's',
         description: 'Wariant rozmiaru komponentu.',
@@ -5265,9 +5265,16 @@ export const generatedReactComponentApi = [
     ],
     slots: [
       {
-        name: 'getSlotNameTabKey--',
-        type: 'ReactNode',
-        description: 'Treść React przekazywana przez prop getSlotNameTabKey--.',
+        name: 'renderTabBefore',
+        type: '(tab: PeauiOption, index: number) => ReactNode',
+        description:
+          'Funkcja renderująca renderTabBefore; argumenty i zwracana treść są opisane w sygnaturze.',
+      },
+      {
+        name: 'renderTabAfter',
+        type: '(tab: PeauiOption, index: number) => ReactNode',
+        description:
+          'Funkcja renderująca renderTabAfter; argumenty i zwracana treść są opisane w sygnaturze.',
       },
     ],
   },

@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/vue3';
 import { ref, watch } from 'vue';
 
 import TableListHeaderComponent from './index.vue';
+import { tableListHeaderStoryProps } from './story-fixtures';
 
 const { getSettings } = useSettingsStorie();
 
@@ -205,19 +206,7 @@ function createRender(withDescription = false) {
 
 export const TableListHeader: Story = {
   render: createRender(false),
-  args: {
-    buttonCreateLabel: 'Dodaj rekord',
-    canCreate: true,
-    canExport: true,
-    canFilter: true,
-    canSearch: true,
-    countFilters: 2,
-    countSelectedRecords: 3,
-    searchPlaceholder: 'Szukaj rekordu',
-    totalRecords: 18,
-    forceExport: false,
-    filtersOpen: false,
-  },
+  args: tableListHeaderStoryProps,
 };
 
 export const WithDescription: Story = {

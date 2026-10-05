@@ -2,6 +2,8 @@
 import { useModel, useFormControlModel } from './renderers/runtime.shared';
 import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
+import { renderSvgMarkup } from './renderers/svg-markup.renderer';
+import { feedbackHintIcon, feedbackErrorIcon } from '../components/feedback/feedback-icons.shared';
 import {
   useEffect,
   useId,
@@ -34,7 +36,7 @@ import {
   type FormColorPickerVariant,
   type HsvaColor,
 } from '../components/form/FormColorPicker/color-picker.shared';
-import { iconArrow } from './generated-static-icons';
+import { iconArrow, iconCross } from './generated-static-icons';
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -400,9 +402,11 @@ export function FormColorPickerRenderer({
       id={panelId}
       role={panelVariant}
       style={
-        {
-          '--peaui-form-color-picker-available-height': `${availablePanelHeight}px`,
-        } as CSSProperties
+        panelVariant === 'dialog'
+          ? ({
+              '--peaui-form-color-picker-available-height': `${availablePanelHeight}px`,
+            } as CSSProperties)
+          : undefined
       }
       onKeyDown={(event) => {
         if (panelVariant === 'dialog' && event.key === 'Escape') {
@@ -601,7 +605,7 @@ export function FormColorPickerRenderer({
   const fieldClass = cx(
     'peaui-form-field__element',
     inputText ? 'peaui-form-field__element--medium' : 'peaui-form-field__element--normal',
-    disabled && 'peaui-form-field__element--disabled',
+    (disabled || loading) && 'peaui-form-field__element--disabled',
     readonly && 'peaui-form-field__element--readonly',
     !readonly && 'peaui-form-field__element--basic',
     hasError && 'peaui-form-field__element--error',
@@ -611,8 +615,15 @@ export function FormColorPickerRenderer({
       {label ? (
         <label className="peaui-form-label" htmlFor={id} id={`label-${id}`}>
           <span className="peaui-form-label__content">
-            <span className="peaui-form-label__text">{label}</span>
-            {props.required === false ? (
+            <span
+              className={cx(
+                'peaui-form-label__text',
+                readonly && 'peaui-form-label__text--readonly',
+              )}
+            >
+              {label}
+            </span>
+            {!required && !readonly ? (
               <span className="peaui-form-label__optional">(pole niewymagane)</span>
             ) : null}
           </span>
@@ -622,7 +633,10 @@ export function FormColorPickerRenderer({
               placement="right"
               ariaLabel="Dodatkowa informacja"
             >
-              i
+              {renderSvgMarkup({
+                className: 'peaui-form-label__hint-icon',
+                data: feedbackHintIcon,
+              })}
             </InfoTooltipRenderer>
           ) : null}
         </label>
@@ -717,15 +731,7 @@ export function FormColorPickerRenderer({
                 }
               }}
             >
-              <svg aria-hidden="true" className="peaui-form-field__erase-icon" viewBox="0 0 14 14">
-                <path
-                  d="M3 3l8 8M11 3l-8 8"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              {renderSvgMarkup({ className: 'peaui-form-field__erase-icon', data: iconCross })}
             </button>
           ) : null}
         </div>
@@ -743,6 +749,7 @@ export function FormColorPickerRenderer({
           className="peaui-form-field__message peaui-message-text peaui-message-text--variant-error peaui-message-text--size-xs"
           id={errorId}
         >
+          {renderSvgMarkup({ className: 'peaui-message-text__icon', data: feedbackErrorIcon })}
           <p className="peaui-message-text__content">{invalidMessage}</p>
         </div>
       ) : null}
@@ -757,6 +764,7 @@ export function FormColorPickerRenderer({
   return (
     <>
       <div
+        aria-disabled={(variant === 'popover' && (disabled || loading)) || undefined}
         className={cx(
           root,
           'peaui-popover-overlayer',

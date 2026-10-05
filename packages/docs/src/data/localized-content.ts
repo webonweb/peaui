@@ -275,6 +275,9 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
       'Presents records through declarative columns.',
       'Plain text cells keep compact markup. Pass a new records array after updating a record or formatter to refresh the display.',
       'Handles empty, loading and record-action states.',
+      'Record actions open a shared popup; a single action with simple=true renders an icon button. withLock enables a column-lock control. Supply expanded row content through details-record in Vue/WC or detailsRecord in React.',
+      'Empty lists show EmptyState by default. Its create button opens the editor when editable=true and emits the record creation event. Set emptyDescription=false and emptyDescriptionInline to keep the table with an inline message. SpinnerLoader covers the inert table while loading.',
+      'canHideColumns also provides the visibility menu without record actions, inside the last data header. canCopy supports 0 and false; only null, undefined and empty text omit the copy control.',
       'Provides keyboard support and consistent selection, editing and row double-click events.',
       'Renders column and step labels as text without executing HTML from data.',
       'Columns with type="editable" validate before saving and pass the updated record to manage.onUpdate. Column hints are keyboard accessible.',
@@ -289,8 +292,12 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   ),
   TableListHeader: enCopy(
     'A table toolbar with search, filters, export and record creation actions.',
-    ['Groups the main actions above a table.', 'Shows active-filter and selected-record counts.'],
-    'Action flags, counters and an optional controlled filter-panel state.',
+    [
+      'Groups search and filters together, with creation and export in the action group.',
+      'Shows the active-filter count beside filters and the selected-record count on export; totalRecords controls export availability.',
+      'Places additional content and description below the controls.',
+    ],
+    'Action flags, counters and an optional controlled filtersOpen state. Use additional-content and additional-description slots in Vue/WC, or additionalContent and additionalDescription props in React.',
   ),
   TagChip: enCopy(
     'A short status or category label rendered as text or a button.',
@@ -429,6 +436,8 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
     [
       'Combines a label, control, hint and validation.',
       'Provides consistent disabled, read-only and required states.',
+      'Vue exposes bindings as props in the default slot; apply them to the control with v-bind. Web Components synchronizes the same bindings with the slotted control.',
+      'React passes classes, styles, value, native states and ARIA attributes to a single children element. Explicit control props take precedence; className and style are merged, while handlers and defaultValue are preserved. A custom control id becomes the label target and the basis for message IDs.',
       'canErase reserves a separate action area with a 32 × 32px clear target, preventing overlap with text, icons and other controls.',
     ],
     'ID, name, custom control content and optional labels, icons and messages.',
@@ -677,7 +686,7 @@ export const componentCopyEnglish: Record<string, ComponentCopy> = {
   NavigationTabs: enCopy(
     'A tab bar for switching between related views.',
     ['Organizes content into parallel sections.', 'Emits the selected active tab.'],
-    'A tabs array and an accessible navigation label. Left/Right arrows and Home/End skip disabled items; Enter or Space selects. Selection returns the original tab object, including its key, in every framework.',
+    'A tabs array and an accessible navigation label. Left/Right arrows and Home/End skip disabled items; Enter or Space selects. Selection returns the original tab object, including its key, in every framework. Content before and after a label uses navigation-tabs-{key}-before/after slots in Vue/WC and renderTabBefore(tab, index) / renderTabAfter(tab, index) in React.',
   ),
   PaginationControl: enCopy(
     'Pagination for choosing the previous, next or a specific page.',

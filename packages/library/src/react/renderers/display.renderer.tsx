@@ -18,8 +18,8 @@ import {
   TableListFooterLeafRenderer,
 } from './table.renderer';
 import { InfoTooltipRenderer } from './info-tooltip.renderer';
-import { Svg } from './svg.renderer';
-import { iconHint } from '../generated-static-icons';
+import { renderSvgMarkup as StaticSvg } from './svg-markup.renderer';
+import { feedbackHintIcon } from '../../components/feedback/feedback-icons.shared';
 import { SECTION_HEADING_TAGS } from '../../components/data-display/SectionHeading/section-heading.shared';
 
 export function DisplayRenderer({
@@ -126,7 +126,7 @@ export function DescriptionFieldLeafRenderer({
         {text(props, 'label')}
         {node(props, 'hint') ? (
           <InfoTooltipRenderer description={node(props, 'hint')} placement="right">
-            <Svg data={iconHint} className="peaui-description-field__hint-icon" name="hint" />
+            <StaticSvg data={feedbackHintIcon} className="peaui-description-field__hint-icon" />
           </InfoTooltipRenderer>
         ) : null}
       </dt>
@@ -185,7 +185,7 @@ export function SectionHeadingLeafRenderer({
           {node(props, 'title')}
           {node(props, 'hint') ? (
             <InfoTooltipRenderer description={node(props, 'hint')} placement="right">
-              <Svg data={iconHint} className="peaui-section-heading__hint-icon" name="hint" />
+              <StaticSvg data={feedbackHintIcon} className="peaui-section-heading__hint-icon" />
             </InfoTooltipRenderer>
           ) : null}
         </Title>
@@ -244,7 +244,7 @@ export function CalculationResultsLeafRenderer({
           {node(props, 'additional')}
           {node(props, 'hint') ? (
             <InfoTooltipRenderer description={node(props, 'hint')} placement="right">
-              <Svg data={iconHint} className="peaui-calculation-results__hint-icon" name="hint" />
+              <StaticSvg data={feedbackHintIcon} className="peaui-calculation-results__hint-icon" />
             </InfoTooltipRenderer>
           ) : null}
         </label>
@@ -274,7 +274,11 @@ export function CalculationResultsLeafRenderer({
         <button
           aria-label="Oblicz wynik"
           aria-controls={outputId}
-          className="peaui-calculation-results__content-button peaui-button-action peaui-button-action--size-s peaui-button-action--variant-primary"
+          className={cx(
+            'peaui-calculation-results__content-button peaui-button-action peaui-button-action--size-s peaui-button-action--variant-primary',
+            (bool(props, 'disabled') || bool(props, 'isLoading')) &&
+              'peaui-button-action--is-disabled',
+          )}
           disabled={bool(props, 'disabled') || bool(props, 'isLoading')}
           type="button"
           onClick={() => callback(props, 'onSimulate')?.()}

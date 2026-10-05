@@ -185,6 +185,7 @@
 }
 
 .peaui-form-field__erase-icon {
+  display: block;
   @include set-param(width, 0.75rem);
   @include set-param(height, 0.75rem);
 }

@@ -15,6 +15,16 @@ afterEach(() => {
 });
 
 describe('TransferList React', () => {
+  it('does not highlight an option before the listbox receives focus', () => {
+    const { container } = render(<TransferList items={transferListItems} />);
+    expect(container.querySelector('.peaui-transfer-list__option--active')).toBeNull();
+    const listbox = screen.getByRole('listbox', { name: 'Dostępne' });
+    expect(listbox).not.toHaveAttribute('aria-activedescendant');
+    fireEvent.focus(listbox);
+    expect(container.querySelector('.peaui-transfer-list__option--active')).not.toBeNull();
+    expect(listbox).toHaveAttribute('aria-activedescendant');
+  });
+
   it('renderuje tę samą strukturę listbox i stan disabled', () => {
     const { container } = render(
       <TransferList defaultValue={['analytics']} items={transferListItems} />,

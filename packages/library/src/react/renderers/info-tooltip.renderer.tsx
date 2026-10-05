@@ -19,8 +19,6 @@ import {
   type CSSProperties,
   useEffect,
 } from 'react';
-import { renderSvgMarkup } from './svg-markup.renderer';
-import { iconHint } from '../generated-static-icons';
 import { bindTooltipVisibility } from '../../components/overlayer/InfoTooltip/tooltip-visibility.shared';
 
 export const INFO_TOOLTIP_FOCUSABLE_TRIGGER_SELECTOR =
@@ -59,7 +57,7 @@ export function InfoTooltipRenderer({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [triggerMode, setTriggerMode] = useState<'own' | 'descendant' | 'ancestor'>('own');
   const [open, setOpen] = useState(false);
-  const triggerContent = props.children ?? renderSvgMarkup({ data: iconHint });
+  const triggerContent = props.children;
   const commonProps = common(props);
   const baseTestId = text(props, 'dataTestId');
   const sharedStyles = { '--unique-anchor': `--anchor-${tooltipId}` } as CSSProperties;

@@ -17,6 +17,74 @@ afterEach(() => {
 });
 
 describe('TableList (index.wc.ts)', () => {
+  it('keeps column visibility available without a record-actions column', async () => {
+    const element = new TableListElement();
+    Object.assign(element, {
+      canHideColumns: true,
+      canSelectRows: false,
+      columns: ['name', 'one', 'two', 'three'].map((key) => ({ key, label: key })),
+      records: [{ id: '1', name: 'Ada' }],
+    });
+    document.body.append(element);
+    await nextTick();
+    const trigger = element.querySelector<HTMLElement>(
+      '.peaui-table-list__head-actions-popover-trigger',
+    )!;
+    expect(trigger.closest('th')).toBe(element.querySelector('th:last-child'));
+    expect(element.querySelector('.peaui-table-list__actions-cell')).toBeNull();
+    trigger.click();
+    await nextTick();
+    element
+      .querySelectorAll<HTMLInputElement>('.peaui-table-list__head-actions-checkbox')[1]!
+      .click();
+    await nextTick();
+    expect(element.querySelectorAll('thead th')).toHaveLength(3);
+    expect(element.querySelectorAll('tbody td')).toHaveLength(3);
+  });
+
+  it('opens the default empty-list editor and keeps the create and submit events', async () => {
+    const element = new TableListElement();
+    const onCreate = vi.fn();
+    const onSubmit = vi.fn();
+    Object.assign(element, {
+      editable: true,
+      canCreate: true,
+      records: [],
+      columns: [{ key: 'name', label: 'Name', manage: { type: 'text' } }],
+    });
+    element.addEventListener('on:createRecord', onCreate);
+    element.addEventListener('on:submit', onSubmit);
+    document.body.append(element);
+    await nextTick();
+    element.querySelector<HTMLButtonElement>('.peaui-empty-state button')!.click();
+    await nextTick();
+    expect(onCreate).toHaveBeenCalledOnce();
+    await waitForDomCondition(element, () => Boolean(element.querySelector('input[type="text"]')), {
+      errorMessage: 'The empty-list create action did not open the editor.',
+    });
+    const input = element.querySelector<HTMLInputElement>('input[type="text"]')!;
+    expect(input).not.toBeNull();
+    input.value = 'New';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await nextTick();
+    element
+      .querySelector<HTMLButtonElement>('button[aria-label="Zapisz edytowany rekord"]')!
+      .click();
+    await vi.waitFor(() => expect(onSubmit).toHaveBeenCalledOnce());
+    expect((onSubmit.mock.calls[0]![0] as CustomEvent).detail).toMatchObject({ name: 'New' });
+  });
+
+  it('offers copy controls for numeric zero and boolean false', async () => {
+    const element = new TableListElement();
+    Object.assign(element, {
+      canSelectRows: false,
+      columns: [{ key: 'value', label: 'Value', canCopy: true }],
+      records: [0, false, '', null, undefined].map((value, id) => ({ id: String(id), value })),
+    });
+    document.body.append(element);
+    await nextTick();
+    expect(element.querySelectorAll('.peaui-table-list__copy-button')).toHaveLength(2);
+  });
   it('keeps plain cells compact while preserving mutable rows and formatter state', async () => {
     let suffix = '';
     const template = vi.fn((value: unknown) => String(value) + suffix);

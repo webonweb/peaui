@@ -1,4 +1,6 @@
 /** @jsxImportSource react */
+import { Svg } from './renderers/svg.renderer';
+import { iconEdit } from './generated-static-icons';
 import {
   useEffect,
   useId,
@@ -296,9 +298,7 @@ export function InlineEditRenderer(props: InlineEditRuntimeProps): ReactElement 
       buttonProps,
       kind === 'edit' ? (
         <>
-          <span aria-hidden="true" className={`${root}__edit-glyph`}>
-            ✎
-          </span>
+          <Svg data={iconEdit} name="edit" className={`${root}__button-icon`} />
           <span>{label}</span>
         </>
       ) : (

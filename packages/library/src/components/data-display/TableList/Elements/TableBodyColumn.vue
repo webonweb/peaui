@@ -11,6 +11,7 @@ import {
   resolveTableColumnType,
   resolveTableColumnValue,
   resolveTableTextValue,
+  hasTableCopyValue,
   TABLE_LIST_CLASS,
   TABLE_LIST_DEFAULT_COLUMN_WIDTH,
   type TableLockedColumnMeta,
@@ -111,13 +112,15 @@ async function handleCopyText(text: string): Promise<void> {
         @on:update="(value: string | undefined | number) => emit('on:update', value, column)"
       />
 
-      <InfoTooltip v-if="column.canCopy && record[column.key]" placement="right">
+      <InfoTooltip v-if="column.canCopy && hasTableCopyValue(getResolvedValue())" placement="right">
         <button
           type="button"
           :class="`${TABLE_LIST_CLASS}__copy-button`"
           :data-testid="copyButtonTestId"
           aria-label="Skopiuj tekst do schowka"
-          @click.prevent="handleCopyText(record[column.key] as string)"
+          @click.prevent="
+            handleCopyText(String(resolveTableTextValue(getResolvedValue(), column.deep)))
+          "
         >
           <SvgIcon :class="`${TABLE_LIST_CLASS}__copy-icon`" name="copy" aria-hidden="true" />
         </button>

@@ -34,16 +34,18 @@ export function ListLimitControlRenderer({
       </label>
       <SelectRenderer
         __name="FormSelect"
-        className={cx(
-          'peaui-list-limit-control__select',
-          `peaui-list-limit-control__select--position-${position}`,
-        )}
         id={`page-size-${id}`}
         aria-labelledby={labelId}
         name={`page-size-${id}`}
-        options={list.map((item) => ({ label: String(item), value: item }))}
+        options={list.map((item) => ({
+          id: String(item),
+          label: String(item),
+          value: String(item),
+          active: limit === item,
+        }))}
         placement={position}
         searchable={false}
+        placeholder="Wybierz"
         size="xs"
         value={String(limit)}
         onValueChange={(next: unknown) => setLimit(Number(next))}

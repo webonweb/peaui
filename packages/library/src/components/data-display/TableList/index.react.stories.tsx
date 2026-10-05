@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { getReactStoryArgs } from '@/react/story-args';
 import TableList from './index';
 import ButtonAction from '../../data-entry/ButtonAction';
 import {
@@ -17,14 +16,14 @@ import {
 const meta = {
   title: 'React/data-display/TableList',
   component: TableList,
-  args: getReactStoryArgs('TableList'),
+  args: { columns: tableListStoryColumns, records: tableListStoryRecords },
   parameters: { layout: 'padded' },
 } satisfies Meta<typeof TableList>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = { args: { scroll: true } };
 
 export const ReorderDuringEditing: Story = {
   render: function ReorderDuringEditing() {
@@ -122,7 +121,7 @@ export const EditableColumns: Story = {
 };
 
 export const EmptyState: Story = {
-  args: { canCreate: true, emptyDescriptionInline: 'Brak rekordów.', records: [] },
+  args: { canCreate: true, records: [] },
 };
 
 export const Loading: Story = {

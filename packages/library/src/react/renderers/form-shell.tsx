@@ -1,7 +1,12 @@
 /** @jsxImportSource react */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type RuntimeProps, text, num, node, cx, bool, dataTest } from './runtime.shared';
-import { iconCheckCircle, iconHint } from '../generated-static-icons';
+import {
+  feedbackHintIcon,
+  feedbackSuccessIcon,
+  feedbackErrorIcon,
+  feedbackInfoIcon,
+} from '../../components/feedback/feedback-icons.shared';
 import { type ReactNode, type ReactElement, type ForwardedRef, useId } from 'react';
 import { Svg } from './svg.renderer';
 import { InfoTooltipRenderer } from './info-tooltip.renderer';
@@ -72,14 +77,21 @@ export function FormShell({
       {label ? (
         <label className="peaui-form-label" htmlFor={id} id={`label-${id}`}>
           <span className="peaui-form-label__content">
-            <span className="peaui-form-label__text">{label}</span>
-            {!bool(props, 'required') ? (
+            <span
+              className={cx(
+                'peaui-form-label__text',
+                bool(props, 'readonly') && 'peaui-form-label__text--readonly',
+              )}
+            >
+              {label}
+            </span>
+            {!bool(props, 'required') && !bool(props, 'readonly') ? (
               <span className="peaui-form-label__optional">(pole niewymagane)</span>
             ) : null}
           </span>
           {node(props, 'hint') ? (
             <InfoTooltipRenderer description={node(props, 'hint')} placement="right">
-              <Svg data={iconHint} className="peaui-form-label__hint-icon" name="hint" />
+              <Svg data={feedbackHintIcon} className="peaui-form-label__hint-icon" name="hint" />
             </InfoTooltipRenderer>
           ) : null}
         </label>
@@ -129,6 +141,9 @@ export function FormShell({
           )}
           id={`${id}-help-max-length-description`}
         >
+          {maxLength === valueLength ? (
+            <Svg data={feedbackInfoIcon} className="peaui-message-text__icon" name="info" />
+          ) : null}
           <p className="peaui-message-text__content">
             Długość tekstu: {valueLength} / {maxLength} znaków
           </p>
@@ -140,7 +155,7 @@ export function FormShell({
           id={`${id}-error`}
           role="alert"
         >
-          <Svg data={iconHint} className="peaui-message-text__icon" name="hint" />
+          <Svg data={feedbackErrorIcon} className="peaui-message-text__icon" name="error" />
           <p className="peaui-message-text__content">{node(props, 'error')}</p>
         </div>
       ) : null}
@@ -149,7 +164,7 @@ export function FormShell({
           className={`${className}__message peaui-message-text peaui-message-text--variant-success peaui-message-text--size-xs`}
           id={`${id}-success`}
         >
-          <Svg data={iconCheckCircle} className="peaui-message-text__icon" name="checkCircle" />
+          <Svg data={feedbackSuccessIcon} className="peaui-message-text__icon" name="checkCircle" />
           <p className="peaui-message-text__content">{node(props, 'success')}</p>
         </div>
       ) : null}

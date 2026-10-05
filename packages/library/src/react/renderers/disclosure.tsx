@@ -1,9 +1,7 @@
 /** @jsxImportSource react */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type RuntimeProps, bool, useModel, common, cx, node, text } from './runtime.shared';
-import { iconArrow } from '../generated-static-icons';
 import { type ForwardedRef, type ReactElement } from 'react';
-import { Svg } from './svg.renderer';
 
 export function Disclosure({
   props,
@@ -42,7 +40,21 @@ export function Disclosure({
             <span className="peaui-disclosure-panel__additional">{node(props, 'additional')}</span>
           ) : null}
           {!alwaysOpen ? (
-            <Svg data={iconArrow} className="peaui-disclosure-panel__icon" name="arrow" />
+            <svg
+              className="peaui-disclosure-panel__icon"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M4 6.5L8 10.5L12 6.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           ) : null}
         </span>
       </summary>

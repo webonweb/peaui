@@ -101,6 +101,10 @@ peaui-copy-button {
 }
 
 @media (max-width: 30rem) {
+  peaui-copy-button:not([content='icon']) {
+    inline-size: min(100%, 20rem);
+  }
+
   .peaui-copy-button--content-text,
   .peaui-copy-button--content-icon-text {
     inline-size: min(100%, 20rem);

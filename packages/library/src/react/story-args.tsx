@@ -80,7 +80,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
     countFilters: 2,
     totalRecords: 48,
   },
-  TagChip: { label: 'Aktywny', size: 'm', variant: 'green' },
+  TagChip: { label: 'Aktywny', size: 's', variant: 'green' },
   TreeList: {
     canRemove: true,
     defaultTree: [
@@ -314,7 +314,7 @@ const presets: Record<ReactComponentName, Record<string, unknown>> = {
   },
   FullscreenContainer: { ariaLabel: 'Podgląd pełnoekranowy', children: card('Podgląd') },
   GridItem: { children: card('Element siatki'), colspan: 6 },
-  GridSection: { children: [card('Kolumna 1'), card('Kolumna 2')], columns: 2, gap: '1rem' },
+  GridSection: { children: [card('Kolumna 1'), card('Kolumna 2')], columns: 2, gap: 1 },
   PageLayout: {
     additional: 'Nawigacja dodatkowa',
     children: card('Główna zawartość'),

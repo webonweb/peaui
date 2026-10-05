@@ -15,6 +15,7 @@ import {
 } from 'react';
 
 import KeyboardKey from '@/components/data-display/KeyboardKey';
+import SearchInput from '@/components/data-entry/SearchInput';
 import VirtualList from '@/components/data-display/VirtualList';
 import EmptyState from '@/components/feedback/EmptyState';
 import SpinnerLoader from '@/components/feedback/SpinnerLoader';
@@ -409,33 +410,27 @@ const CommandPalette = forwardRef<CommandPaletteHandle, CommandPaletteProps>(
             )}
           </div>
         ) : null}
-        <div className="peaui-command-palette__search">
-          <span aria-hidden="true" className="peaui-command-palette__search-icon">
-            &#8981;
-          </span>
-          <input
-            ref={input}
-            type="search"
-            autoComplete="off"
-            autoCapitalize="none"
-            spellCheck={false}
-            role="combobox"
-            aria-activedescendant={currentActiveId ? optionId(currentActiveId) : undefined}
-            aria-autocomplete="list"
-            aria-controls={listId}
-            aria-expanded="true"
-            aria-haspopup="listbox"
-            aria-label={ariaLabel}
-            className="peaui-command-palette__input"
-            data-testid={dataTestId ? `${dataTestId}-search-element` : undefined}
-            placeholder={placeholder}
-            value={searchQuery}
-            onChange={(event) => {
-              setExecutionError('');
-              setQuery(event.currentTarget.value);
-            }}
-          />
-        </div>
+        <SearchInput
+          ref={input}
+          debounceTime={0}
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
+          role="combobox"
+          aria-activedescendant={currentActiveId ? optionId(currentActiveId) : undefined}
+          aria-autocomplete="list"
+          aria-controls={listId}
+          aria-expanded="true"
+          aria-haspopup="listbox"
+          aria-label={ariaLabel}
+          dataTestId={dataTestId ? `${dataTestId}-search` : undefined}
+          placeholder={placeholder}
+          value={searchQuery}
+          onValueChange={(value) => {
+            setExecutionError('');
+            setQuery(String(value ?? ''));
+          }}
+        />
         <p
           className="peaui-command-palette__status"
           role="status"

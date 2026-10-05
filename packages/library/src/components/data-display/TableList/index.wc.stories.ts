@@ -52,7 +52,7 @@ export default meta;
 
 type Story = StoryObj<VueCustomElementStoryArgs>;
 
-export const Default: Story = {};
+export const Default: Story = { args: { scroll: true } };
 
 export const ReorderDuringEditing: Story = {
   render: () => {
@@ -145,7 +145,7 @@ export const Editable: Story = {
 };
 
 export const EmptyState: Story = {
-  args: { canCreate: true, emptyDescriptionInline: 'Brak rekordów.', records: [] },
+  args: { canCreate: true, records: [] },
 };
 
 export const Loading: Story = {

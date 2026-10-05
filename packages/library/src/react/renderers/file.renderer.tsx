@@ -161,20 +161,23 @@ export function FileRenderer({
               Przeciagnij i upusc plik tutaj lub przeslij
             </p>
             <p id={descriptionId} className="peaui-form-file-upload-simple__description">
-              Format pliku:{' '}
+              {' Format pliku: '}
               {allowedTypes.map((type, index) => (
                 <span key={type} className="peaui-form-file-upload-simple__type">
-                  {typeLabels[type] ?? type}
-                  {index < allowedTypes.length - 1 ? ',' : ''}
+                  {`${typeLabels[type] ?? type} `}
+                  {index < allowedTypes.length - 1 ? <span>,</span> : null}
                 </span>
               ))}
               <br />
-              Rozmiar pliku: maksimum {formatBytes(maxFileSize)}
+              {` Rozmiar pliku: maksimum ${formatBytes(maxFileSize)}`}
             </p>
           </div>
           <button
             aria-hidden="true"
-            className="peaui-form-file-upload-simple__button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-primary"
+            className={cx(
+              'peaui-form-file-upload-simple__button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-primary',
+              bool(props, 'disabled') && 'peaui-button-action--is-disabled',
+            )}
             disabled={bool(props, 'disabled')}
             tabIndex={-1}
             type="button"
@@ -251,13 +254,16 @@ export function FileRenderer({
             />
             {validationError || variant === 'danger' ? (
               <p id={messageId} className="peaui-form-file-upload__message" role="status">
-                {validationError || 'To pole jest wymagane'}
+                {validationError || 'Pole jest wymagane'}
               </p>
             ) : null}
             <div className="peaui-form-file-upload__actions">
               <button
                 aria-hidden="true"
-                className="peaui-form-file-upload__button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-primary"
+                className={cx(
+                  'peaui-form-file-upload__button peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-primary',
+                  bool(props, 'disabled') && 'peaui-button-action--is-disabled',
+                )}
                 disabled={bool(props, 'disabled')}
                 tabIndex={-1}
                 type="button"
@@ -271,7 +277,7 @@ export function FileRenderer({
                 Format zdjecia: JPEG, JPG lub PNG
               </span>
               <span className="peaui-form-file-upload__description-line">
-                Rozmiar zdjecia: maksimum {formatBytes(maxFileSize)}
+                {`Rozmiar zdjecia: maksimum ${formatBytes(maxFileSize)}`}
               </span>
             </p>
             {!bool(props, 'disabled') ? (

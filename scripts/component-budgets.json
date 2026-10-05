@@ -147,7 +147,7 @@
     "css": 12288
   },
   "react/data-display/TableList": {
-    "js": 25088,
+    "js": 32512,
     "css": 11264
   },
   "wc/data-display/TableList": {
@@ -160,7 +160,7 @@
     "css": 6528
   },
   "react/data-display/TableListFooter": {
-    "js": 15616,
+    "js": 16128,
     "css": 6528
   },
   "wc/data-display/TableListFooter": {
@@ -173,7 +173,7 @@
     "css": 5632
   },
   "react/data-display/TableListHeader": {
-    "js": 12800,
+    "js": 13312,
     "css": 5632
   },
   "wc/data-display/TableListHeader": {
@@ -264,7 +264,7 @@
     "css": 6528
   },
   "react/data-entry/InlineEdit": {
-    "js": 17408,
+    "js": 18688,
     "css": 6528
   },
   "wc/data-entry/InlineEdit": {
@@ -277,7 +277,7 @@
     "css": 3072
   },
   "react/data-entry/InputSlider": {
-    "js": 4096,
+    "js": 4608,
     "css": 3072
   },
   "wc/data-entry/InputSlider": {
@@ -316,7 +316,7 @@
     "css": 3584
   },
   "react/data-entry/SelectableCard": {
-    "js": 3584,
+    "js": 4608,
     "css": 3584
   },
   "wc/data-entry/SelectableCard": {
@@ -368,7 +368,7 @@
     "css": 6144
   },
   "react/data-entry/TransferList": {
-    "js": 11520,
+    "js": 18176,
     "css": 6144
   },
   "wc/data-entry/TransferList": {
@@ -485,7 +485,7 @@
     "css": 4992
   },
   "react/form/FormButtonGroup": {
-    "js": 9728,
+    "js": 9984,
     "css": 4992
   },
   "wc/form/FormButtonGroup": {
@@ -511,7 +511,7 @@
     "css": 6784
   },
   "react/form/FormColorPicker": {
-    "js": 11520,
+    "js": 12288,
     "css": 6784
   },
   "wc/form/FormColorPicker": {
@@ -537,7 +537,7 @@
     "css": 6016
   },
   "react/form/FormDatePicker": {
-    "js": 13056,
+    "js": 13312,
     "css": 6016
   },
   "wc/form/FormDatePicker": {
@@ -550,7 +550,7 @@
     "css": 7168
   },
   "react/form/FormDateRangePicker": {
-    "js": 11264,
+    "js": 14080,
     "css": 7168
   },
   "wc/form/FormDateRangePicker": {
@@ -563,7 +563,7 @@
     "css": 6784
   },
   "react/form/FormDateTimePicker": {
-    "js": 15872,
+    "js": 16384,
     "css": 6784
   },
   "wc/form/FormDateTimePicker": {
@@ -576,7 +576,7 @@
     "css": 4480
   },
   "react/form/FormField": {
-    "js": 8704,
+    "js": 9216,
     "css": 4480
   },
   "wc/form/FormField": {
@@ -628,7 +628,7 @@
     "css": 4480
   },
   "react/form/FormInput": {
-    "js": 10496,
+    "js": 11008,
     "css": 4480
   },
   "wc/form/FormInput": {
@@ -641,7 +641,7 @@
     "css": 5760
   },
   "react/form/FormMultiSelect": {
-    "js": 13312,
+    "js": 13568,
     "css": 5760
   },
   "wc/form/FormMultiSelect": {
@@ -654,7 +654,7 @@
     "css": 4480
   },
   "react/form/FormNumber": {
-    "js": 10496,
+    "js": 11008,
     "css": 4480
   },
   "wc/form/FormNumber": {
@@ -667,7 +667,7 @@
     "css": 4992
   },
   "react/form/FormPassword": {
-    "js": 13312,
+    "js": 13824,
     "css": 4992
   },
   "wc/form/FormPassword": {
@@ -719,7 +719,7 @@
     "css": 5504
   },
   "react/form/FormSelect": {
-    "js": 13312,
+    "js": 13568,
     "css": 5504
   },
   "wc/form/FormSelect": {
@@ -745,7 +745,7 @@
     "css": 5120
   },
   "react/form/FormTagsInput": {
-    "js": 7936,
+    "js": 10752,
     "css": 5120
   },
   "wc/form/FormTagsInput": {
@@ -758,7 +758,7 @@
     "css": 4608
   },
   "react/form/FormTextarea": {
-    "js": 8704,
+    "js": 9216,
     "css": 4608
   },
   "wc/form/FormTextarea": {
@@ -771,7 +771,7 @@
     "css": 6400
   },
   "react/form/FormTimePicker": {
-    "js": 12800,
+    "js": 13056,
     "css": 6400
   },
   "wc/form/FormTimePicker": {
@@ -784,7 +784,7 @@
     "css": 5760
   },
   "react/form/FormYearPicker": {
-    "js": 13056,
+    "js": 13312,
     "css": 5760
   },
   "wc/form/FormYearPicker": {
@@ -888,7 +888,7 @@
     "css": 3584
   },
   "react/navigation/Breadcrumbs": {
-    "js": 3584,
+    "js": 4608,
     "css": 3584
   },
   "wc/navigation/Breadcrumbs": {
@@ -940,7 +940,7 @@
     "css": 5632
   },
   "react/navigation/ListLimitControl": {
-    "js": 13568,
+    "js": 13824,
     "css": 5632
   },
   "wc/navigation/ListLimitControl": {

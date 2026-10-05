@@ -289,6 +289,7 @@ function handleToggleLockColumn(column: TableColumn): void {
             <slot :column="column" name="hint">{{ column.hintColumn || column.label }}</slot>
           </template>
         </InfoTooltip>
+        <slot v-if="index === visibleColumns.length - 1" name="actions" />
       </div>
     </div>
   </th>

@@ -20,6 +20,7 @@ import {
   iconPlus,
   iconSort,
   iconHint,
+  iconFilters,
 } from '../generated-static-icons';
 import {
   type ReactNode,
@@ -45,9 +46,13 @@ import {
   resolveTableColumnType,
   resolveTableColumnValue,
   resolveTableTextValue,
+  hasTableCopyValue,
   getTableColumnIdentifier,
   getTableRecordIdentity,
   findTableRecordIndex,
+  TABLE_LIST_DEFAULT_COLUMN_WIDTH,
+  TABLE_LIST_ACTIONS_STICKY_WIDTH,
+  TABLE_LIST_MIN_VISIBLE_COLUMNS,
 } from '../../components/data-display/TableList/shared';
 import { ERROR_MESSAGES } from '../../constants/error.const';
 import { TextFieldLeafRenderer, SearchInputLeafRenderer } from './text-input.renderer';
@@ -59,8 +64,20 @@ import type {
 import { ButtonExportLeafRenderer } from './button.renderer';
 import { Dialog } from './dialog';
 import { InfoTooltipRenderer } from './info-tooltip.renderer';
-import { ProgressIndicatorLeafRenderer } from './feedback.renderer';
+import {
+  EmptyStateLeafRenderer,
+  ProgressIndicatorLeafRenderer,
+  SpinnerLoaderLeafRenderer,
+} from './feedback.renderer';
 import { getTablePage } from '../../components/data-display/TableList/table-page.shared';
+import { ButtonActionRenderer } from './button-action.renderer';
+import { ChoiceControlsRenderer } from './choice-controls.renderer';
+import {
+  CounterBadgeLeafRenderer as CounterBadge,
+  TagChipLeafRenderer as TagChip,
+} from './display.renderer';
+import { Popover } from './popover';
+import { buildTableLockedColumnsMap } from '../../components/data-display/TableList/table-locking.shared';
 
 export type TableColumn = Omit<TableColumnBase, 'width' | 'label'> & {
   /** Legacy React aliases remain accepted. */
@@ -268,7 +285,7 @@ function TableEditableCell({
   );
 }
 
-export function TableCellContent({
+function TableTypedCellContent({
   column,
   props,
   record,
@@ -299,7 +316,16 @@ export function TableCellContent({
       date && !Number.isNaN(date.valueOf())
         ? formatDateToISODateString(date.toISOString())
         : display;
-    return <time dateTime={typeof value === 'string' ? value : undefined}>{formatted}</time>;
+    return (
+      <div className="peaui-table-list__date-column">
+        <time
+          className="peaui-table-list__date-value"
+          dateTime={typeof value === 'string' ? value : undefined}
+        >
+          {formatted}
+        </time>
+      </div>
+    );
   }
   if (type === 'status' || type === 'tag') {
     const label = type === 'status' ? (value ? 'TAK' : 'NIE') : display;
@@ -309,17 +335,7 @@ export function TableCellContent({
           ? 'green'
           : 'red'
         : (column.statusDictionary?.[display] ?? 'green');
-    return (
-      <span
-        className={cx(
-          'peaui-tag-chip',
-          'peaui-tag-chip--size-xs',
-          `peaui-tag-chip--variant-${variant}`,
-        )}
-      >
-        {label}
-      </span>
-    );
+    return <TagChip size="xs" variant={variant} label={label} />;
   }
   if (type === 'link') {
     const href = /^(https?:\/\/|\/|#|mailto:|tel:|\.\/|\.\.\/)/.test(display) ? display : undefined;
@@ -344,7 +360,7 @@ export function TableCellContent({
   if (type === 'action' || type === 'editAction' || type === 'EditActionColumn') {
     const label = column.actionLabel ?? (type === 'action' ? 'Akcja' : 'Edytuj');
     return (
-      <span
+      <div
         className={
           type === 'action'
             ? 'peaui-table-list__action-column'
@@ -354,115 +370,312 @@ export function TableCellContent({
         {type !== 'action' ? (
           <span className="peaui-table-list__edit-action-value">{display}</span>
         ) : null}
-        <button
-          aria-label={`${label}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
-          className={cx(
-            'peaui-button-action',
-            'peaui-button-action--size-xs',
-            'peaui-button-action--variant-secondary',
-            type === 'action'
-              ? 'peaui-table-list__actions-simple-button'
-              : 'peaui-table-list__edit-action-button',
-          )}
-          type="button"
-          onClick={() =>
-            callback(props, 'onAction')?.(
-              record.id,
-              column.actionName ?? (type === 'action' ? 'action' : 'edit-inline'),
-              record,
-            )
-          }
-        >
-          {label}
-        </button>
-      </span>
+        {type === 'action' ? (
+          <ButtonActionRenderer
+            size="xs"
+            variant="secondary"
+            ariaLabel={`${label}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+            onClick={() =>
+              callback(props, 'onAction')?.(record.id, column.actionName ?? 'action', record)
+            }
+          >
+            {label}
+          </ButtonActionRenderer>
+        ) : (
+          <button
+            aria-label={`${label}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+            className={cx(
+              'peaui-table-list__actions-simple-button',
+              'peaui-table-list__edit-action-button',
+            )}
+            type="button"
+            onClick={() =>
+              callback(props, 'onAction')?.(record.id, column.actionName ?? 'edit-inline', record)
+            }
+          >
+            <Svg name="edit2" className="peaui-table-list__actions-simple-icon" />
+          </button>
+        )}
+      </div>
     );
   }
   if (type === 'stepper' && column.steps) {
     const steps = column.steps(record);
     return (
-      <div
-        role="group"
-        aria-label={`Etapy dla ${String(record.name ?? `wiersza ${rowIndex + 1}`)}`}
-        className="peaui-table-list__stepper-list"
-      >
-        {steps.map((step, index) => (
-          <Fragment key={step.key}>
-            {step.isSeparate && index > 0 ? (
-              <span className="peaui-table-list__stepper-separator" aria-hidden="true">
-                |
-              </span>
-            ) : null}
-            <button
-              type="button"
-              aria-disabled={step.status === 'disabled' || undefined}
-              aria-label={`${step.label}. Status ${step.status}`}
-              className={cx(
-                'peaui-table-list__stepper-button',
-                `peaui-table-list__stepper-button--status-${step.status}`,
-                step.isSeparate && 'peaui-table-list__stepper-button--separate',
-                index === 0 && 'peaui-table-list__stepper-button--first',
-                (index === steps.length - 1 || steps[index + 1]?.isSeparate) &&
-                  'peaui-table-list__stepper-button--last',
-              )}
-              onClick={() => {
-                if (step.status === 'disabled') return;
-                if (step.onRedirect) step.onRedirect();
-                else if (step.collapse) callback(props, 'onAction')?.(record.id, 'expand', record);
-              }}
-            >
-              <span className="peaui-table-list__stepper-label">{step.label}</span>
-              {step.collapse ? (
-                <ProgressIndicatorLeafRenderer
-                  active={step.collapse.activeElements}
-                  steps={step.collapse.count}
-                  size={20}
-                  strokeWidth={2.5}
-                />
+      <div className="peaui-table-list__stepper">
+        <div
+          role="group"
+          aria-label={`Etapy dla ${String(record.name ?? `wiersza ${rowIndex + 1}`)}`}
+          className="peaui-table-list__stepper-list"
+        >
+          {steps.map((step, index) => (
+            <Fragment key={step.key}>
+              {step.isSeparate && index > 0 ? (
+                <span className="peaui-table-list__stepper-separator" aria-hidden="true">
+                  |
+                </span>
               ) : null}
-            </button>
-          </Fragment>
-        ))}
+              <button
+                type="button"
+                aria-disabled={step.status === 'disabled' || undefined}
+                aria-label={`${step.label}. Status ${step.status}`}
+                className={cx(
+                  'peaui-table-list__stepper-button',
+                  `peaui-table-list__stepper-button--status-${step.status}`,
+                  step.isSeparate && 'peaui-table-list__stepper-button--separate',
+                  index === 0 && 'peaui-table-list__stepper-button--first',
+                  (index === steps.length - 1 || steps[index + 1]?.isSeparate) &&
+                    'peaui-table-list__stepper-button--last',
+                )}
+                onClick={() => {
+                  if (step.status === 'disabled') return;
+                  if (step.onRedirect) step.onRedirect();
+                  else if (step.collapse)
+                    callback(props, 'onAction')?.(record.id, 'expand', record);
+                }}
+              >
+                <span className="peaui-table-list__stepper-label">{step.label}</span>
+                {step.collapse ? (
+                  <ProgressIndicatorLeafRenderer
+                    className="peaui-table-list__stepper-progress-indicator"
+                    active={step.collapse.activeElements}
+                    steps={step.collapse.count}
+                    size={20}
+                    strokeWidth={2.5}
+                  />
+                ) : null}
+                {step.collapse ? (
+                  <Svg
+                    name="arrow"
+                    className={cx(
+                      'peaui-table-list__stepper-arrow',
+                      props.isExpanded
+                        ? 'peaui-table-list__stepper-arrow--expanded'
+                        : 'peaui-table-list__stepper-arrow--collapsed',
+                    )}
+                  />
+                ) : null}
+                {step.status === 'complete' ? (
+                  <Svg name="checkCircle" className="peaui-table-list__stepper-complete-icon" />
+                ) : null}
+                {step.status === 'disabled' ? (
+                  <InfoTooltipRenderer
+                    placement="right"
+                    description={
+                      <>
+                        Aby przejść do wybranego kroku, musisz wypełnić <br />
+                        poprzedni.
+                      </>
+                    }
+                  >
+                    <Svg name="lock" className="peaui-table-list__stepper-lock-icon" />
+                  </InfoTooltipRenderer>
+                ) : null}
+              </button>
+            </Fragment>
+          ))}
+        </div>
       </div>
     );
   }
   if (type === 'expandable') {
     return (
-      <button
-        aria-label={`Pokaż szczegóły: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
-        className="peaui-table-list__expandable-button"
-        type="button"
-        onClick={() => callback(props, 'onAction')?.(record.id, 'expand', record)}
-      >
-        <span className="peaui-table-list__expandable-value">{display}</span>
-        <span aria-hidden="true">›</span>
-      </button>
+      <div className="peaui-table-list__expandable-column">
+        <button
+          aria-label={`Pokaż szczegóły: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`}
+          className="peaui-table-list__expandable-button"
+          aria-expanded={Boolean(props.isExpanded)}
+          type="button"
+          onClick={() => callback(props, 'onAction')?.(record.id, 'expand', record)}
+        >
+          <span className="peaui-table-list__expandable-value">{display}</span>
+          <Svg
+            name="arrow"
+            className={cx(
+              'peaui-table-list__expandable-arrow',
+              props.isExpanded
+                ? 'peaui-table-list__expandable-arrow--expanded'
+                : 'peaui-table-list__expandable-arrow--collapsed',
+            )}
+          />
+        </button>
+      </div>
     );
   }
 
-  const content = (
-    <>
+  return (
+    <div className="peaui-table-list__text-column">
       <span className="peaui-table-list__text-value">{display}</span>
       {column.hintColumn ? (
         <InfoTooltipRenderer description={column.hintColumn} placement="top">
           <Svg data={iconHint} className="peaui-table-list__hint-icon" name="hint" />
         </InfoTooltipRenderer>
       ) : null}
-    </>
+    </div>
   );
-  if (!column.canCopy) return content;
+}
+
+export function TableCellContent({
+  column,
+  props,
+  record,
+  rowIndex,
+}: {
+  column: TableColumn;
+  props: RuntimeProps;
+  record: Record<string, unknown>;
+  rowIndex: number;
+}): ReactNode {
+  const display = String(resolveTableTextValue(tableCellValue(record, column), column.deep));
+  if (resolveTableColumnType(column, record) === 'text' && !column.canCopy && !column.hintColumn) {
+    return (
+      <span className="peaui-table-list__text-value peaui-table-list__plain-text-column">
+        {display}
+      </span>
+    );
+  }
   return (
-    <span className="peaui-table-list__body-cell-content peaui-table-list__body-cell-content--copyable">
-      {content}
-      <button
-        aria-label={`Kopiuj ${column.label ?? column.key}: ${display}`}
-        className="peaui-table-list__copy-button"
-        type="button"
-        onClick={() => copyTextToClipboard(display)}
-      >
-        <Svg data={iconCopy} className="peaui-table-list__copy-icon" name="copy" />
-      </button>
-    </span>
+    <div
+      className={cx(
+        'peaui-table-list__body-cell-content',
+        column.canCopy && 'peaui-table-list__body-cell-content--copyable',
+      )}
+      style={{
+        minWidth: column.width ?? TABLE_LIST_DEFAULT_COLUMN_WIDTH,
+        width: column.width ?? '100%',
+      }}
+    >
+      <TableTypedCellContent column={column} props={props} record={record} rowIndex={rowIndex} />
+      {column.canCopy && hasTableCopyValue(tableCellValue(record, column)) ? (
+        <InfoTooltipRenderer description="Skopiuj tekst z kolumny" placement="right">
+          <button
+            aria-label={`Kopiuj ${column.label ?? column.key}: ${display}`}
+            className="peaui-table-list__copy-button"
+            type="button"
+            onClick={() => copyTextToClipboard(display)}
+          >
+            <Svg data={iconCopy} className="peaui-table-list__copy-icon" name="copy" />
+          </button>
+        </InfoTooltipRenderer>
+      ) : null}
+    </div>
+  );
+}
+
+function TableRowActions({
+  column,
+  record,
+  rowIndex,
+  onAction,
+}: {
+  column: TableColumn;
+  record: Record<string, unknown>;
+  rowIndex: number;
+  onAction: (key: string) => void;
+}): ReactElement {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLElement>(null);
+  const buttons = useRef<Array<HTMLButtonElement | null>>([]);
+  const actions = resolveTableActions(column, record);
+  const simple = actions.length === 1 && Boolean(actions[0]?.simple);
+  useEffect(() => {
+    if (open) buttons.current[0]?.focus();
+  }, [open]);
+  const close = (): void => {
+    setOpen(false);
+    trigger.current?.focus();
+  };
+  const select = (key: string): void => {
+    onAction(key);
+    close();
+  };
+  const actionLabel = (action: Record<string, unknown>, key: string): string =>
+    `${String(action.label ?? key)}: ${String(record.name ?? `wiersz ${rowIndex + 1}`)}`;
+  if (column.visibleColumn?.(record) === false)
+    return <span className="peaui-table-list__actions-simple">&nbsp;</span>;
+  if (simple) {
+    const action = actions[0]!;
+    const key = String(action.key ?? '0');
+    return (
+      <span className="peaui-table-list__actions-simple">
+        <button
+          type="button"
+          className="peaui-table-list__actions-simple-button"
+          aria-label={actionLabel(action, key)}
+          onClick={() => onAction(key)}
+        >
+          <Svg name={String(action.icon ?? '')} className="peaui-table-list__actions-simple-icon" />
+        </button>
+      </span>
+    );
+  }
+  return (
+    <Popover
+      kind="PopoverOverlayer"
+      forwardedRef={trigger}
+      props={{
+        open,
+        onOpenChange: setOpen,
+        placement: 'left',
+        matchTriggerWidth: false,
+        className: 'peaui-table-list__actions-popover-trigger',
+        contentClass: 'peaui-table-list__actions-popover',
+        ariaLabel: 'Pokaz akcje dla rekordu',
+        children: (
+          <span className="peaui-table-list__actions-trigger" aria-hidden="true">
+            &bull; &bull; &bull;
+          </span>
+        ),
+        content: (
+          <div className="peaui-table-list__actions-menu">
+            <div className="peaui-table-list__actions-list">
+              {actions.map((action, index) => {
+                const key = String(action.key ?? index);
+                return (
+                  <button
+                    key={key}
+                    ref={(element) => {
+                      buttons.current[index] = element;
+                    }}
+                    type="button"
+                    className="peaui-table-list__actions-button"
+                    aria-label={actionLabel(action, key)}
+                    onClick={() => select(key)}
+                    onKeyDown={(event) => {
+                      const target =
+                        event.key === 'ArrowDown'
+                          ? (index + 1) % actions.length
+                          : event.key === 'ArrowUp'
+                            ? (index - 1 + actions.length) % actions.length
+                            : event.key === 'Home'
+                              ? 0
+                              : event.key === 'End'
+                                ? actions.length - 1
+                                : undefined;
+                      if (target !== undefined) {
+                        event.preventDefault();
+                        buttons.current[target]?.focus();
+                      } else if (event.key === 'Escape') {
+                        event.preventDefault();
+                        close();
+                      }
+                    }}
+                  >
+                    <Svg
+                      name={String(action.icon ?? '')}
+                      className="peaui-table-list__actions-button-icon"
+                    />
+                    <span className="peaui-table-list__actions-button-label">
+                      {String(action.label ?? key)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ),
+      }}
+    />
   );
 }
 
@@ -477,9 +690,28 @@ export function TableRenderer({
     values: Record<string, unknown>;
   } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [hiddenColumnKeys, setHiddenColumnKeys] = useState<Set<string>>(new Set());
+  const [expandedRow, setExpandedRow] = useState<string>();
+  const [columnVisibilityOverrides, setColumnVisibilityOverrides] = useState<
+    Record<string, boolean>
+  >({});
+  const [lockedColumnKeys, setLockedColumnKeys] = useState<Record<string, boolean>>({});
+  const [horizontalMetrics, setHorizontalMetrics] = useState({ left: 0, width: 0 });
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+    const update = (): void =>
+      setHorizontalMetrics({ left: root.scrollLeft, width: root.clientWidth });
+    update();
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(update);
+    observer?.observe(root);
+    return () => observer?.disconnect();
+  }, [props.isLoading, props.records]);
   const [page, setPage] = useModel<number>(props, 'page', 1);
-  useEffect(() => setHiddenColumnKeys(new Set()), [props.columns]);
+  useEffect(() => {
+    setColumnVisibilityOverrides({});
+    setLockedColumnKeys({});
+  }, [props.columns]);
 
   const columnsRaw = Array.isArray(props.columns) ? props.columns : [];
   const columns: TableColumn[] = columnsRaw.flatMap((entry, index): TableColumn[] => {
@@ -496,7 +728,31 @@ export function TableRenderer({
     ];
   });
   const visibleColumns = columns.filter(
-    (column) => column.visible !== false && !hiddenColumnKeys.has(getTableColumnIdentifier(column)),
+    (column) =>
+      columnVisibilityOverrides[getTableColumnIdentifier(column)] ?? column.visible ?? true,
+  );
+  const hasActionsColumn = visibleColumns.some(
+    (column) =>
+      (column.key === 'actions' || column.resolve) &&
+      Array.isArray(props.records) &&
+      props.records.some(
+        (record) =>
+          record &&
+          typeof record === 'object' &&
+          resolveTableActions(column, record as Record<string, unknown>).length > 0,
+      ),
+  );
+  const lockedColumns = buildTableLockedColumnsMap(
+    visibleColumns
+      .filter((column) => column.key !== 'actions' && !column.resolve)
+      .map((column) => ({
+        ...column,
+        width: typeof column.width === 'number' ? column.width : undefined,
+      })),
+    lockedColumnKeys,
+    horizontalMetrics.left,
+    horizontalMetrics.width,
+    hasActionsColumn ? TABLE_LIST_ACTIONS_STICKY_WIDTH : 0,
   );
   const records = useMemo(
     () => (Array.isArray(props.records) ? (props.records as unknown[]) : []),
@@ -541,6 +797,12 @@ export function TableRenderer({
   const pageRecords = records.slice(pageRange.start, pageRange.end);
   const editable = bool(props, 'editable');
   const canSelectRows = bool(props, 'canSelectRows', true) && !editable;
+  const canCheckRows = bool(props, 'canCheckRows') && !editable;
+  const columnSpan =
+    visibleColumns.filter((column) => column.key !== 'actions' && !column.resolve).length +
+    Number(canSelectRows) +
+    Number(canCheckRows) +
+    Number(hasActionsColumn);
   const cancelEdit = (): void => {
     setEditing(null);
     setErrors({});
@@ -642,7 +904,8 @@ export function TableRenderer({
       ...manage,
       id,
       name: getTableColumnIdentifier(column),
-      label: column.inline
+      className: 'peaui-table-list__editable-cell-field',
+      ariaLabel: column.inline
         ? `${column.label ?? column.key}, wiersz ${(rowIndex ?? 0) + 1}`
         : (column.label ?? column.key),
       value: getDeepValue(record, column.key),
@@ -669,14 +932,14 @@ export function TableRenderer({
     );
   };
   const editingActions = (
-    <div className="peaui-table-list__editable-actions-cell">
+    <>
       <button
         type="button"
         aria-label="Zapisz edytowany rekord"
         className="peaui-table-list__editable-action-button peaui-table-list__editable-action-button--submit"
         onClick={submitEdit}
       >
-        <Svg data={iconCheck} name="check" />
+        <Svg data={iconCheck} name="check" className="peaui-table-list__editable-action-icon" />
       </button>
       <button
         type="button"
@@ -684,9 +947,9 @@ export function TableRenderer({
         className="peaui-table-list__editable-action-button peaui-table-list__editable-action-button--cancel"
         onClick={cancelEdit}
       >
-        <Svg data={iconClose} name="close" />
+        <Svg data={iconClose} name="close" className="peaui-table-list__editable-action-icon" />
       </button>
-    </div>
+    </>
   );
   const selected = new Set(Array.isArray(props.selectedRows) ? props.selectedRows.map(String) : []);
   const pageRecordKeys = pageRecords.map((record, index) => {
@@ -708,6 +971,108 @@ export function TableRenderer({
           rowIndex: number,
         ) => ReactNode)
       : undefined;
+  const dataColumns = columns.filter((column) => column.key !== 'actions' && !column.resolve);
+  const visibleDataColumnCount = visibleColumns.filter(
+    (column) => column.key !== 'actions' && !column.resolve,
+  ).length;
+  const columnVisibility =
+    bool(props, 'canHideColumns') &&
+    (dataColumns.length > TABLE_LIST_MIN_VISIBLE_COLUMNS ||
+      dataColumns.some((column) => column.visible === false)) ? (
+      <Popover
+        kind="PopoverOverlayer"
+        props={{
+          ariaLabel: 'Zarzadzaj widocznoscia kolumn',
+          placement: 'bottom-left',
+          className: 'peaui-table-list__head-actions-popover-trigger',
+          contentClass: 'peaui-table-list__head-actions-popover',
+          children: (
+            <span className="peaui-table-list__head-actions-trigger" aria-hidden="true">
+              <Svg name="cogs" className="peaui-table-list__head-actions-trigger-icon" />
+            </span>
+          ),
+          content: (
+            <div className="peaui-table-list__head-actions-menu">
+              <p className="peaui-table-list__head-actions-title">Widoczne kolumny</p>
+              <p className="peaui-table-list__head-actions-description">
+                Pozostaw przynajmniej {TABLE_LIST_MIN_VISIBLE_COLUMNS} kolumny widoczne.
+              </p>
+              <ul className="peaui-table-list__head-actions-list">
+                {dataColumns.map((column) => {
+                  const key = getTableColumnIdentifier(column);
+                  const checked = visibleColumns.includes(column);
+                  const disabled =
+                    checked &&
+                    (Boolean(lockedColumnKeys[column.key]) ||
+                      visibleDataColumnCount <= TABLE_LIST_MIN_VISIBLE_COLUMNS);
+                  return (
+                    <li key={key} className="peaui-table-list__head-actions-item">
+                      <label
+                        className={cx(
+                          'peaui-table-list__head-actions-option',
+                          disabled && 'peaui-table-list__head-actions-option--disabled',
+                        )}
+                      >
+                        <input
+                          aria-label={column.label || column.key}
+                          className="peaui-table-list__head-actions-checkbox"
+                          type="checkbox"
+                          checked={checked}
+                          disabled={disabled}
+                          onChange={(event) => {
+                            const nextChecked = event.target.checked;
+                            setColumnVisibilityOverrides((current) => ({
+                              ...current,
+                              [key]: nextChecked,
+                            }));
+                          }}
+                        />
+                        <span className="peaui-table-list__head-actions-option-label">
+                          {column.label}
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ),
+        }}
+      />
+    ) : null;
+  if (
+    !bool(props, 'isLoading') &&
+    !editing &&
+    records.length === 0 &&
+    bool(props, 'emptyDescription', true)
+  ) {
+    return (
+      <EmptyStateLeafRenderer
+        {...common(props)}
+        forwardedRef={forwardedRef}
+        role="status"
+        title="Lista jest pusta"
+        description="Nie znaleziono żadnych rekordów. Dodaj nowy rekord lub zmień kryteria wyszukiwania."
+        additional={
+          bool(props, 'canCreate', true) ? (
+            <ButtonActionRenderer
+              size="xs"
+              variant="secondary"
+              ariaLabel="Dodaj nowy rekord"
+              onClick={() => {
+                if (editable) startCreate();
+                callback(props, 'onCreateRecord')?.();
+              }}
+            >
+              Dodaj nowy rekord
+            </ButtonActionRenderer>
+          ) : (
+            <></>
+          )
+        }
+      />
+    );
+  }
   return (
     <div
       {...common(props)}
@@ -718,56 +1083,31 @@ export function TableRenderer({
         bool(props, 'scroll') && 'peaui-table-list--scroll',
         props.className,
       )}
-      ref={forwardedRef as ForwardedRef<HTMLDivElement>}
+      ref={(element) => {
+        rootRef.current = element;
+        if (typeof forwardedRef === 'function') forwardedRef(element);
+        else if (forwardedRef) forwardedRef.current = element;
+      }}
       aria-busy={bool(props, 'isLoading') || undefined}
+      role={bool(props, 'scroll') ? 'region' : common(props).role}
+      aria-label={
+        bool(props, 'scroll')
+          ? text(props, 'ariaLabel', 'Tabela danych')
+          : common(props)['aria-label']
+      }
+      tabIndex={bool(props, 'scroll') ? 0 : common(props).tabIndex}
+      onScroll={(event) =>
+        setHorizontalMetrics({
+          left: event.currentTarget.scrollLeft,
+          width: event.currentTarget.clientWidth,
+        })
+      }
     >
-      {bool(props, 'canHideColumns') ? (
-        <details className="peaui-table-list__head-actions-popover">
-          <summary className="peaui-table-list__head-actions-trigger">Widoczność kolumn</summary>
-          <fieldset className="peaui-table-list__head-actions-menu">
-            <legend className="peaui-table-list__head-actions-title">Widoczne kolumny</legend>
-            {columns.map((column) => (
-              <label
-                className="peaui-table-list__head-actions-option"
-                key={getTableColumnIdentifier(column)}
-              >
-                <input
-                  aria-label={column.label || column.key}
-                  checked={!hiddenColumnKeys.has(getTableColumnIdentifier(column))}
-                  disabled={
-                    column.withLock ||
-                    (!hiddenColumnKeys.has(getTableColumnIdentifier(column)) &&
-                      visibleColumns.length <= 3)
-                  }
-                  type="checkbox"
-                  onChange={(event) => {
-                    setHiddenColumnKeys((current) => {
-                      const next = new Set(current);
-                      if (event.target.checked) next.delete(getTableColumnIdentifier(column));
-                      else if (columns.length - next.size > 3)
-                        next.add(getTableColumnIdentifier(column));
-                      return next;
-                    });
-                  }}
-                />
-                <span>{column.label}</span>
-              </label>
-            ))}
-          </fieldset>
-        </details>
-      ) : null}
-      {bool(props, 'canCreate', editable) && editing?.index !== null ? (
-        <button
-          className="peaui-table-list__create"
-          type="button"
-          onClick={() => (editable ? startCreate() : callback(props, 'onCreateRecord')?.())}
-        >
-          {text(props, 'buttonEditableCreateText', 'Dodaj rekord')}
-        </button>
-      ) : null}
+      {bool(props, 'isLoading') ? <SpinnerLoaderLeafRenderer /> : null}
       <table
         className="peaui-table-list__table"
         aria-label={text(props, 'ariaLabel', 'Tabela danych')}
+        inert={bool(props, 'isLoading')}
       >
         <thead
           className={cx(
@@ -775,20 +1115,31 @@ export function TableRenderer({
             bool(props, 'scroll') && 'peaui-table-list__head--sticky',
           )}
         >
-          <tr className="peaui-table-list__head-row">
+          <tr
+            className={cx(
+              'peaui-table-list__head-row',
+              (bool(props, 'isDetails') || bool(props, 'isDetials')) &&
+                'peaui-table-list__head-row--details',
+            )}
+          >
+            {canCheckRows ? (
+              <th className="peaui-table-list__check-head-cell" scope="col">
+                <span className="peaui-table-list__sr-only">Wybór pojedynczy</span>
+              </th>
+            ) : null}
             {canSelectRows ? (
               <th className="peaui-table-list__select-head-cell" scope="col">
-                <input
-                  type="checkbox"
+                <ChoiceControlsRenderer
+                  __name="FormCheckbox"
+                  id={`${selectionScope}-select-all`}
+                  name="select-all-rows"
                   aria-label="Zaznacz wszystkie rekordy na stronie"
-                  checked={allPageSelected}
+                  value={allPageSelected}
                   disabled={pageRecordKeys.length === 0}
-                  ref={(element) => {
-                    if (element)
-                      element.indeterminate =
-                        !allPageSelected && pageRecordKeys.some((key) => selected.has(key));
-                  }}
-                  onChange={() =>
+                  indeterminate={
+                    !allPageSelected && pageRecordKeys.some((key) => selected.has(key))
+                  }
+                  onValueChange={() =>
                     callback(
                       props,
                       'onSelectRow',
@@ -801,18 +1152,24 @@ export function TableRenderer({
                 />
               </th>
             ) : null}
-            {bool(props, 'canCheckRows') ? (
-              <th className="peaui-table-list__check-head-cell" scope="col">
-                <span className="peaui-table-list__sr-only">Wybór pojedynczy</span>
-              </th>
-            ) : null}
             {visibleColumns.map((column) => {
+              if (column.key === 'actions' || column.resolve)
+                return hasActionsColumn ? (
+                  <th
+                    key={getTableColumnIdentifier(column)}
+                    scope="col"
+                    className="peaui-table-list__actions-head-cell"
+                  >
+                    {columnVisibility}
+                    <span className="peaui-table-list__sr-only">Dodatkowe akcje dla rekordow</span>
+                  </th>
+                ) : null;
               const activeMultiSort = activeSortColumns.find(
                 (entry) => entry.key === getTableColumnIdentifier(column),
               );
               const activeSortDirection = bool(props, 'canMultiSort')
                 ? activeMultiSort?.direction
-                : text(props, 'sortColumn') === getTableColumnIdentifier(column)
+                : text(props, 'sortColumn', 'updatedAt') === getTableColumnIdentifier(column)
                   ? text(props, 'sortType', 'desc').toLowerCase() === 'asc'
                     ? 'asc'
                     : 'desc'
@@ -826,61 +1183,126 @@ export function TableRenderer({
                     column.sortable && 'peaui-table-list__head-cell--sortable',
                     column.border === 'left' && 'peaui-table-list__head-cell--border-left',
                     column.border === 'right' && 'peaui-table-list__head-cell--border-right',
-                    column.withLock && 'peaui-table-list__head-cell--locked',
+                    lockedColumns[column.key] && 'peaui-table-list__head-cell--locked',
+                    lockedColumns[column.key] &&
+                      `peaui-table-list__head-cell--locked-${lockedColumns[column.key]?.side}`,
                   )}
                   scope="col"
-                  style={{ width: column.width }}
+                  style={{
+                    minWidth: column.width ?? TABLE_LIST_DEFAULT_COLUMN_WIDTH,
+                    width: column.width ?? '100%',
+                    ...(lockedColumns[column.key]
+                      ? { [lockedColumns[column.key]!.side]: lockedColumns[column.key]!.offset }
+                      : {}),
+                  }}
                   aria-sort={
                     activeSortDirection === 'asc'
                       ? 'ascending'
                       : activeSortDirection === 'desc'
                         ? 'descending'
-                        : undefined
+                        : 'none'
                   }
                   data-sort-priority={
                     activeMultiSort ? activeSortColumns.indexOf(activeMultiSort) + 1 : undefined
                   }
                 >
-                  <button
-                    className={cx(
-                      'peaui-table-list__head-button',
-                      column.sortable && 'peaui-table-list__head-button--sortable',
-                    )}
-                    aria-disabled={!column.sortable || undefined}
-                    type="button"
-                    onClick={() => {
-                      if (!column.sortable) return;
+                  <div className="peaui-table-list__head-content">
+                    <button
+                      className={cx(
+                        'peaui-table-list__head-button',
+                        column.sortable
+                          ? 'peaui-table-list__head-button--sortable'
+                          : 'peaui-table-list__head-button--static',
+                        activeSortDirection && 'peaui-table-list__head-button--active',
+                      )}
+                      aria-disabled={!column.sortable || undefined}
+                      type="button"
+                      onClick={() => {
+                        if (!column.sortable) return;
 
-                      callback(
-                        props,
-                        'onSort',
-                      )?.(
-                        bool(props, 'canMultiSort')
-                          ? getNextReactTableSortDescriptors(
-                              activeSortColumns,
-                              getTableColumnIdentifier(column),
-                            )
-                          : getTableColumnIdentifier(column),
-                      );
-                    }}
-                  >
-                    <span className="peaui-table-list__head-content">{column.label}</span>
-                    {column.sortable ? (
-                      <Svg data={iconSort} className="peaui-table-list__sort-icon" name="sort" />
-                    ) : null}
-                  </button>
-                  {column.hint ? (
-                    <InfoTooltipRenderer
-                      description={node(props, 'hint') ?? column.hintColumn ?? column.label}
-                      placement="top"
+                        callback(
+                          props,
+                          'onSort',
+                        )?.(
+                          bool(props, 'canMultiSort')
+                            ? getNextReactTableSortDescriptors(
+                                activeSortColumns,
+                                getTableColumnIdentifier(column),
+                              )
+                            : getTableColumnIdentifier(column),
+                        );
+                      }}
                     >
-                      <Svg data={iconHint} className="peaui-table-list__hint-icon" name="hint" />
-                    </InfoTooltipRenderer>
-                  ) : null}
+                      <span className="peaui-table-list__head-label">{column.label}</span>
+                      {activeSortDirection ? (
+                        <Svg
+                          data={iconSort}
+                          className={cx(
+                            'peaui-table-list__head-sort-icon',
+                            `peaui-table-list__head-sort-icon--${activeSortDirection}`,
+                          )}
+                          name="sort"
+                        />
+                      ) : null}
+                    </button>
+                    <div className="peaui-table-list__head-controls">
+                      {column.withLock ? (
+                        <InfoTooltipRenderer
+                          description={
+                            lockedColumnKeys[column.key] ? 'Odblokuj kolumne' : 'Zablokuj kolumne'
+                          }
+                          placement="top"
+                        >
+                          <button
+                            type="button"
+                            className={cx(
+                              'peaui-table-list__head-lock-trigger',
+                              lockedColumnKeys[column.key] &&
+                                'peaui-table-list__head-lock-trigger--active',
+                            )}
+                            aria-label={
+                              lockedColumnKeys[column.key] ? 'Odblokuj kolumne' : 'Zablokuj kolumne'
+                            }
+                            aria-pressed={Boolean(lockedColumnKeys[column.key])}
+                            onClick={() =>
+                              setLockedColumnKeys((current) => ({
+                                ...current,
+                                [column.key]: !current[column.key],
+                              }))
+                            }
+                          >
+                            <Svg
+                              name={lockedColumnKeys[column.key] ? 'lock-closed' : 'lock-open'}
+                              className="peaui-table-list__head-lock-icon"
+                            />
+                          </button>
+                        </InfoTooltipRenderer>
+                      ) : null}
+                      {column.hint ? (
+                        <InfoTooltipRenderer
+                          description={node(props, 'hint') ?? column.hintColumn ?? column.label}
+                          placement="top"
+                        >
+                          <Svg
+                            data={iconHint}
+                            className="peaui-table-list__hint-icon"
+                            name="hint"
+                          />
+                        </InfoTooltipRenderer>
+                      ) : null}
+                      {!hasActionsColumn &&
+                      columnVisibility &&
+                      column ===
+                        visibleColumns
+                          .filter((entry) => entry.key !== 'actions' && !entry.resolve)
+                          .at(-1) ? (
+                        <div>{columnVisibility}</div>
+                      ) : null}
+                    </div>
+                  </div>
                 </th>
               );
             })}
-            {needsEditingColumn ? <th scope="col">Actions</th> : null}
           </tr>
         </thead>
         <tbody className="peaui-table-list__body">
@@ -891,136 +1313,207 @@ export function TableRenderer({
                 ? (entry as Record<string, unknown>)
                 : { value: entry };
             const id = String(record.id ?? rowIndex);
+            const cellProps: RuntimeProps = {
+              ...props,
+              isExpanded: expandedRow === id,
+              onAction: (recordId: unknown, action: string, actionRecord: unknown) => {
+                if (action === 'expand')
+                  setExpandedRow((current) => (current === id ? undefined : id));
+                callback(props, 'onAction')?.(recordId, action, actionRecord);
+              },
+            };
             return (
-              <tr
-                key={id}
-                className={cx(
-                  'peaui-table-list__row',
-                  selected.has(id) && 'peaui-table-list__row--selected',
-                  (callback(props, 'onRowDoubleClick') || callback(props, 'onDbclick')) &&
-                    'peaui-table-list__row--interactive',
-                )}
-                tabIndex={bool(props, 'canCheckRows') ? 0 : undefined}
-                onClick={(event) => {
-                  if (bool(props, 'canCheckRows') && !isInteractiveTarget(event.target)) {
-                    callback(props, 'onCheckRow')?.(record);
-                  }
-                }}
-                onDoubleClick={() => {
-                  callback(props, 'onRowDoubleClick')?.(record.id, record);
-                  callback(props, 'onDbclick')?.(record.id, record);
-                }}
-                onKeyDown={(event) => {
-                  if (
-                    bool(props, 'canCheckRows') &&
-                    ['Enter', ' ', 'Spacebar'].includes(event.key) &&
-                    !isInteractiveTarget(event.target)
-                  ) {
-                    event.preventDefault();
-                    callback(props, 'onCheckRow')?.(record);
-                  }
-                }}
-              >
-                {canSelectRows ? (
-                  <td className="peaui-table-list__select-cell">
-                    <input
-                      aria-label={`Zaznacz wiersz ${rowIndex + 1}`}
-                      checked={selected.has(id)}
-                      type="checkbox"
-                      onChange={(event) => {
-                        const nextSelectedRows = event.target.checked
-                          ? [...selected, id]
-                          : [...selected].filter((selectedId) => selectedId !== id);
-                        callback(props, 'onSelectRow')?.(nextSelectedRows);
-                      }}
-                    />
-                  </td>
-                ) : null}
-                {bool(props, 'canCheckRows') ? (
-                  <td className="peaui-table-list__check-cell">
-                    <input
-                      aria-label={`Wybierz wiersz ${rowIndex + 1}`}
-                      checked={currentCheckedRow === id}
-                      name={`${selectionScope}-checked-row`}
-                      type="radio"
-                      onChange={() => callback(props, 'onCheckRow')?.(record)}
-                    />
-                  </td>
-                ) : null}
-                {visibleColumns.map((column) => (
-                  <td
-                    key={getTableColumnIdentifier(column)}
-                    className={cx(
-                      'peaui-table-list__body-cell',
-                      column.border === 'left' && 'peaui-table-list__body-cell--border-left',
-                      column.border === 'right' && 'peaui-table-list__body-cell--border-right',
-                      column.withLock && 'peaui-table-list__body-cell--locked',
-                    )}
-                    style={{ width: column.width }}
-                  >
-                    {editing?.index === rowIndex ? (
-                      column.key === 'actions' ? (
-                        editingActions
-                      ) : (
-                        renderEditor(column, editing.values, rowIndex)
-                      )
-                    ) : renderCell ? (
-                      renderCell(column.key, record, rowIndex)
-                    ) : column.resolve ? (
-                      <div className="peaui-table-list__actions-simple">
-                        {resolveTableActions(column, record).map((action, actionIndex) => {
-                          const item = action;
-                          const actionKey = String(item.key ?? actionIndex);
-                          return (
-                            <button
-                              aria-label={`${String(item.label ?? actionKey)}: ${String(
-                                record.name ?? `wiersz ${rowIndex + 1}`,
-                              )}`}
-                              className="peaui-table-list__actions-simple-button"
-                              key={actionKey}
-                              type="button"
-                              onClick={() => fireAction(record, rowIndex, actionKey)}
-                            >
-                              {String(item.label ?? actionKey)}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ) : column.inline ? (
-                      renderEditor(column, record, rowIndex)
-                    ) : resolveTableColumnType(column, record) === 'editable' ? (
-                      <TableEditableCell
-                        column={column}
-                        record={record}
-                        renderField={(draft, onChange, error) =>
-                          renderEditor(column, draft, rowIndex, onChange, error)
-                        }
+              <Fragment key={id}>
+                <tr
+                  className={cx(
+                    'peaui-table-list__row',
+                    selected.has(id) && 'peaui-table-list__row--selected',
+                    (canCheckRows ||
+                      callback(props, 'onRowDoubleClick') ||
+                      callback(props, 'onDbclick')) &&
+                      'peaui-table-list__row--interactive',
+                    editing?.index === rowIndex && 'peaui-table-list__row--editing',
+                  )}
+                  tabIndex={canCheckRows ? 0 : undefined}
+                  onClick={(event) => {
+                    if (canCheckRows && !isInteractiveTarget(event.target)) {
+                      callback(props, 'onCheckRow')?.(record);
+                    }
+                  }}
+                  onDoubleClick={() => {
+                    callback(props, 'onRowDoubleClick')?.(record.id, record);
+                    callback(props, 'onDbclick')?.(record.id, record);
+                  }}
+                  onKeyDown={(event) => {
+                    if (
+                      canCheckRows &&
+                      ['Enter', ' ', 'Spacebar'].includes(event.key) &&
+                      !isInteractiveTarget(event.target)
+                    ) {
+                      event.preventDefault();
+                      callback(props, 'onCheckRow')?.(record);
+                    }
+                  }}
+                >
+                  {canCheckRows ? (
+                    <td className="peaui-table-list__check-cell">
+                      <input
+                        aria-label={`Wybierz wiersz ${rowIndex + 1}`}
+                        className="peaui-table-list__check-input"
+                        checked={currentCheckedRow === id}
+                        name={`${selectionScope}-checked-row`}
+                        type="radio"
+                        onChange={() => callback(props, 'onCheckRow')?.(record)}
                       />
-                    ) : (
-                      TableCellContent({ column, props, record, rowIndex })
-                    )}
-                  </td>
-                ))}
-                {needsEditingColumn ? (
-                  <td>{editing.index === rowIndex ? editingActions : null}</td>
+                    </td>
+                  ) : null}
+                  {canSelectRows ? (
+                    <td className="peaui-table-list__select-cell">
+                      <ChoiceControlsRenderer
+                        __name="FormCheckbox"
+                        id={`${selectionScope}-select-${id}`}
+                        name="selected-rows"
+                        aria-label={`Zaznacz wiersz ${rowIndex + 1}`}
+                        value={selected.has(id)}
+                        onValueChange={(value: boolean) => {
+                          const nextSelectedRows = value
+                            ? [...selected, id]
+                            : [...selected].filter((selectedId) => selectedId !== id);
+                          callback(props, 'onSelectRow')?.(nextSelectedRows);
+                        }}
+                      />
+                    </td>
+                  ) : null}
+                  {visibleColumns
+                    .filter(
+                      (column) =>
+                        !(column.key === 'actions' || column.resolve) ||
+                        (hasActionsColumn && (!editing || editing.index === rowIndex)),
+                    )
+                    .map((column) => (
+                      <td
+                        key={getTableColumnIdentifier(column)}
+                        className={cx(
+                          column.key === 'actions' || column.resolve
+                            ? editing?.index === rowIndex
+                              ? 'peaui-table-list__editable-actions-cell'
+                              : 'peaui-table-list__actions-cell'
+                            : editing?.index === rowIndex
+                              ? 'peaui-table-list__editable-cell'
+                              : 'peaui-table-list__body-cell',
+                          column.border === 'left' && 'peaui-table-list__body-cell--border-left',
+                          column.border === 'right' && 'peaui-table-list__body-cell--border-right',
+                          lockedColumns[column.key] && 'peaui-table-list__body-cell--locked',
+                          lockedColumns[column.key] &&
+                            `peaui-table-list__body-cell--locked-${lockedColumns[column.key]?.side}`,
+                        )}
+                        style={
+                          column.key === 'actions' || column.resolve
+                            ? undefined
+                            : {
+                                minWidth: column.width ?? TABLE_LIST_DEFAULT_COLUMN_WIDTH,
+                                width: column.width ?? '100%',
+                                ...(lockedColumns[column.key]
+                                  ? {
+                                      [lockedColumns[column.key]!.side]:
+                                        lockedColumns[column.key]!.offset,
+                                    }
+                                  : {}),
+                              }
+                        }
+                      >
+                        {editing?.index === rowIndex ? (
+                          column.key === 'actions' ? (
+                            editingActions
+                          ) : (
+                            renderEditor(column, editing.values, rowIndex)
+                          )
+                        ) : renderCell ? (
+                          renderCell(column.key, record, rowIndex)
+                        ) : column.resolve ? (
+                          <TableRowActions
+                            column={column}
+                            record={record}
+                            rowIndex={rowIndex}
+                            onAction={(key) => fireAction(record, rowIndex, key)}
+                          />
+                        ) : column.inline ? (
+                          renderEditor(column, record, rowIndex)
+                        ) : resolveTableColumnType(column, record) === 'editable' ? (
+                          <TableEditableCell
+                            column={column}
+                            record={record}
+                            renderField={(draft, onChange, error) =>
+                              renderEditor(column, draft, rowIndex, onChange, error)
+                            }
+                          />
+                        ) : (
+                          TableCellContent({ column, props: cellProps, record, rowIndex })
+                        )}
+                      </td>
+                    ))}
+                  {needsEditingColumn && editing.index === rowIndex ? (
+                    <td className="peaui-table-list__editable-actions-cell">{editingActions}</td>
+                  ) : null}
+                </tr>
+                {expandedRow === id ? (
+                  <tr className="peaui-table-list__expanded-row">
+                    <td className="peaui-table-list__expanded-cell" colSpan={columnSpan}>
+                      {node(props, 'detailsRecord') ?? node(props, 'detialsRecord')}
+                    </td>
+                  </tr>
                 ) : null}
-              </tr>
+              </Fragment>
             );
           })}
+          {editable && bool(props, 'canCreate', true) && editing?.index !== null ? (
+            <tr>
+              <td
+                className="peaui-table-list__create-row-cell"
+                colSpan={columnSpan}
+                aria-label="Dodawanie rekordu"
+              >
+                <ButtonActionRenderer
+                  className="peaui-table-list__create-row-button"
+                  size="xs"
+                  disabled={Boolean(editing)}
+                  onClick={startCreate}
+                >
+                  {text(props, 'buttonEditableCreateText', 'Dodaj')}
+                </ButtonActionRenderer>
+              </td>
+            </tr>
+          ) : null}
           {editing?.index === null ? (
             <tr className="peaui-table-list__row">
               {canSelectRows ? <td /> : null}
-              {bool(props, 'canCheckRows') ? <td /> : null}
-              {visibleColumns.map((column) => (
-                <td
-                  key={getTableColumnIdentifier(column)}
-                  className="peaui-table-list__editable-cell"
-                >
-                  {column.key === 'actions' ? editingActions : renderEditor(column, editing.values)}
-                </td>
-              ))}
-              {needsEditingColumn ? <td>{editingActions}</td> : null}
+              {canCheckRows ? <td /> : null}
+              {visibleColumns
+                .filter((column) => column.key !== 'actions' && !column.resolve)
+                .map((column) => (
+                  <td
+                    key={getTableColumnIdentifier(column)}
+                    className="peaui-table-list__editable-cell"
+                    style={{
+                      minWidth: column.width ?? TABLE_LIST_DEFAULT_COLUMN_WIDTH,
+                      width: column.width ?? '100%',
+                    }}
+                  >
+                    {renderEditor(column, editing.values)}
+                  </td>
+                ))}
+              <td className="peaui-table-list__editable-actions-cell">{editingActions}</td>
             </tr>
+          ) : null}
+          {records.length === 0 && text(props, 'emptyDescriptionInline') ? (
+            <tr>
+              <td className="peaui-table-list__empty-inline-cell" colSpan={columnSpan}>
+                {text(props, 'emptyDescriptionInline')}
+              </td>
+            </tr>
+          ) : null}
+          {node(props, 'additionalRow') ? (
+            <tr className="peaui-table-list__additional-row">{node(props, 'additionalRow')}</tr>
           ) : null}
         </tbody>
       </table>
@@ -1039,17 +1532,6 @@ export function TableRenderer({
           />
         </div>
       ) : null}
-      {!bool(props, 'isLoading') && records.length === 0 ? (
-        <div className="peaui-table-list__empty-inline-cell">
-          {text(props, 'emptyDescriptionInline', 'Brak danych')}
-        </div>
-      ) : null}
-      {bool(props, 'isLoading') ? (
-        <div className="peaui-table-list__loading" role="status">
-          Ładowanie…
-        </div>
-      ) : null}
-      {node(props, 'additionalRow')}
     </div>
   );
 }
@@ -1064,102 +1546,126 @@ export function TableListHeaderLeafRenderer({
     node(props, 'addtionalDescription') ??
     node(props, 'description');
   const additionalContent = node(props, 'additionalContent') ?? node(props, 'addtionalContent');
+  const additionalButtons = node(props, 'additionalButtons');
   return (
-    <header
-      ref={forwardedRef}
+    <div
+      {...common(props)}
+      ref={forwardedRef as ForwardedRef<HTMLDivElement>}
+      role="region"
+      aria-label="Nagłówek listy tabeli"
+      data-testid={text(props, 'dataTestId', 'table-list-header')}
       className={cx(
         'peaui-table-list-header',
-        Boolean(additionalDescription) && 'peaui-table-list-header--with-description',
+        additionalDescription
+          ? 'peaui-table-list-header--with-description'
+          : 'peaui-table-list-header--without-description',
         props.className,
       )}
     >
-      {additionalDescription}
       <div className="peaui-table-list-header__controls">
-        <div className="peaui-table-list-header__search-area">
-          <strong>{num(props, 'totalRecords')} rekordów</strong>
-          {num(props, 'countSelectedRecords') ? (
-            <span>{num(props, 'countSelectedRecords')} zaznaczonych</span>
-          ) : null}
-          {bool(props, 'canSearch') ? (
-            <SearchInputLeafRenderer
-              ariaLabel="Wyszukaj na liscie"
-              className="peaui-table-list-header__search"
-              placeholder={text(props, 'searchPlaceholder', 'Wpisz czego szukasz')}
-              onSearch={callback(props, 'onSearch')}
-            />
-          ) : null}
-        </div>
-        <div className="peaui-table-list-header__actions">
-          {bool(props, 'canFilter') ? (
-            <button
-              className="peaui-table-list-header__filter-button peaui-button-action peaui-button-action--variant-secondary"
-              type="button"
-              onClick={() => setFiltersOpen(!filtersOpen)}
-            >
-              <span className="peaui-table-list-header__filter-button-label">Filtry</span>
-              {num(props, 'countFilters') ? (
-                <span className="peaui-table-list-header__filter-badge peaui-counter-badge peaui-counter-badge--variant-info">
-                  {num(props, 'countFilters')}
-                </span>
+        {bool(props, 'canSearch') || bool(props, 'canFilter') ? (
+          <div className="peaui-table-list-header__search-area">
+            <div className="peaui-table-list-header__search">
+              {bool(props, 'canSearch') ? (
+                <SearchInputLeafRenderer
+                  ariaLabel="Wyszukaj na liscie"
+                  dataTestId="table-list-header-search"
+                  placeholder={text(props, 'searchPlaceholder', 'Wpisz czego szukasz')}
+                  onSearch={callback(props, 'onSearch')}
+                />
               ) : null}
-            </button>
-          ) : null}
-          {bool(props, 'canFilter') && num(props, 'countFilters') > 0 ? (
-            <button
-              aria-label="Wyczyść filtry"
-              className="peaui-table-list-header__filter-reset peaui-button-action peaui-button-action--variant-ghost"
-              type="button"
-              onClick={() => callback(props, 'onResetFilters')?.()}
-            >
-              <Svg
-                data={iconClose}
-                className="peaui-table-list-header__filter-reset-icon"
-                name="close"
+            </div>
+            {bool(props, 'canFilter') ? (
+              <ButtonActionRenderer
+                className="peaui-table-list-header__filter-button"
+                dataTestId="table-list-header-filter-button"
+                size="s"
+                variant="secondary"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+              >
+                <Svg
+                  data={iconFilters}
+                  className="peaui-table-list-header__filter-reset-icon"
+                  name="filters"
+                />
+                <span className="peaui-table-list-header__filter-button-label">Filtruj</span>
+                {num(props, 'countFilters') ? (
+                  <CounterBadge
+                    className="peaui-table-list-header__filter-badge"
+                    value={num(props, 'countFilters')}
+                    variant="info"
+                  />
+                ) : null}
+              </ButtonActionRenderer>
+            ) : null}
+            {bool(props, 'canFilter') && num(props, 'countFilters') > 0 ? (
+              <ButtonActionRenderer
+                ariaLabel="Wyczyść filtry"
+                className="peaui-table-list-header__filter-reset"
+                dataTestId="table-list-header-filter-reset"
+                size="s"
+                variant="ghost"
+                onClick={() => callback(props, 'onResetFilters')?.()}
+              >
+                <Svg
+                  data={iconClose}
+                  className="peaui-table-list-header__filter-reset-icon"
+                  name="close"
+                />
+                <span className="peaui-table-list-header__filter-reset-label">Wyczysc filtry</span>
+              </ButtonActionRenderer>
+            ) : null}
+            {bool(props, 'canFilter') ? (
+              <Dialog
+                kind="DrawerPanel"
+                props={{
+                  open: filtersOpen,
+                  ariaLabel: 'Panel filtrowania listy',
+                  className: 'peaui-table-list-header__filters-drawer',
+                  dataTestId: 'table-list-header-filters-drawer',
+                  onOpenChange: setFiltersOpen,
+                  children: node(props, 'filtersDrawer'),
+                }}
               />
-              <span className="peaui-table-list-header__filter-reset-label">Wyczyść filtry</span>
-            </button>
-          ) : null}
-          {bool(props, 'canCreate') ? (
-            <button
-              aria-label={text(props, 'buttonCreateLabel', 'Dodaj rekord')}
-              className="peaui-table-list-header__create-button peaui-button-action peaui-button-action--variant-primary"
-              type="button"
-              onClick={() => callback(props, 'onCreate')?.()}
-            >
-              <Svg data={iconPlus} className="peaui-table-list-header__create-icon" name="plus" />
-              <span className="peaui-table-list-header__create-label">
-                {text(props, 'buttonCreateLabel', 'Dodaj rekord')}
-              </span>
-            </button>
-          ) : null}
-          {bool(props, 'canExport') ? (
-            <ButtonExportLeafRenderer
-              className="peaui-table-list-header__export-button"
-              ariaLabel="Eksportuj rekordy listy"
-              size="s"
-              disabled={num(props, 'totalRecords') === 0}
-              forceExport={bool(props, 'forceExport')}
-              selectedItemsCount={num(props, 'countSelectedRecords')}
-              onExport={callback(props, 'onExport')}
-            />
-          ) : null}
-          {node(props, 'additionalButtons')}
-        </div>
+            ) : null}
+          </div>
+        ) : null}
+        {bool(props, 'canCreate') || bool(props, 'canExport') || additionalButtons ? (
+          <div className="peaui-table-list-header__actions">
+            {bool(props, 'canCreate') ? (
+              <ButtonActionRenderer
+                ariaLabel={text(props, 'buttonCreateLabel', 'Dodaj rekord')}
+                className="peaui-table-list-header__create-button"
+                dataTestId="table-list-header-create"
+                size="s"
+                variant="primary"
+                onClick={() => callback(props, 'onCreate')?.()}
+              >
+                <Svg data={iconPlus} className="peaui-table-list-header__create-icon" name="plus" />
+                <span className="peaui-table-list-header__create-label">
+                  {text(props, 'buttonCreateLabel', 'Dodaj rekord')}
+                </span>
+              </ButtonActionRenderer>
+            ) : null}
+            {additionalButtons}
+            {bool(props, 'canExport') ? (
+              <ButtonExportLeafRenderer
+                className="peaui-table-list-header__export-button"
+                ariaLabel="Eksportuj rekordy listy"
+                dataTestId="table-list-header-export"
+                size="s"
+                disabled={num(props, 'totalRecords') === 0}
+                forceExport={bool(props, 'forceExport')}
+                selectedItemsCount={num(props, 'countSelectedRecords')}
+                onExport={callback(props, 'onExport')}
+              />
+            ) : null}
+          </div>
+        ) : null}
       </div>
-      {bool(props, 'canFilter') ? (
-        <Dialog
-          kind="DrawerPanel"
-          props={{
-            open: filtersOpen,
-            onOpenChange: setFiltersOpen,
-            ariaLabel: 'Panel filtrowania listy',
-            className: 'peaui-table-list-header__filters-drawer',
-            children: node(props, 'filtersDrawer'),
-          }}
-        />
-      ) : null}
       {additionalContent}
-    </header>
+      {additionalDescription}
+    </div>
   );
 }
 
@@ -1218,7 +1724,7 @@ export function TableListFooterLeafRenderer({
         aria-live="polite"
         data-testid={testId ? `${testId}-summary` : undefined}
       >
-        Wyświetlane: {getPageRange(page, rowsPerPage, rowsNumber)} / {rowsNumber}
+        {`Wyświetlane: ${getPageRange(page, rowsPerPage, rowsNumber)} / ${rowsNumber}`}
       </div>
       {!under && pagination ? (
         pagination

@@ -12,11 +12,12 @@ import {
   bool,
   node,
 } from './runtime.shared';
-import { iconArrow, iconCheck, iconLock, iconProgressFinish } from '../generated-static-icons';
+import { iconArrow, iconLock, iconProgressFinish } from '../generated-static-icons';
 import {
   type ForwardedRef,
   type KeyboardEvent,
   type ReactElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useId,
@@ -26,8 +27,12 @@ import {
 import { Pagination } from './pagination';
 import { ListLimitControlRenderer } from './list-limit-control.renderer';
 import { Svg } from './svg.renderer';
+import { renderSvgMarkup as StaticSvg } from './svg-markup.renderer';
 import { NavigationDisclosureCardRenderer } from './navigation-disclosure-card.renderer';
 import { Popover } from './popover';
+import { breadcrumbsOverflowPath } from '../../components/navigation/Breadcrumbs/breadcrumbs.shared';
+import { ButtonActionRenderer } from './button-action.renderer';
+import { InfoTooltipRenderer } from './info-tooltip.renderer';
 import {
   getStepperScrollPosition,
   scrollStepper,
@@ -160,9 +165,7 @@ export function BreadcrumbsLeafRenderer({
                 aria-hidden="true"
                 focusable="false"
               >
-                <circle cx="7.08333" cy="17" r="2.83333" />
-                <circle cx="17" cy="17" r="2.83333" />
-                <circle cx="26.9167" cy="17" r="2.83333" />
+                <path d={breadcrumbsOverflowPath} />
               </svg>
             ),
             content: (
@@ -202,6 +205,13 @@ export function NavigationTabsLeafRenderer({
   ...props
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const options = asOptions(props.tabs);
+  const tabAddition = (index: number, position: 'Before' | 'After'): ReactNode => {
+    const render = props[`renderTab${position}`];
+    const tab: unknown = Array.isArray(props.tabs) ? props.tabs[index] : options[index];
+    return typeof render === 'function'
+      ? (render as (tab: unknown, index: number) => ReactNode)(tab, index)
+      : null;
+  };
   return (
     <nav
       {...common(props)}
@@ -216,6 +226,7 @@ export function NavigationTabsLeafRenderer({
         <button
           key={item.id ?? String(item.value ?? index)}
           aria-pressed={Boolean(item.active)}
+          aria-label={item.label}
           className={cx(
             'peaui-navigation-tabs__button',
             item.active && 'peaui-navigation-tabs__button--active',
@@ -229,7 +240,9 @@ export function NavigationTabsLeafRenderer({
           }
           onKeyDown={(event) => onNavigationKeydown(event, '.peaui-navigation-tabs__button')}
         >
+          {tabAddition(index, 'Before')}
           <span>{item.label}</span>
+          {tabAddition(index, 'After')}
         </button>
       ))}
     </nav>
@@ -280,20 +293,21 @@ export function NavigationStepperLeafRenderer({
       className={cx('peaui-navigation-stepper', props.className)}
       ref={forwardedRef as ForwardedRef<HTMLDivElement>}
     >
-      <button
+      <ButtonActionRenderer
         aria-label="Przewiń do poprzednich kroków"
-        className="peaui-navigation-stepper__control peaui-navigation-stepper__control--prev peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-secondary"
+        size="xs"
+        variant="secondary"
+        className="peaui-navigation-stepper__control peaui-navigation-stepper__control--prev"
         aria-controls={viewportId}
         disabled={!canScrollPrev}
         type="button"
         onClick={() => scrollSteps(-1)}
       >
-        <Svg
+        <StaticSvg
           data={iconArrow}
           className="peaui-navigation-stepper__control-icon peaui-navigation-stepper__control-icon--prev"
-          name="arrow"
         />
-      </button>
+      </ButtonActionRenderer>
       <nav
         id={viewportId}
         ref={viewportRef}
@@ -305,10 +319,27 @@ export function NavigationStepperLeafRenderer({
           {records.map((item, index) => {
             const status = text(item, 'status', item.active === true ? 'during' : 'default');
             const selectable = status === 'during' || status === 'complete';
+            const statusLabel =
+              status === 'complete'
+                ? 'Gotowe'
+                : status === 'during'
+                  ? 'W trakcie'
+                  : status === 'disabled'
+                    ? 'Zablokowane'
+                    : status === 'hidden'
+                      ? 'Ukryte'
+                      : 'Do zrobienia';
             return (
               <li key={text(item, 'key', String(index))} className="peaui-navigation-stepper__item">
                 <button
+                  aria-label={`Krok ${text(item, 'number', String(index + 1))}. ${text(
+                    item,
+                    'label',
+                  )
+                    .replace(/^\s*\d+\.\s*/, '')
+                    .trim()}. ${statusLabel}.`}
                   aria-current={item.active === true || status === 'during' ? 'step' : undefined}
+                  aria-disabled={!selectable || undefined}
                   className={cx(
                     'peaui-navigation-stepper__step',
                     `peaui-navigation-stepper__step--status-${status}`,
@@ -324,38 +355,29 @@ export function NavigationStepperLeafRenderer({
                   }
                 >
                   <span className="peaui-navigation-stepper__status">
+                    <span
+                      className={cx(
+                        'peaui-navigation-stepper__status-label',
+                        `peaui-navigation-stepper__status-label--status-${status}`,
+                      )}
+                    >
+                      {statusLabel}
+                    </span>
                     {status === 'complete' ? (
-                      <Svg
-                        data={iconCheck}
+                      <StaticSvg
+                        data={iconProgressFinish}
                         className="peaui-navigation-stepper__status-icon"
-                        name="check"
                       />
-                    ) : (
-                      text(item, 'number', String(index + 1))
-                    )}
+                    ) : null}
                   </span>
-                  <span
+                  <strong
                     className={cx(
                       'peaui-navigation-stepper__label',
                       `peaui-navigation-stepper__label--status-${status}`,
                     )}
                   >
                     {text(item, 'label')}
-                  </span>
-                  <span
-                    className={cx(
-                      'peaui-navigation-stepper__status-label',
-                      `peaui-navigation-stepper__status-label--status-${status}`,
-                    )}
-                  >
-                    {status === 'complete'
-                      ? 'Gotowe'
-                      : status === 'during'
-                        ? 'W trakcie'
-                        : status === 'disabled'
-                          ? 'Zablokowane'
-                          : 'Do zrobienia'}
-                  </span>
+                  </strong>
                   {node(item, 'additional') ? (
                     <span className="peaui-navigation-stepper__additional">
                       {node(item, 'additional')}
@@ -367,20 +389,21 @@ export function NavigationStepperLeafRenderer({
           })}
         </ol>
       </nav>
-      <button
+      <ButtonActionRenderer
         aria-label="Przewiń do następnych kroków"
-        className="peaui-navigation-stepper__control peaui-navigation-stepper__control--next peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-secondary"
+        size="xs"
+        variant="secondary"
+        className="peaui-navigation-stepper__control peaui-navigation-stepper__control--next"
         aria-controls={viewportId}
         disabled={!canScrollNext}
         type="button"
         onClick={() => scrollSteps(1)}
       >
-        <Svg
+        <StaticSvg
           data={iconArrow}
           className="peaui-navigation-stepper__control-icon peaui-navigation-stepper__control-icon--next"
-          name="arrow"
         />
-      </button>
+      </ButtonActionRenderer>
     </div>
   );
 }
@@ -435,11 +458,39 @@ export function NavigationCardLeafRenderer({
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const variant = text(props, 'variant', 'default');
   const locked = variant === 'disabled' || variant === 'hidden';
-  const path = text(props, 'path');
+  const path = text(props, 'path').trim();
+  const uid = `peaui-navigation-card-${useId()}`;
+  const title = text(props, 'title');
+  const description = text(props, 'description');
+  const cardAttributes = {
+    ...common(props),
+    'aria-label': title.trim() ? undefined : text(props, 'ariaLabel') || undefined,
+    'aria-labelledby': title.trim() ? `${uid}-title` : undefined,
+    'aria-describedby': description.trim() ? `${uid}-description` : undefined,
+    'aria-disabled': locked || undefined,
+  };
+  const icon = (
+    <div
+      aria-hidden={locked ? undefined : true}
+      className={cx(
+        'peaui-navigation-card__icon',
+        `peaui-navigation-card__icon--variant-${variant}`,
+      )}
+    >
+      <StaticSvg
+        data={variant === 'complete' ? iconProgressFinish : locked ? iconLock : iconArrow}
+        className={cx(
+          'peaui-navigation-card__icon-symbol',
+          !locked && variant !== 'complete' && 'peaui-navigation-card__icon-symbol--arrow',
+        )}
+      />
+    </div>
+  );
   const cardContent = (
     <>
       <div className="peaui-navigation-card__content">
         <h4
+          id={`${uid}-title`}
           className={cx(
             'peaui-navigation-card__title',
             `peaui-navigation-card__title--size-${text(props, 'size', 's')}`,
@@ -449,6 +500,7 @@ export function NavigationCardLeafRenderer({
           {text(props, 'title')}
         </h4>
         <p
+          id={`${uid}-description`}
           className={cx(
             'peaui-navigation-card__description',
             locked && 'peaui-navigation-card__description--locked',
@@ -457,22 +509,18 @@ export function NavigationCardLeafRenderer({
           {text(props, 'description')}
         </p>
       </div>
-      <div
-        aria-hidden="true"
-        className={cx(
-          'peaui-navigation-card__icon',
-          `peaui-navigation-card__icon--variant-${variant}`,
-        )}
-      >
-        <Svg
-          data={variant === 'complete' ? iconProgressFinish : locked ? iconLock : iconArrow}
-          className={cx(
-            'peaui-navigation-card__icon-symbol',
-            !locked && variant !== 'complete' && 'peaui-navigation-card__icon-symbol--arrow',
-          )}
-          name={variant === 'complete' ? 'progressFinish' : locked ? 'lock' : 'arrow'}
-        />
-      </div>
+      {locked ? (
+        <div className="peaui-navigation-card__tooltip">
+          <InfoTooltipRenderer
+            placement="right"
+            description="Krok niedostepny - wymagane zakonczenie poprzedniego etapu."
+          >
+            {icon}
+          </InfoTooltipRenderer>
+        </div>
+      ) : (
+        icon
+      )}
     </>
   );
   const cardClasses = cx(
@@ -483,7 +531,7 @@ export function NavigationCardLeafRenderer({
   );
   return path && !locked ? (
     <a
-      {...common(props)}
+      {...cardAttributes}
       {...anchorAttributes(props)}
       className={cardClasses}
       href={path}
@@ -492,12 +540,8 @@ export function NavigationCardLeafRenderer({
       {cardContent}
     </a>
   ) : (
-    <div
-      {...common(props)}
-      className={cardClasses}
-      ref={forwardedRef as ForwardedRef<HTMLDivElement>}
-    >
+    <article {...cardAttributes} className={cardClasses} ref={forwardedRef}>
       {cardContent}
-    </div>
+    </article>
   );
 }

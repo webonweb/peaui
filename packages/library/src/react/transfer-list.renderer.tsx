@@ -44,21 +44,17 @@ import {
   type TransferListSize,
   type TransferListSort,
 } from '../components/data-entry/TransferList/transfer-list.shared';
-import type { ReactIconData } from './generated-icon-data';
+import { Svg } from './renderers/svg.renderer';
+import { renderSvgMarkup as StaticSvg } from './renderers/svg-markup.renderer';
+import { SearchInputLeafRenderer } from './renderers/text-input.renderer';
+import { ChoiceControlsRenderer } from './renderers/choice-controls.renderer';
 import {
-  iconArrowRight,
-  iconCheck,
-  iconClose,
-  iconDoubleArrowRounded,
-  iconSearch,
-} from './generated-static-icons';
-const controlIcons: Readonly<Record<string, ReactIconData>> = {
-  arrowRight: iconArrowRight,
-  check: iconCheck,
-  close: iconClose,
-  doubleArrowRounded: iconDoubleArrowRounded,
-  search: iconSearch,
-};
+  EmptyStateLeafRenderer,
+  MessageTextLeafRenderer,
+  SpinnerLoaderLeafRenderer,
+} from './renderers/feedback.renderer';
+import { ButtonActionRenderer } from './renderers/button-action.renderer';
+import { iconCheck } from './generated-static-icons';
 
 type RuntimeProps = Record<string, unknown> & {
   children?: ReactNode;
@@ -89,80 +85,31 @@ function assignRef<T>(ref: ForwardedRef<T> | undefined, value: T | null): void {
   else if (ref) ref.current = value;
 }
 
-function TransferIcon({ flip = false, name }: { flip?: boolean; name: string }): ReactElement {
-  const icon = controlIcons[name] ?? controlIcons.info;
-  return (
-    <svg
-      aria-hidden="true"
-      className="peaui-svg-icon"
-      dangerouslySetInnerHTML={{ __html: icon?.body ?? '' }}
-      focusable="false"
-      style={flip ? { transform: 'scaleX(-1)' } : undefined}
-      viewBox={icon?.viewBox ?? '0 0 24 24'}
-    />
-  );
-}
-
 function TransferSearch({
   ariaLabel,
-  blocked,
   onChange,
   placeholder,
   testId,
   value,
 }: {
   ariaLabel: string;
-  blocked: boolean;
   onChange: (value: string) => void;
   placeholder: string;
   testId?: string;
   value: string;
 }): ReactElement {
   return (
-    <div className="peaui-search-input peaui-transfer-list__search" data-testid={testId}>
-      <div className="peaui-search-input__field" data-disabled={blocked || undefined}>
-        <span className="peaui-search-input__field-icon">
-          <TransferIcon name="search" />
-        </span>
-        <input
-          aria-label={ariaLabel}
-          className="peaui-search-input__input peaui-search-input__input--interactive"
-          data-testid={testId ? `${testId}-element` : undefined}
-          disabled={blocked}
-          onChange={(event) => onChange(event.currentTarget.value)}
-          placeholder={placeholder}
-          type="search"
-          value={value}
-        />
-        {value ? (
-          <button
-            aria-label={`${ariaLabel}: wyczyść`}
-            className="peaui-search-input__erase-button"
-            disabled={blocked}
-            onClick={() => onChange('')}
-            type="button"
-          >
-            <span className="peaui-search-input__erase-icon">
-              <TransferIcon name="close" />
-            </span>
-          </button>
-        ) : null}
-        <button
-          aria-label={ariaLabel}
-          className="peaui-button-action peaui-button-action--variant-primary peaui-button-action--size-s peaui-search-input__button"
-          disabled={blocked}
-          onClick={() => onChange(value)}
-          type="button"
-        >
-          <span className="peaui-search-input__button-icon">
-            <TransferIcon name="search" />
-          </span>
-        </button>
-      </div>
-    </div>
+    <SearchInputLeafRenderer
+      className="peaui-transfer-list__search"
+      ariaLabel={ariaLabel}
+      placeholder={placeholder}
+      dataTestId={testId}
+      debounceTime={0}
+      value={value}
+      onValueChange={onChange}
+    />
   );
 }
-
 function TransferCheckbox({
   ariaLabel,
   checked,
@@ -179,81 +126,25 @@ function TransferCheckbox({
   testId?: string;
 }): ReactElement {
   return (
-    <div className="peaui-form-field-checkbox peaui-form-field-checkbox--with-slot">
-      <input
-        aria-label={ariaLabel}
-        checked={checked}
-        className={cx(
-          'peaui-form-field-checkbox__element',
-          disabled && 'peaui-form-field-checkbox__element--disabled',
-        )}
-        data-testid={testId ? `${testId}-element` : undefined}
-        disabled={disabled}
-        id={id}
-        onChange={(event) => onChange(event.currentTarget.checked)}
-        type="checkbox"
-      />
-      <label
-        className={cx(
-          'peaui-form-field-checkbox__label peaui-form-field-checkbox__label--normal',
-          disabled && 'peaui-form-field-checkbox__label--disabled',
-        )}
-        htmlFor={id}
-      >
-        {ariaLabel}
-      </label>
-    </div>
-  );
-}
-
-function TransferEmpty({ testId, title }: { testId?: string; title: string }): ReactElement {
-  const id = useId().replaceAll(':', '');
-  return (
-    <section aria-labelledby={`${id}-title`} className="peaui-empty-state" data-testid={testId}>
-      <svg
-        aria-hidden="true"
-        className="peaui-empty-state__icon"
-        focusable="false"
-        viewBox="0 0 64 41"
-      >
-        <g fill="none" fillRule="evenodd" transform="translate(0 1)">
-          <ellipse className="peaui-empty-state__icon-shadow" cx="32" cy="33" rx="32" ry="7" />
-          <g className="peaui-empty-state__icon-outline" fillRule="nonzero">
-            <path d="M55 12.76 44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24Z" />
-            <path
-              className="peaui-empty-state__icon-line"
-              d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007Z"
-            />
-          </g>
-        </g>
-      </svg>
-      <div className="peaui-empty-state__content">
-        <h3 className="peaui-empty-state__title" id={`${id}-title`}>
-          {title}
-        </h3>
-      </div>
-    </section>
-  );
-}
-
-function TransferSpinner({ label, testId }: { label: string; testId?: string }): ReactElement {
-  return (
-    <div
-      aria-busy="true"
-      className="peaui-spinner-loader peaui-spinner-loader--fullscreen"
-      data-testid={testId}
+    <ChoiceControlsRenderer
+      __name="FormCheckbox"
+      ariaLabel={ariaLabel}
+      value={checked}
+      disabled={disabled}
+      id={id}
+      name={id}
+      onValueChange={onChange}
+      dataTestId={testId}
     >
-      <div
-        aria-atomic="true"
-        aria-live="polite"
-        className="peaui-spinner-loader__text"
-        role="status"
-      >
-        {label}
-      </div>
-      <div aria-hidden="true" className="peaui-spinner-loader__spinner" />
-    </div>
+      {ariaLabel}
+    </ChoiceControlsRenderer>
   );
+}
+function TransferEmpty({ testId, title }: { testId?: string; title: string }): ReactElement {
+  return <EmptyStateLeafRenderer dataTestId={testId} title={title} />;
+}
+function TransferSpinner({ label, testId }: { label: string; testId?: string }): ReactElement {
+  return <SpinnerLoaderLeafRenderer aria-label={label} dataTestId={testId} />;
 }
 
 export function TransferListRenderer({
@@ -359,6 +250,8 @@ export function TransferListRenderer({
   );
   const [sourceActive, setSourceActive] = useState(-1);
   const [targetActive, setTargetActive] = useState(-1);
+  const previousVisibleSource = useRef(visibleSource);
+  const previousVisibleTarget = useRef(visibleTarget);
   const sourceAnchor = useRef(-1);
   const targetAnchor = useRef(-1);
   const sourceListbox = useRef<HTMLDivElement>(null);
@@ -586,16 +479,20 @@ export function TransferListRenderer({
   ]);
 
   useEffect(() => {
+    if (previousVisibleSource.current === visibleSource) return;
+    previousVisibleSource.current = visibleSource;
     setSourceActive((current) =>
-      current >= 0 && current < visibleSource.length
+      current >= 0 && visibleSource[current] && !visibleSource[current].disabled
         ? current
         : findTransferListEdgeIndex(visibleSource, 'first'),
     );
   }, [visibleSource]);
 
   useEffect(() => {
+    if (previousVisibleTarget.current === visibleTarget) return;
+    previousVisibleTarget.current = visibleTarget;
     setTargetActive((current) =>
-      current >= 0 && current < visibleTarget.length
+      current >= 0 && visibleTarget[current] && !visibleTarget[current].disabled
         ? current
         : findTransferListEdgeIndex(visibleTarget, 'first'),
     );
@@ -671,7 +568,6 @@ export function TransferListRenderer({
           {searchable ? (
             <TransferSearch
               ariaLabel={panel === 'source' ? labels.sourceSearchAria : labels.targetSearchAria}
-              blocked={panelBlocked}
               onChange={(query) => updateSearch(panel, query)}
               placeholder={
                 panel === 'source' ? labels.sourceSearchPlaceholder : labels.targetSearchPlaceholder
@@ -690,7 +586,7 @@ export function TransferListRenderer({
               testId={dataTestId ? `${dataTestId}-${panel}-select-all` : undefined}
             />
             <span className="peaui-transfer-list__selected-count">
-              {labels.selected}: {selection(panel).length}
+              {`${labels.selected}: ${selection(panel).length}`}
             </span>
           </div>
           <div className="peaui-transfer-list__viewport">
@@ -751,7 +647,7 @@ export function TransferListRenderer({
                     role="option"
                   >
                     <span aria-hidden="true" className="peaui-transfer-list__option-marker">
-                      {selected ? <TransferIcon name="check" /> : null}
+                      {selected ? <StaticSvg data={iconCheck} /> : null}
                     </span>
                     <span className="peaui-transfer-list__option-content">
                       {typeof itemRenderer === 'function' ? (
@@ -811,11 +707,12 @@ export function TransferListRenderer({
   ): ReactElement => {
     const toTarget = direction === 'to-target';
     return (
-      <button
+      <ButtonActionRenderer
         aria-label={label}
+        size="s"
+        variant={mode === 'selected' ? 'primary' : 'secondary'}
         className={cx(
-          'peaui-button-action peaui-button-action--size-s peaui-transfer-list__control',
-          `peaui-button-action--variant-${mode === 'selected' ? 'primary' : 'secondary'}`,
+          'peaui-transfer-list__control',
           `peaui-transfer-list__control--${mode}-${toTarget ? 'target' : 'source'}`,
           disabledButton && 'peaui-button-action--is-disabled',
         )}
@@ -826,11 +723,10 @@ export function TransferListRenderer({
         onClick={() => performMove(direction, mode)}
         type="button"
       >
-        <TransferIcon
-          flip={mode === 'all' ? toTarget : !toTarget}
-          name={mode === 'all' ? 'doubleArrowRounded' : 'arrowRight'}
+        <Svg
+          name={`core/${mode === 'all' ? 'chevrons' : 'arrow'}-${toTarget ? 'right' : 'left'}`}
         />
-      </button>
+      </ButtonActionRenderer>
     );
   };
 
@@ -902,23 +798,15 @@ export function TransferListRenderer({
         {renderPanel('target')}
       </div>
       {hasError ? (
-        <div
+        <MessageTextLeafRenderer
           aria-live="polite"
-          className="peaui-message-text peaui-message-text--size-xs peaui-message-text--variant-error"
           id={errorId}
+          dataTestId={dataTestId ? `${dataTestId}-error` : undefined}
+          variant="error"
+          size="xs"
         >
-          <svg
-            aria-hidden="true"
-            className="peaui-message-text__icon"
-            fill="none"
-            focusable="false"
-            viewBox="0 0 16 16"
-          >
-            <circle cx="8" cy="8" r="6.5" stroke="currentColor" />
-            <path d="M8 4.5v4M8 11.2v.3" stroke="currentColor" strokeLinecap="round" />
-          </svg>
-          <p className="peaui-message-text__content">{error}</p>
-        </div>
+          {error}
+        </MessageTextLeafRenderer>
       ) : null}
       <p aria-atomic="true" aria-live="polite" className="peaui-transfer-list__live" role="status">
         {announcement}

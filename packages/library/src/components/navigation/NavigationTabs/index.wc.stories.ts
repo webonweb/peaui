@@ -57,3 +57,27 @@ export const KeyboardInteraction: Story = {
     },
   },
 };
+
+export const LabelContent: Story = {
+  args: {
+    ariaLabel: 'Sections with extra label content',
+    tabs: [
+      { key: 'inbox', label: 'Inbox', active: true },
+      { key: 'archive', label: 'Archive' },
+    ],
+  },
+  render: (args) => {
+    const element = renderVueCustomElementStory(NavigationTabsElement.tagName, args);
+    for (const [position, text] of [
+      ['before', '★'],
+      ['after', '3'],
+    ]) {
+      const content = document.createElement('span');
+      content.slot = `navigation-tabs-inbox-${position}`;
+      content.setAttribute('aria-hidden', 'true');
+      content.textContent = text ?? '';
+      element.append(content);
+    }
+    return element;
+  },
+};

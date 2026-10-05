@@ -13,12 +13,14 @@ import {
 } from '../shared';
 
 const {
+  as = 'th',
   columns = [],
   dataTestId,
   lockedState,
   canHideColumns = false,
   minimumVisibleColumns = TABLE_LIST_MIN_VISIBLE_COLUMNS,
 } = defineProps<{
+  as?: 'th' | 'div';
   columns?: TableColumn[];
   dataTestId?: string;
   lockedState?: Record<string, boolean | undefined>;
@@ -83,7 +85,13 @@ function handleToggleColumnVisibility(event: Event, column: TableColumn): void {
 </script>
 
 <template>
-  <th :class="`${TABLE_LIST_CLASS}__actions-head-cell`" :data-testid="dataTestId" scope="col">
+  <component
+    :is="as"
+    v-if="as === 'th' || canShowColumnVisibilityManager"
+    :class="as === 'th' ? `${TABLE_LIST_CLASS}__actions-head-cell` : undefined"
+    :data-testid="dataTestId"
+    :scope="as === 'th' ? 'col' : undefined"
+  >
     <PopoverOverlayer
       v-if="canShowColumnVisibilityManager"
       :class="`${TABLE_LIST_CLASS}__head-actions-popover-trigger`"
@@ -139,6 +147,8 @@ function handleToggleColumnVisibility(event: Event, column: TableColumn): void {
       </template>
     </PopoverOverlayer>
 
-    <span :class="`${TABLE_LIST_CLASS}__sr-only`">Dodatkowe akcje dla rekordow</span>
-  </th>
+    <span v-if="as === 'th'" :class="`${TABLE_LIST_CLASS}__sr-only`"
+      >Dodatkowe akcje dla rekordow</span
+    >
+  </component>
 </template>

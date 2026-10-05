@@ -1,9 +1,28 @@
 /** @jsxImportSource react */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions, no-nested-ternary */
 import { type RuntimeProps, text, common, cx, bool, num, callback, node } from './runtime.shared';
-import { iconCheckCircle, iconClose, iconHint } from '../generated-static-icons';
 import { type ForwardedRef, type ReactElement, useId } from 'react';
 import { Svg } from './svg.renderer';
+import {
+  feedbackIconPaths,
+  isFeedbackIconVariant,
+} from '../../components/feedback/feedback-icons.shared';
+
+function FeedbackIcon({
+  variant,
+  className,
+}: {
+  variant: string;
+  className: string;
+}): ReactElement {
+  return (
+    <svg className={className} viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
+      {isFeedbackIconVariant(variant) ? (
+        <path d={feedbackIconPaths[variant]} fill={variant === 'success' ? '#10893C' : undefined} />
+      ) : null}
+    </svg>
+  );
+}
 
 export function FeedbackRenderer({
   forwardedRef,
@@ -79,7 +98,7 @@ export function ProgressIndicatorLeafRenderer({
   forwardedRef,
   ...props
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
-  const steps = Math.max(0, num(props, 'steps', 3));
+  const steps = Math.max(0, num(props, 'steps', 0));
   const active = Math.min(steps, Math.max(0, num(props, 'active', 0)));
   const size = num(props, 'size', 100);
   const strokeWidth = num(props, 'strokeWidth', 10);
@@ -149,7 +168,7 @@ export function ProgressIndicatorLeafRenderer({
         className="peaui-progress-indicator__text"
         style={{ fontSize: Math.round(Math.min(Math.max(size * 0.28, 10), size * 0.45)) }}
       >
-        {removeActive ? steps : `${active}/${steps}`}
+        {steps <= 0 ? '0/0' : removeActive ? steps : `${active}/${steps}`}
       </span>
     </div>
   );
@@ -161,14 +180,14 @@ export function MessageTextLeafRenderer({
 }: RuntimeProps & { forwardedRef?: ForwardedRef<HTMLElement> }): ReactElement {
   const variant = text(props, 'variant', 'default');
   const ownIcon = text(props, 'ownIcon');
-  const showVariantIcon = bool(props, 'withIcon', true) && variant !== 'default';
+  const showVariantIcon = bool(props, 'withIcon', true) && isFeedbackIconVariant(variant);
   return (
     <div
       {...common(props)}
       className={cx(
         'peaui-message-text',
         `peaui-message-text--variant-${variant}`,
-        `peaui-message-text--size-${text(props, 'size', 'm')}`,
+        `peaui-message-text--size-${text(props, 'size', 's')}`,
         props.className,
       )}
       id={text(props, 'id')}
@@ -185,11 +204,7 @@ export function MessageTextLeafRenderer({
         />
       ) : null}
       {!ownIcon && showVariantIcon ? (
-        <Svg
-          className="peaui-message-text__icon"
-          data={variant === 'success' ? iconCheckCircle : iconHint}
-          name={variant === 'success' ? 'checkCircle' : 'hint'}
-        />
+        <FeedbackIcon className="peaui-message-text__icon" variant={variant} />
       ) : null}
       <p className="peaui-message-text__content">{props.children}</p>
     </div>
@@ -227,16 +242,7 @@ export function ToastAlertLeafRenderer({
       ref={forwardedRef as ForwardedRef<HTMLDivElement>}
       role={assertive ? 'alert' : 'status'}
     >
-      <Svg
-        className="peaui-toast-alert__icon"
-        name={
-          variant === 'success'
-            ? 'checkCircle'
-            : variant === 'error' || variant === 'danger'
-              ? 'error'
-              : 'info'
-        }
-      />
+      <FeedbackIcon className="peaui-toast-alert__icon" variant={variant} />
       <div className="peaui-toast-alert__content">
         {text(props, 'title') ? (
           <strong
@@ -266,7 +272,20 @@ export function ToastAlertLeafRenderer({
           type="button"
           onClick={() => callback(props, 'onClose')?.()}
         >
-          <Svg data={iconClose} className="peaui-toast-alert__close-icon" name="close" />
+          <svg
+            className="peaui-toast-alert__close-icon"
+            viewBox="0 0 12 12"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M1.75732 1.75732L10.2426 10.2426M10.2426 1.75732L1.75732 10.2426"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
         </button>
       ) : null}
     </div>

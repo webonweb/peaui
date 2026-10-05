@@ -454,7 +454,21 @@ function renderProps(api) {
     entries.push(renderProperty(callbackName, eventType, false, event.description));
   }
 
+  if (api.name === 'NavigationTabs') {
+    for (const position of ['Before', 'After']) {
+      entries.push(
+        renderProperty(
+          `renderTab${position}`,
+          '(tab: PeauiOption, index: number) => ReactNode',
+          false,
+          `Renderuje zawartość ${position === 'Before' ? 'przed' : 'za'} etykietą zakładki; odpowiednik dynamicznego slotu Vue navigation-tabs-{key}-${position.toLowerCase()}.`,
+        ),
+      );
+    }
+  }
+
   for (const slot of api.slots) {
+    if (api.name === 'NavigationTabs') continue;
     if (slot.name === 'default') continue;
     if (slot.name.includes('[')) {
       if (!entries.some((entry) => entry.includes(' renderCell?'))) {

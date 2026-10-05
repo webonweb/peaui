@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
 import { renderSvgMarkup } from './renderers/svg-markup.renderer';
-import { iconHint } from './generated-static-icons';
+import { feedbackHintIcon, feedbackErrorIcon } from '../components/feedback/feedback-icons.shared';
 import { useModel, useFormControlModel } from './renderers/runtime.shared';
 import { getNativePopoverValue, useNativePopover } from './popover-overlayer.shared';
 import {
@@ -581,8 +581,15 @@ export function FormDateTimePickerRenderer({
       {label ? (
         <label className="peaui-form-label" htmlFor={id} id={`label-${id}`}>
           <span className="peaui-form-label__content">
-            <span className="peaui-form-label__text">{label}</span>
-            {!required ? (
+            <span
+              className={cx(
+                'peaui-form-label__text',
+                readonly && 'peaui-form-label__text--readonly',
+              )}
+            >
+              {label}
+            </span>
+            {!required && !readonly ? (
               <span className="peaui-form-label__optional">(pole niewymagane)</span>
             ) : null}
           </span>
@@ -592,7 +599,10 @@ export function FormDateTimePickerRenderer({
               placement="right"
               ariaLabel="Dodatkowa informacja"
             >
-              {renderSvgMarkup({ className: 'peaui-form-label__hint', data: iconHint })}
+              {renderSvgMarkup({
+                className: 'peaui-form-label__hint-icon',
+                data: feedbackHintIcon,
+              })}
             </InfoTooltipRenderer>
           ) : null}
         </label>
@@ -723,6 +733,7 @@ export function FormDateTimePickerRenderer({
           className="peaui-form-field__message peaui-message-text peaui-message-text--variant-error peaui-message-text--size-xs"
           id={errorId}
         >
+          {renderSvgMarkup({ className: 'peaui-message-text__icon', data: feedbackErrorIcon })}
           <p className="peaui-message-text__content">{externalError ?? invalidMessage(reason)}</p>
         </div>
       ) : null}
@@ -873,6 +884,7 @@ export function FormDateTimePickerRenderer({
         className={cx(
           root,
           'peaui-popover-overlayer',
+          'peaui-popover-overlayer--match-trigger-width',
           `${root}--variant-${variant}`,
           `${root}--layout-${layout}`,
           open && `${root}--open`,

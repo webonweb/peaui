@@ -5,9 +5,13 @@ import { iconArrow, iconDownload } from '../generated-static-icons';
 import { type ForwardedRef, type ReactElement, useRef, useState } from 'react';
 import { ButtonActionRenderer } from './button-action.renderer';
 import { Svg } from './svg.renderer';
+import { renderSvgMarkup as StaticSvg } from './svg-markup.renderer';
 import { Popover } from './popover';
 import { Dialog } from './dialog';
 import { FormContainerLeafRenderer } from './form-container.renderer';
+import { CounterBadgeLeafRenderer } from './display.renderer';
+import { InfoTooltipRenderer } from './info-tooltip.renderer';
+import { feedbackHintIcon } from '../../components/feedback/feedback-icons.shared';
 
 export function ButtonRenderer({
   forwardedRef,
@@ -93,9 +97,7 @@ export function ButtonExportLeafRenderer({
               <Svg data={iconDownload} className="peaui-button-export__icon" name="download" />
               {props.children ?? 'Eksportuj'}
               {num(props, 'selectedItemsCount') > 0 ? (
-                <span className="peaui-counter-badge peaui-counter-badge--variant-info peaui-counter-badge--size-m">
-                  {num(props, 'selectedItemsCount')}
-                </span>
+                <CounterBadgeLeafRenderer value={num(props, 'selectedItemsCount')} variant="info" />
               ) : null}
               <Svg data={iconArrow} className="peaui-button-export__arrow" name="arrow" />
             </>
@@ -200,9 +202,13 @@ export function SelectableCardLeafRenderer({
         <div className="peaui-selectable-card__additional">{node(props, 'additional')}</div>
       </button>
       {node(props, 'hint') ? (
-        <span className="peaui-selectable-card__hint" title={text(props, 'hint')}>
-          <Svg className="peaui-selectable-card__hint-icon" name="info" />
-        </span>
+        <InfoTooltipRenderer
+          className="peaui-selectable-card__hint"
+          placement="right"
+          description={node(props, 'hint')}
+        >
+          <StaticSvg data={feedbackHintIcon} className="peaui-selectable-card__hint-icon" />
+        </InfoTooltipRenderer>
       ) : null}
     </div>
   );

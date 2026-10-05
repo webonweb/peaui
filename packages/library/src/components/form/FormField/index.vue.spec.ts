@@ -15,6 +15,7 @@ const FormFieldLabelStub = defineComponent({
     for: { type: String, required: false },
     text: { type: String, required: false },
     required: { type: Boolean, required: false },
+    readonly: { type: Boolean, required: false },
   },
   setup(props, { attrs, slots }) {
     return () =>
@@ -115,6 +116,13 @@ describe('FormField (index.vue)', () => {
     expect(label.attributes('for')).toBe('first-name');
     expect(label.text()).toContain('Imie');
     expect(label.text()).toContain('Podpowiedz');
+  });
+
+  it('keeps the label in sync with the readonly field state', async () => {
+    const wrapper = mountComponent({ label: 'Field', readonly: true, required: false });
+    expect(wrapper.findComponent(FormFieldLabelStub).props('readonly')).toBe(true);
+    await wrapper.setProps({ readonly: false });
+    expect(wrapper.findComponent(FormFieldLabelStub).props('readonly')).toBe(false);
   });
 
   it('passes bindings to field element and renders before/after text with icons', () => {

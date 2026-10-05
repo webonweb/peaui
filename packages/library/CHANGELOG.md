@@ -1,5 +1,15 @@
 # @peaui/ui
 
+## 3.0.1
+
+### Patch Changes
+
+- 19279f0: Keep CalculationResults and CommandPalette within narrow viewports and support larger user font sizes across Vue, React, and Web Components. Long results and actions wrap without hiding content.
+
+  Preserve ScrollArea scroll notifications when content resizing and scrolling occur in the same animation frame, so VirtualList updates its visible range reliably in every framework.
+
+  Align React component appearance with Vue and Web Components: restore TableList header, footer, selection, cell editing, actions, column locking and expanded details; reuse shared controls in TransferList; and align navigation, feedback, form hints, validation messages, icons, disabled states and readonly labels. Normalize native Web Component tag and copy-button sizing. Fix invalid React Storybook arguments and dark-mode native controls, document React tab label composition, and add automated visual comparisons covering every component and table workflows.
+
 ## 3.0.0
 
 2026-10-05

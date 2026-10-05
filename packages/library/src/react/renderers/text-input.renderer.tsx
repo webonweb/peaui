@@ -36,6 +36,8 @@ import {
 import { FormShell, getFormFieldAria } from './form-shell';
 import { normalizeNumberInput, stepNumberInput } from '../../helpers/number.helper';
 import { observeControlReset } from '../../helpers/form-reset.helper';
+import { inputSliderPaths } from '../../components/data-entry/InputSlider/input-slider-icons.shared';
+import { ButtonActionRenderer } from './button-action.renderer';
 
 function useTextInput(
   props: RuntimeProps,
@@ -92,7 +94,7 @@ function useTextInput(
   });
   let paddingRight = `${getFormFieldPaddingRight({
     after,
-    canErase,
+    canErase: bool(props, 'canErase'),
     iconAfter,
     minimumEraseOffset: eraseButtonRight,
   })}px`;
@@ -107,6 +109,7 @@ function useTextInput(
   const input = (
     <input
       {...nativeAttributes(props)}
+      role={text(props, 'role') || undefined}
       {...getFormFieldAria(props, id)}
       autoComplete={text(props, 'autoComplete') || text(props, 'autocomplete') || undefined}
       autoCapitalize={text(props, 'autoCapitalize') || undefined}
@@ -298,25 +301,43 @@ export function InputSliderLeafRenderer({
       {...common({ ...props, id: undefined })}
       className={cx('peaui-input-slider', props.className)}
     >
-      <button
+      <ButtonActionRenderer
         aria-label={`Zmniejsz wartość. Obecna: ${String(value)}`}
-        className="peaui-input-slider__button peaui-input-slider__button--decrement peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-ghost"
+        className="peaui-input-slider__button peaui-input-slider__button--decrement"
+        size="xs"
+        variant="ghost"
         disabled={disabled}
         type="button"
         onClick={() => setValue(Math.max(0, Number(value) - 0.1))}
       >
-        <span className="peaui-input-slider__button-icon">−</span>
-      </button>
+        <svg
+          className="peaui-input-slider__button-icon"
+          viewBox="0 0 25 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d={inputSliderPaths.decrement} />
+        </svg>
+      </ButtonActionRenderer>
       {input}
-      <button
+      <ButtonActionRenderer
         aria-label={`Zwiększ wartość. Obecna: ${String(value)}`}
-        className="peaui-input-slider__button peaui-input-slider__button--increment peaui-button-action peaui-button-action--size-xs peaui-button-action--variant-ghost"
+        className="peaui-input-slider__button peaui-input-slider__button--increment"
+        size="xs"
+        variant="ghost"
         disabled={disabled}
         type="button"
         onClick={() => setValue(Math.min(1, Number(value) + 0.1))}
       >
-        <span className="peaui-input-slider__button-icon">+</span>
-      </button>
+        <svg
+          className="peaui-input-slider__button-icon"
+          viewBox="0 0 25 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d={inputSliderPaths.increment} />
+        </svg>
+      </ButtonActionRenderer>
     </div>
   );
 }
@@ -351,10 +372,14 @@ export function SearchInputLeafRenderer({
     searchScheduler,
   );
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events -- Native child controls provide keyboard activation for this delegated listener.
     <div
-      {...common({ ...props, id: undefined })}
       className={cx('peaui-search-input', props.className)}
       role="search"
+      aria-label={text(props, 'ariaLabel', 'Pole wyszukiwania')}
+      data-testid={dataTest(props)}
+      style={props.style}
+      onClick={(event) => callback(props, 'onClick')?.(event)}
     >
       <div className="peaui-search-input__field">
         <Svg data={iconSearch} className="peaui-search-input__field-icon" name="search" />
@@ -376,7 +401,10 @@ export function SearchInputLeafRenderer({
       </div>
       <button
         aria-label="Szukaj"
-        className="peaui-search-input__button peaui-button-action peaui-button-action--size-m peaui-button-action--variant-primary"
+        className={cx(
+          'peaui-search-input__button peaui-button-action peaui-button-action--size-m peaui-button-action--variant-primary',
+          (disabled || readonly) && 'peaui-button-action--is-disabled',
+        )}
         disabled={disabled || readonly}
         type="button"
         onClick={() => searchScheduler.search(String(value ?? ''))}

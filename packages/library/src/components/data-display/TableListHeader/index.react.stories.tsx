@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { getReactStoryArgs } from '@/react/story-args';
 import TableListHeader from './index';
+import { tableListHeaderStoryProps } from './story-fixtures';
 
 const meta = {
   title: 'React/data-display/TableListHeader',
   component: TableListHeader,
-  args: getReactStoryArgs('TableListHeader'),
+  args: tableListHeaderStoryProps,
   parameters: { layout: 'padded' },
 } satisfies Meta<typeof TableListHeader>;
 

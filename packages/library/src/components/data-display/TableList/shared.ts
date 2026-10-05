@@ -27,6 +27,11 @@ export function resolveTableTextValue(value: unknown, deep?: string): unknown {
   return resolved === null || resolved === undefined || resolved === '' ? '-/-' : resolved;
 }
 
+/** Zero and false are present cell values and remain available to copy. */
+export function hasTableCopyValue(value: unknown): boolean {
+  return value !== null && value !== undefined && value !== '';
+}
+
 export const TABLE_LIST_CLASS = `${UIKIT_NAME}-table-list`;
 export const TABLE_LIST_DEFAULT_COLUMN_WIDTH = 170;
 export const TABLE_LIST_ACTIONS_STICKY_WIDTH = 48;

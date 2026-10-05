@@ -20,7 +20,7 @@ import {
   nextEnabledMenuIndex,
 } from '../../components/navigation/DropdownMenu/menu.shared';
 import { InfoTooltipRenderer } from './info-tooltip.renderer';
-import { iconHint } from '../generated-static-icons';
+import { feedbackHintIcon } from '../../components/feedback/feedback-icons.shared';
 import { Svg } from './svg.renderer';
 
 export function ButtonGroupRenderer({
@@ -124,7 +124,8 @@ export function ButtonGroupRenderer({
                         index < options.length - 1 &&
                         'peaui-form-button-group__button--middle',
                       selected && 'peaui-form-button-group__button--selected',
-                      option.disabled && 'peaui-form-button-group__button--disabled',
+                      (bool(props, 'disabled') || option.disabled) &&
+                        'peaui-form-button-group__button--disabled',
                       bool(props, 'readonly') && 'peaui-form-button-group__button--readonly',
                     )}
                     disabled={bool(props, 'disabled') || option.disabled}
@@ -166,7 +167,7 @@ export function ButtonGroupRenderer({
             <Svg
               className="peaui-form-button-group__additional-hint-icon"
               name="hint"
-              data={iconHint}
+              data={feedbackHintIcon}
             />
           </InfoTooltipRenderer>
         ) : null}

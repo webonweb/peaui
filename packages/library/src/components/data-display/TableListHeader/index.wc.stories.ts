@@ -9,13 +9,17 @@ import {
 
 import TableListHeaderVueComponent from './index.ce.vue';
 import { TableListHeaderElement, defineTableListHeader } from './index.wc';
+import { tableListHeaderStoryProps } from './story-fixtures';
 
 defineTableListHeader();
 
 const meta = {
   title: '2. Data Display/TableListHeader',
   component: TableListHeaderElement.tagName,
-  args: createVueCustomElementStoryArgs(TableListHeaderVueComponent),
+  args: {
+    ...createVueCustomElementStoryArgs(TableListHeaderVueComponent),
+    ...tableListHeaderStoryProps,
+  },
   argTypes: createVueCustomElementArgTypes(TableListHeaderVueComponent),
   parameters: {
     name: 'TableListHeader',

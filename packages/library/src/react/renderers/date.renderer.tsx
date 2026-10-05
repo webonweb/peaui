@@ -369,7 +369,7 @@ export function DateRenderer({
             onChange={() => undefined}
             onInvalid={(event) => focusInvalidValue(event.nativeEvent, inputRef.current)}
           />
-          {canErase && value && !disabled ? (
+          {canErase && value && !disabled && !readonly ? (
             <button
               aria-label="Usuń wartość pola"
               className="peaui-form-field__erase-button"

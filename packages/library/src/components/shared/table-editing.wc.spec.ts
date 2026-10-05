@@ -1,6 +1,8 @@
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { waitForDomCondition } from '@/helpers/test-wc.helper';
 import TableList from '../data-display/TableList/index.wc';
+
 afterEach(() => document.body.replaceChildren());
 describe('regressions: WC table contracts', () => {
   it('saves nested editable values without flattening keys or mutating the source record', async () => {
@@ -14,11 +16,23 @@ describe('regressions: WC table contracts', () => {
       records: [record],
     });
     document.body.append(table);
-    await vi.waitFor(() =>
-      expect(table.querySelector('[aria-label="Edytuj kolumne"]')).not.toBeNull(),
+    await waitForDomCondition(
+      table,
+      () => Boolean(table.querySelector('[aria-label="Edytuj kolumne"]')),
+      {
+        errorMessage: 'The editable column did not finish loading.',
+      },
     );
+    expect(table.querySelector('[aria-label="Edytuj kolumne"]')).not.toBeNull();
     table.querySelector<HTMLButtonElement>('[aria-label="Edytuj kolumne"]')!.click();
-    await vi.waitFor(() => expect(table.querySelector('input[data-type="input"]')).not.toBeNull());
+    await waitForDomCondition(
+      table,
+      () => Boolean(table.querySelector('input[data-type="input"]')),
+      {
+        errorMessage: 'The editable column input did not finish loading.',
+      },
+    );
+    expect(table.querySelector('input[data-type="input"]')).not.toBeNull();
     const input = table.querySelector<HTMLInputElement>('input[data-type="input"]')!;
     input.value = 'Grace';
     input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -51,9 +65,14 @@ describe('regressions: WC table contracts', () => {
       records: [{ id: 'a', name: 'Ada' }],
     });
     document.body.append(table);
-    await vi.waitFor(() =>
-      expect(table.querySelectorAll('.peaui-table-list__stepper-button')).toHaveLength(2),
+    await waitForDomCondition(
+      table,
+      () => table.querySelectorAll('.peaui-table-list__stepper-button').length === 2,
+      {
+        errorMessage: 'The stepper column did not finish loading.',
+      },
     );
+    expect(table.querySelectorAll('.peaui-table-list__stepper-button')).toHaveLength(2);
     expect(table.querySelector('th .peaui-info-tooltip[tabindex="0"]')).not.toBeNull();
     expect(table.querySelector('td .peaui-info-tooltip[tabindex="0"]')).not.toBeNull();
     table.querySelector<HTMLButtonElement>('[aria-label^="Continue"]')!.click();
@@ -75,11 +94,23 @@ describe('regressions: WC table contracts', () => {
       records: [{ id: 'a', name: 'Ada' }],
     });
     document.body.append(table);
-    await vi.waitFor(() =>
-      expect(table.querySelector('[aria-label="Edytuj kolumne"]')).not.toBeNull(),
+    await waitForDomCondition(
+      table,
+      () => Boolean(table.querySelector('[aria-label="Edytuj kolumne"]')),
+      {
+        errorMessage: 'The editable column did not finish loading.',
+      },
     );
+    expect(table.querySelector('[aria-label="Edytuj kolumne"]')).not.toBeNull();
     table.querySelector<HTMLButtonElement>('[aria-label="Edytuj kolumne"]')!.click();
-    await vi.waitFor(() => expect(table.querySelector('input[data-type="input"]')).not.toBeNull());
+    await waitForDomCondition(
+      table,
+      () => Boolean(table.querySelector('input[data-type="input"]')),
+      {
+        errorMessage: 'The editable column input did not finish loading.',
+      },
+    );
+    expect(table.querySelector('input[data-type="input"]')).not.toBeNull();
     const change = async (value: string) => {
       const input = table.querySelector<HTMLInputElement>('input[data-type="input"]')!;
       input.value = value;
@@ -116,16 +147,19 @@ describe('regressions: WC table contracts', () => {
       })),
     });
     document.body.append(table);
-    await flushPromises();
-    await flushPromises();
     for (const type of ['expandable', 'edit-action']) {
-      await vi.waitFor(() =>
-        expect(
-          [...table.querySelectorAll(`.peaui-table-list__${type}-value`)].map(
-            (cell) => cell.textContent,
-          ),
-        ).toEqual(['0', 'false', '-/-', '-/-', '-/-']),
+      await waitForDomCondition(
+        table,
+        () => table.querySelectorAll(`.peaui-table-list__${type}-value`).length === 5,
+        {
+          errorMessage: `The ${type} columns did not finish loading.`,
+        },
       );
+      expect(
+        [...table.querySelectorAll(`.peaui-table-list__${type}-value`)].map(
+          (cell) => cell.textContent,
+        ),
+      ).toEqual(['0', 'false', '-/-', '-/-', '-/-']);
     }
   });
   it('preserves nested zero/false and gives simultaneous tables distinct identifiers', async () => {

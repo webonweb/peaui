@@ -84,7 +84,9 @@
     "library:typecheck:tests": "npm -w packages/library run typecheck:tests",
     "test:production": "node scripts/check-production-contracts.cjs --verify && node scripts/check-production-contracts.cjs --verify --extra",
     "test:hydration": "node scripts/check-hydration.mjs",
-    "test:browser:contracts": "node scripts/browser-forms.cjs && node scripts/browser-interactions.cjs && node scripts/browser-display.cjs"
+    "test:browser:contracts": "node scripts/browser-forms.cjs && node scripts/browser-interactions.cjs && node scripts/browser-display.cjs",
+    "library:verify:browser:table": "node --experimental-strip-types scripts/browser-table-parity.cjs",
+    "library:verify:browser:visual": "node --experimental-strip-types scripts/browser-visual-parity.cjs"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

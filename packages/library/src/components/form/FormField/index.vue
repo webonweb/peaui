@@ -226,7 +226,14 @@ function getNormalizedAttributeValue(value: unknown): string | undefined {
 
 <template>
   <div :class="classNameComponent" :data-testid="dataTestId">
-    <FormFieldLabel v-if="label" :for="id" :required :text="label" :data-test-id="dataTestId">
+    <FormFieldLabel
+      v-if="label"
+      :for="id"
+      :required
+      :readonly
+      :text="label"
+      :data-test-id="dataTestId"
+    >
       <template v-if="slots.hint" #hint>
         <slot name="hint" />
       </template>

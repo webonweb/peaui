@@ -13,6 +13,7 @@ import {
 import { iconArrow, iconClose, iconTrial, iconTrialCurve } from '../generated-static-icons';
 import { type ReactElement, type ReactNode, type ForwardedRef, useState, useId } from 'react';
 import { Svg } from './svg.renderer';
+import { capitalizeFirstLetter } from '../../helpers/string.helper';
 
 export function Tree({
   props,
@@ -36,7 +37,7 @@ export function Tree({
             key={text(record, 'id', String(index))}
             canRemove={bool(props, 'canRemove')}
             disabled={bool(props, 'disabled') || bool(record, 'disabled')}
-            isLast={index === items.length - 1}
+            isLast={Array.isArray(tree) ? index === items.length - 1 : bool(props, 'isLast')}
             level={num(props, 'level', 1)}
             record={record}
             nodeKey={
@@ -79,7 +80,7 @@ export function TreeNode({
   const hasChildren = children.length > 0;
   const [open, setOpen] = useState(false);
   const contentId = `tree-content-${useId()}`;
-  const label = text(record, 'label') || text(record, 'name', 'Element');
+  const label = capitalizeFirstLetter(text(record, 'label') || text(record, 'name', 'Element'));
   const root = 'peaui-tree-list';
   return (
     <div
@@ -112,6 +113,18 @@ export function TreeNode({
           />
         ) : null}
         {hasChildren ? (
+          <Svg
+            data={iconArrow}
+            className={cx(
+              `${root}__toggle-icon`,
+              open ? `${root}__toggle-icon--open` : `${root}__toggle-icon--closed`,
+            )}
+            name="arrow"
+          />
+        ) : level === 2 ? (
+          <span aria-hidden="true" className={`${root}__connector-spacer`} />
+        ) : null}
+        {hasChildren ? (
           <button
             aria-expanded={open}
             aria-controls={contentId}
@@ -120,21 +133,15 @@ export function TreeNode({
             type="button"
             onClick={() => setOpen((current) => !current)}
           >
-            <Svg
-              data={iconArrow}
-              className={cx(
-                `${root}__toggle-icon`,
-                open ? `${root}__toggle-icon--open` : `${root}__toggle-icon--closed`,
-              )}
-              name="arrow"
-            />
-            <span className={cx(`${root}__label`, level === 1 && `${root}__label--emphasized`)}>
+            <span className={cx(`${root}__label`, level !== 3 && `${root}__label--emphasized`)}>
               {label}
             </span>
           </button>
         ) : (
           <div className={`${root}__leaf-content`}>
-            <span className={`${root}__label`}>{label}</span>
+            <span className={cx(`${root}__label`, level !== 3 && `${root}__label--emphasized`)}>
+              {label}
+            </span>
             <span className={`${root}__leaf-meta`}>{leafContent}</span>
           </div>
         )}
@@ -152,7 +159,9 @@ export function TreeNode({
       </div>
       {hasChildren && open ? (
         <div className={`${root}__content`}>
-          {level === 1 ? <span aria-hidden="true" className={`${root}__branch-line`} /> : null}
+          {level === 2 && !isLast ? (
+            <span aria-hidden="true" className={`${root}__branch-line`} />
+          ) : null}
           <ul className={`${root}__children`} id={contentId}>
             {children.map(([childKey, child], index) => {
               const childRecord =

@@ -16,6 +16,20 @@ const commands: readonly CommandPaletteCommand[] = [
 ];
 
 describe('CommandPalette React', () => {
+  it('reuses SearchInput, including its search icon and clear action', () => {
+    const { container } = render(
+      <CommandPalette commands={commands} defaultOpen mode="embedded" registerShortcut={false} />,
+    );
+    const search = screen.getByRole('combobox');
+    expect(search.closest('.peaui-search-input')).not.toBeNull();
+    expect(search.closest('[role="search"]')).not.toHaveAttribute('aria-expanded');
+    expect(search.closest('[role="search"]')).not.toHaveAttribute('aria-activedescendant');
+    expect(container.querySelector('.peaui-search-input__field-icon')).not.toBeNull();
+    fireEvent.change(search, { target: { value: 'Alpha' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Wyczyść' }));
+    expect(search).toHaveValue('');
+    expect(screen.getByText('Nested')).toBeInTheDocument();
+  });
   it('matches the Vue combobox/listbox contract and skips disabled commands', () => {
     render(
       <CommandPalette commands={commands} defaultOpen mode="embedded" registerShortcut={false} />,

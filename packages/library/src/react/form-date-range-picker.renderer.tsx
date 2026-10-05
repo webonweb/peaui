@@ -1,5 +1,8 @@
 /** @jsxImportSource react */
 import { useModel, useFormControlModel } from './renderers/runtime.shared';
+import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
+import { renderSvgMarkup } from './renderers/svg-markup.renderer';
+import { feedbackHintIcon, feedbackErrorIcon } from '../components/feedback/feedback-icons.shared';
 import {
   useEffect,
   useId,
@@ -472,13 +475,25 @@ export function FormDateRangePickerRenderer({
       {label ? (
         <label className="peaui-form-label" htmlFor={id} id={`label-${id}`}>
           <span className="peaui-form-label__content">
-            <span className="peaui-form-label__text">{label}</span>
-            {!required ? (
+            <span
+              className={cx(
+                'peaui-form-label__text',
+                readonly && 'peaui-form-label__text--readonly',
+              )}
+            >
+              {label}
+            </span>
+            {!required && !readonly ? (
               <span className="peaui-form-label__optional">(pole niewymagane)</span>
             ) : null}
           </span>
           {hasContent(props.hint) ? (
-            <span className="peaui-info-tooltip">{props.hint as ReactNode}</span>
+            <InfoTooltipRenderer description={props.hint} placement="right">
+              {renderSvgMarkup({
+                className: 'peaui-form-label__hint-icon',
+                data: feedbackHintIcon,
+              })}
+            </InfoTooltipRenderer>
           ) : null}
         </label>
       ) : null}
@@ -627,6 +642,7 @@ export function FormDateRangePickerRenderer({
           className="peaui-form-field__message peaui-message-text peaui-message-text--variant-error peaui-message-text--size-xs"
           id={errorId}
         >
+          {renderSvgMarkup({ className: 'peaui-message-text__icon', data: feedbackErrorIcon })}
           <p className="peaui-message-text__content">{invalidMessage(externalError, reason)}</p>
         </div>
       ) : null}
@@ -654,6 +670,7 @@ export function FormDateRangePickerRenderer({
         className={cx(
           root,
           'peaui-popover-overlayer',
+          'peaui-popover-overlayer--match-trigger-width',
           `${root}--variant-${variant}`,
           `${root}--calendars-${calendars}`,
           open && `${root}--open`,

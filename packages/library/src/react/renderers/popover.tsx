@@ -19,9 +19,11 @@ import {
   useId,
   useState,
   type CSSProperties,
+  type PointerEvent,
 } from 'react';
 import { useNativePopover, getNativePopoverValue } from '.././popover-overlayer.shared';
 import { collectFocusableElements } from '../../helpers/focus.helper';
+import { ButtonActionRenderer } from './button-action.renderer';
 
 export function Popover({
   props,
@@ -124,9 +126,6 @@ export function Popover({
   const button = kind === 'PopoverButton';
   const rootClasses = cx(
     root,
-    button && 'peaui-button-action',
-    button && `peaui-button-action--size-${text(props, 'size', 'm')}`,
-    button && `peaui-button-action--variant-${text(props, 'variant', 'primary')}`,
     !button && bool(props, 'matchTriggerWidth') && `${root}--match-trigger-width`,
     props.className,
   );
@@ -145,23 +144,27 @@ export function Popover({
   return (
     <>
       {button ? (
-        <button
+        <ButtonActionRenderer
           {...common(props)}
+          size={text(props, 'size', 'm')}
+          variant={text(props, 'variant', 'primary')}
           id={triggerId}
           aria-controls={popoverId}
           aria-expanded={open}
-          aria-haspopup={text(props, 'popupType', 'dialog') as 'dialog'}
+          aria-haspopup={text(props, 'popupType', 'dialog')}
           className={rootClasses}
           disabled={bool(props, 'disabled')}
-          ref={setTriggerRef}
+          forwardedRef={setTriggerRef}
           style={{ ...props.style, ...sharedStyles }}
           type="button"
           onClick={toggle}
           onKeyDown={handleKeyDown}
-          onPointerDown={(event) => callback(props, 'onPointerDown')?.(event)}
+          onPointerDown={(event: PointerEvent<HTMLElement>) =>
+            callback(props, 'onPointerDown')?.(event)
+          }
         >
           {props.children ?? 'Otwórz'}
-        </button>
+        </ButtonActionRenderer>
       ) : (
         <div
           {...common(props)}
@@ -192,7 +195,7 @@ export function Popover({
           `peaui-${button ? 'popover-button' : 'popover-overlayer'}__content--placement-${text(
             props,
             'placement',
-            'bottom',
+            'top',
           )}`,
           bool(props, 'matchTriggerWidth') && `${root}__content--match-trigger-width`,
           text(props, 'contentClass'),

@@ -276,6 +276,7 @@ export function ToggleGroupRenderer({
                 buttonRefs.current[index] = element;
               }}
               icon={item.icon}
+              label={item.label}
               key={`${typeof item.value}:${String(item.value)}:${index}`}
               loading={item.loading}
               pressedIcon={item.pressedIcon}

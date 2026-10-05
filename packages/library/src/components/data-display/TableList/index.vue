@@ -29,6 +29,7 @@ import SpinnerLoader from '@/components/feedback/SpinnerLoader/index.vue';
 import ModalDialog from '@/components/overlayer/ModalDialog/index.vue';
 import PaginationControl from '@/components/navigation/PaginationControl/index.vue';
 import { getTablePage } from './table-page.shared';
+import { buildTableLockedColumnsMap } from './table-locking.shared';
 import TableBodyActionsColumn from './Elements/TableBodyActionsColumn.vue';
 import TableBodyAddtionalRow from './Elements/TableBodyAddtionalRow.vue';
 import TableBodyCheckColumn from './Elements/TableBodyCheckColumn.vue';
@@ -48,7 +49,6 @@ import {
 } from './editable-validation.shared';
 import {
   TABLE_LIST_ACTIONS_STICKY_WIDTH,
-  TABLE_LIST_DEFAULT_COLUMN_WIDTH,
   TABLE_LIST_EDITABLE_ACTIONS_STICKY_WIDTH,
   TABLE_LIST_MAX_MULTI_SORTS,
   TABLE_LIST_MIN_VISIBLE_COLUMNS,
@@ -278,7 +278,10 @@ const emptyStateButtonTestId = computed(() => buildTableTestId(dataTestId, 'empt
 const dialogTestId = computed(() => buildTableTestId(dataTestId, 'delete-dialog'));
 const inlineEmptyTestId = computed(() => buildTableTestId(dataTestId, 'empty-inline'));
 const loaderTestId = computed(() => buildTableTestId(dataTestId, 'loader'));
-const shouldRenderEmptyState = computed(() => !isLoading && !records.length && emptyDescription);
+const shouldRenderEmptyState = computed(
+  () =>
+    !isLoading && !records.length && emptyDescription && currentEditableAction.value !== 'create',
+);
 
 const selectedRowKeys = computed(() => new Set(selectedRows.map(String)));
 const isAllRecordsOnPageChecked = computed<boolean>({
@@ -468,10 +471,6 @@ function getRowTestId(record: Record<string, unknown>, index: number): string | 
   return buildTableTestId(dataTestId, 'row', getTableRecordKey(record, index));
 }
 
-function getColumnWidth(column: TableColumn): number {
-  return column.width ?? TABLE_LIST_DEFAULT_COLUMN_WIDTH;
-}
-
 function getVisibleColumns(): TableColumn[] {
   return parsedColumns.value.filter((column) =>
     column.visible === undefined ? true : column.visible,
@@ -479,147 +478,13 @@ function getVisibleColumns(): TableColumn[] {
 }
 
 function buildLockedColumnsMap(baseRightOffset = 0): Record<string, TableLockedColumnMeta> {
-  const nextLockedColumns: Record<string, TableLockedColumnMeta> = {};
-  const visibleColumns = getVisibleColumns();
-  const viewportLeft = horizontalScrollLeft.value;
-  const viewportRight = horizontalScrollLeft.value + horizontalViewportWidth.value;
-  const lockedColumnsPositions = visibleColumns.map((column, index) => {
-    const width = getColumnWidth(column);
-    const start = visibleColumns
-      .slice(0, index)
-      .reduce((sum, currentColumn) => sum + getColumnWidth(currentColumn), 0);
-
-    return {
-      column,
-      end: start + width,
-      start,
-      width,
-    };
-  });
-  const activeLockedColumns = lockedColumnsPositions.filter(
-    ({ column }) => column.withLock && lockedColumns.value[column.key],
+  return buildTableLockedColumnsMap(
+    getVisibleColumns(),
+    lockedColumns.value,
+    horizontalScrollLeft.value,
+    horizontalViewportWidth.value,
+    baseRightOffset,
   );
-  let leftOffset = 0;
-  let rightOffset = baseRightOffset;
-
-  function assignLeft(columnKey: string, width: number): void {
-    nextLockedColumns[columnKey] = {
-      offset: leftOffset,
-      side: 'left',
-    };
-    leftOffset += width;
-  }
-
-  function assignRight(columnKey: string, width: number): void {
-    nextLockedColumns[columnKey] = {
-      offset: rightOffset,
-      side: 'right',
-    };
-    rightOffset += width;
-  }
-
-  function getPreferredSide({ end, start }: { end: number; start: number }): 'left' | 'right' {
-    const leftBoundary = viewportLeft + leftOffset;
-    const rightBoundary = viewportRight - rightOffset;
-
-    if (start < leftBoundary) {
-      return 'left';
-    }
-
-    if (end > rightBoundary) {
-      return 'right';
-    }
-
-    const distanceToLeft = Math.abs(start - leftBoundary);
-    const distanceToRight = Math.abs(rightBoundary - end);
-
-    return distanceToLeft <= distanceToRight ? 'left' : 'right';
-  }
-
-  let leftIndex = 0;
-  let rightIndex = activeLockedColumns.length - 1;
-
-  while (leftIndex <= rightIndex) {
-    const leftCandidate = activeLockedColumns[leftIndex];
-    const rightCandidate = activeLockedColumns[rightIndex];
-
-    if (leftCandidate === undefined || rightCandidate === undefined) {
-      break;
-    }
-
-    const leftForced = leftCandidate.start < viewportLeft + leftOffset;
-    const rightForced = rightCandidate.end > viewportRight - rightOffset;
-    const preferLeft = getPreferredSide(leftCandidate) === 'left';
-    const preferRight = getPreferredSide(rightCandidate) === 'right';
-
-    if (leftIndex === rightIndex) {
-      if (leftForced) {
-        assignLeft(leftCandidate.column.key, leftCandidate.width);
-      } else if (rightForced) {
-        assignRight(rightCandidate.column.key, rightCandidate.width);
-      } else if (preferLeft) {
-        assignLeft(leftCandidate.column.key, leftCandidate.width);
-      } else {
-        assignRight(rightCandidate.column.key, rightCandidate.width);
-      }
-
-      break;
-    }
-
-    if (leftForced && rightForced) {
-      assignLeft(leftCandidate.column.key, leftCandidate.width);
-      assignRight(rightCandidate.column.key, rightCandidate.width);
-      leftIndex += 1;
-      rightIndex -= 1;
-      continue;
-    }
-
-    if (leftForced) {
-      assignLeft(leftCandidate.column.key, leftCandidate.width);
-      leftIndex += 1;
-      continue;
-    }
-
-    if (rightForced) {
-      assignRight(rightCandidate.column.key, rightCandidate.width);
-      rightIndex -= 1;
-      continue;
-    }
-
-    if (preferLeft && preferRight) {
-      assignLeft(leftCandidate.column.key, leftCandidate.width);
-      assignRight(rightCandidate.column.key, rightCandidate.width);
-      leftIndex += 1;
-      rightIndex -= 1;
-      continue;
-    }
-
-    if (preferLeft) {
-      assignLeft(leftCandidate.column.key, leftCandidate.width);
-      leftIndex += 1;
-      continue;
-    }
-
-    if (preferRight) {
-      assignRight(rightCandidate.column.key, rightCandidate.width);
-      rightIndex -= 1;
-      continue;
-    }
-
-    const leftOccupiedWidth = leftOffset;
-    const rightOccupiedWidth = rightOffset - baseRightOffset;
-
-    if (leftOccupiedWidth <= rightOccupiedWidth) {
-      assignLeft(leftCandidate.column.key, leftCandidate.width);
-      leftIndex += 1;
-      continue;
-    }
-
-    assignRight(rightCandidate.column.key, rightCandidate.width);
-    rightIndex -= 1;
-  }
-
-  return nextLockedColumns;
 }
 
 function getRowClasses(
@@ -795,6 +660,11 @@ function handleCreateEditableRecord(): void {
   if (additional) {
     Object.keys(additional).forEach((key) => setFieldValue(key, additional[key]));
   }
+}
+
+function handleEmptyCreateRecord(): void {
+  if (editable) handleCreateEditableRecord();
+  emit('on:createRecord');
 }
 
 function handleToggleSelectAllRows(): void {
@@ -1139,6 +1009,16 @@ watch(
             @on:lock="handleToggleLockColumn"
             @on:sort="handleSort"
           >
+            <template v-if="canHideColumns && !shouldRenderActionsColumn" #actions>
+              <TableHeadActionsColumn
+                as="div"
+                :can-hide-columns="canHideColumns"
+                :columns="parsedColumns"
+                :dataTestId="buildTableTestId(dataTestId, 'actions-head')"
+                :locked-state="lockedColumns"
+                @on:toggle:column="handleToggleColumnVisibility"
+              />
+            </template>
             <template #hint="{ column }">
               <slot v-if="column" :name="[`hint.${column.key}`]">
                 {{ column.hintColumn || column.label }}
@@ -1342,7 +1222,7 @@ watch(
         ariaLabel="Dodaj nowy rekord"
         size="xs"
         variant="secondary"
-        @click="emit('on:createRecord')"
+        @click="handleEmptyCreateRecord"
       >
         Dodaj nowy rekord
       </ButtonAction>

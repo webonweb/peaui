@@ -27,3 +27,23 @@ export const KeyboardInteraction: Story = {
     },
   },
 };
+
+export const LabelContent: Story = {
+  args: {
+    ariaLabel: 'Sections with extra label content',
+    tabs: [
+      { key: 'inbox', label: 'Inbox', active: true },
+      { key: 'archive', label: 'Archive' },
+    ],
+    renderTabBefore: (tab) => (tab.key === 'inbox' ? <span aria-hidden="true">★</span> : null),
+    renderTabAfter: (tab) => (tab.key === 'inbox' ? <span aria-hidden="true">3</span> : null),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'renderTabBefore and renderTabAfter receive the original tab and its index. They correspond to the Vue/WC navigation-tabs-{key}-before/after slots; the visible tab label remains its accessible name.',
+      },
+    },
+  },
+};

@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-base-to-string, no-nested-ternary */
 import { type RuntimeProps, text, useFormControlModel, bool, cx, common } from './runtime.shared';
-import { type ForwardedRef, type ReactElement, useId, useRef } from 'react';
+import { type ForwardedRef, type ReactElement, useEffect, useId, useRef } from 'react';
 
 export function ChoiceControlsRenderer({
   forwardedRef,
@@ -35,6 +35,10 @@ export function ChoiceControlsRenderer({
     'aria-required': bool(props, 'required') || undefined,
   };
   const radio = kind === 'FormRadio';
+  const indeterminate = bool(props, 'indeterminate');
+  useEffect(() => {
+    if (inputRef.current && !radio) inputRef.current.indeterminate = indeterminate;
+  }, [indeterminate, radio]);
   const optionValue = props.optionValue;
   const checked = radio ? Object.is(value, optionValue) : value === true;
   const handleEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {

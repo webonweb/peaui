@@ -1402,7 +1402,7 @@ export type ReactComponentPropsMap = {
       | 'l'
       | 'xl'
       | 'heading-xs'
-      | ' heading-s'
+      | 'heading-s'
       | 'heading-m'
       | 'heading-l';
     /** Wariant wizualny komponentu. */
@@ -3491,8 +3491,10 @@ export type ReactComponentPropsMap = {
     withBackround?: boolean;
     /** Emitowane po wybraniu elementu. */
     onSelect?: (...args: unknown[]) => void;
-    /** Treść osadzana w nazwanym slocie „getSlotName(tab.key, ”. */
-    'getSlotNameTabKey--'?: ReactNode;
+    /** Renderuje zawartość przed etykietą zakładki; odpowiednik dynamicznego slotu Vue navigation-tabs-{key}-before. */
+    renderTabBefore?: (tab: PeauiOption, index: number) => ReactNode;
+    /** Renderuje zawartość za etykietą zakładki; odpowiednik dynamicznego slotu Vue navigation-tabs-{key}-after. */
+    renderTabAfter?: (tab: PeauiOption, index: number) => ReactNode;
   };
   PaginationControl: PeauiReactBaseProps & {
     /** Dostępna nazwa elementu przekazywana przez aria-label. */

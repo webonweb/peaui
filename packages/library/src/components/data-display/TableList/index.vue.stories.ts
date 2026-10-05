@@ -5,7 +5,12 @@ import { ref, watch } from 'vue';
 
 import TableListComponent from './index.vue';
 import ButtonAction from '../../data-entry/ButtonAction/index.vue';
-import { tableListReorderColumns, tableListReorderRecords } from './story-fixtures';
+import {
+  tableListReorderColumns,
+  tableListReorderRecords,
+  tableListStoryColumns,
+  tableListStoryRecords,
+} from './story-fixtures';
 import type { TableColumn, TableStepperStep } from './table.types';
 
 const { getSettings } = useSettingsStorie();
@@ -1211,9 +1216,9 @@ export const Default: Story = {
   render: createRender(),
   args: {
     ariaLabel: 'Tabela rekordow',
-    columns: defaultColumns,
+    columns: tableListStoryColumns,
     dataTestId: 'table-list-default',
-    records: demoRecords,
+    records: tableListStoryRecords,
     scroll: true,
   },
 };

@@ -443,6 +443,8 @@ npm run test:browser:contracts
 npm run storybook:check:catalog
 ```
 
+After `library:build`, run `npm run library:verify:browser:visual` to compare all 87 components across Vue, React and Web Components. It checks desktop, dark mode, mobile, declared sizes and variants, supported states and open overlays. `npm run library:verify:browser:table` adds table editing, selection, sorting, locking and expanded-content scenarios. Both accept `PEAUI_BROWSER`; failures save screenshots under `test-results/`. CI runs the full visual catalog in Chromium and table comparisons in all three browser engines.
+
 `npm run check` covers source and test types, lint, formatting, unit tests and application/package builds. Storybook builds and browser suites have separate commands. For import contracts, migrations and development details, see [Installation and component contracts](https://github.com/webonweb/peaui/blob/main/docs/IMPORTY_I_KONTRAKTY.md) (Polish).
 
 Framework browser suites start a development Storybook by default. CI builds the Storybooks first and sets `STORYBOOK_TEST_STATIC=1` to test those files without Vite compilation during a test. To reproduce this locally after `npm run storybook:build`, run `npx cross-env STORYBOOK_TEST_STATIC=1 PEAUI_BROWSER=firefox npm run test:react:browser` (the same applies to Vue and Web Components). Rebuild after source changes. `STORYBOOK_PORT` overrides the local server port; `STORYBOOK_URL` uses an already running server.
@@ -886,6 +888,8 @@ npm run test:browser:contracts
 # Po storybook:build: kontrola katalogu komponentów
 npm run storybook:check:catalog
 ```
+
+Po `library:build` uruchom `npm run library:verify:browser:visual`, aby porównać wszystkie 87 komponentów w Vue, React i Web Components. Test obejmuje desktop, ciemny motyw, telefon, deklarowane rozmiary i warianty, obsługiwane stany oraz otwarte nakładki. `npm run library:verify:browser:table` dodaje scenariusze edycji, zaznaczania, sortowania, blokowania kolumn i rozwijania szczegółów. Oba polecenia obsługują `PEAUI_BROWSER`; przy błędach zapisują zrzuty w `test-results/`. CI sprawdza pełny katalog wizualny w Chromium, a tabele we wszystkich trzech silnikach przeglądarek.
 
 `npm run check` obejmuje typy źródeł i testów, lint, format, testy jednostkowe oraz buildy aplikacji i paczki. Buildy Storybooka i testy przeglądarkowe mają osobne polecenia. Szczegóły importów, migracji i pracy z repozytorium opisuje [Instalacja i kontrakty komponentów](https://github.com/webonweb/peaui/blob/main/docs/IMPORTY_I_KONTRAKTY.md).
 

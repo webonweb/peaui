@@ -1,5 +1,8 @@
 /** @jsxImportSource react */
 import { useFormReset } from './renderers/runtime.shared';
+import { InfoTooltipRenderer } from './renderers/info-tooltip.renderer';
+import { renderSvgMarkup } from './renderers/svg-markup.renderer';
+import { feedbackHintIcon } from '../components/feedback/feedback-icons.shared';
 import {
   useEffect,
   useId,
@@ -609,24 +612,22 @@ export function FormTagsInputRenderer({
             </span>
           </span>
           {hasContent(hint) || typeof props.renderHint === 'function' ? (
-            <>
-              <span className="peaui-info-tooltip" tabIndex={0}>
-                <TagsInputIcon className="peaui-form-label__hint-icon" name="info" />
-              </span>
-              <span
-                className="peaui-info-tooltip__content peaui-info-tooltip__content--placement-right"
-                role="tooltip"
-              >
-                <span className="peaui-info-tooltip__description">
-                  {typeof props.renderHint === 'function'
-                    ? (props.renderHint as (state: { count: number; max?: number }) => ReactNode)({
-                        count: tags.length,
-                        max,
-                      })
-                    : hint}
-                </span>
-              </span>
-            </>
+            <InfoTooltipRenderer
+              description={
+                typeof props.renderHint === 'function'
+                  ? (props.renderHint as (state: { count: number; max?: number }) => ReactNode)({
+                      count: tags.length,
+                      max,
+                    })
+                  : hint
+              }
+              placement="right"
+            >
+              {renderSvgMarkup({
+                className: 'peaui-form-label__hint-icon',
+                data: feedbackHintIcon,
+              })}
+            </InfoTooltipRenderer>
           ) : null}
         </label>
       ) : null}

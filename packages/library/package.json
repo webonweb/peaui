@@ -1,7 +1,7 @@
 {
   "name": "@peaui/ui",
   "type": "module",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "UI components with shared design tokens and accessible interactions for Vue, React, and Web Components.",
   "license": "MIT",
   "keywords": [

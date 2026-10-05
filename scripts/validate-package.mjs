@@ -296,6 +296,9 @@ validateCommonJsNodeLoad("index.umd.cjs", "GĹ‚Ăłwny moduĹ‚ CommonJS");
 validateGzipBudget("styles.css", 45 * 1024);
 
 // Measure the actual consumer bundle; static module closures count exports the bundler removes.
+// React budgets include canonical feedback glyphs and real tooltip/form composition.
+// TableList also composes editing/select/selection/tag controls; TransferList composes
+// SearchInput, checkbox, error/empty/loading states and actions instead of incomplete copies.
 for (const { entry, framework, component } of componentEntries) {
   const budget = componentBudgets[`${framework}/${component}`];
   if (!budget) {
@@ -327,17 +330,24 @@ for (const { entry, framework, component } of componentEntries) {
       resolve(metadata.entryPoint) === join(distRoot, entry),
   );
   const reached = new Set();
-  const visit = (file) => {
+  const visit = (file, closure = reached, includeDynamic = false) => {
     const absolute = resolve(file);
-    if (reached.has(absolute)) return;
-    reached.add(absolute);
+    if (closure.has(absolute)) return;
+    closure.add(absolute);
     for (const dependency of output.get(absolute)?.imports ?? []) {
-      if (!dependency.external && dependency.kind !== "dynamic-import")
-        visit(dependency.path);
+      if (
+        !dependency.external &&
+        (includeDynamic || dependency.kind !== "dynamic-import")
+      )
+        visit(dependency.path, closure, includeDynamic);
     }
   };
   if (!initial) throw new Error(`Missing consumer entry: ${entry}`);
   visit(initial[0]);
+  // Splitting can emit orphan chunks for dynamic imports removed by tree shaking.
+  // Inspect only code a consumer can reach, including its actual lazy imports.
+  const runtimeReached = new Set();
+  visit(initial[0], runtimeReached, true);
   const gzipBytes = result.outputFiles
     .filter((file) => reached.has(file.path) && file.path.endsWith(".js"))
     .reduce((sum, file) => sum + gzipSync(file.contents).byteLength, 0);
@@ -345,15 +355,29 @@ for (const { entry, framework, component } of componentEntries) {
   if (framework === "react" && component === "data-display/TableList") {
     const tableCSS = result.outputFiles
       .filter((file) => entryCSS && file.path === resolve(entryCSS))
-      .map((file) => file.text).join("\n");
-    for (const selector of [".peaui-form-label", ".peaui-form-select", ".peaui-tag-chip"]) {
-      if (!tableCSS.includes(selector)) errors.push(`Missing composed component CSS in isolated TableList import: ${selector}`);
+      .map((file) => file.text)
+      .join("\n");
+    for (const selector of [
+      ".peaui-form-label",
+      ".peaui-form-select",
+      ".peaui-tag-chip",
+    ]) {
+      if (!tableCSS.includes(selector))
+        errors.push(
+          `Missing composed component CSS in isolated TableList import: ${selector}`,
+        );
     }
   }
   const cssBytes = result.outputFiles
     .filter((file) => entryCSS && file.path === resolve(entryCSS))
     .reduce((sum, file) => sum + gzipSync(file.contents).byteLength, 0);
-  bundleMeasurements.push({ component, framework, js: gzipBytes, css: cssBytes, budget });
+  bundleMeasurements.push({
+    component,
+    framework,
+    js: gzipBytes,
+    css: cssBytes,
+    budget,
+  });
   if (gzipBytes > budget.js)
     errors.push(
       `Consumer JS budget exceeded: ${entry}: ${gzipBytes} B gzip > ${budget.js} B`,
@@ -387,14 +411,29 @@ for (const { entry, framework, component } of componentEntries) {
     );
   if (
     framework === "react" &&
-    ["overlayer/InfoTooltip", "form/FormColorPicker", "form/FormTimePicker", "form/FormDateTimePicker"].includes(component) &&
-    [...output.values()].some((metadata) =>
-      Object.entries(metadata.inputs).some(
-        ([input, contribution]) => input.includes("/icons/runtime/") && contribution.bytesInOutput > 0,
+    [
+      "overlayer/InfoTooltip",
+      "navigation/NavigationCard",
+      "navigation/NavigationStepper",
+      "form/FormFieldLabel",
+      "form/FormColorPicker",
+      "form/FormTimePicker",
+      "form/FormDateTimePicker",
+      "data-display/DescriptionField",
+      "data-display/SectionHeading",
+      "data-display/CalculationResults",
+      "data-entry/SelectableCard",
+    ].includes(component) &&
+    [...runtimeReached].some((file) =>
+      Object.entries(output.get(file)?.inputs ?? {}).some(
+        ([input, contribution]) =>
+          input.includes("/icons/runtime/") && contribution.bytesInOutput > 0,
       ),
     )
   )
-    errors.push(`Bundled control icons unexpectedly include the dynamic icon catalog: ${entry}`);
+    errors.push(
+      `Bundled control icons unexpectedly include the dynamic icon catalog: ${entry}`,
+    );
   if (
     framework === "react" &&
     [
@@ -418,7 +457,18 @@ for (const { entry, framework, component } of componentEntries) {
 
 const distStats = getDirectoryStats(distRoot);
 if (process.env.PEAUI_BUNDLE_REPORT) {
-  writeFileSync(process.env.PEAUI_BUNDLE_REPORT, JSON.stringify({ date: new Date().toISOString(), components: bundleMeasurements, dist: distStats }, null, 2) + "\n");
+  writeFileSync(
+    process.env.PEAUI_BUNDLE_REPORT,
+    JSON.stringify(
+      {
+        date: new Date().toISOString(),
+        components: bundleMeasurements,
+        dist: distStats,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
 }
 
 if (distStats.bytes > 16 * 1024 * 1024) {

@@ -149,3 +149,18 @@ export const KeyboardInteraction: Story = {
     },
   },
 };
+
+export const LabelContent: Story = {
+  args: {
+    ariaLabel: 'Sections with extra label content',
+    tabs: [
+      { key: 'inbox', label: 'Inbox', active: true },
+      { key: 'archive', label: 'Archive' },
+    ],
+  },
+  render: (args) => ({
+    components: { NavigationTabsComponent },
+    setup: () => ({ args }),
+    template: `<NavigationTabsComponent v-bind="args"><template #navigation-tabs-inbox-before><span aria-hidden="true">★</span></template><template #navigation-tabs-inbox-after><span aria-hidden="true">3</span></template></NavigationTabsComponent>`,
+  }),
+};

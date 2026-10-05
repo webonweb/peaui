@@ -16,6 +16,22 @@ const items = [
 afterEach(cleanup);
 
 describe('ToggleGroup React', () => {
+  it('shows each item label and its pressed label as visible text', () => {
+    render(
+      <ToggleGroup
+        items={[
+          { value: 'grid', label: 'Grid', pressedLabel: 'Grid selected' },
+          { value: 'list', label: 'List' },
+        ]}
+        defaultValue="grid"
+      />,
+    );
+    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual([
+      'Grid selected',
+      'List',
+    ]);
+  });
+
   it('przekazuje rozmiar i nie rezerwuje pustego miejsca na ikonę przy samym tekście', () => {
     render(<ToggleGroup items={items} orientation="vertical" size="s" />);
     const group = screen.getByRole('toolbar');

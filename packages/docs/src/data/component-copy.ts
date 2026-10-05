@@ -266,6 +266,9 @@ export const componentCopy: Record<string, ComponentCopy> = {
       'Prezentuje rekordy według deklaratywnych kolumn.',
       'Zwykłe komórki tekstowe mają zwarty DOM; mutacje rekordów i formatterów pozostają widoczne po przekazaniu nowej tablicy records.',
       'Obsługuje stany puste i ładowania oraz akcje na rekordach.',
+      'Akcje rekordu otwierają wspólne menu; pojedyncza akcja z simple=true jest przyciskiem ikony. withLock udostępnia przycisk blokowania kolumny. Szczegóły rozwijanego wiersza przekazuj przez details-record w Vue/WC lub detailsRecord w React.',
+      'Pusta lista domyślnie pokazuje EmptyState. Jego przycisk dodawania otwiera edytor przy editable=true i emituje zdarzenie tworzenia rekordu. Aby zachować tabelę z komunikatem w wierszu, ustaw emptyDescription=false i emptyDescriptionInline. Podczas ładowania SpinnerLoader zasłania nieaktywną tabelę.',
+      'canHideColumns udostępnia menu widoczności również bez akcji rekordu, w ostatnim nagłówku danych. canCopy obsługuje także wartości 0 i false; pomija wyłącznie null, undefined i pusty tekst.',
       'Zapewnia obsługę klawiatury oraz spójne zdarzenia wyboru, edycji i dwukrotnego kliknięcia.',
       'Renderuje etykiety kolumn i kroków jako tekst, bez wykonywania HTML z danych.',
       'Kolumny type="editable" zatwierdzają zmianę po walidacji i zapisie; manage.onUpdate otrzymuje zmieniony rekord. Podpowiedzi kolumn są dostępne z klawiatury.',
@@ -282,9 +285,10 @@ export const componentCopy: Record<string, ComponentCopy> = {
     'Pasek narzędzi tabeli z wyszukiwaniem, filtrowaniem, eksportem i tworzeniem rekordów.',
     [
       'Grupuje najważniejsze akcje nad tabelą.',
-      'Pokazuje liczniki filtrów i zaznaczonych rekordów.',
+      'Pokazuje licznik przy filtrach i liczbę zaznaczonych rekordów na przycisku eksportu. totalRecords steruje dostępnością eksportu.',
+      'Układa wyszukiwanie i filtry razem, a tworzenie i eksport w grupie akcji. Dodatkowa zawartość oraz opis znajdują się pod przyciskami.',
     ],
-    'Flagi dostępnych akcji, liczniki oraz opcjonalny stan panelu filtrów przez model filtersOpen.',
+    'Flagi dostępnych akcji, liczniki oraz opcjonalny stan panelu filtrów przez model filtersOpen. Używaj slotów additional-content i additional-description w Vue/WC oraz propsów additionalContent i additionalDescription w React.',
   ),
   TagChip: copy(
     'Krótka etykieta statusu lub kategorii renderowana jako tekst albo przycisk.',
@@ -426,6 +430,8 @@ export const componentCopy: Record<string, ComponentCopy> = {
     [
       'Łączy etykietę, kontrolkę, podpowiedź i walidację.',
       'Zapewnia spójne stany disabled, readonly i required.',
+      'Vue udostępnia bindings jako props w slocie domyślnym; przekaż je kontrolce przez v-bind. Web Components synchronizuje te same bindings z kontrolką w slocie.',
+      'React przekazuje pojedynczemu elementowi children klasy, style, wartość, stany natywne i atrybuty ARIA. Jawne props kontrolki mają pierwszeństwo; className i style są łączone, a handlery i defaultValue pozostają zachowane. Własne id kontrolki staje się celem etykiety i podstawą identyfikatorów komunikatów.',
       'Dla canErase rezerwuje osobny pas akcji z celem 32 × 32 px, dzięki czemu przycisk czyszczenia nie nachodzi na tekst, ikony ani pozostałe kontrolki pola.',
     ],
     'Id i name, kontrolka przekazana w slocie oraz opcjonalne teksty, ikony i komunikaty.',
@@ -680,7 +686,7 @@ export const componentCopy: Record<string, ComponentCopy> = {
   NavigationTabs: copy(
     'Pasek zakładek do przełączania pomiędzy powiązanymi widokami.',
     ['Organizuje treść w równoległe sekcje.', 'Emituje wybór aktywnej zakładki.'],
-    'Tablica tabs i dostępna etykieta całej nawigacji. Strzałki lewo/prawo oraz Home/End omijają wyłączone pozycje; Enter lub Spacja wybiera pozycję. Zdarzenie wyboru przekazuje oryginalny obiekt zakładki z key w Vue, React i Web Components.',
+    'Tablica tabs i dostępna etykieta całej nawigacji. Strzałki lewo/prawo oraz Home/End omijają wyłączone pozycje; Enter lub Spacja wybiera pozycję. Zdarzenie wyboru przekazuje oryginalny obiekt zakładki z key w Vue, React i Web Components. Treść przed i za etykietą przekazuje się w Vue/WC przez sloty navigation-tabs-{key}-before/after, a w React przez renderTabBefore(tab, index) i renderTabAfter(tab, index).',
   ),
   PaginationControl: copy(
     'Nawigacja stronicowania z wyborem poprzedniej, następnej i konkretnej strony.',

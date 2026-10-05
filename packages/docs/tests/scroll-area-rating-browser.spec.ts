@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { waitForFiniteAnimations } from '../../storybook/helpers/animations.mts';
+
 const frameworks = ['vue', 'react', 'web-components'] as const;
 
 for (const framework of frameworks) {
@@ -35,6 +37,7 @@ for (const framework of frameworks) {
     await expect.poll(() => viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
 
     expect(errors).toEqual([]);
+    await waitForFiniteAnimations(page.locator('body'));
     expect(
       (await new AxeBuilder({ page }).include('.peaui-scroll-area').analyze()).violations,
     ).toEqual([]);
@@ -86,6 +89,7 @@ for (const framework of frameworks) {
     expect(after.labelX).toBeCloseTo(before.labelX, 1);
     expect(after.labelY).toBeCloseTo(before.labelY, 1);
     expect(errors).toEqual([]);
+    await waitForFiniteAnimations(page.locator('body'));
     expect(
       (await new AxeBuilder({ page }).include('.peaui-form-rating-input').analyze()).violations,
     ).toEqual([]);

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -106,6 +107,7 @@ test("SplitButton React rozdziela akcje, zachowuje ARIA i pełną obsługę klaw
   await trigger.click();
   await expect(menu).toBeVisible();
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-split-button")
     .analyze();

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -22,6 +23,7 @@ test("TransferList WC przenosi element i nie ma naruszeń axe", async ({
   await expect(page.getByRole("listbox", { name: "Przypisane" })).toContainText(
     "Rozliczenia",
   );
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include("peaui-transfer-list").analyze())
       .violations,

@@ -61,6 +61,7 @@ test("FormTimePicker Vue zachowuje ARIA, listboxy i pełną obsługę klawiatury
   expect(metrics.bottom).toBeLessThanOrEqual(900);
   expect(metrics.minTarget).toBeGreaterThanOrEqual(44);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-time-picker")
     .include(".peaui-form-time-picker__popover-content")

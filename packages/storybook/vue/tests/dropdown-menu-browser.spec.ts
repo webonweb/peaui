@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 
 import { gotoStory, waitForStoryRender } from "./helpers/a11y";
 
@@ -13,11 +14,7 @@ async function expectPlacement(
 
   await trigger.click();
   await expect(menu).toBeVisible();
-  await menu.evaluate(async (element) => {
-    await Promise.all(
-      element.getAnimations().map((animation) => animation.finished)
-    );
-  });
+  await waitForFiniteAnimations(menu);
 
   const geometry = await Promise.all([
     trigger.evaluate((element) => element.getBoundingClientRect().toJSON()),

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -39,6 +40,7 @@ test("SegmentedControl React realizuje automatic activation, roving focus i popr
     await group.locator('[role="radio"][aria-checked="true"]').count(),
   ).toBe(1);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-segmented-control")
     .analyze();
@@ -140,5 +142,6 @@ test("SegmentedControl exposes all disabled labels without keyboard scrolling", 
   const metrics = await group.evaluate(element => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.width + 1);
   await expect(group.locator('button:not(:disabled), [tabindex="0"]')).toHaveCount(0);
+  await waitForFiniteAnimations(page.locator("body"));
   expect((await new AxeBuilder({ page }).include('.peaui-segmented-control').analyze()).violations).toEqual([]);
 });

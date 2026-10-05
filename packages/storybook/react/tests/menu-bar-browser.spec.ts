@@ -37,6 +37,7 @@ test("MenuBar React implements the APG keyboard flow and ARIA", async ({
   await page.keyboard.press("p");
   await expect(triggers.nth(4)).toBeFocused();
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-menu-bar")
     .analyze();

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -96,6 +97,7 @@ test("FormColorPicker Vue zachowuje ARIA, klawiaturę, pointer i cele dotykowe",
   await expect(input).toBeFocused();
   await input.click();
 
+  await waitForFiniteAnimations(dialog);
   const metrics = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const targets = [
@@ -117,6 +119,7 @@ test("FormColorPicker Vue zachowuje ARIA, klawiaturę, pointer i cele dotykowe",
   expect(metrics.bottom).toBeLessThanOrEqual(900);
   expect(metrics.minTarget).toBeGreaterThanOrEqual(44);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-color-picker")
     .include(".peaui-form-color-picker__popover-content")
@@ -131,6 +134,7 @@ test("FormColorPicker Vue mieści panel inline i długą etykietę na 320 px", a
   await gotoColorPickerStory(page, "mobile-and-long-label");
   const group = page.getByRole("group", { name: "Wybierz kolor" });
   await expect(group).toBeVisible();
+  await waitForFiniteAnimations(group);
   const bounds = await group.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     return { left: rect.left, right: rect.right, width: rect.width };

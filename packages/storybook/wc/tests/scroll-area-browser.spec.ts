@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -30,6 +31,7 @@ test("ScrollArea WC pokazuje treść i przewija pionowy viewport", async ({
   await expect
     .poll(() => viewport.evaluate((element) => element.scrollTop))
     .toBeGreaterThan(0);
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include("peaui-scroll-area").analyze())
       .violations,

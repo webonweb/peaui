@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { waitForFiniteAnimations } from '../../storybook/helpers/animations.mts';
+
 const frameworks = ['vue', 'react', 'web-components'] as const;
 
 for (const framework of frameworks) {
@@ -44,6 +46,7 @@ for (const framework of frameworks) {
     await expect(target.locator('[role="option"]')).toHaveCount(3);
     await expect(target.locator('[role="option"][data-key="billing"]')).toBeVisible();
     expect(errors).toEqual([]);
+    await waitForFiniteAnimations(page.locator('body'));
     expect(
       (await new AxeBuilder({ page }).include('.peaui-transfer-list').analyze()).violations,
     ).toEqual([]);

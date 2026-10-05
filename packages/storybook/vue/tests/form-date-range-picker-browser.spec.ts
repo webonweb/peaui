@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -50,6 +51,12 @@ test("FormDateRangePicker Vue zachowuje ARIA, klawiaturę i cele dotykowe", asyn
   await expect(input).toBeFocused();
 
   await input.click();
+  await expect(dialog).toBeVisible();
+  // Exercise a slow entry fade when the dialog is reopened.
+  await dialog.evaluate((element) => {
+    element.animate([{ opacity: 0.25 }, { opacity: 1 }], { duration: 3000 });
+  });
+  await waitForFiniteAnimations(dialog);
   const metrics = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const calendarTargets = [
@@ -85,6 +92,7 @@ test("FormDateRangePicker Vue zachowuje ARIA, klawiaturę i cele dotykowe", asyn
   expect(metrics.minPresetTarget).toBeGreaterThanOrEqual(24);
   expect(metrics.minPresetTarget).toBeLessThan(44);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-date-range-picker")
     .include(".peaui-form-date-range-picker__popover-content")
@@ -100,6 +108,7 @@ test("FormDateRangePicker Vue nie ściska kalendarzy ani nie przewija strony na 
   await page.getByRole("combobox", { name: "Data początkowa" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
+  await waitForFiniteAnimations(dialog);
   const metrics = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const days = [

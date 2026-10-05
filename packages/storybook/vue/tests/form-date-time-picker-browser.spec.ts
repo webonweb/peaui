@@ -55,6 +55,7 @@ test("FormDateTimePicker Vue zachowuje ARIA, klawiaturę i cele dotykowe", async
   expect(metrics.bottom).toBeLessThanOrEqual(900);
   expect(metrics.minTarget).toBeGreaterThanOrEqual(44);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-date-time-picker")
     .include(".peaui-form-date-time-picker__popover-content")
@@ -98,6 +99,7 @@ test("FormDateTimePicker vue native form actions meet WCAG 2.2 target sizes", as
     expect(bounds?.width).toBeGreaterThanOrEqual(24);
     expect(bounds?.height).toBeGreaterThanOrEqual(24);
   }
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include("form")
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])

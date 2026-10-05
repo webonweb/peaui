@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -22,6 +23,7 @@ test("KeyboardKey WC zachowuje semantykę, kolejność, nazwę AT i mapowanie pl
   );
   await expect(root).not.toHaveAttribute("tabindex", /.+/u);
   await expect(root).not.toHaveAttribute("aria-keyshortcuts", /.+/u);
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include(".peaui-keyboard-key").analyze())
       .violations,

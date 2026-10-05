@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -47,6 +48,12 @@ test("FormDateRangePicker Web Component zachowuje parytet ARIA i klawiatury", as
   await expect(input).toBeFocused();
 
   await input.click();
+  await expect(dialog).toBeVisible();
+  // Reproduce contrast measurements taken before an opening fade has finished.
+  await dialog.evaluate((element) => {
+    element.animate([{ opacity: 0.25 }, { opacity: 1 }], { duration: 3000 });
+  });
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include("peaui-form-date-range-picker")
     .include(".peaui-form-date-range-picker__popover-content")
@@ -61,6 +68,8 @@ test("FormDateRangePicker Web Component mieści overlay w mobilnym viewporcie", 
   await gotoPicker(page, "mobile-and-long-label");
   await page.getByRole("combobox", { name: "Data początkowa" }).click();
   const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await waitForFiniteAnimations(dialog);
   const bounds = await dialog.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const days = [

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -24,6 +25,7 @@ test("InlineEdit WC zapisuje szkic, zarządza fokusem i przechodzi axe", async (
   await expect(
     root.getByRole("button", { name: "Edytuj nazwę projektu" }),
   ).toBeFocused();
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include("peaui-inline-edit").analyze())
       .violations,

@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page } from "@playwright/test";
 
+import { waitForFiniteAnimations } from "../helpers/animations.mts";
+
 /** Measure visible text after both the inverse surface and theme have settled. */
 export async function expectInverseSurfaceContrast(
   page: Page,
@@ -18,7 +20,7 @@ export async function expectInverseSurfaceContrast(
     document.body.style.colorScheme = scheme;
   }, theme);
   // Color transitions inherit through the text's ancestors.
-  await page.waitForTimeout(550);
+  await waitForFiniteAnimations(page.locator("body"));
   const samples = await text.evaluateAll((elements) => {
     const channels = (color: string): number[] =>
       (color.match(/[\d.]+/g) ?? []).map(Number);

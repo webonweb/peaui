@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -12,6 +13,7 @@ async function expectOpenPickerIsAccessible(
   page: Page,
   rootClass: string,
 ): Promise<void> {
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(`.${rootClass}`)
     .include(`.${rootClass}__popover-content`)

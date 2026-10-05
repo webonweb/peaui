@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
@@ -21,6 +22,7 @@ test('FullscreenContainer keeps keyboard focus visible and restores it after Esc
   await expect(toggle).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Za kontenerem', exact: true })).toBeFocused();
+  await waitForFiniteAnimations(page.locator("body"));
   const result = await new AxeBuilder({ page }).include('#storybook-root')
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
     .disableRules(['region', 'landmark-one-main', 'page-has-heading-one']).analyze();

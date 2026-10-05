@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -45,6 +46,7 @@ test("CopyButton WC kopiuje, utrzymuje focus i przechodzi axe", async ({
         (window as Window & { __peauiCopiedText?: string }).__peauiCopiedText,
     ),
   ).toBe("PEA-2026-022");
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include(".peaui-copy-button").analyze())
       .violations,

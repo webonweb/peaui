@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -35,6 +36,7 @@ test("VirtualList WC ogranicza DOM, przewija 10k elementów i przechodzi axe", a
   }));
   expect(metrics.height).toBe(320);
   expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.rootWidth + 1);
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (await new AxeBuilder({ page }).include("peaui-virtual-list").analyze())
       .violations

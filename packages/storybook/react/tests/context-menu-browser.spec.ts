@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -51,6 +52,7 @@ test("ContextMenu React matches pointer geometry, ARIA and focus behavior", asyn
   expect(
     Math.abs((opensAbove ? menuRect.bottom + 4 : menuRect.top - 4) - anchorY),
   ).toBeLessThanOrEqual(2);
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-context-menu")
     .analyze();

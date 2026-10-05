@@ -64,8 +64,11 @@ jobs:
       - run: npm run library:build
       - run: npm run storybook:build
       - run: npx playwright install --with-deps chromium
+        id: install_browser
       - run: npm run storybook:check:catalog
+        if: ${{ !cancelled() && steps.install_browser.outcome == 'success' }}
       - run: npm run storybook:check:catalog
+        if: ${{ !cancelled() && steps.install_browser.outcome == 'success' }}
         env:
           STORYBOOK_CHECK_THEME: dark
 
@@ -89,14 +92,19 @@ jobs:
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: npm run library:build
       - run: npm run storybook:build
+        id: build_storybooks
       - run: npm run test:hydration
       - run: npm run test:browser:contracts
       - run: npm run test:production
         if: matrix.browser == 'chromium'
       - run: npm run test:vue:browser
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' }}
       - run: npm run test:react:browser
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' }}
       - run: npm run test:wc:browser
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' }}
       - run: npm run docs:test:browser
+        if: ${{ !cancelled() && steps.build_storybooks.outcome == 'success' }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

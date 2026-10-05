@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import { pasteText } from "../../helpers/clipboard.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
@@ -136,6 +137,7 @@ test("FormTagsInput WC zachowuje ARIA, paste, edycję i stabilny fokus", async (
   expect(tagSpacing.display).toBe("flex");
   expect(tagSpacing.gap).toBeGreaterThanOrEqual(4);
   expect(tagSpacing.tagPaddingInlineStart).toBeGreaterThanOrEqual(8);
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-tags-input")
     .analyze();
@@ -164,6 +166,7 @@ test("FormTagsInput WC nie tworzy overflow na 320 px i działa w RTL", async ({
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(320);
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-tags-input")
     .analyze();

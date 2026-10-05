@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -109,6 +110,7 @@ test("ToggleGroup Web Component realizuje roving tabindex, aktywację i ARIA", a
   await expect(buttons.nth(1)).toHaveAttribute("aria-pressed", "true");
   expect(await group.locator('button[tabindex="0"]').count()).toBe(1);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include("peaui-toggle-group")
     .analyze();

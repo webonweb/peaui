@@ -51,6 +51,7 @@ test("FormDateTimePicker WC zachowuje ARIA, klawiaturę i cele dotykowe", async 
   expect(metrics.top).toBeGreaterThanOrEqual(0);
   expect(metrics.bottom).toBeLessThanOrEqual(900);
   expect(metrics.minTarget).toBeGreaterThanOrEqual(44);
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-date-time-picker")
     .include(".peaui-form-date-time-picker__popover-content")
@@ -92,6 +93,7 @@ test("FormDateTimePicker wc native form actions meet WCAG 2.2 target sizes", asy
     expect(bounds?.width).toBeGreaterThanOrEqual(24);
     expect(bounds?.height).toBeGreaterThanOrEqual(24);
   }
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include("form")
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])

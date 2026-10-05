@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -15,6 +16,7 @@ test("CommandPalette React supports combobox navigation without pointer input", 
   await expect(palette.getByRole("option")).toHaveCount(1);
   await input.press("Enter");
   await expect(palette.getByText("PEAUI library")).toBeVisible();
+  await waitForFiniteAnimations(page.locator("body"));
   expect(
     (
       await new AxeBuilder({ page })

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -107,6 +108,7 @@ test("FormRatingInput WC zachowuje jeden tab stop, klawiaturę, ARIA i cele doty
   expect(metrics.minWidth).toBeGreaterThanOrEqual(44);
   expect(metrics.tabStops).toBe(1);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-rating-input")
     .analyze();

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -56,6 +57,7 @@ test("FormSwitchToggle Vue exposes native keyboard and ARIA semantics", async ({
     .click();
   await expect(input).not.toBeChecked();
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-switch-toggle")
     .analyze();

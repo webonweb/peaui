@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -113,6 +114,7 @@ test("ToggleGroup Vue realizuje roving tabindex, aktywację i poprawne ARIA", as
   await expect(buttons.nth(0)).toHaveAttribute("aria-pressed", "false");
   expect(await group.locator('button[tabindex="0"]').count()).toBe(1);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-toggle-group__field")
     .analyze();

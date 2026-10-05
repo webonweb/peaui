@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -53,6 +54,7 @@ test("FormSwitchToggle Web Component exposes native keyboard and ARIA semantics"
   await page.locator(".peaui-form-switch-toggle__track").click();
   await expect(input).not.toBeChecked();
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-switch-toggle")
     .analyze();

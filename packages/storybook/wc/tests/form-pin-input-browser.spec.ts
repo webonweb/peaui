@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import { pasteText } from "../../helpers/clipboard.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
@@ -67,6 +68,7 @@ test("FormPinInput WC zachowuje ARIA, paste, klawiaturę i cele dotykowe", async
   expect(metrics.minWidth).toBeGreaterThanOrEqual(44);
   expect(metrics.tabStops).toBe(1);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-pin-input")
     .analyze();
@@ -110,6 +112,7 @@ test("FormPinInput WC kontroluje długi kod i etykietę na 320 px", async ({
     }),
   ).toBeGreaterThanOrEqual(5);
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-form-pin-input")
     .analyze();

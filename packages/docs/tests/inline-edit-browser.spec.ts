@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { waitForFiniteAnimations } from '../../storybook/helpers/animations.mts';
+
 const frameworks = ['vue', 'react', 'web-components'] as const;
 
 for (const framework of frameworks) {
@@ -30,6 +32,7 @@ for (const framework of frameworks) {
     expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.rootWidth + 1);
     expect(metrics.pageWidth).toBeLessThanOrEqual(320);
     expect(errors).toEqual([]);
+    await waitForFiniteAnimations(page.locator('body'));
     expect(
       (await new AxeBuilder({ page }).include('.peaui-inline-edit').analyze()).violations,
     ).toEqual([]);

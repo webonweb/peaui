@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { waitForFiniteAnimations } from '../../storybook/helpers/animations.mts';
+
 const frameworks = ['vue', 'react', 'web-components'] as const;
 
 for (const framework of frameworks) {
@@ -47,6 +49,7 @@ for (const framework of frameworks) {
     await expect(root.locator('.peaui-virtual-list__end')).toBeVisible();
 
     expect(errors).toEqual([]);
+    await waitForFiniteAnimations(page.locator('body'));
     expect(
       (await new AxeBuilder({ page }).include('.peaui-virtual-list').analyze()).violations,
     ).toEqual([]);

@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -107,6 +108,7 @@ test("SplitButton Vue rozdziela akcje, zachowuje ARIA i pełną obsługę klawia
   await trigger.click();
   await expect(menu).toBeVisible();
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-split-button")
     .analyze();
@@ -133,6 +135,7 @@ test("SplitButton Vue nie przepełnia viewportu i zachowuje pełną nazwę przy 
   );
   await trigger.click();
   await expect(page.getByRole("menu")).toBeVisible();
+  await waitForFiniteAnimations(group);
   const bounds = await group.evaluate((element) => {
     const rect = element.getBoundingClientRect();
     const menu = element.querySelector<HTMLElement>('[role="menu"]')!;

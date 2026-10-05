@@ -64,7 +64,7 @@ export async function tabToTarget(page: Page, target: Locator, maxTabs = 30): Pr
 }
 
 export async function expectNoA11yViolations(page: Page, context: string): Promise<void> {
-  await waitForFiniteAnimations(page.locator('#storybook-root'));
+  await waitForFiniteAnimations(page.locator('body'));
   const results = await new AxeBuilder({ page })
     .include('#storybook-root')
     .exclude('[class*="story-settings"]')

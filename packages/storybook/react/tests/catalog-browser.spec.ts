@@ -75,7 +75,7 @@ async function expectStoryHasNoErrors(
     /Couldn't find story|Exception in/i,
   );
 
-  await waitForFiniteAnimations(page.locator("#storybook-root"));
+  await waitForFiniteAnimations(page.locator("body"));
   const results = await new AxeBuilder({ page })
     .include("#storybook-root")
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])

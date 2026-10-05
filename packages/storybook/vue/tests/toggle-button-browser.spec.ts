@@ -1,3 +1,4 @@
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -43,6 +44,7 @@ test("ToggleButton Vue zachowuje natywną klawiaturę, stałą nazwę i semantyk
   );
   expect(outlineWidth).not.toBe("0px");
 
+  await waitForFiniteAnimations(page.locator("body"));
   const pressedAccessibility = await new AxeBuilder({ page })
     .include(".peaui-toggle-button")
     .analyze();
@@ -51,6 +53,7 @@ test("ToggleButton Vue zachowuje natywną klawiaturę, stałą nazwę i semantyk
   await page.keyboard.press("Enter");
   await expect(button).toHaveAttribute("aria-pressed", "false");
 
+  await waitForFiniteAnimations(page.locator("body"));
   const accessibility = await new AxeBuilder({ page })
     .include(".peaui-toggle-button")
     .analyze();

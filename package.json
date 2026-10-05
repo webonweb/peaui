@@ -86,7 +86,7 @@
     "test:hydration": "node scripts/check-hydration.mjs",
     "test:browser:contracts": "node scripts/browser-forms.cjs && node scripts/browser-interactions.cjs && node scripts/browser-display.cjs",
     "library:verify:browser:table": "node --experimental-strip-types scripts/browser-table-parity.cjs",
-    "library:verify:browser:visual": "node --experimental-strip-types scripts/browser-visual-parity.cjs"
+    "library:verify:browser:visual": "node --test scripts/browser-display-harness.test.cjs && node --experimental-strip-types scripts/browser-visual-parity.cjs"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

@@ -4,7 +4,10 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { boot } = require("./browser-display-harness.cjs");
+const {
+  boot,
+  captureStableScreenshot,
+} = require("./browser-display-harness.cjs");
 const extraScenarios = require("./browser-visual-scenarios.cjs");
 const {
   waitForFiniteAnimations,
@@ -284,10 +287,7 @@ async function main() {
           await page.waitForLoadState("networkidle");
           await page.evaluate(() => document.fonts.ready.then(() => undefined));
           await waitForFiniteAnimations(page.locator("body"));
-          buffers[framework] = await page.screenshot({
-            animations: "disabled",
-            fullPage: true,
-          });
+          buffers[framework] = await captureStableScreenshot(page);
         }
         result.differences = await compare(page, buffers);
         assert.equal(errors.length - beforeErrors, 0, "Browser runtime error");

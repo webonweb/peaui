@@ -93,6 +93,29 @@ window.display={
 };`;
 }
 const fixture = createFixture(catalog);
+// A settled layout can still produce a transient first compositor capture (for
+// example, Chromium's rounded inset shadows). Wait for identical consecutive
+// captures of this page before comparing frameworks; never retry a parity diff.
+async function captureStableScreenshot(page, options = {}) {
+  const { timeout = 5000, ...screenshotOptions } = options;
+  const deadline = Date.now() + timeout;
+  let previous;
+  let captures = 0;
+  while (Date.now() < deadline) {
+    const current = await page.screenshot({
+      animations: "disabled",
+      fullPage: true,
+      ...screenshotOptions,
+      timeout: Math.max(1, deadline - Date.now()),
+    });
+    captures++;
+    if (previous?.equals(current)) return current;
+    previous = current;
+  }
+  throw new Error(
+    `Screenshot did not stabilize within ${timeout}ms (${captures} captures)`,
+  );
+}
 async function boot(options = {}) {
   const directory = fs.mkdtempSync(
     path.join(os.tmpdir(), "peaui-display-verification-"),
@@ -161,4 +184,4 @@ async function boot(options = {}) {
     },
   };
 }
-module.exports = { boot, catalog, fixture };
+module.exports = { boot, catalog, fixture, captureStableScreenshot };

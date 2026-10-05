@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { waitForFiniteAnimations } from "../../helpers/animations.mts";
 
 async function gotoMenuBarStory(page: Page, story: string): Promise<void> {
   await page.goto(
@@ -75,6 +76,8 @@ test("MenuBar React scrolls horizontally and keeps overlays inside a mobile view
   await page.keyboard.press("ArrowDown");
   const menu = page.getByRole("menu", { name: "Pomoc i dokumentacja" });
   await expect(menu).toBeVisible();
+  // Visibility precedes DropdownMenu's first positioning animation frame.
+  await waitForFiniteAnimations(menu);
   const rect = await menu.evaluate((element) => element.getBoundingClientRect().toJSON());
   expect(rect.left).toBeGreaterThanOrEqual(7);
   expect(rect.right).toBeLessThanOrEqual(313);
